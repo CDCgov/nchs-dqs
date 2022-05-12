@@ -1,0 +1,7279 @@
+// CDC.gov Template Package 4 Styles
+
+@import "../../dist/TemplatePackage/css/bootstrap.css";
+@import "../../dist/TemplatePackage/css/bootstrap-grid.css";
+
+$blue: #075290;
+$muted: #bdbdbd;
+
+body {
+	font-size: 17px;
+	font-family: "Open Sans", apple-system, blinkmacsystemfont, "Segoe UI", "Helvetica Neue", arial, sans-serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-family: "Open Sans", apple-system, blinkmacsystemfont, "Segoe UI", "Helvetica Neue", arial, sans-serif !important;
+	font-weight: normal !important;
+	margin: 0 !important;
+}
+
+a {
+	color: $blue !important;
+}
+
+.col {
+	flex-basis: 0;
+	-ms-flex-positive: 1;
+	flex-grow: 1;
+	min-width: 0;
+	max-width: 100%;
+}
+
+.tooltip {
+	opacity: 1 !important;
+}
+
+@media screen and (max-width: 1000px) {
+	#header_nav a.icon {
+		background: none !important;
+	}
+}
+
+.dropdown {
+	font-size: 14px !important;
+}
+
+.demographics-container.ui.raised.card.demo-card {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#demographics-container .card-title,
+.demographics-container .card-title {
+	font-weight: normal !important;
+	font-size: 1em;
+	margin-bottom: 0.5rem !important;
+}
+
+#demographics-container .header .card-subtitle,
+.demographics-container .header .card-subtitle {
+	clear: both;
+	font-weight: normal !important;
+
+	@media (max-width: $desktop-min-width) {
+		font-size: 0.8em;
+	}
+}
+
+.d3f-controls .legend-drawer .legend-middle-container .toggle-button.selected {
+	background-color: #007c91 !important;
+	border-color: #007c91 !important;
+	color: #fff;
+}
+
+.theme {
+	&-cyan {
+		.btn,
+		.footer-link-btn {
+			background-color: #007c91 !important;
+			border-color: #007c91 !important;
+			color: #fff !important;
+			max-width: 530px !important;
+		}
+
+		.footer-link-btn {
+			padding: 0 15px !important;
+			@media screen and (min-width: 769px) {
+				// align updated cross links
+				& {
+					padding: 0 7px !important;
+				}
+			}
+		}
+
+		.site-title {
+			display: block;
+			background-color: #006778;
+			color: #fff;
+			border-bottom: 3px solid #007185;
+
+			a {
+				color: #fff !important;
+			}
+
+			.tagline {
+				color: #fff;
+			}
+		}
+	}
+}
+
+.headerSubtitle {
+	padding-top: 30px;
+	a.headerAnchorSubtitle {
+		color: #000000 !important;
+		&:hover {
+			color: #000000 !important;
+		}
+	}
+}
+
+.site-title {
+	padding: 29px 38px;
+	font-weight: 500;
+	font-family: "Open Sans", "Segoe UI", "Helvetica Neue", arial, sans-serif;
+
+	@media (max-width: 991px) {
+		font-size: 0.8em;
+	}
+}
+
+.site-title a,
+.site-title a:link,
+.site-title a:visited {
+	font-size: 40px;
+
+	@include mobile-max {
+		font-size: 28px;
+	}
+
+	text-decoration: none;
+	color: #fff;
+	vertical-align: middle;
+}
+
+.site-title a:hover * {
+	text-decoration: underline;
+}
+
+.site-title .tagline {
+	margin-bottom: 0;
+}
+
+.site-title .site-title-image {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	position: relative;
+}
+
+@media (min-width: 992px) {
+	.site-title .site-title-image {
+		text-align: right;
+	}
+}
+
+.site-title .site-title-image img {
+	max-height: 35px;
+}
+
+#title_container {
+	margin: 10px 0 10px 0;
+}
+
+.d-none {
+	display: none;
+}
+
+// Search
+
+.dropdown a,
+.dropdown-submenu a,
+.dropdown-menu a {
+	text-decoration: none !important;
+}
+
+.dropdown a:hover,
+.dropdown-submenu a:hover,
+.dropdown-menu a:hover {
+	text-decoration: underline;
+}
+
+header .cdc-header-local-search .dropdown-menu,
+header .cdc-header-search .dropdown-menu,
+header .headerSearch .dropdown-menu {
+	z-index: 10000;
+}
+
+.header-wrapper {
+	padding-bottom: 20px;
+
+	@media (max-width: 991px) {
+		padding-top: 5px;
+		padding-bottom: 0px;
+	}
+}
+
+header .tp-search-advanced {
+	display: none !important;
+}
+
+header .tp-search-advanced a {
+	color: #005eaa !important;
+	line-height: 2;
+}
+
+header .tp-search-advanced a span {
+	font-size: 1.2em;
+}
+
+header .tp-search-advanced a span::before {
+	color: #005eaa !important;
+}
+
+header #cdcAdvancedSearch .tp-search-advanced-extended {
+	display: none;
+}
+
+header #cdcAdvancedSearch.is-extended .tp-search-advanced-extended {
+	display: flex;
+}
+
+header #cdcAdvancedSearch.is-extended .tp-search-advanced-extended-hide {
+	display: none;
+}
+
+.tp-search {
+	text-align: right;
+}
+
+@media (max-width: 991px) {
+	.tp-search {
+		display: none;
+		padding: 0 0 0.75rem 0;
+	}
+}
+
+.tp-search .headerSearch.atsdr-header-search {
+	margin-top: 0;
+}
+
+.tp-search .headerSearch .input-group {
+	justify-content: flex-end;
+}
+
+@media (min-width: 1200px) {
+	.tp-search .headerSearch .input-group {
+		max-width: 350px;
+	}
+}
+
+.tp-search .headerSearch .btn-outline-secondary {
+	background: #fff;
+}
+
+.tp-search .headerSearch .btn.search-button {
+	padding: 0;
+	margin-top: 0.375rem;
+}
+
+.tp-search .headerSearch .btn.search-button:hover {
+	text-decoration: none !important;
+}
+
+.tp-search .headerSearch .btn.search-button span {
+	display: none;
+}
+
+.tp-search .headerSearch .btn.search-button .fi {
+	vertical-align: middle;
+	line-height: 1 !important;
+}
+
+@media (min-width: 768px) {
+	.tp-search .headerSearch .btn.search-button {
+		padding: 0.375rem 0.175rem 0.375rem 0.75rem;
+	}
+
+	.tp-search .headerSearch .btn.search-button span {
+		display: inline-block;
+	}
+
+	.tp-search .headerSearch .btn.search-button svg {
+		width: 24px !important;
+		height: 24px !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.tp-search .headerSearch .btn.search-button {
+		background-color: transparent;
+		border-color: transparent;
+		color: #005eaa;
+	}
+
+	.tp-search .headerSearch .btn.search-button:hover,
+	.tp-search .headerSearch .btn.search-button:focus {
+		background-color: transparent;
+		border-color: transparent !important;
+	}
+
+	.tp-search .headerSearch .btn.search-button svg {
+		fill: #005eaa;
+		float: right;
+	}
+
+	.tp-search .headerSearch .btn.search-button .fi.x24::before {
+		font-size: 40px;
+	}
+}
+
+.tp-search .headerSearch .btn.search-button:hover {
+	text-decoration: none;
+}
+
+.tp-search .headerSearch .btn.search-submit:hover {
+	text-decoration: none !important;
+}
+
+.tp-search .headerSearch .btn.search-submit .fi {
+	padding-top: 2px;
+	display: block;
+	color: #005eaa;
+}
+
+@media (max-width: 767px) {
+	.tp-search .headerSearch .show .btn.search-button {
+		background-color: transparent !important;
+		border-color: transparent !important;
+	}
+
+	.tp-search .headerSearch .dropdown-toggle::after {
+		content: none;
+		margin: 0;
+	}
+}
+
+.tp-search .headerSearch.cdc-header-local-search .input-group {
+	max-width: inherit;
+	width: 100%;
+}
+
+@media (max-width: 767px) {
+	.tp-search .dropdown-menu-search span.form-control-clear {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.tp-search .dropdown-menu-search {
+		background-color: #f0f0f0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.tp-search .dropdown-menu-search {
+		background-color: #fff;
+	}
+}
+
+.tp-search .dropdown-menu-search .a-z-index {
+	margin-top: 1rem;
+}
+
+@media (min-width: 1200px) {
+	.tp-search .dropdown-menu-search .a-z-index {
+		margin-top: 0;
+	}
+}
+
+@media (min-width: 1200px) {
+	.tp-search .dropdown-menu-search .a-z-index {
+		text-align: right;
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+}
+
+.tp-search .dropdown-menu-search .a-z-index a {
+	color: #005eaa !important;
+	text-decoration: underline !important;
+}
+
+.tp-search .dropdown-menu-search .a-z-index a:hover {
+	text-decoration: none !important;
+}
+
+.tp-search .dropdown-menu-search #headerSearch.form-control:focus + .local-search-clear[style*="visible"] {
+	border-color: #80bdff;
+}
+
+.tp-search .no-toggle::after {
+	border: none !important;
+}
+
+.tp-search .search-submit {
+	padding-top: 11px;
+	padding-bottom: 13px;
+	background-color: #e0e0e0 !important;
+	border-color: #bdbdbd !important;
+}
+
+.tp-search .search-submit .svg-icon {
+	width: 24px;
+	height: 24px;
+}
+
+.tp-search .show .no-toggle .dropdown-menu-medium-search-icon,
+.tp-search .show .no-toggle span.dropdown-menu-medium-search-icon {
+	display: none;
+}
+
+.tp-search .show .no-toggle .dropdown-menu-medium-close-icon {
+	display: inline !important;
+}
+
+.tp-search .large-search .btn-search {
+	border-color: #bdbdbd;
+}
+
+.tp-search .large-search .fs0875.text-right {
+	margin-bottom: 0.5rem;
+}
+
+.tp-search .large-search [name="query"] {
+	padding-right: 2em;
+}
+
+.tp-search .small-search.show .no-toggle {
+	border-top: 1px solid rgba(0, 0, 0, 0.15);
+	border-left: 1px solid rgba(0, 0, 0, 0.15);
+	border-right: 1px solid rgba(0, 0, 0, 0.15);
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.tp-search .small-search .dropdown-menu {
+	margin-top: 0;
+	border-top-right-radius: 0;
+	box-shadow: -1px 3px 5px 0 #d6d6d6;
+	margin-left: -10px;
+}
+
+.tp-search .medium-search {
+	padding-top: 20px;
+}
+
+.tp-search .medium-search .show .no-toggle {
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.tp-search .medium-search .dropdown-menu {
+	margin-top: 0;
+	border: 0;
+	border-top-right-radius: 0;
+	background-color: #f0f0f0;
+}
+
+.tp-search .medium-search .dropdown-menu-medium-close-icon,
+.tp-search .medium-search .dropdown-menu-medium-search-icon {
+	float: right;
+}
+
+.tp-search .large-search .form-control-clear,
+.tp-search .medium-search .form-control-clear,
+.tp-search .dropdown-menu-search .form-control-clear {
+	pointer-events: auto;
+	cursor: pointer;
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	top: 0;
+	right: 59px;
+	z-index: 99;
+	display: block;
+	line-height: 1.4;
+	text-align: center;
+	font-size: 30px;
+}
+
+.tp-search .large-search .form-control-clear.local-search-clear,
+.tp-search .medium-search .form-control-clear.local-search-clear,
+.tp-search .dropdown-menu-search .form-control-clear.local-search-clear {
+	position: relative;
+	background-color: #fff;
+	border-top: 1px solid #ced4da;
+	border-bottom: 1px solid #ced4da;
+	margin-left: -1px;
+	height: 40px;
+	right: 0;
+	width: 0;
+}
+
+.tp-search .large-search .form-control-clear.local-search-clear[style*="visible"],
+.tp-search .medium-search .form-control-clear.local-search-clear[style*="visible"],
+.tp-search .dropdown-menu-search .form-control-clear.local-search-clear[style*="visible"] {
+	width: 1.5rem;
+	margin-left: -1.5rem;
+	border-color: #ced4da;
+}
+
+.tp-search .large-search .form-control-clear.local-search-clear[style*="visible"]:focus,
+.tp-search .medium-search .form-control-clear.local-search-clear[style*="visible"]:focus,
+.tp-search .dropdown-menu-search .form-control-clear.local-search-clear[style*="visible"]:focus {
+	border-color: #80bdff;
+}
+
+#cdc-search-results .searchResultsData #solr-search-form fieldset {
+	padding-left: 0;
+}
+
+#cdc-search-results .searchResultsData #solr-search-form input[name="query"] {
+	height: 25px;
+	padding-left: 5px;
+}
+
+#cdc-search-results .searchResultsData #solr-search-form input.input-submit {
+	height: 29px;
+	margin-top: 1px;
+}
+
+#cdc-search-results .searchResultsSummary {
+	font-weight: bold;
+	line-height: 1.8em;
+}
+
+#cdc-search-results .searchResultsSummary .search-term {
+	background: #eee;
+	padding: 2px 10px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: normal;
+	display: inline-block;
+	line-height: 1.2em;
+}
+
+#cdc-search-results .searchResultsSummary .search-term i {
+	font-size: 0.8em;
+	opacity: 0.3;
+	bottom: 2px;
+}
+
+#cdc-search-results .searchResultsSummary .search-term:hover {
+	background: #cef;
+}
+
+#cdc-search-results .searchResultsSummary .search-term:hover i {
+	opacity: 0.8;
+}
+
+#cdc-search-results .searchResultsSummary .search-terms-clear {
+	font-weight: normal;
+}
+
+.hidden-two,
+.hidden-three,
+.hidden-four {
+	display: none;
+}
+
+.pagination li {
+	display: inline;
+}
+
+.pagination ul {
+	padding: 0;
+	margin: 0 0 0 0;
+	border-radius: 4px;
+}
+
+.searchResultsModule {
+	border-bottom: none;
+	padding: 11px 0 20px 0;
+}
+
+.searchResultsModule .searchResultsAudio {
+	margin-top: 0.5em;
+}
+
+.searchResultsData {
+	min-height: 400px;
+	padding: 15px 0;
+}
+
+.searchResultsData em {
+	padding-right: 0;
+}
+
+.searchResultsData .searchResultsSummary {
+	font-size: 14pt;
+	margin: 10px 0 10px 0;
+	color: #222;
+}
+
+.searchResultsData .searchResultsModule {
+	color: #222;
+	line-height: 22px;
+}
+
+.searchResultsData .searchResultsModule p {
+	padding: 0;
+	margin: 0;
+}
+
+.searchResultsData .searchResultsModule h3 {
+	margin-bottom: 0;
+	margin-top: 8px;
+	line-height: inherit;
+	font-size: 16px !important;
+	font-weight: normal !important;
+}
+
+.searchResultsData .searchResultsModule h3 a {
+	color: #075290;
+}
+
+.searchResultsData .searchResultsModule h3 a:link,
+.searchResultsData .searchResultsModule h3 a:visited {
+	text-decoration: none !important;
+}
+
+.searchResultsData .searchResultsModule h3 a:hover,
+.searchResultsData .searchResultsModule h3 a:active {
+	text-decoration: underline !important;
+}
+
+.searchResultsData .searchResultsModule h3 small {
+	color: inherit;
+	line-height: inherit;
+	font-weight: inherit;
+	font-size: 13px;
+}
+
+.searchResultsData .searchResultsModule .searchResultsUrl {
+	color: #006d21;
+	line-height: 20px;
+	word-break: break-all;
+	margin: 0;
+	padding-bottom: 3px;
+}
+
+.searchResultsData .searchResultsModule .searchResultsTitle {
+	padding-bottom: 3px;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion {
+	margin-top: 1rem;
+	margin-bottom: -20px;
+	border: 0;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card {
+	border: 0;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-header {
+	border-left: 4px solid transparent;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	margin-top: -1px;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-header .card-title {
+	font-weight: normal;
+	font-size: 0.95em;
+	width: calc(100% - 20px);
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-header .card-title.btn.btn-link:focus {
+	text-decoration: none;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-header[aria-expanded="true"] {
+	border-left: 4px solid #005eaa;
+	color: #005eaa;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-body {
+	color: #555;
+	font-size: 0.9em;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-body p {
+	margin: 5px 0;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .card-body ul {
+	margin-left: 20px;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .btn.btn-more {
+	color: #075290;
+	text-align: left;
+	padding-left: 20px;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .btn.btn-more:hover {
+	color: #075290;
+	text-decoration: none;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .btn.btn-more:focus {
+	box-shadow: none;
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .btn.btn-more[aria-expanded="false"]::after {
+	content: "Show more";
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .btn.btn-more[aria-expanded="true"]::after {
+	content: "Show less";
+}
+
+.searchResultsData .searchResultsModule .cdc-faq-accordion .collapse.show {
+	border: 0;
+}
+
+.searchResultsData .searchResultsBBModule {
+	border: 1px solid #ccc;
+	background-color: #efefef;
+	padding: 10px 18px 6px 18px;
+	font-size: 10pt;
+	color: #222;
+	margin-bottom: 10px;
+}
+
+.searchResultsData .searchResultsBBModule p {
+	padding: 0;
+	margin: 0;
+}
+
+.searchResultsData .searchResultsBBModule h3 {
+	margin-bottom: 0;
+	padding-bottom: 10px;
+	margin-top: 0;
+	line-height: inherit;
+	font-size: 18px !important;
+}
+
+.searchResultsData .searchResultsBBModule h3 a {
+	color: #075290;
+}
+
+.searchResultsData .searchResultsBBModule h3 a:link,
+.searchResultsData .searchResultsBBModule h3 a:visited {
+	text-decoration: none !important;
+}
+
+.searchResultsData .searchResultsBBModule h3 a:hover,
+.searchResultsData .searchResultsBBModule h3 a:active {
+	text-decoration: underline !important;
+}
+
+.searchResultsData .searchResultsBBModule .searchResultsUrl {
+	color: #006d21;
+	line-height: 14px;
+	word-break: break-word;
+	margin: 4px 0 0 0;
+}
+
+.searchResultsData .searchResultsBBModule .searchResultsBBItem {
+	padding-bottom: 0;
+	margin-bottom: 13px;
+}
+
+.searchResultsData .searchResultsBBModule .searchResultsBBItem p {
+	line-height: 20px;
+}
+
+.searchResultsData .searchResultsBBModule .searchResultsBBItem h3 {
+	font-size: 13pt !important;
+	margin: 0;
+	padding: 0;
+	line-height: 15px;
+	font-weight: normal !important;
+}
+
+.searchResultsData .searchResultsPaging {
+	text-align: center;
+	padding: 10px 0;
+	margin: 20px 0;
+}
+
+.searchResultsData .searchResultsPaging .searchBtnPrev {
+	margin-right: 6px;
+}
+
+.searchResultsData .searchResultsPaging .searchBtnNext {
+	margin-left: 6px;
+}
+
+.searchResultsData .searchResultsPaging .searchBtnNext,
+.searchResultsData .searchResultsPaging .searchBtnPrev {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	padding: 7px 8px;
+	border-radius: 3px;
+}
+
+.searchResultsData .searchResultsPaging .searchBtnNext:hover,
+.searchResultsData .searchResultsPaging .searchBtnPrev:hover {
+	background-color: #efefef;
+}
+
+.searchResultsData .searchResultsPaging .icon-angle-right {
+	margin-left: 7px;
+}
+
+.searchResultsData .searchResultsPaging .icon-angle-left {
+	margin-right: 7px;
+}
+
+.searchResultsData .searchResultsPaging.pagination ul > .active > a,
+.searchResultsData .searchResultsPaging.pagination ul > .active > span {
+	color: #999 !important;
+	cursor: default !important;
+}
+
+.searchResultsData .searchResultsPaging.pagination .endcap a {
+	font-size: 11pt;
+}
+
+.searchResultsData .searchResultsPaging.pagination ul > li > a:hover,
+.searchResultsData .searchResultsPaging.pagination ul > li > a:focus,
+.searchResultsData .searchResultsPaging.pagination ul > .active > a,
+.searchResultsData .searchResultsPaging.pagination ul > .active > span {
+	background-color: #f5f5f5;
+}
+
+.searchResultsData .searchResultsPaging.pagination ul > li > a,
+.searchResultsData .searchResultsPaging.pagination ul > li > span {
+	float: left;
+	padding: 6px 12px;
+	line-height: 20px;
+	text-decoration: none !important;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-left-width: 0;
+	cursor: pointer !important;
+}
+
+.searchResultsData .searchResultsPaging.pagination ul > .disabled > span,
+.searchResultsData .searchResultsPaging.pagination ul > .disabled > a,
+.searchResultsData .searchResultsPaging.pagination ul > .disabled > a:hover,
+.searchResultsData .searchResultsPaging.pagination ul > .disabled > a:focus {
+	color: #999 !important;
+	background-color: transparent;
+	cursor: default !important;
+}
+
+.searchResultsData .searchResultsPaging.pagination ul > li:first-child > a,
+.searchResultsData .searchResultsPaging.pagination ul > li:first-child > span {
+	border-left-width: 1px;
+}
+
+.searchResultsData .searchSpinner {
+	text-align: center;
+}
+
+.searchResultsData .searchSpinner .icon-refresh {
+	font-size: 16pt;
+}
+
+.searchResultsData .cdc-widget {
+	float: right;
+	padding: 0 0 1em 1em;
+}
+
+@media (max-width: 575px) {
+	.searchResultsData .cdc-widget {
+		float: none;
+		padding: 0 0 1em 0;
+		margin: 0 auto;
+		text-align: center;
+	}
+}
+
+.tp-search form .input-group .searchTypeAhead {
+	position: absolute;
+	top: 42px;
+	left: 0;
+	z-index: 1000;
+}
+
+.tp-search form .input-group .searchTypeAhead .searchTypeAheadWrap {
+	border: 1px solid #e5e5e5;
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+	width: 300px;
+	background-color: #fff;
+}
+
+.tp-search form .input-group .searchTypeAhead .searchTypeAheadWrap ul {
+	padding: 0;
+	margin: 0;
+}
+
+.tp-search form .input-group .searchTypeAhead .searchTypeAheadWrap li {
+	list-style-type: none;
+	text-align: left;
+	margin-bottom: 0;
+}
+
+.tp-search form .input-group .searchTypeAhead .searchTypeAheadWrap li a {
+	padding: 5px 8px;
+	display: block;
+	text-decoration: none;
+}
+
+.tp-search form .input-group .searchTypeAhead .searchTypeAheadWrap li a:hover {
+	background-color: #efefef;
+}
+
+.searchResultsPaging .disabled.endcap {
+	padding: 0;
+	background-color: none;
+}
+
+.searchResultsData {
+	padding: 0 15px 15px 0;
+}
+
+.searchResultsPaging ul {
+	display: inline-block;
+	float: none !important;
+}
+
+.pagination li a {
+	text-decoration: none;
+	color: #075290;
+}
+
+.searchResultsTitle a {
+	text-decoration: none;
+}
+
+.searchResultsTitle {
+	margin-top: 7px;
+}
+
+.searchResultsSummary {
+	font-size: 14pt;
+	margin: 10px 0 10px 0;
+	color: #222;
+}
+
+.searchResultsUrl a {
+	color: #006d21;
+	line-height: 20px;
+	word-break: break-all;
+	margin: 0;
+	text-decoration: none;
+}
+
+.searchResultsUrl a:hover {
+	color: #006d21;
+	text-decoration: underline;
+}
+
+#masthead-homepage {
+	fill: #000;
+}
+
+.headerSearch {
+	margin-top: 0.2rem;
+}
+
+@media (min-width: 992px) {
+	.headerSearch {
+		margin-top: 1rem;
+	}
+}
+
+@media (min-width: 1200px) {
+	.headerSearch {
+		margin-top: inherit;
+	}
+}
+
+.headerSearch .form-control-clear {
+	pointer-events: auto;
+	cursor: pointer;
+	position: absolute;
+	z-index: 99;
+	line-height: 1.4;
+	text-align: center;
+	font-size: 30px;
+}
+
+.headerSearch.cdc-header-local-search .form-control-clear {
+	left: -25px;
+}
+
+@media only screen and (min-width: 1200px) {
+	.dropdown-menu.dropdown-menu-right.dropdown-menu-medium-search {
+		position: relative !important;
+		top: inherit;
+		left: inherit;
+		transform: none !important;
+		display: flex;
+		border: 0;
+		box-shadow: none;
+		padding: 0;
+		width: 100%;
+		justify-content: flex-end;
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	.dropdown-menu .menu-promo {
+		position: absolute;
+		bottom: 0;
+		display: block;
+		border: none;
+		width: 100%;
+		max-width: 315px;
+	}
+}
+
+// Footer
+
+footer {
+	.footer-citation {
+		background-color: #e5e5e5;
+		margin-top: 0;
+		padding: 2rem 0;
+
+		[class*="col-"] {
+			padding-right: 3rem;
+		}
+
+		p {
+			margin-bottom: 0;
+		}
+
+		a {
+			color: #064ca2;
+			text-decoration: none;
+			&:visited {
+				color: #064ca2 !important;
+			}
+		}
+	}
+}
+
+footer .footer-wrapper * {
+	font-size: 13px !important;
+}
+
+#commonFooter .footer-link-btn {
+	display: flex;
+	flex-flow: column nowrap;
+	max-width: 300px;
+	height: auto;
+	// margin-bottom: 24px;
+}
+
+footer .footer-wrapper {
+	font-size: 13px;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	margin-top: 0; /* was 1rem but then it left a gap on V2 landing page */
+	color: #fff !important;
+	background-color: #333;
+}
+
+footer .footer-wrapper a {
+	color: #fff !important;
+}
+
+footer .footer-wrapper .footer-slim ul.list-inline {
+	text-align: center;
+}
+
+footer .footer-wrapper .footer-slim ul.list-inline li {
+	display: inline-block;
+}
+
+footer .footer-wrapper .footer-slim span {
+	display: inline-block;
+}
+
+@media only screen and (max-width: 1200px) {
+	footer .footer-wrapper .footer-slim ul.list-inline {
+		text-align: left;
+	}
+
+	footer .footer-wrapper .footer-slim ul.list-inline li {
+		display: block;
+		float: none;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1200px) {
+	footer .footer-wrapper .footer-slim ul.list-inline {
+		-moz-columns: 2;
+		columns: 2;
+		width: 100%;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	footer .footer-wrapper .footer-slim {
+		margin-bottom: 2.6rem;
+	}
+}
+
+footer .footer-wrapper span {
+	display: block;
+}
+
+footer .footer-wrapper svg {
+	width: 24px;
+	height: 24px;
+}
+
+footer .footer-wrapper a {
+	color: #fff;
+	text-decoration: none;
+}
+
+footer .footer-wrapper a:hover {
+	text-decoration: underline;
+}
+
+footer .footer-wrapper .connect-iconsa:hover {
+	text-decoration: none;
+}
+
+footer .footer-wrapper .connect-icons .list-inline li a span.fi {
+	width: 24px;
+	height: 24px;
+}
+
+footer .footer-wrapper li {
+	margin-bottom: 3px;
+}
+
+footer .footer-wrapper ul {
+	padding-left: 0;
+	list-style-type: none;
+}
+
+footer .footer-wrapper ul.list-inline {
+	display: inline-block;
+	margin-bottom: 3px;
+}
+
+footer .footer-wrapper ul.list-inline li {
+	float: left;
+	margin-right: 10px;
+}
+
+footer .footer-wrapper ul.list-inline li img {
+	width: 24px;
+}
+
+footer .footer-wrapper ul.list-inline li.rounded-circle {
+	background-color: #fff;
+	padding: 7px;
+	margin-right: 7px;
+}
+
+footer .agency-footer {
+	font-size: 13px;
+	padding-top: 0.5rem;
+	padding-bottom: 1rem !important;
+	margin-bottom: 1rem;
+	background: #f5f5f5;
+}
+
+footer .agency-footer a {
+	color: #000 !important;
+	text-decoration: none;
+}
+
+footer .agency-footer a:hover {
+	text-decoration: underline;
+}
+
+footer .agency-footer a.footer-ext svg {
+	fill: #000;
+	float: left;
+}
+
+footer .agency-footer a.footer-ext svg + span {
+	display: block;
+	overflow: hidden;
+}
+
+footer .agency-footer a.footer-ext svg {
+	fill: #000;
+}
+
+footer .language-footer {
+	background: white;
+	padding-top: 1rem;
+}
+
+@media only screen and (max-width: 991px) {
+	footer .language-footer {
+		margin-bottom: 3rem !important;
+	}
+}
+
+footer .language-footer strong {
+	font-size: 13px;
+	color: #333;
+}
+
+footer .language-footer strong a {
+	color: #333;
+}
+
+footer .language-footer span a {
+	color: #333;
+}
+
+.social-media-footer {
+	list-style: none;
+	padding-left: 0 !important;
+}
+
+.social-media-footer li {
+	margin-bottom: 0;
+	width: 100%;
+	text-align: center;
+}
+
+.social-media-footer li:not(:first-of-type) {
+	border-left: 1px solid #fff;
+}
+
+.social-media-footer li .fi {
+	position: relative;
+	top: 3px;
+	color: #fff;
+}
+
+div.socl-hd.card-header {
+	height: auto;
+}
+
+div.socl-hd.card-header h4 {
+	float: none;
+}
+
+// Social Media Footer
+
+/* social media */
+
+.page-share {
+	list-style-type: none;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+
+.page-share ul {
+	margin-bottom: 0;
+	padding: 0;
+}
+
+.page-share li {
+	display: inline-block;
+	padding-left: 0.875rem;
+	margin-bottom: 0;
+}
+
+.page-share li a {
+	display: inline-block;
+}
+
+.page-share li a .fi {
+	font-size: 24px;
+	vertical-align: middle;
+}
+
+.page-share li a .fi.cdc-icon-fb-round {
+	color: #3b5998;
+}
+
+.page-share li a .fi.cdc-icon-email-round {
+	color: #333;
+}
+
+.page-share li a .fi.cdc-icon-twitter-round {
+	color: #00b6f1;
+}
+
+.page-share li a .fi.cdc-icon-syndication-round {
+	color: #f45a03;
+}
+
+.socialMediaFeeds {
+	padding: 0;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+}
+
+.socialMediaFeeds .card-header {
+	padding-left: none;
+	background: #fff;
+	height: 50px;
+}
+
+.socialMediaFeeds .card-header svg {
+	float: left;
+}
+
+.socialMediaFeeds .card-header h4 {
+	float: left;
+	position: relative;
+	left: 10px;
+}
+
+.socialMediaFeeds .card-footer a {
+	text-decoration: none;
+}
+
+.socialMediaFeeds .card-footer a:hover {
+	color: #005eaa;
+	border-bottom: 1px solid #005eaa;
+}
+
+.socialMediaFeeds svg.social-icon {
+	width: 25px;
+	height: 25px;
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.socialMediaFeeds .post {
+	font-size: 17px;
+	padding: 10px 0;
+	line-height: 30px;
+	border-bottom: 1px dashed #e0e0e0;
+}
+
+.socialMediaFeeds .post:last-child {
+	border-bottom: none;
+}
+
+.socialMediaFeeds .feed-header {
+	width: 100%;
+	font-weight: 400;
+	font-size: 1.375rem;
+}
+
+.socialMediaFeeds .feed-header a {
+	text-decoration: none;
+}
+
+#social-media-footer-container {
+	.d-lg-none {
+		display: block !important;
+	}
+}
+
+.footer-wrapper a,
+.site-title a {
+	color: white !important;
+}
+
+html {
+	background-color: white;
+	font-size: 17px !important;
+}
+
+body {
+	font-size: 17px !important;
+	font-family: "Open Sans", apple-system, blinkmacsystemfont, "Segoe UI", "Helvetica Neue", arial, sans-serif;
+	background-color: white;
+}
+
+html.cdc-2020 .body-wrapper {
+	padding-top: 6px;
+}
+
+.form-control {
+	font-size: 1rem !important;
+}
+
+footer .footer-wrapper * {
+	font-size: 13px !important;
+}
+
+#header_middle {
+	margin: 0;
+	padding: 0;
+	background-image: none;
+}
+
+#header_title {
+	margin: 0;
+	padding: 0;
+}
+
+#header_middle h2 {
+	font-size: 40px;
+	font-weight: normal;
+}
+
+#header_middle p {
+	font-size: 19px;
+}
+
+#header_nav {
+	background-color: white;
+	border-top: none;
+}
+
+.navbar {
+	border-bottom: none;
+}
+
+#titleSection {
+	font-weight: normal !important;
+	@media screen and (max-width: 1000px) {
+		h2 {
+			margin-top: 0 !important;
+		}
+	}
+}
+
+#mainContent_Title {
+	@media screen and (max-width: 1000px) {
+		font-size: 1.5em !important;
+	}
+}
+
+.breadcrumbArrow i {
+	color: #ccc !important;
+}
+
+#commonFooter .footer-link-btn {
+	display: flex;
+	flex-flow: column nowrap;
+	max-width: 300px;
+	height: auto;
+	padding: 5px;
+	// margin-bottom: 24px;
+}
+
+#header_nav {
+	margin-top: 12px;
+}
+
+#title_container {
+	min-height: 80px;
+}
+
+/* .container {
+    max-width: unset!important;
+} */
+#cdc-meganav-bar nav.navbar {
+	background-color: white;
+	color: rgb(68, 68, 68);
+}
+
+#cdc-meganav-bar .yamm .nav-link {
+	color: rgb(68, 68, 68) !important;
+}
+
+/* Bootstrap Overrides */
+
+/* Generated by grunt-webfont */
+/* stylelint-disable */
+/* Based on https://github.com/endtwist/fontcustom/blob/master/lib/fontcustom/templates/fontcustom.css */
+@font-face {
+	font-family: "cdciconfont";
+	// src: url("../../TemplatePackage/fonts/cdciconfont.woff2");
+	src: url("../TemplatePackage/fonts/cdciconfont.eot");
+	src: url("../TemplatePackage/fonts/cdciconfont.eot") format("embedded-opentype"),
+		url("../TemplatePackage/fonts/cdciconfont.woff2") format("woff2"),
+		url("../TemplatePackage/fonts/cdciconfont.woff") format("woff"),
+		url("../TemplatePackage/fonts/cdciconfont.ttf") format("truetype"),
+		url("../TemplatePackage/fonts/cdciconfont.svg#icons") format("svg");
+
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* Bootstrap Overrides */
+[class^="cdc-icon-"]:before,
+[class*=" cdc-icon-"]:before {
+	font-family: "cdciconfont";
+	display: inline-block;
+	line-height: 1;
+	font-weight: normal;
+	font-style: normal;
+	speak: none;
+	text-decoration: inherit;
+	text-transform: none;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a [class^="cdc-icon-"],
+a [class*=" cdc-icon-"] {
+	display: inline-block;
+	text-decoration: inherit;
+}
+
+/* Makes the font 33% larger relative to the icon container */
+.cdc-icon-large:before {
+	vertical-align: top;
+	font-size: 1.333em;
+}
+
+/* Keeps button heights with and without icons the same */
+.btn [class^="cdc-icon-"],
+.btn [class*=" cdc-icon-"] {
+	line-height: 0.9em;
+}
+
+li [class^="cdc-icon-"],
+li [class*=" cdc-icon-"] {
+	display: inline-block;
+	min-width: 1.25em;
+	text-align: center;
+}
+
+/* 1.5 increased font size for cdc-icon-large * 1.25 width */
+li .cdc-icon-large[class^="cdc-icon-"],
+li .cdc-icon-large[class*=" cdc-icon-"] {
+	min-width: 1.875em;
+}
+
+li[class^="cdc-icon-"],
+li[class*=" cdc-icon-"] {
+	margin-left: 0;
+	list-style-type: none;
+}
+
+li[class^="cdc-icon-"]:before,
+li[class*=" cdc-icon-"]:before {
+	text-indent: -2em;
+	text-align: center;
+}
+
+li[class^="cdc-icon-"].cdc-icon-large:before,
+li[class*=" cdc-icon-"].cdc-icon-large:before {
+	text-indent: -1.333em;
+}
+
+.x24::before {
+	font-size: 24px;
+	text-align: center;
+}
+
+.x16::before {
+	font-size: 16px;
+	text-align: center;
+}
+
+.btn-layout {
+	min-height: 50px;
+	flex-wrap: nowrap;
+
+	@media screen and (max-width: 1000px) {
+		flex-wrap: wrap;
+	}
+}
+
+.btn-layout .subnav-btn {
+	font-size: 16px !important;
+}
+
+/* Icons */
+.cdc-icon-alert_01:before {
+	content: "\f101";
+}
+
+.cdc-icon-alert_02:before {
+	content: "\f102";
+}
+
+.cdc-icon-alert_03:before {
+	content: "\f103";
+}
+
+.cdc-icon-alert_04:before {
+	content: "\f104";
+}
+
+.cdc-icon-alert_05:before {
+	content: "\f105";
+}
+
+.cdc-icon-alert_06:before {
+	content: "\f106";
+}
+
+.cdc-icon-allergy_01:before {
+	content: "\f107";
+}
+
+.cdc-icon-animal_01:before {
+	content: "\f108";
+}
+
+.cdc-icon-animal_02:before {
+	content: "\f109";
+}
+
+.cdc-icon-animal_03:before {
+	content: "\f10a";
+}
+
+.cdc-icon-audio_01:before {
+	content: "\f10b";
+}
+
+.cdc-icon-audio_02:before {
+	content: "\f10c";
+}
+
+.cdc-icon-audio_03:before {
+	content: "\f10d";
+}
+
+.cdc-icon-audio_04:before {
+	content: "\f10e";
+}
+
+.cdc-icon-audio_05:before {
+	content: "\f10f";
+}
+
+.cdc-icon-badge_01:before {
+	content: "\f110";
+}
+
+.cdc-icon-badge_02:before {
+	content: "\f111";
+}
+
+.cdc-icon-badge_03:before {
+	content: "\f112";
+}
+
+.cdc-icon-badge_04:before {
+	content: "\f113";
+}
+
+.cdc-icon-badge_05:before {
+	content: "\f114";
+}
+
+.cdc-icon-bag_01:before {
+	content: "\f115";
+}
+
+.cdc-icon-bat_1:before {
+	content: "\f116";
+}
+
+.cdc-icon-book_01:before {
+	content: "\f117";
+}
+
+.cdc-icon-book_02:before {
+	content: "\f118";
+}
+
+.cdc-icon-book_03:before {
+	content: "\f119";
+}
+
+.cdc-icon-book_04:before {
+	content: "\f11a";
+}
+
+.cdc-icon-bookmark_01:before {
+	content: "\f11b";
+}
+
+.cdc-icon-brain_01:before {
+	content: "\f11c";
+}
+
+.cdc-icon-building_01:before {
+	content: "\f11d";
+}
+
+.cdc-icon-building_02:before {
+	content: "\f11e";
+}
+
+.cdc-icon-building_03:before {
+	content: "\f11f";
+}
+
+.cdc-icon-building_04:before {
+	content: "\f120";
+}
+
+.cdc-icon-calendar_01:before {
+	content: "\f121";
+}
+
+.cdc-icon-cancer_02:before {
+	content: "\f122";
+}
+
+.cdc-icon-candle:before {
+	content: "\f123";
+}
+
+.cdc-icon-cat_1:before {
+	content: "\f124";
+}
+
+.cdc-icon-chart_01:before {
+	content: "\f125";
+}
+
+.cdc-icon-chart_02:before {
+	content: "\f126";
+}
+
+.cdc-icon-chart_03:before {
+	content: "\f127";
+}
+
+.cdc-icon-chart_04:before {
+	content: "\f128";
+}
+
+.cdc-icon-chat_01:before {
+	content: "\f129";
+}
+
+.cdc-icon-chat_02:before {
+	content: "\f12a";
+}
+
+.cdc-icon-chat_03:before {
+	content: "\f12b";
+}
+
+.cdc-icon-chat_04:before {
+	content: "\f12c";
+}
+
+.cdc-icon-chat_05:before {
+	content: "\f12d";
+}
+
+.cdc-icon-chicken_1:before {
+	content: "\f12e";
+}
+
+.cdc-icon-cleaning_01:before {
+	content: "\f12f";
+}
+
+.cdc-icon-cleaning_02:before {
+	content: "\f130";
+}
+
+.cdc-icon-cleaning_03:before {
+	content: "\f131";
+}
+
+.cdc-icon-clipboard_01:before {
+	content: "\f132";
+}
+
+.cdc-icon-clock_01:before {
+	content: "\f133";
+}
+
+.cdc-icon-clothes_01:before {
+	content: "\f134";
+}
+
+.cdc-icon-cloud_01:before {
+	content: "\f135";
+}
+
+.cdc-icon-comment3:before {
+	content: "\f136";
+}
+
+.cdc-icon-contact:before {
+	content: "\f137";
+}
+
+.cdc-icon-crowd:before {
+	content: "\f138";
+}
+
+.cdc-icon-data_01:before {
+	content: "\f139";
+}
+
+.cdc-icon-device_01:before {
+	content: "\f13a";
+}
+
+.cdc-icon-device_02:before {
+	content: "\f13b";
+}
+
+.cdc-icon-device_03:before {
+	content: "\f13c";
+}
+
+.cdc-icon-device_04:before {
+	content: "\f13d";
+}
+
+.cdc-icon-digital-thermometer:before {
+	content: "\f13e";
+}
+
+.cdc-icon-direction_01:before {
+	content: "\f13f";
+}
+
+.cdc-icon-dog_1:before {
+	content: "\f140";
+}
+
+.cdc-icon-double_arrow:before {
+	content: "\f141";
+}
+
+.cdc-icon-download_01:before {
+	content: "\f142";
+}
+
+.cdc-icon-ecig_01:before {
+	content: "\f143";
+}
+
+.cdc-icon-ecig_02:before {
+	content: "\f144";
+}
+
+.cdc-icon-ecig_03:before {
+	content: "\f145";
+}
+
+.cdc-icon-ecigs:before {
+	content: "\f146";
+}
+
+.cdc-icon-edit_01:before {
+	content: "\f147";
+}
+
+.cdc-icon-email_01:before {
+	content: "\f148";
+}
+
+.cdc-icon-email_02:before {
+	content: "\f149";
+}
+
+.cdc-icon-email_03:before {
+	content: "\f14a";
+}
+
+.cdc-icon-eye_01:before {
+	content: "\f14b";
+}
+
+.cdc-icon-fig1_1:before {
+	content: "\f14c";
+}
+
+.cdc-icon-flea_fly:before {
+	content: "\f14d";
+}
+
+.cdc-icon-flea:before {
+	content: "\f14e";
+}
+
+.cdc-icon-food_01:before {
+	content: "\f14f";
+}
+
+.cdc-icon-food_02:before {
+	content: "\f150";
+}
+
+.cdc-icon-food_03:before {
+	content: "\f151";
+}
+
+.cdc-icon-food_04:before {
+	content: "\f152";
+}
+
+.cdc-icon-food_05:before {
+	content: "\f153";
+}
+
+.cdc-icon-food_06:before {
+	content: "\f154";
+}
+
+.cdc-icon-globe_01:before {
+	content: "\f155";
+}
+
+.cdc-icon-globe_02:before {
+	content: "\f156";
+}
+
+.cdc-icon-globe_03:before {
+	content: "\f157";
+}
+
+.cdc-icon-glove:before {
+	content: "\f158";
+}
+
+.cdc-icon-grid_01:before {
+	content: "\f159";
+}
+
+.cdc-icon-handwashing:before {
+	content: "\f15a";
+}
+
+.cdc-icon-hazard_01:before {
+	content: "\f15b";
+}
+
+.cdc-icon-hazard_02:before {
+	content: "\f15c";
+}
+
+.cdc-icon-hazard_03:before {
+	content: "\f15d";
+}
+
+.cdc-icon-hazard_04:before {
+	content: "\f15e";
+}
+
+.cdc-icon-hazard_05:before {
+	content: "\f15f";
+}
+
+.cdc-icon-heart_01:before {
+	content: "\f160";
+}
+
+.cdc-icon-home_01:before {
+	content: "\f161";
+}
+
+.cdc-icon-hospital_01:before {
+	content: "\f162";
+}
+
+.cdc-icon-idea_01:before {
+	content: "\f163";
+}
+
+.cdc-icon-kidney_01:before {
+	content: "\f164";
+}
+
+.cdc-icon-lab_01:before {
+	content: "\f165";
+}
+
+.cdc-icon-lab_02:before {
+	content: "\f166";
+}
+
+.cdc-icon-lab_03:before {
+	content: "\f167";
+}
+
+.cdc-icon-lab_04:before {
+	content: "\f168";
+}
+
+.cdc-icon-lab_05:before {
+	content: "\f169";
+}
+
+.cdc-icon-lab_06:before {
+	content: "\f16a";
+}
+
+.cdc-icon-lab_07:before {
+	content: "\f16b";
+}
+
+.cdc-icon-link_01:before {
+	content: "\f16c";
+}
+
+.cdc-icon-lite_00:before {
+	content: "\f16d";
+}
+
+.cdc-icon-lite_01:before {
+	content: "\f16e";
+}
+
+.cdc-icon-lite_02:before {
+	content: "\f16f";
+}
+
+.cdc-icon-lite_03:before {
+	content: "\f170";
+}
+
+.cdc-icon-lite_04:before {
+	content: "\f171";
+}
+
+.cdc-icon-lite_05:before {
+	content: "\f172";
+}
+
+.cdc-icon-lite_06:before {
+	content: "\f173";
+}
+
+.cdc-icon-lite_07:before {
+	content: "\f174";
+}
+
+.cdc-icon-lite_08:before {
+	content: "\f175";
+}
+
+.cdc-icon-lite_09:before {
+	content: "\f176";
+}
+
+.cdc-icon-logo_01:before {
+	content: "\f177";
+}
+
+.cdc-icon-map_01:before {
+	content: "\f178";
+}
+
+.cdc-icon-map_02:before {
+	content: "\f179";
+}
+
+.cdc-icon-mask:before {
+	content: "\f17a";
+}
+
+.cdc-icon-medical_01:before {
+	content: "\f17b";
+}
+
+.cdc-icon-medical_02:before {
+	content: "\f17c";
+}
+
+.cdc-icon-medical_03:before {
+	content: "\f17d";
+}
+
+.cdc-icon-medical_04:before {
+	content: "\f17e";
+}
+
+.cdc-icon-medical_05:before {
+	content: "\f17f";
+}
+
+.cdc-icon-medical_06:before {
+	content: "\f180";
+}
+
+.cdc-icon-medical_07:before {
+	content: "\f181";
+}
+
+.cdc-icon-medical_08:before {
+	content: "\f182";
+}
+
+.cdc-icon-medical_09:before {
+	content: "\f183";
+}
+
+.cdc-icon-medical_10:before {
+	content: "\f184";
+}
+
+.cdc-icon-medical_11:before {
+	content: "\f185";
+}
+
+.cdc-icon-money_01:before {
+	content: "\f186";
+}
+
+.cdc-icon-no_01:before {
+	content: "\f187";
+}
+
+.cdc-icon-paper_01:before {
+	content: "\f188";
+}
+
+.cdc-icon-paper_02:before {
+	content: "\f189";
+}
+
+.cdc-icon-paper_03:before {
+	content: "\f18a";
+}
+
+.cdc-icon-people_01:before {
+	content: "\f18b";
+}
+
+.cdc-icon-people_02:before {
+	content: "\f18c";
+}
+
+.cdc-icon-people_03:before {
+	content: "\f18d";
+}
+
+.cdc-icon-people_04:before {
+	content: "\f18e";
+}
+
+.cdc-icon-people_05:before {
+	content: "\f18f";
+}
+
+.cdc-icon-people_06:before {
+	content: "\f190";
+}
+
+.cdc-icon-people_07:before {
+	content: "\f191";
+}
+
+.cdc-icon-people_08:before {
+	content: "\f192";
+}
+
+.cdc-icon-people_09:before {
+	content: "\f193";
+}
+
+.cdc-icon-phone_01:before {
+	content: "\f194";
+}
+
+.cdc-icon-photo_01:before {
+	content: "\f195";
+}
+
+.cdc-icon-photo_02:before {
+	content: "\f196";
+}
+
+.cdc-icon-photo_03:before {
+	content: "\f197";
+}
+
+.cdc-icon-photo_04:before {
+	content: "\f198";
+}
+
+.cdc-icon-photo_05:before {
+	content: "\f199";
+}
+
+.cdc-icon-pig_1:before {
+	content: "\f19a";
+}
+
+.cdc-icon-pin_01:before {
+	content: "\f19b";
+}
+
+.cdc-icon-pin_02:before {
+	content: "\f19c";
+}
+
+.cdc-icon-preschool:before {
+	content: "\f19d";
+}
+
+.cdc-icon-presentation_01:before {
+	content: "\f19e";
+}
+
+.cdc-icon-question_01:before {
+	content: "\f19f";
+}
+
+.cdc-icon-question_02:before {
+	content: "\f1a0";
+}
+
+.cdc-icon-question_03:before {
+	content: "\f1a1";
+}
+
+.cdc-icon-repellent:before {
+	content: "\f1a2";
+}
+
+.cdc-icon-scale_01:before {
+	content: "\f1a3";
+}
+
+.cdc-icon-scale_02:before {
+	content: "\f1a4";
+}
+
+.cdc-icon-search_01:before {
+	content: "\f1a5";
+}
+
+.cdc-icon-search_02:before {
+	content: "\f1a6";
+}
+
+.cdc-icon-search_03:before {
+	content: "\f1a7";
+}
+
+.cdc-icon-signal_01:before {
+	content: "\f1a8";
+}
+
+.cdc-icon-single_arrow:before {
+	content: "\f1a9";
+}
+
+.cdc-icon-smoking_01:before {
+	content: "\f1aa";
+}
+
+.cdc-icon-sol_00:before {
+	content: "\f1ab";
+}
+
+.cdc-icon-sol_01:before {
+	content: "\f1ac";
+}
+
+.cdc-icon-sol_02:before {
+	content: "\f1ad";
+}
+
+.cdc-icon-sol_03:before {
+	content: "\f1ae";
+}
+
+.cdc-icon-sol_04:before {
+	content: "\f1af";
+}
+
+.cdc-icon-sol_05:before {
+	content: "\f1b0";
+}
+
+.cdc-icon-sol_06:before {
+	content: "\f1b1";
+}
+
+.cdc-icon-sol_07:before {
+	content: "\f1b2";
+}
+
+.cdc-icon-sol_08:before {
+	content: "\f1b3";
+}
+
+.cdc-icon-sol_09:before {
+	content: "\f1b4";
+}
+
+.cdc-icon-sports_01:before {
+	content: "\f1b5";
+}
+
+.cdc-icon-spraybottle:before {
+	content: "\f1b6";
+}
+
+.cdc-icon-stack_01:before {
+	content: "\f1b7";
+}
+
+.cdc-icon-stack_02:before {
+	content: "\f1b8";
+}
+
+.cdc-icon-stack_03:before {
+	content: "\f1b9";
+}
+
+.cdc-icon-stack_04:before {
+	content: "\f1ba";
+}
+
+.cdc-icon-symbol_01:before {
+	content: "\f1bb";
+}
+
+.cdc-icon-symbol_02:before {
+	content: "\f1bc";
+}
+
+.cdc-icon-symptom1:before {
+	content: "\f1bd";
+}
+
+.cdc-icon-symptom2:before {
+	content: "\f1be";
+}
+
+.cdc-icon-symptom3:before {
+	content: "\f1bf";
+}
+
+.cdc-icon-tick:before {
+	content: "\f1c0";
+}
+
+.cdc-icon-tools_01:before {
+	content: "\f1c1";
+}
+
+.cdc-icon-tools_02:before {
+	content: "\f1c2";
+}
+
+.cdc-icon-tools_03:before {
+	content: "\f1c3";
+}
+
+.cdc-icon-tools_04:before {
+	content: "\f1c4";
+}
+
+.cdc-icon-travel_01:before {
+	content: "\f1c5";
+}
+
+.cdc-icon-travel_02:before {
+	content: "\f1c6";
+}
+
+.cdc-icon-tweezers:before {
+	content: "\f1c7";
+}
+
+.cdc-icon-usa_map:before {
+	content: "\f1c8";
+}
+
+.cdc-icon-video_01:before {
+	content: "\f1c9";
+}
+
+.cdc-icon-video_02:before {
+	content: "\f1ca";
+}
+
+.cdc-icon-video_03:before {
+	content: "\f1cb";
+}
+
+.cdc-icon-video_04:before {
+	content: "\f1cc";
+}
+
+.cdc-icon-weather_01:before {
+	content: "\f1cd";
+}
+
+.cdc-icon-weather_02:before {
+	content: "\f1ce";
+}
+
+.cdc-icon-weather_03:before {
+	content: "\f1cf";
+}
+
+.cdc-icon-weather_04:before {
+	content: "\f1d0";
+}
+
+.cdc-icon-weather_05:before {
+	content: "\f1d1";
+}
+
+.cdc-icon-weather_06:before {
+	content: "\f1d2";
+}
+
+.cdc-icon-weather_07:before {
+	content: "\f1d3";
+}
+
+.cdc-icon-weather_08:before {
+	content: "\f1d4";
+}
+
+.cdc-icon-weather_09:before {
+	content: "\f1d5";
+}
+
+.cdc-icon-weather_10:before {
+	content: "\f1d6";
+}
+
+.cdc-icon-weather_11:before {
+	content: "\f1d7";
+}
+
+.cdc-icon-wreath:before {
+	content: "\f1d8";
+}
+
+.cdc-icon-cdc-tv:before {
+	content: "\f1d9";
+}
+
+.cdc-icon-fb:before {
+	content: "\f1da";
+}
+
+.cdc-icon-flickr:before {
+	content: "\f1db";
+}
+
+.cdc-icon-govd:before {
+	content: "\f1dc";
+}
+
+.cdc-icon-insta:before {
+	content: "\f1de";
+}
+
+.cdc-icon-linkedin:before {
+	content: "\f1df";
+}
+
+.cdc-icon-pinterest:before {
+	content: "\f1df";
+}
+
+.cdc-icon-podcast:before {
+	content: "\f1e0";
+}
+
+.cdc-icon-rss:before {
+	content: "\f1e1";
+}
+
+.cdc-icon-snapchat:before {
+	content: "\f1e3";
+}
+
+.cdc-icon-syndication:before {
+	content: "\f1e3";
+}
+
+.cdc-icon-tumblr:before {
+	content: "\f1e4";
+}
+
+.cdc-icon-twitter:before {
+	content: "\f1e5";
+}
+
+.cdc-icon-youtube:before {
+	content: "\f1e6";
+}
+
+.cdc-icon-bookmark-round:before {
+	content: "\f1e7";
+}
+
+.cdc-icon-cdc-tv-round:before {
+	content: "\f1e8";
+}
+
+.cdc-icon-email-round:before {
+	content: "\f1e9";
+}
+
+.cdc-icon-fb-round:before {
+	content: "\f1ea";
+}
+
+.cdc-icon-flickr-round:before {
+	content: "\f1eb";
+}
+
+.cdc-icon-govd-round:before {
+	content: "\f1ec";
+}
+
+.cdc-icon-ig-round:before {
+	content: "\f1ed";
+}
+
+.cdc-icon-linkedin-round:before {
+	content: "\f1ee";
+}
+
+.cdc-icon-pinterest-round:before {
+	content: "\f1ef";
+}
+
+.cdc-icon-podcast-round:before {
+	content: "\f1f0";
+}
+
+.cdc-icon-rss-round:before {
+	content: "\f1f1";
+}
+
+.cdc-icon-syndication-round:before {
+	content: "\f1f2";
+}
+
+.cdc-icon-tumblr-round:before {
+	content: "\f1f3";
+}
+
+.cdc-icon-twitter-round:before {
+	content: "\f1f4";
+}
+
+.cdc-icon-youtube-round:before {
+	content: "\f1f5";
+}
+
+.cdc-icon-bookmark-white:before {
+	content: "\f1f6";
+}
+
+.cdc-icon-cdc-tv-white:before {
+	content: "\f1f8";
+}
+
+.cdc-icon-email-white:before {
+	content: "\f1f8";
+}
+
+.cdc-icon-fb-white:before {
+	content: "\f1fa";
+}
+
+.cdc-icon-flickr-white:before {
+	content: "\f1fa";
+}
+
+.cdc-icon-govd-white:before {
+	content: "\f1fb";
+}
+
+.cdc-icon-ig-white:before {
+	content: "\f1fc";
+}
+
+.cdc-icon-linkedin-white:before {
+	content: "\f1fe";
+}
+
+.cdc-icon-pinterest-white:before {
+	content: "\f1fe";
+}
+
+.cdc-icon-podcast-white:before {
+	content: "\f1ff";
+}
+
+.cdc-icon-rss-white:before {
+	content: "\f201";
+}
+
+.cdc-icon-syndication-white:before {
+	content: "\f202";
+}
+
+.cdc-icon-tumblr-white:before {
+	content: "\f202";
+}
+
+.cdc-icon-twitter-white:before {
+	content: "\f204";
+}
+
+.cdc-icon-youtube-white:before {
+	content: "\f205";
+}
+
+.cdc-icon-epub:before {
+	content: "\f205";
+}
+
+.cdc-icon-excel:before {
+	content: "\f206";
+}
+
+.cdc-icon-external:before {
+	content: "\f208";
+}
+
+.cdc-icon-image:before {
+	content: "\f208"; //incorrect
+}
+
+.cdc-icon-media:before {
+	content: "\f209";
+}
+
+.cdc-icon-pdf:before {
+	content: "\f20a";
+}
+
+.cdc-icon-ppt:before {
+	content: "\f20b";
+}
+
+.cdc-icon-sas:before {
+	content: "\f20c";
+}
+
+.cdc-icon-stats:before {
+	content: "\f20d";
+}
+
+.cdc-icon-txt:before {
+	content: "\f20e";
+}
+
+.cdc-icon-word:before {
+	content: "\f20f";
+}
+
+.cdc-icon-zip:before {
+	content: "\f210";
+}
+
+.cdc-icon-arrow-down:before {
+	content: "\f211";
+}
+
+.cdc-icon-cdcsearch:before {
+	content: "\f212";
+}
+
+.cdc-icon-close-circle:before {
+	content: "\f213";
+}
+
+.cdc-icon-minus:before {
+	content: "\f214";
+}
+
+.cdc-icon-next:before {
+	content: "\f215";
+}
+
+.cdc-icon-play-circle-outline:before {
+	content: "\f216";
+}
+
+.cdc-icon-plus:before {
+	content: "\f217";
+}
+
+.cdc-icon-prev:before {
+	content: "\f218";
+}
+
+.cdc-icon-resize:before {
+	content: "\f219";
+}
+
+.cdc-icon-cdc-play:before {
+	content: "\f21a";
+}
+
+.cdc-icon-pause-circle-outline:before {
+	content: "\f21b";
+}
+
+.cdc-icon-pause-circle:before {
+	content: "\f21c";
+}
+
+.cdc-icon-pause-octagon-outline:before {
+	content: "\f21d";
+}
+
+.cdc-icon-pause-octagon:before {
+	content: "\f21e";
+}
+
+.cdc-icon-pause:before {
+	content: "\f21f";
+}
+
+.cdc-icon-repeat-off:before {
+	content: "\f220";
+}
+
+.cdc-icon-repeat-once:before {
+	content: "\f221";
+}
+
+.cdc-icon-repeat:before {
+	content: "\f222";
+}
+
+.cdc-icon-replay:before {
+	content: "\f223";
+}
+
+.cdc-icon-shuffle-disabled:before {
+	content: "\f224";
+}
+
+.cdc-icon-shuffle-variant:before {
+	content: "\f225";
+}
+
+.cdc-icon-shuffle:before {
+	content: "\f226";
+}
+
+.cdc-icon-skip-backward:before {
+	content: "\f227";
+}
+
+.cdc-icon-skip-forward:before {
+	content: "\f228";
+}
+
+.cdc-icon-skip-next-circle-outline:before {
+	content: "\f229";
+}
+
+.cdc-icon-skip-next-circle:before {
+	content: "\f22a";
+}
+
+.cdc-icon-skip-next:before {
+	content: "\f22b";
+}
+
+.cdc-icon-skip-previous-circle-outline:before {
+	content: "\f22c";
+}
+
+.cdc-icon-skip-previous-circle:before {
+	content: "\f22d";
+}
+
+.cdc-icon-skip-previous:before {
+	content: "\f22e";
+}
+
+.cdc-icon-stop:before {
+	content: "\f22f";
+}
+
+.cdc-icon-surround-sound-2-0:before {
+	content: "\f230";
+}
+
+.cdc-icon-surround-sound-3-1:before {
+	content: "\f231";
+}
+
+.cdc-icon-surround-sound-5-1:before {
+	content: "\f232";
+}
+
+.cdc-icon-surround-sound-7-1:before {
+	content: "\f233";
+}
+
+.cdc-icon-surround-sound:before {
+	content: "\f234";
+}
+
+.cdc-icon-volume-high:before {
+	content: "\f235";
+}
+
+.cdc-icon-volume-low:before {
+	content: "\f236";
+}
+
+.cdc-icon-volume-medium:before {
+	content: "\f237";
+}
+
+.cdc-icon-volume-minus:before {
+	content: "\f238";
+}
+
+.cdc-icon-volume-mute:before {
+	content: "\f239";
+}
+
+.cdc-icon-volume-off:before {
+	content: "\f23a";
+}
+
+.cdc-icon-volume-plus:before {
+	content: "\f23b";
+}
+
+.cdc-icon-volume:before {
+	content: "\f23c";
+}
+
+.cdc-icon-magnify:before {
+	content: "\f23f";
+}
+
+.cdc-icon-email:before {
+	content: "\f240";
+}
+
+.cdc-icon-phone:before {
+	content: "\f241";
+}
+
+.cdc-icon-settings:before {
+	content: "\f241"; //incorrect
+}
+
+.cdc-icon-close:before {
+	content: "\f242";
+}
+
+.cdc-icon-accessible-icon:before {
+	content: "\f243";
+}
+
+.cdc-icon-algolia:before {
+	content: "\f244";
+}
+
+.cdc-icon-hubspot:before {
+	content: "\f245";
+}
+
+.cdc-icon-microsoft:before {
+	content: "\f246";
+}
+
+.cdc-icon-windows:before {
+	content: "\f247";
+}
+
+.cdc-icon-square:before {
+	content: "\f248";
+}
+
+.cdc-icon-address-book-light:before {
+	content: "\f249";
+}
+
+.cdc-icon-address-card-light:before {
+	content: "\f24a";
+}
+
+.cdc-icon-allergies-light:before {
+	content: "\f24b";
+}
+
+.cdc-icon-ambulance-light:before {
+	content: "\f24c";
+}
+
+.cdc-icon-american-sign-language-interpreting-light:before {
+	content: "\f24d";
+}
+
+.cdc-icon-analytics-light:before {
+	content: "\f24e";
+}
+
+.cdc-icon-apple-alt-light:before {
+	content: "\f24f";
+}
+
+.cdc-icon-archive-light:before {
+	content: "\f250";
+}
+
+.cdc-icon-arrow-alt-circle-down-light:before {
+	content: "\f251";
+}
+
+.cdc-icon-arrow-alt-circle-left-light:before {
+	content: "\f252";
+}
+
+.cdc-icon-arrow-alt-circle-right-light:before {
+	content: "\f253";
+}
+
+.cdc-icon-arrow-alt-circle-up-light:before {
+	content: "\f254";
+}
+
+.cdc-icon-atlas-light:before {
+	content: "\f255";
+}
+
+.cdc-icon-baby-carriage-light:before {
+	content: "\f256";
+}
+
+.cdc-icon-baby-light:before {
+	content: "\f257";
+}
+
+.cdc-icon-bacteria-light:before {
+	content: "\f258";
+}
+
+.cdc-icon-bacterium-light:before {
+	content: "\f259";
+}
+
+.cdc-icon-balance-scale-light:before {
+	content: "\f25a";
+}
+
+.cdc-icon-ballot-check-light:before {
+	content: "\f25b";
+}
+
+.cdc-icon-ballot-light:before {
+	content: "\f25c";
+}
+
+.cdc-icon-ban-light:before {
+	content: "\f25d";
+}
+
+.cdc-icon-band-aid-light:before {
+	content: "\f25e";
+}
+
+.cdc-icon-bed-light:before {
+	content: "\f25f";
+}
+
+.cdc-icon-bicycle-light:before {
+	content: "\f260";
+}
+
+.cdc-icon-biking-light:before {
+	content: "\f261";
+}
+
+.cdc-icon-blind-light:before {
+	content: "\f262";
+}
+
+.cdc-icon-bolt-light:before {
+	content: "\f263";
+}
+
+.cdc-icon-book-alt-light:before {
+	content: "\f264";
+}
+
+.cdc-icon-book-light:before {
+	content: "\f265";
+}
+
+.cdc-icon-book-medical-light:before {
+	content: "\f266";
+}
+
+.cdc-icon-book-open-light:before {
+	content: "\f267";
+}
+
+.cdc-icon-book-reader-light:before {
+	content: "\f268";
+}
+
+.cdc-icon-book-user-light:before {
+	content: "\f269";
+}
+
+.cdc-icon-books-medical-light:before {
+	content: "\f26a";
+}
+
+.cdc-icon-box-tissue-light:before {
+	content: "\f26b";
+}
+
+.cdc-icon-bread-loaf-light:before {
+	content: "\f26c";
+}
+
+.cdc-icon-briefcase-light:before {
+	content: "\f26d";
+}
+
+.cdc-icon-briefcase-medical-light:before {
+	content: "\f26e";
+}
+
+.cdc-icon-browser-light:before {
+	content: "\f26f";
+}
+
+.cdc-icon-building-light:before {
+	content: "\f270";
+}
+
+.cdc-icon-bullseye-pointer-light:before {
+	content: "\f271";
+}
+
+.cdc-icon-burger-soda-light:before {
+	content: "\f272";
+}
+
+.cdc-icon-bus-light:before {
+	content: "\f273";
+}
+
+.cdc-icon-calendar-alt-light:before {
+	content: "\f274";
+}
+
+.cdc-icon-calendar-check-light:before {
+	content: "\f275";
+}
+
+.cdc-icon-calendar-day-light:before {
+	content: "\f276";
+}
+
+.cdc-icon-calendar-edit-light:before {
+	content: "\f277";
+}
+
+.cdc-icon-calendar-exclamation-light:before {
+	content: "\f278";
+}
+
+.cdc-icon-calendar-light:before {
+	content: "\f279";
+}
+
+.cdc-icon-calendar-plus-light:before {
+	content: "\f27a";
+}
+
+.cdc-icon-calendar-star-light:before {
+	content: "\f27b";
+}
+
+.cdc-icon-capsules-light:before {
+	content: "\f27c";
+}
+
+.cdc-icon-car-bus-light:before {
+	content: "\f27d";
+}
+
+.cdc-icon-car-side-light:before {
+	content: "\f27e";
+}
+
+.cdc-icon-carrot-light:before {
+	content: "\f27f";
+}
+
+.cdc-icon-cauldron-light:before {
+	content: "\f280";
+}
+
+.cdc-icon-chalkboard-teacher-light:before {
+	content: "\f281";
+}
+
+.cdc-icon-chart-area-light:before {
+	content: "\f282";
+}
+
+.cdc-icon-chart-bar-light:before {
+	content: "\f283";
+}
+
+.cdc-icon-chart-line-light:before {
+	content: "\f284";
+}
+
+.cdc-icon-chart-pie-light:before {
+	content: "\f285";
+}
+
+.cdc-icon-check-circle-light:before {
+	content: "\f286";
+}
+
+.cdc-icon-check-light:before {
+	content: "\f287";
+}
+
+.cdc-icon-check-square-light:before {
+	content: "\f288";
+}
+
+.cdc-icon-cheese-swiss-light:before {
+	content: "\f289";
+}
+
+.cdc-icon-cheeseburger-light:before {
+	content: "\f28a";
+}
+
+.cdc-icon-chevron-circle-down-light:before {
+	content: "\f28b";
+}
+
+.cdc-icon-chevron-circle-left-light:before {
+	content: "\f28c";
+}
+
+.cdc-icon-chevron-circle-right-light:before {
+	content: "\f28d";
+}
+
+.cdc-icon-chevron-circle-up-light:before {
+	content: "\f28e";
+}
+
+.cdc-icon-chevron-double-right-light:before {
+	content: "\f28f";
+}
+
+.cdc-icon-chevron-right-light:before {
+	content: "\f290";
+}
+
+.cdc-icon-child-light:before {
+	content: "\f291";
+}
+
+.cdc-icon-city-light:before {
+	content: "\f292";
+}
+
+.cdc-icon-clinic-medical-light:before {
+	content: "\f293";
+}
+
+.cdc-icon-clipboard-check-light:before {
+	content: "\f294";
+}
+
+.cdc-icon-clipboard-light:before {
+	content: "\f295";
+}
+
+.cdc-icon-clipboard-list-check-light:before {
+	content: "\f296";
+}
+
+.cdc-icon-clipboard-list-light:before {
+	content: "\f297";
+}
+
+.cdc-icon-clipboard-prescription-light:before {
+	content: "\f298";
+}
+
+.cdc-icon-clipboard-user-light:before {
+	content: "\f299";
+}
+
+.cdc-icon-cloud-light:before {
+	content: "\f29a";
+}
+
+.cdc-icon-clouds-sun-light:before {
+	content: "\f29b";
+}
+
+.cdc-icon-cocktail-light:before {
+	content: "\f29c";
+}
+
+.cdc-icon-code-light:before {
+	content: "\f29d";
+}
+
+.cdc-icon-coffee-togo-light:before {
+	content: "\f29e";
+}
+
+.cdc-icon-cog-light:before {
+	content: "\f29f";
+}
+
+.cdc-icon-cogs-light:before {
+	content: "\f2a0";
+}
+
+.cdc-icon-comment-alt-light:before {
+	content: "\f2a1";
+}
+
+.cdc-icon-comment-alt-lines-light:before {
+	content: "\f2a2";
+}
+
+.cdc-icon-comment-alt-medical-light:before {
+	content: "\f2a3";
+}
+
+.cdc-icon-comment-light:before {
+	content: "\f2a4";
+}
+
+.cdc-icon-comment-lines-light:before {
+	content: "\f2a5";
+}
+
+.cdc-icon-comment-medical-light:before {
+	content: "\f2a6";
+}
+
+.cdc-icon-comments-alt-light:before {
+	content: "\f2a7";
+}
+
+.cdc-icon-comments-light:before {
+	content: "\f2a8";
+}
+
+.cdc-icon-conveyor-belt-light:before {
+	content: "\f2a9";
+}
+
+.cdc-icon-copy-light:before {
+	content: "\f2aa";
+}
+
+.cdc-icon-couch-light:before {
+	content: "\f2ab";
+}
+
+.cdc-icon-cow-light:before {
+	content: "\f2ac";
+}
+
+.cdc-icon-credit-card-light:before {
+	content: "\f2ad";
+}
+
+.cdc-icon-database-light:before {
+	content: "\f2ae";
+}
+
+.cdc-icon-deaf-light:before {
+	content: "\f2af";
+}
+
+.cdc-icon-desktop-alt-light:before {
+	content: "\f2b0";
+}
+
+.cdc-icon-desktop-light:before {
+	content: "\f2b1";
+}
+
+.cdc-icon-diagnoses-light:before {
+	content: "\f2b2";
+}
+
+.cdc-icon-disease-light:before {
+	content: "\f2b3";
+}
+
+.cdc-icon-dna-light:before {
+	content: "\f2b4";
+}
+
+.cdc-icon-dog-light:before {
+	content: "\f2b5";
+}
+
+.cdc-icon-dolly-flatbed-alt-light:before {
+	content: "\f2b6";
+}
+
+.cdc-icon-door-closed-light:before {
+	content: "\f2b7";
+}
+
+.cdc-icon-door-open-light:before {
+	content: "\f2b8";
+}
+
+.cdc-icon-download-light:before {
+	content: "\f2b9";
+}
+
+.cdc-icon-drumstick-light:before {
+	content: "\f2ba";
+}
+
+.cdc-icon-dumbbell-light:before {
+	content: "\f2bb";
+}
+
+.cdc-icon-dumpster-light:before {
+	content: "\f2bc";
+}
+
+.cdc-icon-ear-light:before {
+	content: "\f2bd";
+}
+
+.cdc-icon-envelope-light:before {
+	content: "\f2be";
+}
+
+.cdc-icon-envelope-open-text-light:before {
+	content: "\f2bf";
+}
+
+.cdc-icon-exclamation-circle-light:before {
+	content: "\f2c0";
+}
+
+.cdc-icon-exclamation-square-light:before {
+	content: "\f2c1";
+}
+
+.cdc-icon-exclamation-triangle-light:before {
+	content: "\f2c2";
+}
+
+.cdc-icon-eye-dropper-light:before {
+	content: "\f2c3";
+}
+
+.cdc-icon-eye-light:before {
+	content: "\f2c4";
+}
+
+.cdc-icon-farm-light:before {
+	content: "\f2c5";
+}
+
+.cdc-icon-female-light:before {
+	content: "\f2c6";
+}
+
+.cdc-icon-file-alt-light:before {
+	content: "\f2c7";
+}
+
+.cdc-icon-file-archive-light:before {
+	content: "\f2c8";
+}
+
+.cdc-icon-file-audio-light:before {
+	content: "\f2c9";
+}
+
+.cdc-icon-file-certificate-light:before {
+	content: "\f2ca";
+}
+
+.cdc-icon-file-chart-line-light:before {
+	content: "\f2cb";
+}
+
+.cdc-icon-file-medical-alt-light:before {
+	content: "\f2cc";
+}
+
+.cdc-icon-file-medical-light:before {
+	content: "\f2cd";
+}
+
+.cdc-icon-file-prescription-light:before {
+	content: "\f2ce";
+}
+
+.cdc-icon-files-medical-light:before {
+	content: "\f2cf";
+}
+
+.cdc-icon-first-aid-light:before {
+	content: "\f2d0";
+}
+
+.cdc-icon-flag-alt-light:before {
+	content: "\f2d1";
+}
+
+.cdc-icon-flag-light:before {
+	content: "\f2d2";
+}
+
+.cdc-icon-flame-light:before {
+	content: "\f2d3";
+}
+
+.cdc-icon-flask-light:before {
+	content: "\f2d4";
+}
+
+.cdc-icon-flower-daffodil-light:before {
+	content: "\f2d5";
+}
+
+.cdc-icon-folder-plus-light:before {
+	content: "\f2d6";
+}
+
+.cdc-icon-football-ball-light:before {
+	content: "\f2d7";
+}
+
+.cdc-icon-forklift-light:before {
+	content: "\f2d8";
+}
+
+.cdc-icon-frown-light:before {
+	content: "\f2d9";
+}
+
+.cdc-icon-gamepad-alt-light:before {
+	content: "\f2da";
+}
+
+.cdc-icon-gas-pump-light:before {
+	content: "\f2db";
+}
+
+.cdc-icon-globe-africa-light:before {
+	content: "\f2dc";
+}
+
+.cdc-icon-globe-americas-light:before {
+	content: "\f2dd";
+}
+
+.cdc-icon-globe-asia-light:before {
+	content: "\f2de";
+}
+
+.cdc-icon-globe-europe-light:before {
+	content: "\f2df";
+}
+
+.cdc-icon-globe-light:before {
+	content: "\f2e0";
+}
+
+.cdc-icon-graduation-cap-light:before {
+	content: "\f2e1";
+}
+
+.cdc-icon-grin-light:before {
+	content: "\f2e2";
+}
+
+.cdc-icon-h-square-light:before {
+	content: "\f2e3";
+}
+
+.cdc-icon-hand-holding-heart-light:before {
+	content: "\f2e4";
+}
+
+.cdc-icon-hand-holding-medical-light:before {
+	content: "\f2e5";
+}
+
+.cdc-icon-hand-paper-light:before {
+	content: "\f2e6";
+}
+
+.cdc-icon-hand-point-right-light:before {
+	content: "\f2e7";
+}
+
+.cdc-icon-hand-sparkles-light:before {
+	content: "\f2e8";
+}
+
+.cdc-icon-hands-helping-light:before {
+	content: "\f2e9";
+}
+
+.cdc-icon-hands-wash-light:before {
+	content: "\f2ea";
+}
+
+.cdc-icon-handshake-slash-light:before {
+	content: "\f2eb";
+}
+
+.cdc-icon-head-side-cough-light:before {
+	content: "\f2ec";
+}
+
+.cdc-icon-head-side-cough-slash-light:before {
+	content: "\f2ed";
+}
+
+.cdc-icon-head-side-mask-light:before {
+	content: "\f2ee";
+}
+
+.cdc-icon-head-side-medical-light:before {
+	content: "\f2ef";
+}
+
+.cdc-icon-headset-light:before {
+	content: "\f2f0";
+}
+
+.cdc-icon-heart-rate-light:before {
+	content: "\f2f1";
+}
+
+.cdc-icon-heartbeat-light:before {
+	content: "\f2f2";
+}
+
+.cdc-icon-heat-light:before {
+	content: "\f2f3";
+}
+
+.cdc-icon-hiking-light:before {
+	content: "\f2f4";
+}
+
+.cdc-icon-home-lg-light:before {
+	content: "\f2f5";
+}
+
+.cdc-icon-hospital-alt-light:before {
+	content: "\f2f6";
+}
+
+.cdc-icon-hospital-light:before {
+	content: "\f2f7";
+}
+
+.cdc-icon-hospital-symbol-light:before {
+	content: "\f2f8";
+}
+
+.cdc-icon-hospital-user-light:before {
+	content: "\f2f9";
+}
+
+.cdc-icon-hotel-light:before {
+	content: "\f2fa";
+}
+
+.cdc-icon-house-leave-light:before {
+	content: "\f2fb";
+}
+
+.cdc-icon-house-return-light:before {
+	content: "\f2fc";
+}
+
+.cdc-icon-house-user-light:before {
+	content: "\f2fd";
+}
+
+.cdc-icon-ice-cream-light:before {
+	content: "\f2fe";
+}
+
+.cdc-icon-id-badge-light:before {
+	content: "\f2ff";
+}
+
+.cdc-icon-id-card-light:before {
+	content: "\f300";
+}
+
+.cdc-icon-inbox-light:before {
+	content: "\f301";
+}
+
+.cdc-icon-info-circle-light:before {
+	content: "\f302";
+}
+
+.cdc-icon-info-light:before {
+	content: "\f303";
+}
+
+.cdc-icon-info-square-light:before {
+	content: "\f304";
+}
+
+.cdc-icon-inhaler-light:before {
+	content: "\f305";
+}
+
+.cdc-icon-key-light:before {
+	content: "\f306";
+}
+
+.cdc-icon-keyboard-light:before {
+	content: "\f307";
+}
+
+.cdc-icon-keynote-light:before {
+	content: "\f308";
+}
+
+.cdc-icon-landmark-alt-light:before {
+	content: "\f309";
+}
+
+.cdc-icon-landmark-light:before {
+	content: "\f30a";
+}
+
+.cdc-icon-laptop-house-light:before {
+	content: "\f30b";
+}
+
+.cdc-icon-laptop-light:before {
+	content: "\f30c";
+}
+
+.cdc-icon-laptop-medical-light:before {
+	content: "\f30d";
+}
+
+.cdc-icon-leaf-light:before {
+	content: "\f30e";
+}
+
+.cdc-icon-leaf-oak-light:before {
+	content: "\f30f";
+}
+
+.cdc-icon-lightbulb-light:before {
+	content: "\f310";
+}
+
+.cdc-icon-link-light:before {
+	content: "\f311";
+}
+
+.cdc-icon-lock-alt-light:before {
+	content: "\f312";
+}
+
+.cdc-icon-lock-open-alt-light:before {
+	content: "\f313";
+}
+
+.cdc-icon-luggage-cart-light:before {
+	content: "\f314";
+}
+
+.cdc-icon-lungs-light:before {
+	content: "\f315";
+}
+
+.cdc-icon-lungs-virus-light:before {
+	content: "\f316";
+}
+
+.cdc-icon-mail-bulk-light:before {
+	content: "\f317";
+}
+
+.cdc-icon-male-light:before {
+	content: "\f318";
+}
+
+.cdc-icon-map-light:before {
+	content: "\f319";
+}
+
+.cdc-icon-map-marker-alt-slash-light:before {
+	content: "\f31a";
+}
+
+.cdc-icon-medkit-light:before {
+	content: "\f31b";
+}
+
+.cdc-icon-microphone-light:before {
+	content: "\f31c";
+}
+
+.cdc-icon-microscope-light:before {
+	content: "\f31d";
+}
+
+.cdc-icon-mobile-alt-light:before {
+	content: "\f31e";
+}
+
+.cdc-icon-mobile-light:before {
+	content: "\f31f";
+}
+
+.cdc-icon-monitor-heart-rate-light:before {
+	content: "\f320";
+}
+
+.cdc-icon-moon-light:before {
+	content: "\f321";
+}
+
+.cdc-icon-mortar-pestle-light:before {
+	content: "\f322";
+}
+
+.cdc-icon-mouse-pointer-light:before {
+	content: "\f323";
+}
+
+.cdc-icon-network-wired-light:before {
+	content: "\f324";
+}
+
+.cdc-icon-newspaper-light:before {
+	content: "\f325";
+}
+
+.cdc-icon-notes-medical-light:before {
+	content: "\f326";
+}
+
+.cdc-icon-passport-light:before {
+	content: "\f327";
+}
+
+.cdc-icon-paw-light:before {
+	content: "\f328";
+}
+
+.cdc-icon-people-arrows-light:before {
+	content: "\f329";
+}
+
+.cdc-icon-person-sign-light:before {
+	content: "\f32a";
+}
+
+.cdc-icon-phone-office-light:before {
+	content: "\f32b";
+}
+
+.cdc-icon-pills-light:before {
+	content: "\f32c";
+}
+
+.cdc-icon-place-of-worship-light:before {
+	content: "\f32d";
+}
+
+.cdc-icon-plane-arrival-light:before {
+	content: "\f32e";
+}
+
+.cdc-icon-plane-departure-light:before {
+	content: "\f32f";
+}
+
+.cdc-icon-plane-light:before {
+	content: "\f330";
+}
+
+.cdc-icon-plane-slash-light:before {
+	content: "\f331";
+}
+
+.cdc-icon-play-circle-light:before {
+	content: "\f332";
+}
+
+.cdc-icon-play-light:before {
+	content: "\f333";
+}
+
+.cdc-icon-poll-people-light:before {
+	content: "\f334";
+}
+
+.cdc-icon-poop-light:before {
+	content: "\f335";
+}
+
+.cdc-icon-popcorn-light:before {
+	content: "\f336";
+}
+
+.cdc-icon-portrait-light:before {
+	content: "\f337";
+}
+
+.cdc-icon-prescription-bottle-alt-light:before {
+	content: "\f338";
+}
+
+.cdc-icon-prescription-bottle-light:before {
+	content: "\f339";
+}
+
+.cdc-icon-prescription-light:before {
+	content: "\f33a";
+}
+
+.cdc-icon-presentation-light:before {
+	content: "\f33b";
+}
+
+.cdc-icon-procedures-light:before {
+	content: "\f33c";
+}
+
+.cdc-icon-pump-medical-light:before {
+	content: "\f33d";
+}
+
+.cdc-icon-pump-soap-light:before {
+	content: "\f33e";
+}
+
+.cdc-icon-pumpkin-light:before {
+	content: "\f33f";
+}
+
+.cdc-icon-question-circle-light:before {
+	content: "\f340";
+}
+
+.cdc-icon-question-light:before {
+	content: "\f341";
+}
+
+.cdc-icon-question-square-light:before {
+	content: "\f342";
+}
+
+.cdc-icon-ribbon-light:before {
+	content: "\f343";
+}
+
+.cdc-icon-running-light:before {
+	content: "\f344";
+}
+
+.cdc-icon-school-light:before {
+	content: "\f345";
+}
+
+.cdc-icon-search-light:before {
+	content: "\f346";
+}
+
+.cdc-icon-share-alt-light:before {
+	content: "\f347";
+}
+
+.cdc-icon-share-light:before {
+	content: "\f348";
+}
+
+.cdc-icon-ship-light:before {
+	content: "\f349";
+}
+
+.cdc-icon-shipping-fast-light:before {
+	content: "\f34a";
+}
+
+.cdc-icon-shopping-cart-light:before {
+	content: "\f34b";
+}
+
+.cdc-icon-shower-light:before {
+	content: "\f34c";
+}
+
+.cdc-icon-shuttle-van-light:before {
+	content: "\f34d";
+}
+
+.cdc-icon-sign-language-light:before {
+	content: "\f34e";
+}
+
+.cdc-icon-sink-light:before {
+	content: "\f34f";
+}
+
+.cdc-icon-sitemap-light:before {
+	content: "\f350";
+}
+
+.cdc-icon-soap-light:before {
+	content: "\f351";
+}
+
+.cdc-icon-spray-can-light:before {
+	content: "\f352";
+}
+
+.cdc-icon-star-light:before {
+	content: "\f353";
+}
+
+.cdc-icon-stethoscope-light:before {
+	content: "\f354";
+}
+
+.cdc-icon-stomach-light:before {
+	content: "\f355";
+}
+
+.cdc-icon-stopwatch-light:before {
+	content: "\f356";
+}
+
+.cdc-icon-store-alt-slash-light:before {
+	content: "\f357";
+}
+
+.cdc-icon-store-slash-light:before {
+	content: "\f358";
+}
+
+.cdc-icon-stretcher-light:before {
+	content: "\f359";
+}
+
+.cdc-icon-subway-light:before {
+	content: "\f35a";
+}
+
+.cdc-icon-suitcase-light:before {
+	content: "\f35b";
+}
+
+.cdc-icon-sun-light:before {
+	content: "\f35c";
+}
+
+.cdc-icon-swimmer-light:before {
+	content: "\f35d";
+}
+
+.cdc-icon-swimming-pool-light:before {
+	content: "\f35e";
+}
+
+.cdc-icon-sync-alt-light:before {
+	content: "\f35f";
+}
+
+.cdc-icon-syringe-light:before {
+	content: "\f360";
+}
+
+.cdc-icon-table-light:before {
+	content: "\f361";
+}
+
+.cdc-icon-tablet-alt-light:before {
+	content: "\f362";
+}
+
+.cdc-icon-tablets-light:before {
+	content: "\f363";
+}
+
+.cdc-icon-taxi-light:before {
+	content: "\f364";
+}
+
+.cdc-icon-temperature-high-light:before {
+	content: "\f365";
+}
+
+.cdc-icon-temperature-low-light:before {
+	content: "\f366";
+}
+
+.cdc-icon-thumbs-down-light:before {
+	content: "\f367";
+}
+
+.cdc-icon-thumbs-up-light:before {
+	content: "\f368";
+}
+
+.cdc-icon-times-circle-light:before {
+	content: "\f369";
+}
+
+.cdc-icon-times-light:before {
+	content: "\f36a";
+}
+
+.cdc-icon-tint-light:before {
+	content: "\f36b";
+}
+
+.cdc-icon-tint-slash-light:before {
+	content: "\f36c";
+}
+
+.cdc-icon-toolbox-light:before {
+	content: "\f36d";
+}
+
+.cdc-icon-tools-light:before {
+	content: "\f36e";
+}
+
+.cdc-icon-tooth-light:before {
+	content: "\f36f";
+}
+
+.cdc-icon-train-light:before {
+	content: "\f370";
+}
+
+.cdc-icon-trash-light:before {
+	content: "\f371";
+}
+
+.cdc-icon-tshirt-light:before {
+	content: "\f372";
+}
+
+.cdc-icon-umbrella-beach-light:before {
+	content: "\f373";
+}
+
+.cdc-icon-universal-access-light:before {
+	content: "\f374";
+}
+
+.cdc-icon-user-chart-light:before {
+	content: "\f375";
+}
+
+.cdc-icon-user-clock-light:before {
+	content: "\f376";
+}
+
+.cdc-icon-user-cog-light:before {
+	content: "\f377";
+}
+
+.cdc-icon-user-friends-light:before {
+	content: "\f378";
+}
+
+.cdc-icon-user-graduate-light:before {
+	content: "\f379";
+}
+
+.cdc-icon-user-hard-hat-light:before {
+	content: "\f37a";
+}
+
+.cdc-icon-user-injured-light:before {
+	content: "\f37b";
+}
+
+.cdc-icon-user-light:before {
+	content: "\f37c";
+}
+
+.cdc-icon-user-md-chat-light:before {
+	content: "\f37d";
+}
+
+.cdc-icon-user-md-light:before {
+	content: "\f37e";
+}
+
+.cdc-icon-user-nurse-light:before {
+	content: "\f37f";
+}
+
+.cdc-icon-users-class-light:before {
+	content: "\f380";
+}
+
+.cdc-icon-users-light:before {
+	content: "\f381";
+}
+
+.cdc-icon-users-medical-light:before {
+	content: "\f382";
+}
+
+.cdc-icon-users-slash-light:before {
+	content: "\f383";
+}
+
+.cdc-icon-venus-mars-light:before {
+	content: "\f384";
+}
+
+.cdc-icon-vial-light:before {
+	content: "\f385";
+}
+
+.cdc-icon-vials-light:before {
+	content: "\f386";
+}
+
+.cdc-icon-virus-light:before {
+	content: "\f387";
+}
+
+.cdc-icon-virus-slash-light:before {
+	content: "\f388";
+}
+
+.cdc-icon-viruses-light:before {
+	content: "\f389";
+}
+
+.cdc-icon-walking-light:before {
+	content: "\f38a";
+}
+
+.cdc-icon-washer-light:before {
+	content: "\f38b";
+}
+
+.cdc-icon-water-light:before {
+	content: "\f38c";
+}
+
+.cdc-icon-weight-light:before {
+	content: "\f38d";
+}
+
+.cdc-icon-wheelchair-light:before {
+	content: "\f38e";
+}
+
+.cdc-icon-window-close-light:before {
+	content: "\f38f";
+}
+
+.cdc-icon-x-ray-light:before {
+	content: "\f390";
+}
+
+.cdc-icon-address-book:before {
+	content: "\f391";
+}
+
+.cdc-icon-address-card:before {
+	content: "\f392";
+}
+
+.cdc-icon-allergies:before {
+	content: "\f393";
+}
+
+.cdc-icon-ambulance:before {
+	content: "\f394";
+}
+
+.cdc-icon-american-sign-language-interpreting:before {
+	content: "\f395";
+}
+
+.cdc-icon-analytics:before {
+	content: "\f396";
+}
+
+.cdc-icon-apple-alt:before {
+	content: "\f397";
+}
+
+.cdc-icon-archive:before {
+	content: "\f398";
+}
+
+.cdc-icon-arrow-alt-circle-down:before {
+	content: "\f399";
+}
+
+.cdc-icon-arrow-alt-circle-left:before {
+	content: "\f39a";
+}
+
+.cdc-icon-arrow-alt-circle-right:before {
+	content: "\f39b";
+}
+
+.cdc-icon-arrow-alt-circle-up:before {
+	content: "\f39c";
+}
+
+.cdc-icon-atlas:before {
+	content: "\f39d";
+}
+
+.cdc-icon-baby-carriage:before {
+	content: "\f39e";
+}
+
+.cdc-icon-baby:before {
+	content: "\f39f";
+}
+
+.cdc-icon-bacteria:before {
+	content: "\f3a0";
+}
+
+.cdc-icon-bacterium:before {
+	content: "\f3a1";
+}
+
+.cdc-icon-balance-scale:before {
+	content: "\f3a2";
+}
+
+.cdc-icon-ballot-check:before {
+	content: "\f3a3";
+}
+
+.cdc-icon-ballot:before {
+	content: "\f3a4";
+}
+
+.cdc-icon-ban:before {
+	content: "\f3a5";
+}
+
+.cdc-icon-band-aid:before {
+	content: "\f3a6";
+}
+
+.cdc-icon-bed:before {
+	content: "\f3a7";
+}
+
+.cdc-icon-bicycle:before {
+	content: "\f3a8";
+}
+
+.cdc-icon-biking:before {
+	content: "\f3a9";
+}
+
+.cdc-icon-blind:before {
+	content: "\f3aa";
+}
+
+.cdc-icon-bolt:before {
+	content: "\f3ab";
+}
+
+.cdc-icon-book-alt:before {
+	content: "\f3ac";
+}
+
+.cdc-icon-book-medical:before {
+	content: "\f3ad";
+}
+
+.cdc-icon-book-open:before {
+	content: "\f3ae";
+}
+
+.cdc-icon-book-reader:before {
+	content: "\f3af";
+}
+
+.cdc-icon-book-user:before {
+	content: "\f3b0";
+}
+
+.cdc-icon-book:before {
+	content: "\f3b1";
+}
+
+.cdc-icon-books-medical:before {
+	content: "\f3b2";
+}
+
+.cdc-icon-box-tissue:before {
+	content: "\f3b3";
+}
+
+.cdc-icon-bread-loaf:before {
+	content: "\f3b4";
+}
+
+.cdc-icon-briefcase-medical:before {
+	content: "\f3b5";
+}
+
+.cdc-icon-briefcase:before {
+	content: "\f3b6";
+}
+
+.cdc-icon-browser:before {
+	content: "\f3b7";
+}
+
+.cdc-icon-building:before {
+	content: "\f3b8";
+}
+
+.cdc-icon-bullseye-pointer:before {
+	content: "\f3b9";
+}
+
+.cdc-icon-burger-soda:before {
+	content: "\f3ba";
+}
+
+.cdc-icon-bus:before {
+	content: "\f3bb";
+}
+
+.cdc-icon-calendar-alt:before {
+	content: "\f3bc";
+}
+
+.cdc-icon-calendar-check:before {
+	content: "\f3bd";
+}
+
+.cdc-icon-calendar-day:before {
+	content: "\f3be";
+}
+
+.cdc-icon-calendar-edit:before {
+	content: "\f3bf";
+}
+
+.cdc-icon-calendar-exclamation:before {
+	content: "\f3c0";
+}
+
+.cdc-icon-calendar-plus:before {
+	content: "\f3c1";
+}
+
+.cdc-icon-calendar-star:before {
+	content: "\f3c2";
+}
+
+.cdc-icon-calendar:before {
+	content: "\f3c3";
+}
+
+.cdc-icon-capsules:before {
+	content: "\f3c4";
+}
+
+.cdc-icon-car-bus:before {
+	content: "\f3c5";
+}
+
+.cdc-icon-car-side:before {
+	content: "\f3c6";
+}
+
+.cdc-icon-carrot:before {
+	content: "\f3c7";
+}
+
+.cdc-icon-cauldron:before {
+	content: "\f3c8";
+}
+
+.cdc-icon-chalkboard-teacher:before {
+	content: "\f3c9";
+}
+
+.cdc-icon-chart-area:before {
+	content: "\f3ca";
+}
+
+.cdc-icon-chart-bar:before {
+	content: "\f3cb";
+}
+
+.cdc-icon-chart-line:before {
+	content: "\f3cc";
+}
+
+.cdc-icon-chart-pie:before {
+	content: "\f3cd";
+}
+
+.cdc-icon-check-circle:before {
+	content: "\f3ce";
+}
+
+.cdc-icon-check-square:before {
+	content: "\f3cf";
+}
+
+.cdc-icon-check:before {
+	content: "\f3d0";
+}
+
+.cdc-icon-cheese-swiss:before {
+	content: "\f3d1";
+}
+
+.cdc-icon-cheeseburger:before {
+	content: "\f3d2";
+}
+
+.cdc-icon-chevron-circle-down:before {
+	content: "\f3d3";
+}
+
+.cdc-icon-chevron-circle-left:before {
+	content: "\f3d4";
+}
+
+.cdc-icon-chevron-circle-right:before {
+	content: "\f3d5";
+}
+
+.cdc-icon-chevron-circle-up:before {
+	content: "\f3d6";
+}
+
+.cdc-icon-chevron-double-right:before {
+	content: "\f3d7";
+}
+
+.cdc-icon-chevron-right:before {
+	content: "\f3d8";
+}
+
+.cdc-icon-child:before {
+	content: "\f3d9";
+}
+
+.cdc-icon-city:before {
+	content: "\f3da";
+}
+
+.cdc-icon-clinic-medical:before {
+	content: "\f3db";
+}
+
+.cdc-icon-clipboard-check:before {
+	content: "\f3dc";
+}
+
+.cdc-icon-clipboard-list-check:before {
+	content: "\f3dd";
+}
+
+.cdc-icon-clipboard-list:before {
+	content: "\f3de";
+}
+
+.cdc-icon-clipboard-prescription:before {
+	content: "\f3df";
+}
+
+.cdc-icon-clipboard-user:before {
+	content: "\f3e0";
+}
+
+.cdc-icon-clipboard:before {
+	content: "\f3e1";
+}
+
+.cdc-icon-cloud:before {
+	content: "\f3e2";
+}
+
+.cdc-icon-clouds-sun:before {
+	content: "\f3e3";
+}
+
+.cdc-icon-cocktail:before {
+	content: "\f3e4";
+}
+
+.cdc-icon-code:before {
+	content: "\f3e5";
+}
+
+.cdc-icon-coffee-togo:before {
+	content: "\f3e6";
+}
+
+.cdc-icon-cog:before {
+	content: "\f3e7";
+}
+
+.cdc-icon-cogs:before {
+	content: "\f3e8";
+}
+
+.cdc-icon-comment-alt-lines:before {
+	content: "\f3e9";
+}
+
+.cdc-icon-comment-alt-medical:before {
+	content: "\f3ea";
+}
+
+.cdc-icon-comment-alt:before {
+	content: "\f3eb";
+}
+
+.cdc-icon-comment-lines:before {
+	content: "\f3ec";
+}
+
+.cdc-icon-comment-medical:before {
+	content: "\f3ed";
+}
+
+.cdc-icon-comment:before {
+	content: "\f3ee";
+}
+
+.cdc-icon-comments-alt:before {
+	content: "\f3ef";
+}
+
+.cdc-icon-comments:before {
+	content: "\f3f0";
+}
+
+.cdc-icon-conveyor-belt:before {
+	content: "\f3f1";
+}
+
+.cdc-icon-copy:before {
+	content: "\f3f2";
+}
+
+.cdc-icon-couch:before {
+	content: "\f3f3";
+}
+
+.cdc-icon-cow:before {
+	content: "\f3f4";
+}
+
+.cdc-icon-credit-card:before {
+	content: "\f3f5";
+}
+
+.cdc-icon-database:before {
+	content: "\f3f6";
+}
+
+.cdc-icon-deaf:before {
+	content: "\f3f7";
+}
+
+.cdc-icon-desktop-alt:before {
+	content: "\f3f8";
+}
+
+.cdc-icon-desktop:before {
+	content: "\f3fc";
+}
+
+.cdc-icon-diagnoses:before {
+	content: "\f3fa";
+}
+
+.cdc-icon-disease:before {
+	content: "\f3fb";
+}
+
+.cdc-icon-dna:before {
+	content: "\f3fc";
+}
+
+.cdc-icon-dog:before {
+	content: "\f3fd";
+}
+
+.cdc-icon-dolly-flatbed-alt:before {
+	content: "\f3fe";
+}
+
+.cdc-icon-door-closed:before {
+	content: "\f3ff";
+}
+
+.cdc-icon-door-open:before {
+	content: "\f400";
+}
+
+.cdc-icon-download:before {
+	content: "\f401";
+}
+
+.cdc-icon-drumstick:before {
+	content: "\f402";
+}
+
+.cdc-icon-dumbbell:before {
+	content: "\f403";
+}
+
+.cdc-icon-dumpster:before {
+	content: "\f404";
+}
+
+.cdc-icon-ear:before {
+	content: "\f405";
+}
+
+.cdc-icon-envelope-open-text:before {
+	content: "\f406";
+}
+
+.cdc-icon-envelope:before {
+	content: "\f407";
+}
+
+.cdc-icon-exclamation-circle:before {
+	content: "\f408";
+}
+
+.cdc-icon-exclamation-square:before {
+	content: "\f409";
+}
+
+.cdc-icon-exclamation-triangle:before {
+	content: "\f40a";
+}
+
+.cdc-icon-eye-dropper:before {
+	content: "\f40b";
+}
+
+.cdc-icon-eye:before {
+	content: "\f40c";
+}
+
+.cdc-icon-farm:before {
+	content: "\f40d";
+}
+
+.cdc-icon-female:before {
+	content: "\f40e";
+}
+
+.cdc-icon-file-alt:before {
+	content: "\f40f";
+}
+
+.cdc-icon-file-archive:before {
+	content: "\f410";
+}
+
+.cdc-icon-file-audio:before {
+	content: "\f411";
+}
+
+.cdc-icon-file-certificate:before {
+	content: "\f412";
+}
+
+.cdc-icon-file-chart-line:before {
+	content: "\f413";
+}
+
+.cdc-icon-file-medical-alt:before {
+	content: "\f414";
+}
+
+.cdc-icon-file-medical:before {
+	content: "\f415";
+}
+
+.cdc-icon-file-prescription:before {
+	content: "\f416";
+}
+
+.cdc-icon-files-medical:before {
+	content: "\f417";
+}
+
+.cdc-icon-first-aid:before {
+	content: "\f418";
+}
+
+.cdc-icon-flag-alt:before {
+	content: "\f419";
+}
+
+.cdc-icon-flag:before {
+	content: "\f41a";
+}
+
+.cdc-icon-flame:before {
+	content: "\f41b";
+}
+
+.cdc-icon-flask:before {
+	content: "\f41c";
+}
+
+.cdc-icon-flower-daffodil:before {
+	content: "\f41d";
+}
+
+.cdc-icon-folder-plus:before {
+	content: "\f41e";
+}
+
+.cdc-icon-football-ball:before {
+	content: "\f41f";
+}
+
+.cdc-icon-forklift:before {
+	content: "\f420";
+}
+
+.cdc-icon-frown:before {
+	content: "\f421";
+}
+
+.cdc-icon-gamepad-alt:before {
+	content: "\f422";
+}
+
+.cdc-icon-gas-pump:before {
+	content: "\f423";
+}
+
+.cdc-icon-globe-africa:before {
+	content: "\f424";
+}
+
+.cdc-icon-globe-americas:before {
+	content: "\f425";
+}
+
+.cdc-icon-globe-asia:before {
+	content: "\f426";
+}
+
+.cdc-icon-globe-europe:before {
+	content: "\f427";
+}
+
+.cdc-icon-globe:before {
+	content: "\f428";
+}
+
+.cdc-icon-graduation-cap:before {
+	content: "\f429";
+}
+
+.cdc-icon-grin:before {
+	content: "\f42a";
+}
+
+.cdc-icon-h-square:before {
+	content: "\f42b";
+}
+
+.cdc-icon-hand-holding-heart:before {
+	content: "\f42c";
+}
+
+.cdc-icon-hand-holding-medical:before {
+	content: "\f42d";
+}
+
+.cdc-icon-hand-paper:before {
+	content: "\f42e";
+}
+
+.cdc-icon-hand-point-right:before {
+	content: "\f42f";
+}
+
+.cdc-icon-hand-sparkles:before {
+	content: "\f430";
+}
+
+.cdc-icon-hands-helping:before {
+	content: "\f431";
+}
+
+.cdc-icon-hands-wash:before {
+	content: "\f432";
+}
+
+.cdc-icon-handshake-slash:before {
+	content: "\f433";
+}
+
+.cdc-icon-head-side-cough-slash:before {
+	content: "\f434";
+}
+
+.cdc-icon-head-side-cough:before {
+	content: "\f435";
+}
+
+.cdc-icon-head-side-mask:before {
+	content: "\f436";
+}
+
+.cdc-icon-head-side-medical:before {
+	content: "\f437";
+}
+
+.cdc-icon-headset:before {
+	content: "\f438";
+}
+
+.cdc-icon-heart-rate:before {
+	content: "\f439";
+}
+
+.cdc-icon-heartbeat:before {
+	content: "\f43a";
+}
+
+.cdc-icon-heat:before {
+	content: "\f43b";
+}
+
+.cdc-icon-hiking:before {
+	content: "\f43c";
+}
+
+.cdc-icon-home-lg:before {
+	content: "\f43d";
+}
+
+.cdc-icon-hospital-alt:before {
+	content: "\f43e";
+}
+
+.cdc-icon-hospital-symbol:before {
+	content: "\f43f";
+}
+
+.cdc-icon-hospital-user:before {
+	content: "\f440";
+}
+
+.cdc-icon-hospital:before {
+	content: "\f441";
+}
+
+.cdc-icon-hotel:before {
+	content: "\f442";
+}
+
+.cdc-icon-house-leave:before {
+	content: "\f443";
+}
+
+.cdc-icon-house-return:before {
+	content: "\f444";
+}
+
+.cdc-icon-house-user:before {
+	content: "\f445";
+}
+
+.cdc-icon-ice-cream:before {
+	content: "\f446";
+}
+
+.cdc-icon-id-badge:before {
+	content: "\f447";
+}
+
+.cdc-icon-id-card:before {
+	content: "\f448";
+}
+
+.cdc-icon-inbox:before {
+	content: "\f449";
+}
+
+.cdc-icon-info-circle:before {
+	content: "\f44a";
+}
+
+.cdc-icon-info-square:before {
+	content: "\f44b";
+}
+
+.cdc-icon-info:before {
+	content: "\f44c";
+}
+
+.cdc-icon-inhaler:before {
+	content: "\f44d";
+}
+
+.cdc-icon-key:before {
+	content: "\f44e";
+}
+
+.cdc-icon-keyboard:before {
+	content: "\f44f";
+}
+
+.cdc-icon-keynote:before {
+	content: "\f450";
+}
+
+.cdc-icon-landmark-alt:before {
+	content: "\f451";
+}
+
+.cdc-icon-landmark:before {
+	content: "\f452";
+}
+
+.cdc-icon-laptop-house:before {
+	content: "\f453";
+}
+
+.cdc-icon-laptop-medical:before {
+	content: "\f454";
+}
+
+.cdc-icon-laptop:before {
+	content: "\f455";
+}
+
+.cdc-icon-leaf-oak:before {
+	content: "\f456";
+}
+
+.cdc-icon-leaf:before {
+	content: "\f457";
+}
+
+.cdc-icon-lightbulb:before {
+	content: "\f458";
+}
+
+.cdc-icon-link:before {
+	content: "\f459";
+}
+
+.cdc-icon-lock-alt:before {
+	content: "\f45a";
+}
+
+.cdc-icon-lock-open-alt:before {
+	content: "\f45b";
+}
+
+.cdc-icon-luggage-cart:before {
+	content: "\f45c";
+}
+
+.cdc-icon-lungs-virus:before {
+	content: "\f45d";
+}
+
+.cdc-icon-lungs:before {
+	content: "\f45e";
+}
+
+.cdc-icon-mail-bulk:before {
+	content: "\f45f";
+}
+
+.cdc-icon-male:before {
+	content: "\f460";
+}
+
+.cdc-icon-map-marker-alt-slash:before {
+	content: "\f461";
+}
+
+.cdc-icon-map:before {
+	content: "\f462";
+}
+
+.cdc-icon-medkit:before {
+	content: "\f463";
+}
+
+.cdc-icon-microphone:before {
+	content: "\f464";
+}
+
+.cdc-icon-microscope:before {
+	content: "\f465";
+}
+
+.cdc-icon-mobile-alt:before {
+	content: "\f466";
+}
+
+.cdc-icon-mobile:before {
+	content: "\f467";
+}
+
+.cdc-icon-monitor-heart-rate:before {
+	content: "\f468";
+}
+
+.cdc-icon-moon:before {
+	content: "\f469";
+}
+
+.cdc-icon-mortar-pestle:before {
+	content: "\f46a";
+}
+
+.cdc-icon-mouse-pointer:before {
+	content: "\f46b";
+}
+
+.cdc-icon-network-wired:before {
+	content: "\f46c";
+}
+
+.cdc-icon-newspaper:before {
+	content: "\f46d";
+}
+
+.cdc-icon-notes-medical:before {
+	content: "\f46e";
+}
+
+.cdc-icon-passport:before {
+	content: "\f46f";
+}
+
+.cdc-icon-paw:before {
+	content: "\f470";
+}
+
+.cdc-icon-people-arrows:before {
+	content: "\f471";
+}
+
+.cdc-icon-person-sign:before {
+	content: "\f472";
+}
+
+.cdc-icon-phone-office:before {
+	content: "\f473";
+}
+
+.cdc-icon-pills:before {
+	content: "\f474";
+}
+
+.cdc-icon-place-of-worship:before {
+	content: "\f475";
+}
+
+.cdc-icon-plane-arrival:before {
+	content: "\f476";
+}
+
+.cdc-icon-plane-departure:before {
+	content: "\f477";
+}
+
+.cdc-icon-plane-slash:before {
+	content: "\f478";
+}
+
+.cdc-icon-plane:before {
+	content: "\f479";
+}
+
+.cdc-icon-play-circle:before {
+	content: "\f47a";
+}
+
+.cdc-icon-play:before {
+	content: "\f47b";
+}
+
+.cdc-icon-poll-people:before {
+	content: "\f47c";
+}
+
+.cdc-icon-poop:before {
+	content: "\f47d";
+}
+
+.cdc-icon-popcorn:before {
+	content: "\f47e";
+}
+
+.cdc-icon-portrait:before {
+	content: "\f47f";
+}
+
+.cdc-icon-prescription-bottle-alt:before {
+	content: "\f480";
+}
+
+.cdc-icon-prescription-bottle:before {
+	content: "\f481";
+}
+
+.cdc-icon-prescription:before {
+	content: "\f482";
+}
+
+.cdc-icon-presentation:before {
+	content: "\f483";
+}
+
+.cdc-icon-procedures:before {
+	content: "\f484";
+}
+
+.cdc-icon-pump-medical:before {
+	content: "\f485";
+}
+
+.cdc-icon-pump-soap:before {
+	content: "\f486";
+}
+
+.cdc-icon-pumpkin:before {
+	content: "\f487";
+}
+
+.cdc-icon-question-circle:before {
+	content: "\f488";
+}
+
+.cdc-icon-question-square:before {
+	content: "\f489";
+}
+
+.cdc-icon-question:before {
+	content: "\f48a";
+}
+
+.cdc-icon-ribbon:before {
+	content: "\f48b";
+}
+
+.cdc-icon-running:before {
+	content: "\f48c";
+}
+
+.cdc-icon-school:before {
+	content: "\f48d";
+}
+
+.cdc-icon-search:before {
+	content: "\f48e";
+}
+
+.cdc-icon-share-alt:before {
+	content: "\f48f";
+}
+
+.cdc-icon-share:before {
+	content: "\f490";
+}
+
+.cdc-icon-ship:before {
+	content: "\f491";
+}
+
+.cdc-icon-shipping-fast:before {
+	content: "\f492";
+}
+
+.cdc-icon-shopping-cart:before {
+	content: "\f493";
+}
+
+.cdc-icon-shower:before {
+	content: "\f494";
+}
+
+.cdc-icon-shuttle-van:before {
+	content: "\f495";
+}
+
+.cdc-icon-sign-language:before {
+	content: "\f496";
+}
+
+.cdc-icon-sink:before {
+	content: "\f497";
+}
+
+.cdc-icon-sitemap:before {
+	content: "\f498";
+}
+
+.cdc-icon-soap:before {
+	content: "\f499";
+}
+
+.cdc-icon-spray-can:before {
+	content: "\f49a";
+}
+
+.cdc-icon-star:before {
+	content: "\f49b";
+}
+
+.cdc-icon-stethoscope:before {
+	content: "\f49c";
+}
+
+.cdc-icon-stomach:before {
+	content: "\f49d";
+}
+
+.cdc-icon-stopwatch:before {
+	content: "\f49e";
+}
+
+.cdc-icon-store-alt-slash:before {
+	content: "\f49f";
+}
+
+.cdc-icon-store-slash:before {
+	content: "\f4a0";
+}
+
+.cdc-icon-stretcher:before {
+	content: "\f4a1";
+}
+
+.cdc-icon-subway:before {
+	content: "\f4a2";
+}
+
+.cdc-icon-suitcase:before {
+	content: "\f4a3";
+}
+
+.cdc-icon-sun:before {
+	content: "\f4a4";
+}
+
+.cdc-icon-swimmer:before {
+	content: "\f4a5";
+}
+
+.cdc-icon-swimming-pool:before {
+	content: "\f4a6";
+}
+
+.cdc-icon-sync-alt:before {
+	content: "\f4a7";
+}
+
+.cdc-icon-syringe:before {
+	content: "\f4a8";
+}
+
+.cdc-icon-table:before {
+	content: "\f4a9";
+}
+
+.cdc-icon-tablet-alt:before {
+	content: "\f4aa";
+}
+
+.cdc-icon-tablets:before {
+	content: "\f4ab";
+}
+
+.cdc-icon-taxi:before {
+	content: "\f4ac";
+}
+
+.cdc-icon-temperature-high:before {
+	content: "\f4ad";
+}
+
+.cdc-icon-temperature-low:before {
+	content: "\f4ae";
+}
+
+.cdc-icon-thumbs-down:before {
+	content: "\f4af";
+}
+
+.cdc-icon-thumbs-up:before {
+	content: "\f4b0";
+}
+
+.cdc-icon-times-circle:before {
+	content: "\f4b1";
+}
+
+.cdc-icon-times:before {
+	content: "\f4b2";
+}
+
+.cdc-icon-tint-slash:before {
+	content: "\f4b3";
+}
+
+.cdc-icon-tint:before {
+	content: "\f4b4";
+}
+
+.cdc-icon-toolbox:before {
+	content: "\f4b5";
+}
+
+.cdc-icon-tools:before {
+	content: "\f4b6";
+}
+
+.cdc-icon-tooth:before {
+	content: "\f4b7";
+}
+
+.cdc-icon-train:before {
+	content: "\f4b8";
+}
+
+.cdc-icon-trash:before {
+	content: "\f4b9";
+}
+
+.cdc-icon-tshirt:before {
+	content: "\f4ba";
+}
+
+.cdc-icon-umbrella-beach:before {
+	content: "\f4bb";
+}
+
+.cdc-icon-universal-access:before {
+	content: "\f4bc";
+}
+
+.cdc-icon-user-chart:before {
+	content: "\f4bd";
+}
+
+.cdc-icon-user-clock:before {
+	content: "\f4be";
+}
+
+.cdc-icon-user-cog:before {
+	content: "\f4bf";
+}
+
+.cdc-icon-user-friends:before {
+	content: "\f4c0";
+}
+
+.cdc-icon-user-graduate:before {
+	content: "\f4c1";
+}
+
+.cdc-icon-user-hard-hat:before {
+	content: "\f4c2";
+}
+
+.cdc-icon-user-injured:before {
+	content: "\f4c3";
+}
+
+.cdc-icon-user-md-chat:before {
+	content: "\f4c4";
+}
+
+.cdc-icon-user-md:before {
+	content: "\f4c5";
+}
+
+.cdc-icon-user-nurse:before {
+	content: "\f4c6";
+}
+
+.cdc-icon-user:before {
+	content: "\f4c7";
+}
+
+.cdc-icon-users-class:before {
+	content: "\f4c8";
+}
+
+.cdc-icon-users-medical:before {
+	content: "\f4c9";
+}
+
+.cdc-icon-users-slash:before {
+	content: "\f4ca";
+}
+
+.cdc-icon-users:before {
+	content: "\f4cb";
+}
+
+.cdc-icon-venus-mars:before {
+	content: "\f4cc";
+}
+
+.cdc-icon-vial:before {
+	content: "\f4cd";
+}
+
+.cdc-icon-vials:before {
+	content: "\f4ce";
+}
+
+.cdc-icon-virus-slash:before {
+	content: "\f4cf";
+}
+
+.cdc-icon-virus:before {
+	content: "\f4d0";
+}
+
+.cdc-icon-viruses:before {
+	content: "\f4d1";
+}
+
+.cdc-icon-walking:before {
+	content: "\f4d2";
+}
+
+.cdc-icon-washer:before {
+	content: "\f4d3";
+}
+
+.cdc-icon-water:before {
+	content: "\f4d4";
+}
+
+.cdc-icon-weight:before {
+	content: "\f4d5";
+}
+
+.cdc-icon-wheelchair:before {
+	content: "\f4d6";
+}
+
+.cdc-icon-window-close:before {
+	content: "\f4d7";
+}
+
+.cdc-icon-x-ray:before {
+	content: "\f4d8";
+}
+
+.cdc-icon-address-book-solid:before {
+	content: "\f4d9";
+}
+
+.cdc-icon-address-card-solid:before {
+	content: "\f4da";
+}
+
+.cdc-icon-allergies-solid:before {
+	content: "\f4db";
+}
+
+.cdc-icon-ambulance-solid:before {
+	content: "\f4dc";
+}
+
+.cdc-icon-american-sign-language-interpreting-solid:before {
+	content: "\f4dd";
+}
+
+.cdc-icon-analytics-solid:before {
+	content: "\f4de";
+}
+
+.cdc-icon-apple-alt-solid:before {
+	content: "\f4df";
+}
+
+.cdc-icon-archive-solid:before {
+	content: "\f4e0";
+}
+
+.cdc-icon-arrow-alt-circle-down-solid:before {
+	content: "\f4e1";
+}
+
+.cdc-icon-arrow-alt-circle-left-solid:before {
+	content: "\f4e2";
+}
+
+.cdc-icon-arrow-alt-circle-right-solid:before {
+	content: "\f4e3";
+}
+
+.cdc-icon-arrow-alt-circle-up-solid:before {
+	content: "\f4e4";
+}
+
+.cdc-icon-atlas-solid:before {
+	content: "\f4e5";
+}
+
+.cdc-icon-baby-carriage-solid:before {
+	content: "\f4e6";
+}
+
+.cdc-icon-baby-solid:before {
+	content: "\f4e7";
+}
+
+.cdc-icon-bacteria-solid:before {
+	content: "\f4e8";
+}
+
+.cdc-icon-bacterium-solid:before {
+	content: "\f4e9";
+}
+
+.cdc-icon-balance-scale-solid:before {
+	content: "\f4ea";
+}
+
+.cdc-icon-ballot-check-solid:before {
+	content: "\f4eb";
+}
+
+.cdc-icon-ballot-solid:before {
+	content: "\f4ec";
+}
+
+.cdc-icon-ban-solid:before {
+	content: "\f4ed";
+}
+
+.cdc-icon-band-aid-solid:before {
+	content: "\f4ee";
+}
+
+.cdc-icon-bed-solid:before {
+	content: "\f4ef";
+}
+
+.cdc-icon-bicycle-solid:before {
+	content: "\f4f0";
+}
+
+.cdc-icon-biking-solid:before {
+	content: "\f4f1";
+}
+
+.cdc-icon-blind-solid:before {
+	content: "\f4f2";
+}
+
+.cdc-icon-bolt-solid:before {
+	content: "\f4f3";
+}
+
+.cdc-icon-book-alt-solid:before {
+	content: "\f4f4";
+}
+
+.cdc-icon-book-medical-solid:before {
+	content: "\f4f5";
+}
+
+.cdc-icon-book-open-solid:before {
+	content: "\f4f6";
+}
+
+.cdc-icon-book-reader-solid:before {
+	content: "\f4f7";
+}
+
+.cdc-icon-book-solid:before {
+	content: "\f4f8";
+}
+
+.cdc-icon-book-user-solid:before {
+	content: "\f4f9";
+}
+
+.cdc-icon-books-medical-solid:before {
+	content: "\f4fa";
+}
+
+.cdc-icon-box-tissue-solid:before {
+	content: "\f4fb";
+}
+
+.cdc-icon-bread-loaf-solid:before {
+	content: "\f4fc";
+}
+
+.cdc-icon-briefcase-medical-solid:before {
+	content: "\f4fd";
+}
+
+.cdc-icon-briefcase-solid:before {
+	content: "\f4fe";
+}
+
+.cdc-icon-browser-solid:before {
+	content: "\f4ff";
+}
+
+.cdc-icon-building-solid:before {
+	content: "\f500";
+}
+
+.cdc-icon-bullseye-pointer-solid:before {
+	content: "\f501";
+}
+
+.cdc-icon-burger-soda-solid:before {
+	content: "\f502";
+}
+
+.cdc-icon-bus-solid:before {
+	content: "\f503";
+}
+
+.cdc-icon-calendar-alt-solid:before {
+	content: "\f504";
+}
+
+.cdc-icon-calendar-check-solid:before {
+	content: "\f505";
+}
+
+.cdc-icon-calendar-day-solid:before {
+	content: "\f506";
+}
+
+.cdc-icon-calendar-edit-solid:before {
+	content: "\f507";
+}
+
+.cdc-icon-calendar-exclamation-solid:before {
+	content: "\f508";
+}
+
+.cdc-icon-calendar-plus-solid:before {
+	content: "\f509";
+}
+
+.cdc-icon-calendar-solid:before {
+	content: "\f50a";
+}
+
+.cdc-icon-calendar-star-solid:before {
+	content: "\f50b";
+}
+
+.cdc-icon-capsules-solid:before {
+	content: "\f50c";
+}
+
+.cdc-icon-car-bus-solid:before {
+	content: "\f50d";
+}
+
+.cdc-icon-car-side-solid:before {
+	content: "\f50e";
+}
+
+.cdc-icon-carrot-solid:before {
+	content: "\f50f";
+}
+
+.cdc-icon-cauldron-solid:before {
+	content: "\f510";
+}
+
+.cdc-icon-chalkboard-teacher-solid:before {
+	content: "\f511";
+}
+
+.cdc-icon-chart-area-solid:before {
+	content: "\f512";
+}
+
+.cdc-icon-chart-bar-solid:before {
+	content: "\f513";
+}
+
+.cdc-icon-chart-line-solid:before {
+	content: "\f514";
+}
+
+.cdc-icon-chart-pie-solid:before {
+	content: "\f515";
+}
+
+.cdc-icon-check-circle-solid:before {
+	content: "\f516";
+}
+
+.cdc-icon-check-solid:before {
+	content: "\f517";
+}
+
+.cdc-icon-check-square-solid:before {
+	content: "\f518";
+}
+
+.cdc-icon-cheese-swiss-solid:before {
+	content: "\f519";
+}
+
+.cdc-icon-cheeseburger-solid:before {
+	content: "\f51a";
+}
+
+.cdc-icon-chevron-circle-down-solid:before {
+	content: "\f51b";
+}
+
+.cdc-icon-chevron-circle-left-solid:before {
+	content: "\f51c";
+}
+
+.cdc-icon-chevron-circle-right-solid:before {
+	content: "\f51d";
+}
+
+.cdc-icon-chevron-circle-up-solid:before {
+	content: "\f51e";
+}
+
+.cdc-icon-chevron-double-right-solid:before {
+	content: "\f51f";
+}
+
+.cdc-icon-chevron-right-solid:before {
+	content: "\f520";
+}
+
+.cdc-icon-child-solid:before {
+	content: "\f521";
+}
+
+.cdc-icon-city-solid:before {
+	content: "\f522";
+}
+
+.cdc-icon-clinic-medical-solid:before {
+	content: "\f523";
+}
+
+.cdc-icon-clipboard-check-solid:before {
+	content: "\f524";
+}
+
+.cdc-icon-clipboard-list-check-solid:before {
+	content: "\f525";
+}
+
+.cdc-icon-clipboard-list-solid:before {
+	content: "\f526";
+}
+
+.cdc-icon-clipboard-prescription-solid:before {
+	content: "\f527";
+}
+
+.cdc-icon-clipboard-solid:before {
+	content: "\f528";
+}
+
+.cdc-icon-clipboard-user-solid:before {
+	content: "\f529";
+}
+
+.cdc-icon-cloud-solid:before {
+	content: "\f52a";
+}
+
+.cdc-icon-clouds-sun-solid:before {
+	content: "\f52b";
+}
+
+.cdc-icon-cocktail-solid:before {
+	content: "\f52c";
+}
+
+.cdc-icon-code-solid:before {
+	content: "\f52d";
+}
+
+.cdc-icon-coffee-togo-solid:before {
+	content: "\f52e";
+}
+
+.cdc-icon-cog-solid:before {
+	content: "\f52f";
+}
+
+.cdc-icon-cogs-solid:before {
+	content: "\f530";
+}
+
+.cdc-icon-comment-alt-lines-solid:before {
+	content: "\f531";
+}
+
+.cdc-icon-comment-alt-medical-solid:before {
+	content: "\f532";
+}
+
+.cdc-icon-comment-alt-solid:before {
+	content: "\f533";
+}
+
+.cdc-icon-comment-lines-solid:before {
+	content: "\f534";
+}
+
+.cdc-icon-comment-medical-solid:before {
+	content: "\f535";
+}
+
+.cdc-icon-comment-solid:before {
+	content: "\f536";
+}
+
+.cdc-icon-comments-alt-solid:before {
+	content: "\f537";
+}
+
+.cdc-icon-comments-solid:before {
+	content: "\f538";
+}
+
+.cdc-icon-conveyor-belt-solid:before {
+	content: "\f539";
+}
+
+.cdc-icon-copy-solid:before {
+	content: "\f53a";
+}
+
+.cdc-icon-couch-solid:before {
+	content: "\f53b";
+}
+
+.cdc-icon-cow-solid:before {
+	content: "\f53c";
+}
+
+.cdc-icon-credit-card-solid:before {
+	content: "\f53d";
+}
+
+.cdc-icon-database-solid:before {
+	content: "\f53e";
+}
+
+.cdc-icon-deaf-solid:before {
+	content: "\f53f";
+}
+
+.cdc-icon-desktop-alt-solid:before {
+	content: "\f540";
+}
+
+.cdc-icon-desktop-solid:before {
+	content: "\f541";
+}
+
+.cdc-icon-diagnoses-solid:before {
+	content: "\f542";
+}
+
+.cdc-icon-disease-solid:before {
+	content: "\f543";
+}
+
+.cdc-icon-dna-solid:before {
+	content: "\f544";
+}
+
+.cdc-icon-dog-solid:before {
+	content: "\f545";
+}
+
+.cdc-icon-dolly-flatbed-alt-solid:before {
+	content: "\f546";
+}
+
+.cdc-icon-door-closed-solid:before {
+	content: "\f547";
+}
+
+.cdc-icon-door-open-solid:before {
+	content: "\f548";
+}
+
+.cdc-icon-download-solid:before {
+	content: "\f549";
+}
+
+.cdc-icon-drumstick-solid:before {
+	content: "\f54a";
+}
+
+.cdc-icon-dumbbell-solid:before {
+	content: "\f54b";
+}
+
+.cdc-icon-dumpster-solid:before {
+	content: "\f54c";
+}
+
+.cdc-icon-ear-solid:before {
+	content: "\f54d";
+}
+
+.cdc-icon-envelope-open-text-solid:before {
+	content: "\f54e";
+}
+
+.cdc-icon-envelope-solid:before {
+	content: "\f54f";
+}
+
+.cdc-icon-exclamation-circle-solid:before {
+	content: "\f550";
+}
+
+.cdc-icon-exclamation-square-solid:before {
+	content: "\f551";
+}
+
+.cdc-icon-exclamation-triangle-solid:before {
+	content: "\f552";
+}
+
+.cdc-icon-eye-dropper-solid:before {
+	content: "\f553";
+}
+
+.cdc-icon-eye-solid:before {
+	content: "\f554";
+}
+
+.cdc-icon-farm-solid:before {
+	content: "\f555";
+}
+
+.cdc-icon-female-solid:before {
+	content: "\f556";
+}
+
+.cdc-icon-file-alt-solid:before {
+	content: "\f557";
+}
+
+.cdc-icon-file-archive-solid:before {
+	content: "\f558";
+}
+
+.cdc-icon-file-audio-solid:before {
+	content: "\f559";
+}
+
+.cdc-icon-file-certificate-solid:before {
+	content: "\f55a";
+}
+
+.cdc-icon-file-chart-line-solid:before {
+	content: "\f55b";
+}
+
+.cdc-icon-file-medical-alt-solid:before {
+	content: "\f55c";
+}
+
+.cdc-icon-file-medical-solid:before {
+	content: "\f55d";
+}
+
+.cdc-icon-file-prescription-solid:before {
+	content: "\f55e";
+}
+
+.cdc-icon-files-medical-solid:before {
+	content: "\f55f";
+}
+
+.cdc-icon-first-aid-solid:before {
+	content: "\f560";
+}
+
+.cdc-icon-flag-alt-solid:before {
+	content: "\f561";
+}
+
+.cdc-icon-flag-solid:before {
+	content: "\f562";
+}
+
+.cdc-icon-flame-solid:before {
+	content: "\f563";
+}
+
+.cdc-icon-flask-solid:before {
+	content: "\f564";
+}
+
+.cdc-icon-flower-daffodil-solid:before {
+	content: "\f565";
+}
+
+.cdc-icon-folder-plus-solid:before {
+	content: "\f566";
+}
+
+.cdc-icon-football-ball-solid:before {
+	content: "\f567";
+}
+
+.cdc-icon-forklift-solid:before {
+	content: "\f568";
+}
+
+.cdc-icon-frown-solid:before {
+	content: "\f569";
+}
+
+.cdc-icon-gamepad-alt-solid:before {
+	content: "\f56a";
+}
+
+.cdc-icon-gas-pump-solid:before {
+	content: "\f56b";
+}
+
+.cdc-icon-globe-africa-solid:before {
+	content: "\f56c";
+}
+
+.cdc-icon-globe-americas-solid:before {
+	content: "\f56d";
+}
+
+.cdc-icon-globe-asia-solid:before {
+	content: "\f56e";
+}
+
+.cdc-icon-globe-europe-solid:before {
+	content: "\f56f";
+}
+
+.cdc-icon-globe-solid:before {
+	content: "\f570";
+}
+
+.cdc-icon-graduation-cap-solid:before {
+	content: "\f571";
+}
+
+.cdc-icon-grin-solid:before {
+	content: "\f572";
+}
+
+.cdc-icon-h-square-solid:before {
+	content: "\f573";
+}
+
+.cdc-icon-hand-holding-heart-solid:before {
+	content: "\f574";
+}
+
+.cdc-icon-hand-holding-medical-solid:before {
+	content: "\f575";
+}
+
+.cdc-icon-hand-paper-solid:before {
+	content: "\f576";
+}
+
+.cdc-icon-hand-point-right-solid:before {
+	content: "\f577";
+}
+
+.cdc-icon-hand-sparkles-solid:before {
+	content: "\f578";
+}
+
+.cdc-icon-hands-helping-solid:before {
+	content: "\f579";
+}
+
+.cdc-icon-hands-wash-solid:before {
+	content: "\f57a";
+}
+
+.cdc-icon-handshake-slash-solid:before {
+	content: "\f57b";
+}
+
+.cdc-icon-head-side-cough-slash-solid:before {
+	content: "\f57c";
+}
+
+.cdc-icon-head-side-cough-solid:before {
+	content: "\f57d";
+}
+
+.cdc-icon-head-side-mask-solid:before {
+	content: "\f57e";
+}
+
+.cdc-icon-head-side-medical-solid:before {
+	content: "\f57f";
+}
+
+.cdc-icon-headset-solid:before {
+	content: "\f580";
+}
+
+.cdc-icon-heart-rate-solid:before {
+	content: "\f581";
+}
+
+.cdc-icon-heartbeat-solid:before {
+	content: "\f582";
+}
+
+.cdc-icon-heat-solid:before {
+	content: "\f583";
+}
+
+.cdc-icon-hiking-solid:before {
+	content: "\f584";
+}
+
+.cdc-icon-home-lg-solid:before {
+	content: "\f585";
+}
+
+.cdc-icon-hospital-alt-solid:before {
+	content: "\f586";
+}
+
+.cdc-icon-hospital-solid:before {
+	content: "\f587";
+}
+
+.cdc-icon-hospital-symbol-solid:before {
+	content: "\f588";
+}
+
+.cdc-icon-hospital-user-solid:before {
+	content: "\f589";
+}
+
+.cdc-icon-hotel-solid:before {
+	content: "\f58a";
+}
+
+.cdc-icon-house-leave-solid:before {
+	content: "\f58b";
+}
+
+.cdc-icon-house-return-solid:before {
+	content: "\f58c";
+}
+
+.cdc-icon-house-user-solid:before {
+	content: "\f58d";
+}
+
+.cdc-icon-ice-cream-solid:before {
+	content: "\f58e";
+}
+
+.cdc-icon-id-badge-solid:before {
+	content: "\f58f";
+}
+
+.cdc-icon-id-card-solid:before {
+	content: "\f590";
+}
+
+.cdc-icon-inbox-solid:before {
+	content: "\f591";
+}
+
+.cdc-icon-info-circle-solid:before {
+	content: "\f592";
+}
+
+.cdc-icon-info-solid:before {
+	content: "\f593";
+}
+
+.cdc-icon-info-square-solid:before {
+	content: "\f594";
+}
+
+.cdc-icon-inhaler-solid:before {
+	content: "\f595";
+}
+
+.cdc-icon-key-solid:before {
+	content: "\f596";
+}
+
+.cdc-icon-keyboard-solid:before {
+	content: "\f597";
+}
+
+.cdc-icon-keynote-solid:before {
+	content: "\f598";
+}
+
+.cdc-icon-landmark-alt-solid:before {
+	content: "\f599";
+}
+
+.cdc-icon-landmark-solid:before {
+	content: "\f59a";
+}
+
+.cdc-icon-laptop-house-solid:before {
+	content: "\f59b";
+}
+
+.cdc-icon-laptop-medical-solid:before {
+	content: "\f59c";
+}
+
+.cdc-icon-laptop-solid:before {
+	content: "\f59d";
+}
+
+.cdc-icon-leaf-oak-solid:before {
+	content: "\f59e";
+}
+
+.cdc-icon-leaf-solid:before {
+	content: "\f59f";
+}
+
+.cdc-icon-lightbulb-solid:before {
+	content: "\f5a0";
+}
+
+.cdc-icon-link-solid:before {
+	content: "\f5a1";
+}
+
+.cdc-icon-lock-alt-solid:before {
+	content: "\f5a2";
+}
+
+.cdc-icon-lock-open-alt-solid:before {
+	content: "\f5a3";
+}
+
+.cdc-icon-luggage-cart-solid:before {
+	content: "\f5a4";
+}
+
+.cdc-icon-lungs-solid:before {
+	content: "\f5a5";
+}
+
+.cdc-icon-lungs-virus-solid:before {
+	content: "\f5a6";
+}
+
+.cdc-icon-mail-bulk-solid:before {
+	content: "\f5a7";
+}
+
+.cdc-icon-male-solid:before {
+	content: "\f5a8";
+}
+
+.cdc-icon-map-marker-alt-slash-solid:before {
+	content: "\f5a9";
+}
+
+.cdc-icon-map-solid:before {
+	content: "\f5aa";
+}
+
+.cdc-icon-medkit-solid:before {
+	content: "\f5ab";
+}
+
+.cdc-icon-microphone-solid:before {
+	content: "\f5ac";
+}
+
+.cdc-icon-microscope-solid:before {
+	content: "\f5ad";
+}
+
+.cdc-icon-mobile-alt-solid:before {
+	content: "\f5ae";
+}
+
+.cdc-icon-mobile-solid:before {
+	content: "\f5af";
+}
+
+.cdc-icon-monitor-heart-rate-solid:before {
+	content: "\f5b0";
+}
+
+.cdc-icon-moon-solid:before {
+	content: "\f5b1";
+}
+
+.cdc-icon-mortar-pestle-solid:before {
+	content: "\f5b2";
+}
+
+.cdc-icon-mouse-pointer-solid:before {
+	content: "\f5b3";
+}
+
+.cdc-icon-network-wired-solid:before {
+	content: "\f5b4";
+}
+
+.cdc-icon-newspaper-solid:before {
+	content: "\f5b5";
+}
+
+.cdc-icon-notes-medical-solid:before {
+	content: "\f5b6";
+}
+
+.cdc-icon-passport-solid:before {
+	content: "\f5b7";
+}
+
+.cdc-icon-paw-solid:before {
+	content: "\f5b8";
+}
+
+.cdc-icon-people-arrows-solid:before {
+	content: "\f5b9";
+}
+
+.cdc-icon-person-sign-solid:before {
+	content: "\f5ba";
+}
+
+.cdc-icon-phone-office-solid:before {
+	content: "\f5bb";
+}
+
+.cdc-icon-pills-solid:before {
+	content: "\f5bc";
+}
+
+.cdc-icon-place-of-worship-solid:before {
+	content: "\f5bd";
+}
+
+.cdc-icon-plane-arrival-solid:before {
+	content: "\f5be";
+}
+
+.cdc-icon-plane-departure-solid:before {
+	content: "\f5bf";
+}
+
+.cdc-icon-plane-slash-solid:before {
+	content: "\f5c0";
+}
+
+.cdc-icon-plane-solid:before {
+	content: "\f5c1";
+}
+
+.cdc-icon-play-circle-solid:before {
+	content: "\f5c2";
+}
+
+.cdc-icon-play-solid:before {
+	content: "\f5c3";
+}
+
+.cdc-icon-poll-people-solid:before {
+	content: "\f5c4";
+}
+
+.cdc-icon-poop-solid:before {
+	content: "\f5c5";
+}
+
+.cdc-icon-popcorn-solid:before {
+	content: "\f5c6";
+}
+
+.cdc-icon-portrait-solid:before {
+	content: "\f5c7";
+}
+
+.cdc-icon-prescription-bottle-alt-solid:before {
+	content: "\f5c8";
+}
+
+.cdc-icon-prescription-bottle-solid:before {
+	content: "\f5c9";
+}
+
+.cdc-icon-prescription-solid:before {
+	content: "\f5ca";
+}
+
+.cdc-icon-presentation-solid:before {
+	content: "\f5cb";
+}
+
+.cdc-icon-procedures-solid:before {
+	content: "\f5cc";
+}
+
+.cdc-icon-pump-medical-solid:before {
+	content: "\f5cd";
+}
+
+.cdc-icon-pump-soap-solid:before {
+	content: "\f5ce";
+}
+
+.cdc-icon-pumpkin-solid:before {
+	content: "\f5cf";
+}
+
+.cdc-icon-question-circle-solid:before {
+	content: "\f5d0";
+}
+
+.cdc-icon-question-solid:before {
+	content: "\f5d1";
+}
+
+.cdc-icon-question-square-solid:before {
+	content: "\f5d2";
+}
+
+.cdc-icon-ribbon-solid:before {
+	content: "\f5d3";
+}
+
+.cdc-icon-running-solid:before {
+	content: "\f5d4";
+}
+
+.cdc-icon-school-solid:before {
+	content: "\f5d5";
+}
+
+.cdc-icon-search-solid:before {
+	content: "\f5d6";
+}
+
+.cdc-icon-share-alt-solid:before {
+	content: "\f5d7";
+}
+
+.cdc-icon-share-solid:before {
+	content: "\f5d8";
+}
+
+.cdc-icon-ship-solid:before {
+	content: "\f5d9";
+}
+
+.cdc-icon-shipping-fast-solid:before {
+	content: "\f5da";
+}
+
+.cdc-icon-shopping-cart-solid:before {
+	content: "\f5db";
+}
+
+.cdc-icon-shower-solid:before {
+	content: "\f5dc";
+}
+
+.cdc-icon-shuttle-van-solid:before {
+	content: "\f5dd";
+}
+
+.cdc-icon-sign-language-solid:before {
+	content: "\f5de";
+}
+
+.cdc-icon-sink-solid:before {
+	content: "\f5df";
+}
+
+.cdc-icon-sitemap-solid:before {
+	content: "\f5e0";
+}
+
+.cdc-icon-soap-solid:before {
+	content: "\f5e1";
+}
+
+.cdc-icon-spray-can-solid:before {
+	content: "\f5e2";
+}
+
+.cdc-icon-star-solid:before {
+	content: "\f5e3";
+}
+
+.cdc-icon-stethoscope-solid:before {
+	content: "\f5e4";
+}
+
+.cdc-icon-stomach-solid:before {
+	content: "\f5e5";
+}
+
+.cdc-icon-stopwatch-solid:before {
+	content: "\f5e6";
+}
+
+.cdc-icon-store-alt-slash-solid:before {
+	content: "\f5e7";
+}
+
+.cdc-icon-store-slash-solid:before {
+	content: "\f5e8";
+}
+
+.cdc-icon-stretcher-solid:before {
+	content: "\f5e9";
+}
+
+.cdc-icon-subway-solid:before {
+	content: "\f5ea";
+}
+
+.cdc-icon-suitcase-solid:before {
+	content: "\f5eb";
+}
+
+.cdc-icon-sun-solid:before {
+	content: "\f5ec";
+}
+
+.cdc-icon-swimmer-solid:before {
+	content: "\f5ed";
+}
+
+.cdc-icon-swimming-pool-solid:before {
+	content: "\f5ee";
+}
+
+.cdc-icon-sync-alt-solid:before {
+	content: "\f5ef";
+}
+
+.cdc-icon-syringe-solid:before {
+	content: "\f5f0";
+}
+
+.cdc-icon-table-solid:before {
+	content: "\f5f1";
+}
+
+.cdc-icon-tablet-alt-solid:before {
+	content: "\f5f2";
+}
+
+.cdc-icon-tablets-solid:before {
+	content: "\f5f3";
+}
+
+.cdc-icon-taxi-solid:before {
+	content: "\f5f4";
+}
+
+.cdc-icon-temperature-high-solid:before {
+	content: "\f5f5";
+}
+
+.cdc-icon-temperature-low-solid:before {
+	content: "\f5f6";
+}
+
+.cdc-icon-thumbs-down-solid:before {
+	content: "\f5f7";
+}
+
+.cdc-icon-thumbs-up-solid:before {
+	content: "\f5f8";
+}
+
+.cdc-icon-times-circle-solid:before {
+	content: "\f5f9";
+}
+
+.cdc-icon-times-solid:before {
+	content: "\f5fa";
+}
+
+.cdc-icon-tint-slash-solid:before {
+	content: "\f5fb";
+}
+
+.cdc-icon-tint-solid:before {
+	content: "\f5fc";
+}
+
+.cdc-icon-toolbox-solid:before {
+	content: "\f5fd";
+}
+
+.cdc-icon-tools-solid:before {
+	content: "\f5fe";
+}
+
+.cdc-icon-tooth-solid:before {
+	content: "\f5ff";
+}
+
+.cdc-icon-train-solid:before {
+	content: "\f600";
+}
+
+.cdc-icon-trash-solid:before {
+	content: "\f601";
+}
+
+.cdc-icon-tshirt-solid:before {
+	content: "\f602";
+}
+
+.cdc-icon-umbrella-beach-solid:before {
+	content: "\f603";
+}
+
+.cdc-icon-universal-access-solid:before {
+	content: "\f604";
+}
+
+.cdc-icon-user-chart-solid:before {
+	content: "\f605";
+}
+
+.cdc-icon-user-clock-solid:before {
+	content: "\f606";
+}
+
+.cdc-icon-user-cog-solid:before {
+	content: "\f607";
+}
+
+.cdc-icon-user-friends-solid:before {
+	content: "\f608";
+}
+
+.cdc-icon-user-graduate-solid:before {
+	content: "\f609";
+}
+
+.cdc-icon-user-hard-hat-solid:before {
+	content: "\f60a";
+}
+
+.cdc-icon-user-injured-solid:before {
+	content: "\f60b";
+}
+
+.cdc-icon-user-md-chat-solid:before {
+	content: "\f60c";
+}
+
+.cdc-icon-user-md-solid:before {
+	content: "\f60d";
+}
+
+.cdc-icon-user-nurse-solid:before {
+	content: "\f60e";
+}
+
+.cdc-icon-user-solid:before {
+	content: "\f60f";
+}
+
+.cdc-icon-users-class-solid:before {
+	content: "\f610";
+}
+
+.cdc-icon-users-medical-solid:before {
+	content: "\f611";
+}
+
+.cdc-icon-users-slash-solid:before {
+	content: "\f612";
+}
+
+.cdc-icon-users-solid:before {
+	content: "\f613";
+}
+
+.cdc-icon-venus-mars-solid:before {
+	content: "\f614";
+}
+
+.cdc-icon-vial-solid:before {
+	content: "\f615";
+}
+
+.cdc-icon-vials-solid:before {
+	content: "\f616";
+}
+
+.cdc-icon-virus-slash-solid:before {
+	content: "\f617";
+}
+
+.cdc-icon-virus-solid:before {
+	content: "\f618";
+}
+
+.cdc-icon-viruses-solid:before {
+	content: "\f619";
+}
+
+.cdc-icon-walking-solid:before {
+	content: "\f61a";
+}
+
+.cdc-icon-washer-solid:before {
+	content: "\f61b";
+}
+
+.cdc-icon-water-solid:before {
+	content: "\f61c";
+}
+
+.cdc-icon-weight-solid:before {
+	content: "\f61d";
+}
+
+.cdc-icon-wheelchair-solid:before {
+	content: "\f61e";
+}
+
+.cdc-icon-window-close-solid:before {
+	content: "\f61f";
+}
+
+.cdc-icon-x-ray-solid:before {
+	content: "\f620";
+}
+
+button:focus {
+	outline: 3px solid #ff751a !important;
+	outline-offset: -2px;
+}
+
+button.individualBtnSelected:focus {
+	outline: 0px solid white !important;
+	background-color: #FFF;
+}
+
+#navButtons button.boxbtnSelected,
+#navButtons button.parentNav.parentboxbtnSelected {
+	@media screen and (max-width: 1000px) {
+		border-left: none !important;
+		border-top: none !important;
+		border-right: none !important;
+	}
+}
+
+#navButtons {
+	width: 100%;
+
+	@media screen and (max-width: 1000px) {
+		position: relative;
+		background: #333 !important;
+		color: #fff !important;
+		top: -130px;
+	}
+
+	button {
+		@media screen and (max-width: 1000px) {
+			background: #333 !important;
+			color: #fff !important;
+		}
+	}
+
+	ul.sub-content {
+		@media screen and (max-width: 1000px) {
+			display: block;
+			background: #222;
+			color: #fff;
+			top: 0 !important;
+		}
+
+		li {
+			@media screen and (max-width: 1000px) {
+				display: block !important;
+				background: none;
+
+				button {
+					padding-bottom: 5px !important;
+					padding-top: 5px !important;
+				}
+
+				.boxbtnSelected {
+					padding-bottom: 5px !important;
+					padding-top: 5px !important;
+				}
+			}
+		}
+
+		button {
+			@media screen and (max-width: 1000px) {
+				border-right: none !important;
+				background: none !important;
+				color: #fff !important;
+			}
+		}
+	}
+}
+
+// #casesCont {
+// 	@media screen and (max-width: 1000px) {
+// 		height: 0px !important;
+// 	}
+// }
+
+#btnMobileHome {
+	padding: 5px;
+	color: #fff;
+}
+
+h2#btnMobileHome {
+	font-size: 1.4em;
+	padding: 5px 0 0 10px;
+}
+
+#btnMobileHome {
+	@media screen and (max-width: 1000px) {
+		display: none !important;
+	}
+}
+
+#header_nav {
+	#mobile-submenu {
+		display: none;
+
+		@media screen and (max-width: 1000px) {
+			display: block;
+			width: 95vw;
+		}
+	}
+
+	#submenu-select {
+		width: 100%;
+		margin-top: 0px;
+		display: none;
+	}
+
+	.card {
+		border-radius: 5px;
+
+		.card-header {
+			border-radius: 5px 5px 0px 0px !important;
+		}
+	}
+}
+
+.bg-cyan {
+	background: #007c91;
+	border: 1px solid #f2f2f2;
+	color: #fff !important;
+}
+
+.btn-dark {
+	background: #333;
+}
+
+.breadCrumbContainer {
+	@media screen and (max-width: 1000px) {
+		font-size: 0.7em;
+		padding: 5px 0 0 10px;
+	}
+}
+
+#social-media-footer-container {
+	margin: 50px 20px;
+	padding: 10px 20px 40px 20px;
+	border: 1px dashed #f2f2f2;
+}
+
+.mobile-caret {
+	.fa-caret-down,
+	.fa-caret-up {
+		@media screen and (max-width: 1000px) {
+			color: #fff !important;
+		}
+	}
+}
+
+.buttonDataViewTogg {
+	padding: 13px !important;
+}
+
+#time-period-cities-wrapper .btn-cyan {
+	background: #fff !important;
+	color: #666666 !important;
+
+	&.active {
+		color: #007c91 !important;
+	}
+}
+
+#viz-chart-map-toggle .btn-cyan {
+	background: #fff !important;
+	color: #666666 !important;
+
+	&.active {
+		color: #007c91 !important;
+	}
+}
+
+.legend-drawer {
+	.row {
+		width: auto !important;
+	}
+
+	.row-icon {
+		width: 0px;
+	}
+
+	.row-url {
+		width: 25px;
+		position: relative;
+		right: -70%;
+	}
+
+	.row-title {
+		width: 5% !important;
+	}
+}
+
+.legend-bottom-container {
+	max-height: 135px !important;
+}
+
+#time-period-cities-wrapper {
+	button {
+		@media screen and (max-width: 1000px) {
+			padding: 6px !important;
+		}
+	}
+}
+
+#viz-chart-map-toggle {
+	button {
+		@media screen and (max-width: 1000px) {
+			padding: 6px !important;
+		}
+	}
+}
+
+.btn-layout {
+	.btn {
+		&.active {
+			color: #007c91 !important;
+			background: #fff !important;
+		}
+	}
+
+	button {
+		border-radius: 0 !important;
+	}
+}
+
+.sub-content {
+	.boxbtn {
+		width: 100%;
+		@media screen and (min-width: 1000px) {
+			margin: 0 !important;
+			margin-bottom: 10px !important;
+		}
+	}
+}
+
+#navButtons ul li button {
+	@media (min-width: 992px) {
+		&:not(.parentboxbtnSelected) {
+			border-left: 1px solid lightgray !important;
+			border-bottom: 1px solid #65b0bd !important;
+		}
+
+		&.parentboxbtnSelected {
+			border-right: 0px solid !important;
+		}
+
+		&#prntCases {
+			border-left: 0px solid !important;
+		}
+	}
+}
+
+#navButtons button.boxbtnSelected {
+	border-top: 0 !important;
+}
+
+#navButtons button.parentNav.parentboxbtnSelected ~ ul.subnav-content li:last-child {
+	button {
+		border-right: 0 !important;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected ~ ul.subnav-content li button.boxbtn.boxbtnSelected {
+	border-right: 1px solid lightgray !important;
+}
+
+.cdc-logo,
+.site-title .row > .col {
+	padding-left: 0px !important;
+}
+
+#covid-home-link {
+	display: block;
+
+	@media screen and (max-width: 992px) {
+		color: #fff !important;
+	}
+}
+
+#navButtons button {
+	@media screen and (min-width: 992px) {
+		background-color: white;
+		border-bottom: 1px solid black;
+		color: black !important;
+		border-right: none;
+	}
+}
+
+#navButtons > ul {
+	margin: 0;
+	padding: 0;
+}
+
+#navButtons ol li,
+#navButtons ul li {
+	margin: 0;
+	border: transparent;
+}
+
+#navButtons button.boxbtnSelected:hover {
+	color: black !important;
+}
+
+#navButtons button.boxbtnSelected,
+#navButtons button.parentNav.parentboxbtnSelected {
+	border-top: 3px solid #007c91 !important;
+	border-right: 1px solid rgb(68, 68, 68);
+	border-left: 1px solid rgb(68, 68, 68);
+	border-color: #dee2e6 #dee2e6 #fff;
+	color: black;
+	height: 45px;
+
+	@media screen and (max-width: 1000px) {
+		border-top: 0 !important;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected {
+	~ ul.subnav-content {
+		width: 100% !important;
+		left: 0 !important;
+		top: 75px !important;
+		border: none;
+		box-shadow: none;
+		margin-top: 0 !important;
+	}
+
+	~ ul.subnav-tier {
+		top: 100px !important;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected {
+	~ ul.subnav-content li {
+		display: inline-block !important;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected ~ ul.subnav-content li button {
+	@media screen and (min-width: 1000px) {
+		border: none !important;
+		text-decoration: underline;
+		margin: 10px;
+		padding: 0px;
+		height: auto;
+		border-right: 1px solid lightgray !important;
+		padding-left: 20px;
+	}
+
+	@media screen and (max-width: 1000px) {
+		padding: 0 0 5px 7px;
+		border-right: none;
+		text-decoration: none;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected ~ ul.subnav-content li button.boxbtn.boxbtnSelected {
+	@media screen and (min-width: 1000px) {
+		text-decoration: none;
+		margin: 10px;
+		padding: 0 20px;
+	}
+}
+
+#navButtons button.parentNav.parentboxbtnSelected ~ ul.subnav-content li:last-child button.boxbtn.boxbtnSelected {
+	@media screen and (min-width: 1000px) {
+		border: none !important;
+	}
+}
+
+.ul-break {
+	display: block;
+	height: 85px;
+}
+
+.mute {
+	color: #ccc !important;
+}
+
+.subnav-content {
+	background-color: transparent !important;
+
+	@media screen and (max-width: 992px) {
+		display: none !important;
+	}
+}
+
+#header_nav {
+	margin-top: 12px;
+}
+
+#forecast-chart-container g.axis.axis-x {
+	@media screen and (max-width: 992px) {
+		font-size: 0.2em !important;
+	}
+}
+
+.mobile-caret {
+	@media screen and (max-width: 992px) {
+		//display: none;
+	}
+}
+//Mobile CDC feedback CSS override
+.__acs a {
+	@media screen and (max-width: 600px) {
+		color: #fff !important;
+	}
+}
+
+//vax info tool tips
+.bkg-clr {
+	background-color: #cce5e9;
+}
+.util-pad {
+	padding: 0px 10px;
+}
+.margin-btm-spacer {
+	margin-bottom: 1rem;
+}
+
+.info-icon-size-ref {
+	font-size: 0.8rem;
+}
+
+.vax-anchor {
+	color: #000000 !important;
+
+	&:hover {
+		color: #000000 !important;
+	}
+}
+
+.bg-quaternary {
+	background-color: rgb(235, 245, 246);
+	border-left: 3px solid #cce5e9 !important;
+}
+
+.fs0875 {
+	font-size: 0.9rem !important;
+}
+
+a.reverseAnchorUnderline {
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: underline !important;
+	}
+}
+
+.marginTop20px {
+	margin-top: 20px;
+}

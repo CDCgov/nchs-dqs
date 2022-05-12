@@ -1,0 +1,271 @@
+.cv {
+	&-bold {
+		font-weight: bold !important;
+	}
+
+	&-blue {
+		color: #0f617e;
+	}
+	&-maroon {
+		color: #ac1f25;
+	}
+	&-black {
+		color: #000;
+	}
+	&-white {
+		color: #fff;
+	}
+	&-darkgrey {
+		color: #bbb;
+	}
+	&-grey {
+		color: #ccc;
+	}
+	&-ltgrey {
+		color: #eee;
+	}
+	&-chartblue_a {
+		color: #3182bd;
+	}
+	&-chartblue_b {
+		color: #9ecae1;
+	}
+	&-darkgrey_bg {
+		background-color: #bbb;
+	}
+	&-grey_bg {
+		background-color: #ccc;
+	}
+	&-ltgrey_bg {
+		background-color: #eee;
+	}
+	&-maroon_bg {
+		background-color: #ac1f25;
+	}
+	&-blue_bg {
+		background-color: #0f617e;
+	}
+}
+
+.chart {
+	&-title {
+		font-size: 1.1em;
+	}
+	&-subtitle {
+		font-size: 0.8em;
+	}
+	&-title_2 {
+		font-size: 1.3em;
+	}
+	&-subtitle_2 {
+		font-size: 0.9em;
+	}
+	&-legendTitle {
+		font-size: 1.1em;
+	}
+}
+
+#chart {
+	&-title {
+		font-size: 1.135em;
+	}
+}
+
+.axis {
+	font-size: 0.9em;
+}
+
+.general {
+	&_note {
+		font-size: 0.86rem; /* approximates to 12px size */
+		font-weight: 500;
+	}
+
+	&_subhead_note {
+		color: #bbbbbb; /*Dark GRAY*/
+		font-size: 0.7rem;
+		font-weight: 500;
+	}
+
+	&_text {
+		font-size: 0.9rem;
+		font-weight: 500;
+	}
+
+	&_bold {
+		font-size: 0.9rem;
+		font-weight: bold;
+	}
+
+	&_header {
+		font-size: 1rem;
+		font-weight: bold;
+	}
+}
+
+.popup {
+	&_table {
+		&_style {
+			padding: 6px;
+			border-collapse: separate;
+			border-spacing: 0px; /* Only works with border-collapse: separate set */
+			background: #ffff66;
+			border-left: 8px solid #ac1f25; /*COVID Maroon*/
+		}
+	}
+
+	&_td_number_style {
+		text-align: right;
+	}
+}
+
+.btnMapDataToggle,
+.btnTrendsDataToggle {
+	border: none;
+	background-color: transparent;
+	padding: 0;
+	text-decoration: underline;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.selects {
+	&-container {
+		display: flex;
+		flex-direction: row;
+		margin-top: 10px;
+	}
+
+	&-container {
+		div {
+			flex: 1 auto;
+		}
+
+		span {
+			margin-right: 25vw;
+		}
+
+		@include mobile-max {
+			flex-direction: column;
+		}
+	}
+}
+
+.selectsED {
+	&-container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		margin-top: 10px;
+		height: 40px;
+		.dropdown {
+			width: -moz-fit-content;
+			width: fit-content;
+		}
+	}
+
+	&-container {
+		#ed-radio-wrapper {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			.radio-title {
+				margin-right: 15px;
+			}
+		}
+		select,
+		div {
+			margin-right: 20px;
+		}
+		#ed-button-wrapper {
+			margin-left: auto;
+			margin-right: 0;
+		}
+
+		@include mobile-max {
+			justify-content: center;
+			#ed-button-wrapper {
+				margin-left: 0;
+				margin-top: 5px;
+			}
+			#ed-checkbox-wrapper {
+				margin-top: 5px;
+			}
+			#ed-radio-wrapper {
+				margin-top: 5px;
+			}
+		}
+	}
+}
+
+#forecast-chart-container {
+	svg {
+		text {
+			font-size: 1em;
+		}
+	}
+
+	.legend-drawer {
+		.row-title,
+		.control-row {
+			font-size: 1.4em;
+		}
+	}
+}
+
+#ed-trends-chart .x.axis {
+	@include mobile-max {
+		font-size: 0.4rem;
+	}
+}
+
+#viz_area_us_cases #viz008_svg text {
+	@include mobile-max {
+		font-size: 0.35rem;
+	}
+}
+#viz_area_us_cases.cases-deaths-test  {	
+	display: flex;
+	 flex-direction: row;
+	 flex-wrap: wrap;
+	 div:nth-of-type(1) {
+		 order:1;
+		flex-basis:100%;
+		/*outline:2px solid;*/
+	}
+	& #viz-chart-map-toggle {
+		order:0;
+		flex-basis: 100%;
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-start;
+		div#toggle-viz-type-container {
+		  flex-basis: auto;
+		}
+	}
+}
+
+#us-trends-viz-container {
+	@include mobile-max {
+		margin: 50px 0 0 0;
+		transform: scaleY(1.3);
+	}
+}
+
+#us-trends-viz-container g.tick {
+	@include mobile-max {
+		font-size: 0.3rem;
+	}
+}
+
+#territory-chart > svg {
+	@include mobile-max {
+		font-size: 6px;
+	}
+}
+
+#booster_covidnet-vaccinerates-raw-data-gen-svg-chart-legend {
+	height: 30px !important;
+}

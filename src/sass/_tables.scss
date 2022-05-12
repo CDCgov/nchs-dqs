@@ -1,0 +1,145 @@
+.wtable {
+	border-collapse: collapse;
+	width: 100%;
+	font-family: "Noto Sans", sans-serif;
+	font-size: 0.8em;
+
+	> thead {
+		th {
+			text-align: left;
+			padding-left: 3px;
+		}
+	}
+
+	> tbody {
+		td {
+			padding-left: 3px;
+		}
+
+		tr {
+			border-bottom: 1px solid lightgrey;
+		}
+	}
+
+	.number-cells {
+		text-align: right;
+		max-width: 45px;
+	}
+}
+
+.table-sort-header {
+	cursor: pointer;
+	background-color: #f9fafb;
+}
+
+th.sorted {
+	background-color: #e2e4e9;
+}
+
+/* new table layout */
+.table-toggle {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+	line-height: 38px;
+	cursor: pointer;
+	color: #007c91;
+	border-top: 3px solid #007c91;
+	border-bottom: 1px solid #007c91;
+
+	&.closed {
+		color: black;
+		border-top: 1px solid #007c91;
+		border-bottom: 1px solid #007c91;
+	}
+
+	&:hover {
+		background-color: #fbfbfb;
+		color: #007c91;
+	}
+}
+
+.table-toggle-icon {
+	margin-right: 5px;
+}
+
+.table-title {
+	margin: 0 0 0 5px !important;
+	font-size: 1rem;
+	align-self: center;
+}
+
+.data-table {
+	width: 100%;
+	min-height: 100px;
+
+	& table {
+		width: 100%;
+	}
+
+	&.closed {
+		display: none;
+		height: 0;
+	}
+}
+
+.data-table-header {
+	background-color: #cce5e9;
+	height: 35px;
+	line-height: 35px;
+	border: 1px solid #cce5e9;
+
+	//overwriting jquery sorted style, if sortable header
+	&.sorted {
+		background-color: #fff !important;
+	}
+}
+
+.table-info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	@include small-screen-only-breakpoint {
+		flex-direction: column;
+	}
+}
+.table-info-mobile {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	@include small-screen-only-breakpoint {
+		flex-direction: row;
+		flex-wrap: wrap;
+		.general_note {
+			flex-basis: 90%;
+		}
+		& #btnCountyLevelTimeseriesExport {
+			flex-basis: 100%;
+		}
+	}
+}
+
+.data-download-btn {
+	margin-top: 4px !important;
+	margin-bottom: 4px !important;
+}
+
+table.expanded-data-table {
+	th,
+	td {
+		padding-left: 15px;
+	}
+
+	tbody tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+}
+
+.scrolling-table-container {
+	width: 100%;
+
+	@include mobile-max {
+		overflow-x: scroll;
+	}
+}

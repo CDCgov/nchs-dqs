@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<meta http-equiv="“Pragma”" content="”no-cache”" />
+		<meta http-equiv="“Expires”" content="”-1″" />
+		<meta http-equiv="“CACHE-CONTROL”" content="”NO-CACHE”" />
+		<meta name="description" content="CDC’s home for NCHS data. Visualizations, graphs, and data in one easy-to-use website." />
+		<meta property="og:title" content="NCHS Data Visualizer" />
+		<meta property="og:description" content="CDC’s home for NCHS data. Visualizations, graphs, and data in one easy-to-use website." />
+		<meta property="fb:app_id" content="205691699516606" />
+		<meta property="og:url" content="https://covid.cdc.gov/covid-data-tracker" />
+		<meta property="og:image" content="images/landing-page/covid_data_tracker_social.png" />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="article:published_time" content="2020-03-28" />
+		<meta property="og:author" content="CDC" />
+		<meta property="article:author" content="CDC" />
+		<meta property="og:site_name" content="Centers for Disease Control and Prevention" />
+		<meta property="og:type" content="article" />
+		<meta name="author" content="CDC" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@CDCgov" />
+		<meta name="twitter:creator" content="@CDCgov" />
+		<meta name="twitter:title" content="NCHS Data Visualizer" />
+		<meta name="twitter:description" content="CDC's home for COVID-19 data. Visualizations, graphs, and data in one easy-to-use website." />
+		<meta name="twitter:image" content="https://covid.cdc.gov/covid-data-tracker/images/landing-page/covid_data_tracker_social.png" />
+		<meta name="twitter:image:src" content="https://covid.cdc.gov/covid-data-tracker/images/landing-page/covid_data_tracker_social.png" />
+		<meta
+			name="keywords"
+			content="Obesity, Suicide, State, National, USA, Update, Rates, Numbers, Statistics, Map, Data, Tracker, CDC, last 7 days, Vaccinations, Vaccination"
+		/>
+		<link rel="stylesheet" href="./css/index.css" type="text/css" />
+		<link rel="stylesheet" href="./css/fa.min.css" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="./css/semantic.min.css" />
+		<script src="lib/keybinds.js"></script>
+		<script src="lib/d3.min.js"></script>
+		<script src="lib/topojson.js"></script>
+		<script src="lib/jquery-3.4.1.min.js"></script>
+		<script src="lib/jquery-ui.min.js"></script>
+		<script src="lib/jquery.tablesort.min.js"></script>
+		<script src="lib/semantic-cdt.js"></script>
+		<script src="lib/moment.min.js"></script>
+		<title>NCHS Data Visualization</title>
+	</head>
+
+	<body class="theme-cyan">
+		<div class="skipOptions">
+			<a href="#titleSection">Skip directly to main content</a>
+			<a href="#pageFooterTable">Skip directly to footer</a>
+		</div>
+		<div class="container-fluid header-wrapper">
+			<div class="container-fluid px-5">
+				<header role="banner" aria-label="Header" class="pt-2 pb-2">
+					<div class="row">
+						<div class="col-sm-6 cdc-logo">
+							<!--# include file="TemplatePackage/includes/header-logo.html" -->
+						</div>
+					</div>
+				</header>
+			</div>
+		</div>
+
+		<div class="container-fluid site-title">
+			<div class="container-fluid px-4">
+				<div class="row">
+					<div class="col">
+						<div class="display-6_ text-white fw-500 pt-0 pb-0 d-none d-md-block">
+							<a href="#nchs-home">NCHS Data Visualizer</a>
+						</div>
+						<div class="display-6_ text-white fw-500 pt-0 pb-0 d-md-none">
+							<a href="#nchs-home">NCHS Data Visualizer</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid site-subtitle-bar">
+			<div class="container-fluid px-4">
+				<div class="row">
+					<div class="col-md-auto">
+						<div tabindex="0" class="display-6_ fw-500 pt-0 pb-0 d-md-none d-sm-block">
+							Maps, charts, and data provided by NCHS, updates daily by 8 pm ET
+						</div>
+					</div>
+					<div class="col-md-auto">
+						<div tabindex="0" class="display-6_ fw-500 pt-0 pb-0 d-none d-md-block">
+							&nbsp; Maps, charts, and data provided by NCHS, updates daily by 8 pm ET
+						</div>
+					</div>
+					<div class="col-md-auto"></div>
+				</div>
+			</div>
+		</div>
+
+		<div id="outerContainer" class="">
+<!-- 			<div class="navContainer">
+				<div id="mobileNavContainer">
+					<div id="header_middle">
+						<nav id="header_nav" class="navbar">
+							<div id="mobile-submenu">
+								<div class="bg-light">
+									<div id="navMenuHeaderCont" class="d-flex flex-row" style="border: 1px solid#efefef; padding: 10px; align-items: center">
+										<div class="h6 flex-grow-1">
+											<span class="submenu_currentTxt">CLICK TO VIEW OTHER PAGES:</span>
+											<br /><span id="viewDataText"></span>
+										</div>
+										<div id="navMobileIcon">
+											<span class="mobileMenuHamburger" style="color: #007c91 !important"><i class="fas fa-bars"></i></span>
+										</div>
+									</div>
+									<div id="submenu-select" class="ui vertical accordion menu rounded-0"></div>
+								</div>
+							</div>
+						</nav>
+					</div>
+				</div> -->
+
+
+			<!-- V2 leaving id only for selector the styling will be done by "class"-->
+			<!-- we can now override the class with a more specific class on the V2 landing page-->
+			<div class="outRightMainContainer-specific outRightMainContainer" id="outRightMainContainer">
+				<section id="titleSection">
+					<h1 id="mainContent_Title" tabindex="0"></h1>
+					<div id="mainContent_SubTitle" tabindex="0"></div>
+				</section>
+				<!-- here is where we put the main content -->
+				<main id="maincontent"></main>
+				<footer class="cvi_footer">
+					<div class="historic-data-container"></div>
+					<div id="genericDataContainer-1" class="genericDataContainer"></div>
+					<div id="genericDataContainer-2" class="genericDataContainer"></div>
+					<div id="genericDataContainer-3" class="genericDataContainer"></div>
+					<div id="genericDataContainer-4" class="genericDataContainer"></div>
+					<div class="data-table-container" id="pageFooterTable">
+						<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
+							<h4 class="table-title">Footnotes</h4>
+							<div class="table-toggle-icon">
+								<i id="footer-table-header-icon" class="fas fa-plus"></i>
+							</div>
+						</div>
+						<div id="pageFooter" class="data-table closed"></div>
+					</div>
+					<div class="crosslink-container"></div>
+					<div id="commonFooter">
+						<div class="footer-link-btn" id="footer-link" style="display: none"></div>
+					</div>
+				</footer>
+			</div>
+		</div>
+		<div id="device-indicator" style="display: none"></div>
+		<!-- xxxxxxxxxxxxxxxxxx METRICS code begins here xxxxxxxxxxxxxxxxxxxxxxxxxxx-->
+
+		<footer role="contentinfo" aria-label="Footer">
+			<div class="container-fluid footer-wrapper-specific footer-wrapper">
+				<div class="container">
+					<!--#include file="TemplatePackage/includes/footer-cdc.html" -->
+				</div>
+			</div>
+			<div class="container-fluid agency-footer pb-0">
+				<div class="container">
+					<!--#include file="TemplatePackage/includes/footer-agency.html" -->
+				</div>
+			</div>
+		</footer>
+
+		<script type="text/javascript" src="TemplatePackage/js/tp-search.js"></script>
+		<!-- <script type="text/javascript" src="index.bundle.js"></script> -->
+		<script>
+			let ua = window.navigator.userAgent;
+			let isIE = /MSIE|Trident/.test(ua);
+			if (isIE) {
+				window.location.href = "support.html";
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,467 @@
+{
+	"urls": [
+		{
+			"id": "vacc-people-onedose-pop-total",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby10b3RhbA=="
+		},
+		{
+			"id": "vacc-people-onedose-pop-5yr",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTU="
+		},
+		{
+			"id": "vacc-people-onedose-pop-12yr",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTEy"
+		},
+		{
+			"id": "vacc-people-onedose-pop-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTE4"
+		},
+		{
+			"id": "vacc-people-onedose-pop-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTY1"
+		},
+		{
+			"id": "vacc-total-admin-count-total",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby10b3RhbA=="
+		},
+		{
+			"id": "vacc-total-admin-count-pop5",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItNQ=="
+		},
+		{
+			"id": "vacc-total-admin-count-pop12",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItMTI="
+		},
+		{
+			"id": "vacc-total-admin-count-pop18",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItMTg="
+		},
+		{
+			"id": "vacc-total-admin-count-pop65",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tY291bnQtdG90YWwscG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItNjU="
+		},
+		{
+			"id": "vacc-total-delivered-count",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1jb3VudC10b3RhbA=="
+		},
+		{
+			"id": "vacc-total-delivered-rate-total",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1wZXIxMDBrLHBvcHVsYXRpb24tcmFkaW8tdG90YWw="
+		},
+		{
+			"id": "vacc-total-delivered-rate-pop5",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1wZXIxMDBrLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTU="
+		},
+		{
+			"id": "vacc-total-delivered-rate-pop12",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1wZXIxMDBrLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTEy"
+		},
+		{
+			"id": "vacc-total-delivered-rate-pop18",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1wZXIxMDBrLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTE4"
+		},
+		{
+			"id": "vacc-total-delivered-rate-pop65",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxjb3VudC1yYWRpby1wZXIxMDBrLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTY1"
+		},
+		{
+			"id": "vacc-total-admin-rate-total",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXRvdGFs"
+		},
+		{
+			"id": "vacc-total-admin-rate-pop5",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci01"
+		},
+		{
+			"id": "vacc-total-admin-rate-pop12",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xMg=="
+		},
+		{
+			"id": "vacc-total-admin-rate-pop18",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xOA=="
+		},
+		{
+			"id": "vacc-total-admin-rate-pop65",
+			"hash": "dmlldy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci02NQ=="
+		},
+		{
+			"id": "vacc-people-onedose-percent-total",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tdG90YWw="
+		},
+		{
+			"id": "vacc-people-onedose-percent-pop5",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXRvdGFs"
+		},
+		{
+			"id": "vacc-people-onedose-percent-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1Eb3Nlc19BZG1pbmlzdGVyZWQsY291bnQtcmFkaW8tcGVyMTAwayxwb3B1bGF0aW9uLXJhZGlvLXRvdGFs"
+		},
+		{
+			"id": "vacc-people-onedose-percent-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxzaG93LXJhZGlvLUFkbWluaXN0ZXJlZF9Eb3NlMSxjb3VudC1yYWRpby1wZXIxMDBrLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xOA=="
+		},
+		{
+			"id": "vacc-people-onedose-percent-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1Eb3Nlc19EaXN0cmlidXRlZCxzaG93LXJhZGlvLUFkbWluaXN0ZXJlZF9Eb3NlMSxjb3VudC1yYWRpby1wZXIxMDBrLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci02NQ=="
+		},
+		{
+			"id": "vacc-people-fully-count-total",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tdG90YWw="
+		},
+		{
+			"id": "vacc-people-fully-count-pop5",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTU="
+		},
+		{
+			"id": "vacc-people-fully-count-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTEy"
+		},
+		{
+			"id": "vacc-people-fully-count-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTE4"
+		},
+		{
+			"id": "vacc-people-fully-count-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTY1"
+		},
+		{
+			"id": "vacc-people-fully-percent-total",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tdG90YWw="
+		},
+		{
+			"id": "vacc-people-fully-percent-pop5",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTU="
+		},
+		{
+			"id": "vacc-people-fully-percent-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTEy"
+		},
+		{
+			"id": "vacc-people-fully-percent-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTE4"
+		},
+		{
+			"id": "vacc-people-fully-percent-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTIsY291bnQtcmFkaW8tcGVyY2VudC1vZi1wb3B1bGF0aW9uLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTY1"
+		},
+
+		{
+			"id": "vacc-people-additional-dose-totalpop",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXRvdGFs"
+		},
+			{
+			"id": "vacc-people-additional-dose-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xMg=="
+		},
+		{
+			"id": "vacc-people-additional-dose-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xOA=="
+		},
+		{
+			"id": "vacc-people-additional-dose-pop50",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci01MA=="
+		},
+		{
+			"id": "vacc-people-additional-dose-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLXBlcmNlbnQtb2YtcG9wdWxhdGlvbixwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci02NQ=="
+		},
+
+		{
+			"id": "vacc-people-additional-dose-count-totalpop",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLWNvdW50LXBlb3BsZSxwb3B1bGF0aW9uLXJhZGlvLXRvdGFs"
+		},
+		{
+			"id": "vacc-people-additional-dose-count-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLWNvdW50LXBlb3BsZSxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xMg=="
+		},
+		{
+			"id": "vacc-people-additional-dose-count-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLWNvdW50LXBlb3BsZSxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci0xOA=="
+		},
+		{
+			"id": "vacc-people-additional-dose-count-pop50",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLWNvdW50LXBlb3BsZSxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci01MA=="
+		},
+		{
+			"id": "vacc-people-additional-dose-count-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZGRpdGlvbmFsX0Rvc2VzLGNvdW50LXJhZGlvLWNvdW50LXBlb3BsZSxwb3B1bGF0aW9uLXJhZGlvLXBvcHVsYXRpb24tb3Zlci02NQ=="
+		},
+
+		{
+			"id": "vacc-people-onedose-count-total",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tdG90YWw="
+		},
+		{
+			"id": "vacc-people-onedose-count-pop5",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTU="
+		},
+		{
+			"id": "vacc-people-onedose-count-pop12",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTEy"
+		},
+		{
+			"id": "vacc-people-onedose-count-pop18",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTE4"
+		},
+		{
+			"id": "vacc-people-onedose-count-pop65",
+			"hash": "dmlldy1yYWRpby1wZW9wbGUsc2hvdy1yYWRpby1BZG1pbmlzdGVyZWRfRG9zZTEsY291bnQtcmFkaW8tY291bnQtcGVvcGxlLHBvcHVsYXRpb24tcmFkaW8tcG9wdWxhdGlvbi1vdmVyLTY1"
+		},
+
+		{
+			"id": "vacceq-total",
+			"hash": "cG9wdWxhdGlvbi1yYWRpby10b3RhbA=="
+		},
+		{
+			"id": "vacceq-pop12",
+			"hash": "cG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItMTI="
+		},
+		{
+			"id": "vacceq-pop18",
+			"hash": "cG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItMTg="
+		},
+		{
+			"id": "vacceq-pop65",
+			"hash": "cG9wdWxhdGlvbi1yYWRpby1wb3B1bGF0aW9uLW92ZXItNjU="
+		},
+
+		{
+			"id": "vaccltc-total",
+			"hash": "dmlldy1yYWRpby1BZG1pbmlzdGVyZWRfRmVkX0xUQw=="
+		},
+		{
+			"id": "vaccltc-onedose",
+			"hash": "dmlldy1yYWRpby1BZG1pbmlzdGVyZWRfRmVkX0xUQ19Eb3NlMQ=="
+		},
+		{
+			"id": "vaccltc-fully",
+			"hash": "dmlldy1yYWRpby1TZXJpZXMtQ29tcGxldGUtRmVkTFRD"
+		},
+
+		{
+			"id": "vaccltc-total",
+			"hash": "dmlldy1yYWRpby1BZG1pbmlzdGVyZWRfRmVkX0xUQw=="
+		},
+		{
+			"id": "vaccltc-onedose",
+			"hash": "dmlldy1yYWRpby1BZG1pbmlzdGVyZWRfRmVkX0xUQ19Eb3NlMQ=="
+		},
+		{
+			"id": "vaccltc-fully",
+			"hash": "dmlldy1yYWRpby1TZXJpZXMtQ29tcGxldGUtRmVkTFRD"
+		},
+
+		{
+			"id": "vacctrends-total-daily",
+			"hash": "bWV0cmljLXJhZGlvLXRvdGFsLHZpZXctcmFkaW8tZGFpbHk="
+		},
+		{
+			"id": "vacctrends-total-cum",
+			"hash": "bWV0cmljLXJhZGlvLXRvdGFsLHZpZXctcmFkaW8tY3VtdWxhdGl2ZQ=="
+		},
+		{
+			"id": "vacctrends-total-change",
+			"hash": "bWV0cmljLXJhZGlvLXRvdGFsLHZpZXctcmFkaW8tZGFpbHljaGFuZ2U="
+		},
+		{
+			"id": "vacctrends-onedose-daily",
+			"hash": "bWV0cmljLXJhZGlvLW9uZS1kb3NlLHZpZXctcmFkaW8tZGFpbHk="
+		},
+		{
+			"id": "vacctrends-onedose-cum",
+			"hash": "bWV0cmljLXJhZGlvLW9uZS1kb3NlLHZpZXctcmFkaW8tY3VtdWxhdGl2ZQ=="
+		},
+		{
+			"id": "vacctrends-fully-daily",
+			"hash": "bWV0cmljLXJhZGlvLXR3by1kb3NlLHZpZXctcmFkaW8tZGFpbHk="
+		},
+		{
+			"id": "vacctrends-fully-cum",
+			"hash": "bWV0cmljLXJhZGlvLXR3by1kb3NlLHZpZXctcmFkaW8tY3VtdWxhdGl2ZQ=="
+		},
+		{
+			"id": "community",
+			"hash": "dmlldy1yYWRpby1jb21tdW5pdHk="
+		},
+		{
+			"id": "casesper100klast7days",
+			"hash": "dmlldy1yYWRpby1jYXNlcyx0aW1lLXJhZGlvLWxhc3Q3LG1ldHJpYy1yYWRpby0xMDBr"
+		},
+		{
+			"id": "last7-count",
+			"hash": "dmlldy1yYWRpby1jYXNlcyx0aW1lLXJhZGlvLWxhc3Q3LG1ldHJpYy1yYWRpby1jb3VudA=="
+		},
+		{
+			"id": "total_cases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLXRvdGFs"
+		},
+		{
+			"id": "totalcases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyx0aW1lLXJhZGlvLWZ1bGwsbWV0cmljLXJhZGlvLWNvdW50"
+		},
+		{
+			"id": "casesper100k",
+			"hash": "dmlldy1yYWRpby1jYXNlcyx0aW1lLXJhZGlvLWZ1bGwsbWV0cmljLXJhZGlvLTEwMGs="
+		},
+		{
+			"id": "deathsper100k",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsdGltZS1yYWRpby1mdWxsLG1ldHJpYy1yYWRpby0xMDBr"
+		},
+		{
+			"id": "deathsinlast7days",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsdGltZS1yYWRpby1sYXN0NyxtZXRyaWMtcmFkaW8tY291bnQ="
+		},
+		{
+			"id": "deathsper100klast7days",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsdGltZS1yYWRpby1sYXN0NyxtZXRyaWMtcmFkaW8tMTAwaw=="
+		},
+		{
+			"id": "totaldeaths",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsdGltZS1yYWRpby1mdWxsLG1ldHJpYy1yYWRpby1jb3VudA=="
+		},
+		{
+			"id": "tests7day",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWxhc3Q3LG1ldHJpYy1yYWRpby1jb3VudA=="
+		},
+		{
+			"id": "testsper100k7day",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWxhc3Q3LG1ldHJpYy1yYWRpby0xMDBr"
+		},
+		{
+			"id": "tests30day",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWxhc3QzMCxtZXRyaWMtcmFkaW8tY291bnQ="
+		},
+		{
+			"id": "testsper100k30day",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWxhc3QzMCxtZXRyaWMtcmFkaW8tMTAwaw=="
+		},
+		{
+			"id": "totaltests",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWZ1bGwsbWV0cmljLXJhZGlvLWNvdW50"
+		},
+		{
+			"id": "testsper100k",
+			"hash": "dmlldy1yYWRpby10ZXN0cyx0aW1lLXJhZGlvLWZ1bGwsbWV0cmljLXJhZGlvLTEwMGs="
+		},
+		{
+			"id": "positivity7day",
+			"hash": "dmlldy1yYWRpby1wZXJjZW50LHRpbWUtcmFkaW8tbGFzdDc="
+		},
+		{
+			"id": "positivity30day",
+			"hash": "dmlldy1yYWRpby1wZXJjZW50LHRpbWUtcmFkaW8tbGFzdDMw"
+		},
+		{
+			"id": "totalpositivity",
+			"hash": "dmlldy1yYWRpby1wZXJjZW50LHRpbWUtcmFkaW8tZnVsbA=="
+		},
+		{
+			"id": "comptrends-cases-daily-raw-log",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWRhaWx5LG1ldHJpYy1yYWRpby1jb3VudCxzY2FsZS1yYWRpby1sb2c="
+		},
+		{
+			"id": "comptrends-cases-daily-rate-lin",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWRhaWx5LG1ldHJpYy1yYWRpby0xMDBrLHNjYWxlLXJhZGlvLWxpbmVhcg=="
+		},
+		{
+			"id": "comptrends-cases-daily-rate-log",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWRhaWx5LG1ldHJpYy1yYWRpby0xMDBrLHNjYWxlLXJhZGlvLWxvZw=="
+		},
+		{
+			"id": "comptrends-cases-cum-rate-lin",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWN1bXVsYXRpdmUsbWV0cmljLXJhZGlvLWNvdW50LHNjYWxlLXJhZGlvLWxpbmVhcg=="
+		},
+		{
+			"id": "comptrends-deaths-cum-raw-log",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1jdW11bGF0aXZlLG1ldHJpYy1yYWRpby1jb3VudCxzY2FsZS1yYWRpby1sb2c="
+		},
+		{
+			"id": "deaths-daily-rate-lin",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1kYWlseSxtZXRyaWMtcmFkaW8tMTAwayxzY2FsZS1yYWRpby1saW5lYXI="
+		},
+		{
+			"id": "deaths-daily-rate-log",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1kYWlseSxtZXRyaWMtcmFkaW8tMTAwayxzY2FsZS1yYWRpby1sb2c="
+		},
+		{
+			"id": "cases-cum-rate-lin",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWN1bXVsYXRpdmUsbWV0cmljLXJhZGlvLTEwMGssc2NhbGUtcmFkaW8tbGluZWFy"
+		},
+		{
+			"id": "cases-cum-rate-log",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWN1bXVsYXRpdmUsbWV0cmljLXJhZGlvLTEwMGssc2NhbGUtcmFkaW8tbG9n"
+		},
+		{
+			"id": "comptrends-deaths-cum-raw-lin",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1jdW11bGF0aXZlLG1ldHJpYy1yYWRpby1jb3VudCxzY2FsZS1yYWRpby1saW5lYXI="
+		},
+		{
+			"id": "comptrends-cases-cum-rate-log",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWN1bXVsYXRpdmUsbWV0cmljLXJhZGlvLWNvdW50LHNjYWxlLXJhZGlvLWxvZw=="
+		},
+		{
+			"id": "comptrends-deaths-daily-raw-lin",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1kYWlseSxtZXRyaWMtcmFkaW8tY291bnQsc2NhbGUtcmFkaW8tbGluZWFy"
+		},
+		{
+			"id": "comptrends-deaths-daily-raw-log",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1kYWlseSxtZXRyaWMtcmFkaW8tY291bnQsc2NhbGUtcmFkaW8tbG9n"
+		},
+		{
+			"id": "comptrends-deaths-cum-rate-lin",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1jdW11bGF0aXZlLG1ldHJpYy1yYWRpby0xMDBrLHNjYWxlLXJhZGlvLWxpbmVhcg=="
+		},
+		{
+			"id": "comptrends-deaths-cum-rate-log",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1jdW11bGF0aXZlLG1ldHJpYy1yYWRpby0xMDBrLHNjYWxlLXJhZGlvLWxvZw=="
+		},
+		{
+			"id": "newcases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWRhaWx5LG1ldHJpYy1yYWRpby1jb3VudCxzY2FsZS1yYWRpby1saW5lYXIsZGF0ZS1yYWRpby1pbmRleA=="
+		},
+		{
+			"id": "newcasessubmission",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWRhaWx5LG1ldHJpYy1yYWRpby1jb3VudCxzY2FsZS1yYWRpby1saW5lYXIsZGF0ZS1yYWRpby1zdWJtaXNzaW9u"
+		},
+		{
+			"id": "healthcare-cases",
+			"hash": "dmlldy1yYWRpby1jYXNlcy1oZWFsdGgtcGVyc29ubmVs"
+		},
+		{
+			"id": "healthcare-deaths",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMtaGVhbHRoLXBlcnNvbm5lbA=="
+		},
+		{
+			"id": "7daynewcases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLXNldmVu"
+		},
+		{
+			"id": "14daynewcases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLWZvdXJ0ZWVu"
+		},
+		{
+			"id": "7daynewdeaths",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1zZXZlbg=="
+		},
+		{
+			"id": "14daynewdeaths",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby1mb3VydGVlbg=="
+		},
+		{
+			"id": "totaldeaths",
+			"hash": "dmlldy1yYWRpby1kZWF0aHMsbWVhc3VyZS1yYWRpby10b3RhbA=="
+		},
+		{
+			"id": "separated_by_age_group",
+			"hash": "dmlldy1yYWRpby1zZXBhcmF0ZQ=="
+		},
+		{
+			"id": "all_ages_combined",
+			"hash": "dmlldy1yYWRpby1jb21iaW5lZA=="
+		},
+		{
+			"id": "urban_totalcases",
+			"hash": "dmlldy1yYWRpby1jYXNlcyxtZWFzdXJlLXJhZGlvLXRvdGFs"
+		}
+	]
+}

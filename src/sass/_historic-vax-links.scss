@@ -1,0 +1,56 @@
+.btn-text-small {
+	font-size: 0.75rem;
+}
+
+.historic-data-container {
+	margin-top: 10px;
+
+	a.btn {
+		width: 360px;		
+		text-align: center;
+		margin-right: 10px;
+
+		@media screen and (max-width: 1199px) {
+			width: 100%;
+			max-width: 1199px !important;
+			margin-right: 0;
+			&:not(:last-child) {
+				margin-bottom: 5px;
+			}
+		}
+	}
+	a.btn {
+		@media screen and (max-width: $tablet-max-width) {
+			width: inherit;
+			margin-right: 0 !important;
+			margin-bottom: 10px;
+			max-width: $tablet-max-width !important;
+		}
+	}
+}
+
+.modal-wrapper {
+	margin: 10px 0;
+}
+
+.data-note-btn-container {
+	margin: 0.5rem 0 0 0;
+	@media only screen and (min-width: 576px) {
+		&.row {
+			margin-left: -0.75rem;
+			margin-right: -0.75rem;
+		}
+	}
+	@media only screen and (max-width: 575px) {
+		:not(:last-child) {
+			padding-bottom: 0.5rem;
+		}
+		.col-12 {
+			padding-left: 0;
+
+			a {
+				width: calc(100% + 0.75rem) !important;
+			}
+		}
+	}
+}

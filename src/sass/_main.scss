@@ -1,0 +1,2132 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: "Open Sans", sans-serif;
+}
+
+main {
+	height: auto;
+}
+//as per https://css-tricks.com/almanac/selectors/v/visited/ styles should be declared 1.link 2.vistied 3.hover 4.active
+a {
+	color: #075290 !important;
+
+	&:visited {
+		color: rgb(85, 26, 139) !important; //rgb(85, 26, 139)
+	}
+	&:hover {
+		color: #075290 !important;
+		text-decoration: none !important;
+	}
+}
+
+#header {
+	&_top,
+	&_bottom {
+		height: 25px;
+		padding: 5px;
+		background-color: #333;
+		color: white;
+	}
+
+	&_middle {
+		height: auto;
+
+		display: flex;
+		flex-direction: column;
+		flex-wrap: nowrap;
+	}
+}
+
+img {
+	.resize {
+		max-width: 40%;
+	}
+
+	&-responsive {
+		max-width: 100%;
+		display: block;
+		height: auto;
+		border: 0;
+	}
+}
+
+.skipOptions {
+	text-align: left;
+	a {
+		position: absolute;
+		left: -10000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		&:focus,
+		&:active {
+			position: static;
+			left: 0;
+			padding: 5px;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			text-decoration: underline;
+			outline: 3px solid #ff751a !important;
+		}
+	}
+}
+
+.header {
+	&-content {
+		&-container {
+			display: flex;
+			justify-content: space-between;
+
+			img {
+				margin-top: 10px;
+				margin-right: 5px;
+				width: 80px;
+			}
+		}
+	}
+
+	&-text {
+		&-wrapper {
+			padding: 20px 20px 5px 20px;
+
+			> * {
+				margin: 0;
+				color: #fff;
+			}
+
+			h1 {
+				font-size: 3em;
+				font-weight: bold;
+			}
+
+			h4 {
+				padding-left: 5px !important;
+			}
+
+			p {
+				font-size: 0.8em;
+				padding-left: 5px;
+			}
+		}
+	}
+}
+
+.box {
+	display: block;
+}
+
+#outerContainer {
+	display: flex;
+	flex-direction: row;
+	padding-left: 0em;
+	padding-right: 0em;
+	margin: 0 auto;
+	max-width: 1900px;
+	border-left: 0;
+
+	@include mobile-max {
+		padding: unset;
+	}
+}
+
+/* put the style on the class not the id */
+.outRightMainContainer {
+	width: 100%;
+	padding-left: 1.5em;
+	padding-right: 4em;
+	margin-top: 5px;
+
+	@include mobile-max {
+		//padding: 0 1rem;
+		width: 100%;
+	}
+	@media screen and (max-width: $tablet-max-width) {
+		margin-top: 20px;
+		padding-right: 1.5em;
+	}
+}
+/* now we can override it on V2 landing page */
+/* BUT this has to go in the landing page ONLY */
+/* so adding it there */
+/* .outRightMainContainer-specific {
+	width: 100%;
+	padding-left: 0px;
+	margin-top: 0px;
+
+	@include mobile-max {
+		padding: 0 1rem;
+		width: 100%;
+	}
+} */
+
+.bg-gray-l3 {
+	background-color: #f5f5f5 !important;
+}
+
+/** Beginning of Spanish Banner Styling**/
+
+.bg-white-spanbanner1 {
+	background-color: #fff !important;
+}
+.syndicate {
+	display: flex;
+	align-items: center;
+	margin: 0px 15px 0px 20px;
+	padding-top: 5px;
+	min-height: 75px;
+}
+
+/** End of Spanish Banner Styling**/
+
+.navContainer {
+	margin-top: 46px;
+	padding-left: 4em;
+	padding-bottom: 25px;
+	display: none;
+	@media screen and (max-width: $tablet-max-width) {
+		margin-top: 5px;
+		padding-left: 0;
+		padding-bottom: 5px;
+	}
+}
+#navButtonsLeft {
+	border-top: 1px solid #e4e4e4;
+	//border-bottom: 1px solid #e4e4e4;
+	height: 100%;
+	width: 275px;
+	@media screen and (min-width: 1000px) {
+		display: block;
+	}
+
+	@media screen and (max-width: 1000px) {
+		width: 94%;
+		border: 1px solid rgba(34, 36, 38, 0.15);
+		margin-left: 20px;
+		display: none;
+	}
+}
+
+.subscription {
+	width: 275px;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #e4e4e4;
+
+	cursor: default;
+	.subscription-header {
+		display: flex;
+		padding: 10px;
+		border-bottom: 1px solid #e4e4e4;
+		.cdc-icon-email_03 {
+			font-size: 1.2em;
+			color: grey;
+		}
+		.subscription-header-text {
+			font-size: 1.1em;
+			margin-left: 5px;
+		}
+	}
+	.subscription-body {
+		padding: 10px;
+		.form-bottom {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 20px;
+		}
+	}
+}
+
+.subscription-mob {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	border: 0px;
+
+	cursor: default;
+	.subscription-header {
+		display: flex;
+		padding: 10px;
+		border-bottom: 1px solid #e4e4e4;
+		.cdc-icon-email_03 {
+			font-size: 1.2em;
+			color: grey;
+		}
+		.subscription-header-text {
+			font-size: 1.1em;
+			margin-left: 5px;
+		}
+	}
+	.subscription-body {
+		padding: 10px;
+		.form-bottom {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 20px;
+		}
+	}
+}
+
+.fa-minus, .fa-plus {
+	color: #bdbdbd;
+}
+
+//**new left nav styling**//
+#navButtonsLeft-test .sub-content {
+	display: none;
+}
+
+.sub-content {
+	border-top: 0px solid #000000 !important;
+	padding-left: 10px;
+	text-align: left;
+}
+
+#mobileNavContainer {
+	display: none;
+}
+@media screen and (max-width: 1000px) {
+	#outerContainer {
+		flex-direction: column;
+	}
+
+	.box {
+		display: flex;
+		flex-direction: column;
+	}
+
+	#mobileNavContainer {
+		display: block;
+		width: 94%;
+		margin-left: 20px;
+	}
+}
+
+//**end new left nav style**//
+
+.boxbtn {
+	min-height: 45px;
+	border-bottom: 1px solid #bdbdbd;
+	font-size: 1.0625em !important;
+	border: 0px solid #000000;
+	color: #151616;
+	background: none;
+	text-align: left;
+
+	&:focus {
+		background-color: #ffffff;
+		color: #007b91 !important;
+	}
+
+	&:hover {
+		cursor: pointer;
+		border-color: #888;
+		color: #007b91 !important;
+	}
+}
+
+.parentNav {
+	align-items: center;
+	height: 75px;
+	width: 275px;
+	font-size: 1.0625em !important;
+	background-color: #ffffff;
+	border: 0px solid #000000;
+	text-align: left;
+	padding-left: 20px;
+	&:hover {
+		background-color: #F5F5F5;
+		color: #006778 !important;
+	}
+	@media screen and (max-width: 1000px) {
+		width: 100%;
+		height: 50px;
+	}
+}
+
+.externalLinkBtn {
+	align-items: center;
+	height: 75px;
+	width: 275px;
+	font-size: 1.0625em !important;
+	background-color: #ffffff;
+	border: 0px solid #000000;
+	text-align: left;
+	padding-left: 20px;
+	&:focus {
+		background-color: #fbfbfb;
+		color: #007b91 !important;
+	}
+	&:hover {
+		background-color: #fbfbfb;
+		color: #007b91 !important;
+	}
+	@media screen and (max-width: 1000px) {
+		width: 100%;
+		height: 50px;
+	}
+}
+
+.indPrtButton {
+	align-items: center;
+	height: 75px;
+	width: 275px;
+	font-size: 1.0625em !important;
+	background-color: #ffffff;
+	border: 0px solid #000000;
+	text-align: left;
+	padding-left: 20px;
+	@media screen and (max-width: 1000px) {
+		width: 100%;
+		height: 50px;
+	}
+}
+
+.homeContainer {
+	height: 75px;
+	list-style: none;
+	padding: 0px;
+}
+
+.homeBtn {
+	height: 75px;
+	width: 275px;
+	font-size: 1.0625em !important;
+	background-color: #ffffff;
+	border: 0px solid #000000;
+	text-align: left;
+	padding-left: 20px;
+	&:focus {
+		background-color: #ffffff;
+		color: #007b91 !important;
+	}
+	@media screen and (max-width: 1000px) {
+		width: 100%;
+		height: 50px;
+	}
+}
+.homeBtnSelected {
+	height: 75px;
+	color: #007b91;
+	background-color: #eef6f6 !important;
+	border: 0px solid #ffffff;
+	border-top: 1px solid #17a2b8;
+}
+
+.individualBtnSelected {
+	height: 75px;
+	color: #006778;
+	border-left: 3px solid #006778;
+	@media screen and (max-width: 1000px) {
+		height: 50px;
+	}
+}
+
+.navSelectedFromSubLanding {
+	background-color: #F5F5F5 !important;
+}
+
+.boxbtnSelected {
+	min-height: 45px;
+	color: #007b91;
+	font-weight: 600;
+	background-color: #eef6f6 !important;
+	width: 100% !important;
+	text-align: left;
+}
+
+.navContbtns {
+	width: 275px;
+	@media screen and (max-width: 1000px) {
+		width: 100%;
+	}
+}
+
+.boxbtnSelectedMobile {
+	min-height: 45px;
+	color: #007b91;
+	font-weight: bold !important;
+	background-color: #eef6f6 !important;
+}
+
+#mobile-submenu {
+	cursor: pointer;
+}
+
+.firstPage {
+	background-color: #d8d8d8;
+	color: #c84e07;
+	font-weight: bold;
+}
+
+.boxbtnV2 {
+	font-family: sans-serif;
+	color: #eee;
+	line-height: 1.3;
+	padding: 0.6em 1.4em 0.5em 0.8em;
+	max-width: 100%;
+	/* useful when width is set to anything other than 100% */
+	box-sizing: border-box;
+	margin: 0;
+	border: 1px solid #aaa;
+	box-shadow: 0 1px 0 1px rgba(0, 0, 0, 0.04);
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+	background-color: transparent;
+	margin-left: 10px;
+}
+
+#header {
+	&_nav {
+		ul {
+			padding-inline-start: 0px;
+			margin: 0px;
+
+			li {
+				list-style: none inside;
+			}
+		}
+	}
+}
+
+.skipNav {
+	text-align: center;
+	width: 150px;
+
+	/*margin-top:10px*/
+	a {
+		position: absolute;
+		left: -10000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		/*border:1px solid #fff;*/
+		padding: 5px;
+		color: #000000 !important;
+		background-color: #efefef;
+
+		&:focus,
+		&:active {
+			position: static;
+			left: 0;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			text-decoration: underline;
+			color: #c6c60e;
+		}
+	}
+}
+.stateCol {
+	&:hover {
+		outline: 1px solid #444;
+	}
+}
+
+.skipTable {
+	width: 150px;
+
+	/*margin-top:10px*/
+	a {
+		position: absolute;
+		left: -10000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		margin-left: 5px;
+
+		&:focus,
+		&:active {
+			position: static;
+			left: 0;
+			width: auto;
+			height: auto;
+			overflow: visible;
+			text-decoration: underline;
+			color: #c6c60e;
+		}
+	}
+}
+
+.headerSubtitle {
+	font-size: 1.07142857rem;
+	padding-left: 5px !important;
+}
+
+.breadCrumbContainer {
+	height: 30px;
+	padding-top: 5px;
+	color: #333;
+}
+
+.breadCrumbPrntName {
+	margin-left: 15px;
+}
+
+.breadcrumbArrow {
+	padding-right: 5px;
+	font-size: 0.8em;
+	margin-left: -5px;
+}
+
+.breadCrumbContainer {
+	.fa-chevron-right {
+		color: #333;
+		margin-left: 10px;
+	}
+}
+
+.parentboxbtnSelected {
+	background-color: #ffffff;
+	color: #007b91 !important;
+}
+
+.subBorder {
+	border-top: 1px solid #17a2b8 !important;
+	border-bottom: 1px solid #17a2b8;
+}
+.custom-card-styles {
+	height: 75px;
+	list-style: none;
+	padding: 0px;
+}
+.navbar {
+	background-color: #efefef;
+	border-top: 1px solid #bdbdbd;
+	border-bottom: 1px solid #bdbdbd;
+
+	button {
+		text-align: center;
+		padding: 14px 16px;
+		text-decoration: none;
+		border: 0px solid black;
+		border-top: 1px solid #e4e4e4;
+		border-bottom: 1px solid #e4e4e4;
+		outline: none;
+
+		@include mobile-breakpoint {
+			width: 100%;
+			font-size: 14px;
+			padding: 14px 16px;
+			text-decoration: none;
+			border: 0px solid black;
+			border-bottom: 1px solid #bdbdbd;
+			outline: none;
+			background-color: #333;
+			color: #ffffff;
+			text-align: left;
+		}
+	}
+
+	ul {
+		@include mobile-breakpoint {
+			width: 100%;
+		}
+	}
+
+	@media screen and (max-width: 2000px) and (min-width: 1000px) {
+		background-color: #efefef;
+		border-top: 1px solid #bdbdbd;
+		border-bottom: 1px solid #bdbdbd;
+	}
+
+	@include mobile-breakpoint {
+		overflow: none;
+		background-color: #efefef;
+		border-top: 1px solid #bdbdbd;
+		border-bottom: 1px solid #bdbdbd;
+	}
+}
+
+#pregnant-data-cards {
+	@media screen and (max-width: 1200px) {
+		flex-direction: column;
+	}
+}
+.externalLink {
+	overflow: hidden;
+	list-style: none inside;
+	margin: 0px;
+	padding: 0px;
+	border-top: 1px solid #e4e4e4;
+}
+
+.individualPrntNav {
+	overflow: hidden;
+	list-style: none inside;
+	margin: 0px;
+	padding: 0px;
+	border-top: 1px solid #e4e4e4;
+}
+
+.subnav {
+	overflow: hidden;
+	list-style: none inside;
+	margin: 0px;
+	padding: 0px;
+	border-top: 1px solid #e4e4e4;
+
+	.subnavbtn {
+		font-size: 14px;
+		border: none;
+		outline: none;
+		padding: 14px 16px;
+		font-family: inherit;
+		margin: 0;
+
+		@include mobile-breakpoint {
+			font-size: 14px;
+			border: none;
+			outline: none;
+			padding: 14px 16px;
+			font-family: inherit;
+			margin: 0;
+		}
+	}
+
+	@include mobile-breakpoint {
+		float: none;
+		overflow: hidden;
+		list-style: none inside;
+		margin: 0px;
+		padding: 0px;
+	}
+}
+
+/* Add a red background color to navigation links on hover */
+.navbar button:hover,
+.subnav:hover .subnavbtn {
+	background-color: #ffffff;
+	color: #ffffff !important;
+}
+
+/* Style the subnav content - positioned absolute */
+.subnav-content {
+	display: none;
+	width: 275px;
+	left: 50;
+	background-color: #ffffff;
+	z-index: 1;
+	/* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+	list-style: none inside;
+	padding: 0px;
+	margin: 0px;
+
+	button {
+		text-decoration: none;
+		background-color: #ffffff;
+		width: 100%;
+		border: 0px solid black;
+		text-align: left;
+
+		@include mobile-breakpoint {
+			text-decoration: none;
+			background-color: #ffffff;
+			width: 100%;
+			border: 0px solid black;
+			border-bottom: 1px solid #bdbdbd;
+			text-align: left;
+			color: #000000;
+			width: 100%;
+		}
+	}
+
+	li {
+		min-height: 45px;
+		border-bottom: 1px solid #bdbdbd;
+		font-size: 1.0625em !important;
+		border: 0px solid #000000;
+	}
+
+	@include mobile-breakpoint {
+		left: 50;
+		background-color: #ffffff;
+		width: 250px;
+		z-index: 1;
+		border: 1px solid #dcd7d7;
+		box-shadow: 0 3px 5px rgba(0, 0, 0, 0.12);
+		/* Opera 10.5, IE 9, Firefox 4+, Chrome 6+, iOS 5 */
+		list-style: none inside;
+		position: relative;
+		display: none;
+		margin: 0px;
+		padding: 0px;
+	}
+}
+
+#titleSection {
+	.mainContentSubtitle-Symbol {
+		vertical-align: super;
+		font-size: 0.8em;
+	}
+}
+
+div .search,
+select {
+	&:focus {
+		border: 2px solid #ff751a !important;
+	}
+}
+
+ul.subsubnav-content {
+	display: none;
+	padding-left: 10px;
+}
+
+.select-label {
+	display: flex;
+	align-items: center;
+	margin-bottom: 5px;
+	font-weight: bold;
+}
+
+.axis-text {
+	font-size: 1.2em !important;
+}
+
+/* hide the trends avg line */
+.hide-avg-line {
+	display: none;
+}
+
+/* site-wide contact footer */
+#commonFooter {
+	color: #fff;
+	font-size: 0.8rem;
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	// padding-left: 1rem;
+	// padding-right: 1rem;
+	min-height: 40px;
+	line-height: 40px;
+	width: 100%;
+	// margin-bottom: -20px;
+	@media screen and (min-width: 769px) {
+		// padding-left: 6.1rem;
+		// padding-right: 6.1rem;
+	}
+	div {
+		background-color: #ffffff !important;
+		a {
+			color: #000000 !important; //overide ?
+			background-color: #f2f2f2 !important;
+
+			span.under-line {
+				text-decoration: underline;
+				color: #075290;
+				&:hover {
+					text-decoration: none;
+				}
+			}
+			&:nth-of-type(1) {
+				margin-bottom: 0.333rem;
+			}
+		}
+	}
+}
+
+#commonFooter i {
+	margin-right: 5px;
+}
+
+#commonFooter > div {
+	margin-right: 15px;
+}
+
+.footer-gap {
+	flex-grow: 2;
+}
+
+.footer-link-btn {
+	padding-left: 4px;
+	padding-right: 4px;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: #005eaa;
+	text-align: center;
+	flex-grow: 1;
+	margin-right: 0 !important;
+}
+// cross link contianer
+.crosslink-container {
+	display: block;
+	margin: 40px 0;
+	a {
+		color: #000000 !important;
+		text-decoration: none;
+	}
+
+	@media screen and (max-width: 768px) {
+		& {
+			padding-left: 2.1em;
+			padding-right: 2.1em;
+		}
+	}
+}
+
+.cross-link-content {
+	line-height: 1.4285em !important;
+	background-color: rgba(255, 255, 255, 1) !important;
+	border: 1.5px solid rgba(224, 224, 224, 1) !important;
+	border-radius: 5px;
+	padding: 25px;
+	vertical-align: middle;
+	margin-bottom: 20px;
+
+	flex: 0 0 100%;
+	&:hover {
+		box-shadow: 0px 1px 5px rgba(126, 155, 165, 1);
+	}
+	h2 {
+		color: rgb(2, 125, 146);
+		font-size: 1.5rem !important;
+	}
+	@media screen and (max-width: 768px) {
+		& h2 {
+			font-size: 1.5em;
+		}
+	}
+	a.crosslink-styles {
+		color: #000000 !important;
+	}
+	span.under-line {
+		text-decoration: underline;
+		color: #064ca2;
+	}
+}
+
+/*Serlogy Styling*/
+
+.serlogyIframeContainer {
+	width: 100%;
+	border-top: 1px solid #afafaf;
+}
+
+.serlogyIframe {
+	width: 100%;
+	height: 100%;
+}
+
+#navButtons .subnav .fa,
+#navButtons .subnav .fas {
+	@include mobile-breakpoint {
+		float: right;
+	}
+}
+
+ul#stlyeplaceHolder {
+	li {
+		display: flex;
+
+		button#styling-ele {
+			flex: auto;
+			height: 45px;
+			border-left: none !important;
+			pointer-events: none;
+			&:focus {
+				outline: none !important;
+			}
+		}
+	}
+}
+
+/* Container for the Demographics Chart/Data Downloads */
+
+.download-container {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	top: 42px;
+	// right: 5px;
+	width: 170px;
+	padding: 15px;
+	border: #d4d4d5 1px solid;
+	background-color: #ffffff;
+	border-radius: 0.25rem;
+	z-index: 999;
+	@include mobile-breakpoint {
+		.dwm-img-btn {
+			display: none !important;
+		}
+	}
+}
+
+#chart-table-toggle,
+#ed-trends-export,
+#demo-export {
+	max-width: 42px;
+	padding: 12px 14px 12px 14px;
+}
+
+#chart-table-toggle > *,
+#ed-trends-export > * {
+	pointer-events: none;
+}
+
+#forecast-table-container {
+	margin-top: 20px;
+}
+
+#forecast-table-container > table {
+	display: block;
+	max-height: 60vh;
+	overflow: auto;
+}
+
+/*  Micrograph code */
+#ed-trends-chart-container {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	/* outline: 2px dotted; */
+	font-weight: bold;
+	font-size: 0.999em;
+}
+
+
+#ed-trends-all-states-chart {
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: center;
+	/* min-height: 460px;         */
+	-ms-flex-line-pack: distribute;
+	align-content: space-around;
+	/* outline: 1px dotted; */
+}
+
+#ed-trends-all-states-chart div {
+	height: auto;
+	border: 0.3px solid rgba(51, 51, 51, 0.55);
+	align-self: stretch;
+	flex: 0 0 auto;
+	margin-right: 2px;
+	width: 240px;
+}
+
+#ed-trends-all-states-chart div.focused,
+#ed-trends-all-states-chart div:focus {
+	cursor: pointer;
+	border: 1.5px solid rgba(51, 51, 51, 0.8);
+}
+
+div#UnitedStates {
+	order: -1;
+}
+
+.main-view-container {
+	transform: translate(70px, 195px);
+}
+
+.main-content {
+	transform: translate(10px, 190px);
+}
+
+#ed-trends-all-states-chart div.banner-txt-cont {
+	width: 200px;
+}
+
+.banner-text-container {
+	transform: translate(-35px, -164px);
+}
+
+.banner-text {
+	transform: translate(50px, 95px);
+	font-size: 3.2rem;
+	white-space: normal;
+}
+
+.states-view-x-axis {
+	font-size: 3vw;
+	font-weight: 900;
+}
+
+.states-view-label {
+	font-size: 1.7em;
+}
+
+.states-view-y-axis {
+	font-size: 2.9em;
+	font-weight: 900;
+}
+
+.state-viewbox {
+	height: 160px;
+}
+
+.svg-states-container-mobile {
+	display: none;
+}
+
+.svg-states-container {
+	display: block;
+}
+
+/* legend for Allstates graph*/
+.legend-container {
+	display: none;
+	position: -webkit-sticky;
+	position: sticky;
+	top: -2px;
+	flex-wrap: wrap;
+	flex-direction: row;
+	margin-bottom: 10px;
+	padding: 10px 5px 5px 5px;
+	justify-content: space-between;
+	width: 100%;
+	background: rgba(255, 255, 255, 0.9);
+}
+
+.legend-child {
+	display: flex;
+}
+
+.color-block {
+	width: 1.4rem;
+	height: 1.4rem;
+	border: 1px solid #000000;
+	margin-right: 5px;
+}
+
+.legend-child:nth-of-type(1) .color-block {
+	background-color: #4682b4;
+}
+
+.legend-child:nth-of-type(2) .color-block {
+	background-color: #ac1f25;
+}
+
+.legend-child:nth-of-type(3) .color-block {
+	background-color: #cc4c02;
+}
+
+.legend-child:nth-of-type(4) .color-block {
+	background-color: #57b452;
+}
+
+.legend-child p {
+	font-size: 1em;
+	margin: 0;
+}
+
+.legend-blocks {
+	flex-basis: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+
+#links-descrip {
+	flex-basis: 100%;
+	text-align: center;
+	margin-top: 5px;
+}
+
+#links-descrip p {
+	font-size: 1.5rem;
+}
+
+/* link container */
+.link-container {
+	flex: none !important;
+	padding-top: 0.68rem;
+	margin-right: 0.68rem;
+}
+
+#btnMobileHome,
+#header_nav a.icon {
+	display: none;
+}
+
+.pframe {
+	width: 100%;
+	border: none;
+}
+
+.topframe {
+	height: 25vh;
+	background-color: #2c2c2c;
+}
+
+.bottomframe {
+	height: 125vh;
+
+	@include small-screen-breakpoint {
+		height: 40vh;
+	}
+
+	@include medium-screen-breakpoint {
+		height: 50vh;
+	}
+
+	@include large-screen-breakpoint {
+		height: 120vh;
+	}
+}
+
+.serlogyIframe {
+	height: 180vh;
+}
+
+//social impact tab mobile height issue
+.bottom-frame-si {
+	height: 125vh;
+	@include medium-screen-breakpoint {
+		height: 50vh;
+	}
+	@include large-screen-breakpoint {
+		height: 120vh;
+	}
+}
+//utils for matching UI current styles
+.top-spacer-util {
+	padding-top: 5px;
+}
+.btm-br-replacer {
+	margin-bottom: calc(1.5em - 0.15em) !important;
+}
+.adj-line-hgt {
+	line-height: 1.5;
+}
+
+#mainContent_SubTitle {
+	.adj-font-size {
+		font-size: 0.9em;
+	}
+}
+#titleSection {
+	display: block;
+	text-align: left;
+	font-family: "Open Sans", sans-serif;
+	padding-bottom: 5px;
+
+	h1 {
+		font-size: 2rem;
+		padding-bottom: 5px;
+	}
+
+	h3 {
+		font-size: 0.9em;
+	}
+	//div was previously nested in an h3 and inherited font-size of the h3s which was .9em
+	#mainContent_SubTitle p.hcp {
+		font-size: 0.9em;
+	}
+
+	#mainContent_SubTitle h3.hcp-subtitle {
+		padding-top: 5px;
+	}
+
+	h3.hcp-subtitle {
+		// font-size: 1.5em; // canidate for removal
+		font-size: calc(
+			1.5em - 0.15em
+		); // this is needed as previous layout had h3s nested in h3's and the this gives the same end result of the computed font-size 22.95px
+	}
+	//the br should not be used so created a spacer class for HCP tab to match exisitng spacing
+	.hcp-spacer {
+		margin-top: calc(1.5rem - 0.1rem);
+	}
+	.hcp-spacer-btm {
+		margin-bottom: calc(1.5rem - 0.15rem);
+	}
+	.padding-top-spacer {
+		padding-top: 5px;
+	}
+	.semantic-line-height {
+		line-height: 1.4285em !important;
+	}
+	//font size utils
+	//bootstrap overrid for paragraph margin bottom
+	.no-margin-btm {
+		margin-bottom: 0;
+	}
+
+	h3.pg-sub-header {
+		font-size: 1.5em;
+		margin-bottom: 25px;
+	}
+
+	#mainContent_SubTitle {
+		line-height: 1.5;
+		h3.subtitle-styles {
+			padding-top: 5px;
+			line-height: 1.5;
+		}
+		.subtitle-styles-up-size {
+			font-size: 1.01rem;
+			padding-top: 5px;
+			line-height: 1.5;
+		}
+		p.p-subtitle-styles {
+			font-size: 0.9em;
+		}
+		ul.p-subtitle-styles,
+		button.p-subtitle-styles,
+		a.p-subtitle-styles {
+			font-size: 0.9em;
+		}
+		.modal-wrapper > button {
+			text-align: inherit;
+	}
+
+	}
+}
+
+.topSubtitleBtn {
+	padding: 10px;
+	background-color: #80b9c2;
+	color: #242424;
+	&:hover {
+		background-color: rgb(125, 173, 180);
+	}
+}
+
+#top-banner,
+#top-alert {
+	display: flex;
+	align-items: center;
+	margin: 20px 15px 0px 20px;
+	padding: 20px;
+	background: rgba(0, 124, 145, 0.2);
+	border-left: 5px solid #007c91;
+
+	.top-banner-icon > i,
+	.top-alert-icon > i {
+		font-size: 3em;
+		color: #007c91;
+	}
+
+	.top-banner-text,
+	.top-alert-text {
+		margin-left: 20px;
+		text-align: left;
+
+		p {
+			font-size: 0.8em;
+			font-weight: 400;
+		}
+	}
+}
+
+#custom-banner {
+	display: flex;
+	align-items: center;
+	margin: 0px 15px 0px 20px;
+	padding: 5px 25px;
+	background: #fff7e1;
+	border-left: 5px solid #fbab18;
+	min-height: 75px;
+
+	.custom-banner-icon > i {
+		font-size: 2.375em;
+		color: #fbab18;
+	}
+
+	.custom-banner-text {
+		margin-left: 20px;
+		text-align: left;
+
+		p {
+			font-size: 0.8em;
+			font-weight: 400;
+		}
+	}
+	@media screen and (max-width: $large-screen-min-width-2) {
+		margin: 0px 0px 0px 0px;
+		padding: 5px 25px;
+	}
+}
+#custom-banner-wrapper {
+	background-color: #f2f2f2;
+	padding: 10px 35px 10px 35px;
+	@media screen and (max-width: $large-screen-min-width-2) {
+		margin: 0px 0px 0px 0px;
+		padding: 20px;
+	}
+}
+
+.map-chart-title {
+	margin: 10px 0 5px 0 !important;
+	font-size: 1rem;
+}
+
+.cvi_footer {
+	margin-top: 10px;
+	font-weight: 500;
+	font-size: 0.8rem;
+}
+
+#pageFooter {
+	padding: 5px;
+}
+sup.dagger-size {
+	font-size: 1em;
+}
+.usmapLegendTitle {
+	font-weight: bold;
+	text-align: center;
+}
+
+#svgviz005_uscases,
+#svgviz023_alllabs {
+	display: block;
+	margin: auto;
+}
+
+#mapHorzLegendDivSvg {
+	display: block;
+	margin: auto;
+}
+
+.territoryStatesText {
+	pointer-events: none;
+}
+
+#title_container {
+	display: flex;
+	flex-direction: row;
+}
+
+#divHeader_image {
+	margin-left: auto;
+}
+
+#viz-cntrl-btns {
+	> button {
+		display: inline-block;
+		padding: 12px 14px 12px 14px;
+	}
+}
+
+.viz-cntrl-btns {
+	position: relative;
+}
+
+.header-top-line {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-flow: row wrap;
+}
+
+.header-top-line {
+	> div {
+		display: flex;
+	}
+}
+
+.demo-card {
+	flex: 0 1 48%;
+	@media screen and (max-width: 1260px) {
+		flex: 0 0 auto;
+		width: 100% !important;
+	}
+}
+
+.demo-cards {
+	@media screen and (max-width: 1260px) {
+		flex-direction: column;
+	}
+}
+
+.subnav {
+	&.buttons {
+		max-width: 80%;
+		margin: 0 auto !important;
+		border: 1px solid #efefef;
+	}
+
+	&-btn {
+		background: #efefef !important;
+		font-weight: normal !important;
+
+		&.active {
+			background: #fff !important;
+			font-weight: bold !important;
+		}
+	}
+}
+
+.theme-cyan .btn,
+.theme-cyan .footer-link-btn {
+	&:hover {
+		background-color: #006578 !important;
+	}
+}
+
+.ui.button,
+.theme-cyan .ui .btn:not(.historic-data-container>a.btn) {
+	border-radius: 0rem !important;
+}
+
+.main-ctn {
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+
+.btn-layout {
+	display: -webkit-inline-box;
+	display: -ms-inline-flexbox;
+	display: flex;
+	flex-wrap: wrap;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: row;
+	flex-direction: row;
+	justify-content: center;
+	font-size: 0;
+	vertical-align: baseline;
+	margin: 0 0.25em 0 0;
+}
+
+.sub-ctn.btn-layout button {
+	margin-right: 0;
+	border-radius: 0.18571429rem;
+	border: 1px solid #efefef;
+}
+
+// View Historic anchor styles
+.view-historic-container {
+	margin-top: 1rem;
+
+	& .view-historic-child {
+		a.btn.bor-rad {
+			border-radius: 0;
+			border: 1px solid #efefef;
+			font-size: 0.899em;
+			padding: 0.78571429em 1.5em 0.78571429em;
+		}
+	}
+}
+
+/** Trends **/
+#trends-choices {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	&.no-line {
+		justify-content: flex-start;
+		align-items: center;
+
+		#chart-toggle {
+			margin-left: 150px;
+
+			@include mobile-breakpoint {
+				margin-left: 0;
+			}
+		}
+	}
+
+	@include mobile-breakpoint {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	#chart-toggle,
+	#seven-day-avg {
+		margin-top: 10px;
+		font-size: 1.1em;
+	}
+
+	#seven-day-avg {
+		margin-right: 20px;
+
+		&.hide {
+			display: none;
+		}
+	}
+}
+
+// styles for download image button Cases Trends --- Cases Deaths by State
+.dwnl-img-container {
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	@include small-screen-only-breakpoint {
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		min-height: 6.5rem;
+	}
+
+	& a#viewHistoricLink.bor-rad {
+		border-radius: 0;
+		margin-right: 0.5rem;
+	}
+
+	&.margin-spacer {
+		margin: 1rem 0;
+	}
+
+	&.trendsgraph-spacer {
+		margin: 1rem 0;
+		@include mobile-breakpoint {
+			margin: 5rem 0rem 1rem 0rem;
+		}
+	}
+
+	&.demographics-spacer {
+		margin: 0 0 1rem;
+	}
+
+	#dwnload-img-age-chart,
+	#dwnload-img-ethnic-chart,
+	#dwnload-img-vacc-maps,
+	#dwnload-img-ICU-chart,
+	#dwn-img,
+	#dwnld-graph,
+	#dwn-compare-trends-img,
+	#dwnld-trend-graph,
+	#dwn-testing-img {
+		background-color: #007c91 !important;
+		border-color: #007c91 !important;
+		color: #fff !important;
+		max-width: 450px !important;
+		box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+		border-radius: 0px;
+		font-style: normal;
+		font-size: 16px !important;
+		&:hover {
+			background-color: #006578 !important;
+		}
+	}
+
+	@include mobile-breakpoint {
+		#dwn-img,
+		#dwn-trends-chart,
+		#dwn-compare-trends-img {
+			display: none !important;
+		}
+	}
+}
+
+/* new design, styles to radio-style selection of visualizations */
+.radio-selection-container {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	width: 100%;
+	background-color: #ebf5f6;
+	padding-top: 20px;
+	padding-bottom: 20px;
+
+	& div {
+		margin-left: 10px;
+		margin-right: 10px;
+
+		& .reduced {
+			margin-left: 5px;
+			margin-right: 5px;
+		}
+
+		& form {
+			text-align: left;
+		}
+	}
+	&.center {
+		justify-content: center;
+	}
+	&.spaceBefore {
+		margin-top: 15px;
+	}
+
+	@include mobile-breakpoint {
+		flex-direction: column;
+		padding-top: 0;
+
+		.hideHr {
+			display: none !important;
+		}
+
+		#rightAxis {
+			width: 194px !important;
+			height: 84px !important;
+		}
+	}
+	.trends-legend-bar3 {
+		width: 2.5rem;
+		height: 0.3888rem;
+		background-color: #ff9a47;
+	}
+
+	#rightAxis {
+		width: 350px;
+	}
+}
+
+.sub-ctn {
+	#metric_callout_box {
+		margin-top: 10px;
+		padding: 10px 10px 10px 10px;
+		text-align: left;
+		// background-color: #2F5980;
+		background-color: #b6c6d2;
+		color: black;
+		overflow-wrap: break-word;
+		width: 100%;
+	}
+
+	@include mobile-breakpoint {
+		#metric_callout_box {
+			width: 94%;
+		}
+	}
+}
+
+#state-selector {
+	width: 80%;
+
+	@include mobile-breakpoint {
+		width: 100%;
+	}
+}
+
+#comparison-chart-selectors {
+	margin-left: 20px;
+	margin-right: 20px;
+
+	@include mobile-breakpoint {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+}
+
+.viz-selections-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background-color: #ebf5f6;
+	padding: 15px;
+}
+
+.cases-and-deaths-radio-container,
+.visualization-radio-container {
+	margin-bottom: 5px;
+	@include mobile-breakpoint {
+		margin-top: 10px;
+	}
+}
+
+.radio-main-title {
+	text-align: center;
+	font-weight: bold;
+	font-size: 1.2rem;
+}
+
+.radio-title,
+.dropdown-title {
+	text-align: left;
+	font-weight: bold;
+}
+
+/* Compare Trends styles, as needed */
+/* a disabled state for buttons; could be used elsewhere if needed */
+button.disabled {
+	pointer-events: none;
+	cursor: default;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+	#ed-trends-all-states-chart div {
+		/* height: auto;
+        border: .3px solid rgba(51,51,51,0.55);               
+        flex-basis: 100%;
+        margin-right: 0.100em;
+        height: 350px !important; */
+		height: auto;
+		border: 0.3px solid rgba(51, 51, 51, 0.55);
+		align-self: stretch;
+		flex: 0 0 90%;
+		margin-right: 0.1em;
+	}
+
+	.svg-states-container-mobile {
+		display: block;
+	}
+
+	.svg-states-container {
+		display: none;
+	}
+
+	.banner-text-container {
+		height: 100%;
+		transform: translate(-35px, -274px);
+	}
+
+	.states-view-x-axis,
+	.states-view-y-axis {
+		font-size: 1.5em;
+	}
+
+	.micro-line {
+		stroke-width: 8px;
+	}
+
+	.banner-text {
+		transform: translate(50px, 150px);
+		font-size: 1.7em;
+	}
+
+	.legend-blocks {
+		flex-basis: 91%;
+		flex-direction: row;
+		margin-bottom: 10px;
+	}
+
+	.color-block {
+		/* flex-basis: 17%; */
+		height: 36px;
+		width: 43px;
+		margin-right: 3px;
+	}
+
+	.legend-child p {
+		font-size: 0.9em;
+		flex-basis: 70%;
+	}
+
+	.legend-child {
+		margin-bottom: 5px;
+		width: 50%;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	#links-descrip p {
+		font-size: 1rem;
+	}
+
+	#titleSection {
+		h3.hcp-subtitle {
+			padding: 0;
+			margin: 0;
+			font-size: calc(
+				100% - 19%
+			); // this is needed as previous layout had h3s nested in h3's and the this gives the same end result of the computed font-size 13.77px  for mobile
+		}
+
+		h3.pg-sub-header {
+			padding: 0;
+			margin: 0;
+			font-size: 0.9em;
+		}
+		#mainContent_SubTitle h3.hcp-subtitle:nth-of-type(2) {
+			padding-top: 0px;
+		}
+		#mainContent_SubTitle p.hcp {
+			line-height: 1.5;
+		}
+	}
+}
+
+// demo tab button use class vs IDs for 508 compliance
+.viz-cntrl-btns > button {
+	display: inline-block !important;
+	padding: 12px 14px 12px 14px !important;
+}
+
+.link-container {
+	margin-bottom: 1.3rem;
+}
+
+.vertical-align-helper {
+	display: flex;
+	justify-content: baseline;
+	align-items: center;
+}
+
+.vertical-align-helper label[for="us-seven-day-avg-checkbox"],
+.vertical-align-helper label[for="seven-day-avg-checkbox"],
+.vertical-align-helper label[for="seven-day-checkbox"] {
+	margin-left: 0.333rem;
+	margin-right: 0.333rem;
+}
+
+.vertical-align-helper .trends-legend-bar {
+	width: 2.5rem;
+	height: 0.3888rem;
+	background-color: #ac1f25;
+}
+
+.vertical-align-helper .trends-legend-bar-gray {
+	width: 2.5rem;
+	height: 0.3888rem;
+	background-color: gray;
+}
+
+.vertical-align-helper2 {
+	display: flex;
+	justify-content: baseline;
+	align-items: center;
+}
+.vertical-align-helper2 .trends-legend-bar2 {
+	width: 30px;
+	height: 0.3888rem;
+	background-color: #ac1f25;
+}
+
+.cpr-content {
+	margin: 20px 0px;
+	font-size: 0.9rem;
+
+	a {
+		margin-top: 5px;
+	}
+}
+
+/*******  MEDIA QUERY  *******/
+@media only screen and (max-width: 767px) {
+	/** 
+    media query at the point where Semantic UI breaks stackable grid elements down to mobile
+    have to directly break it down ourselves so we can re-order the cards as requested
+    **/
+
+	.ui.two.cards {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.ui.two.cards > .card {
+		/* width: 90% !important;
+        margin: 2em auto; */
+		width: 96% !important;
+		max-width: 9999px;
+		margin: 1em auto !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(1) {
+		order: 1 !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(2) {
+		order: 4 !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(3) {
+		order: 2 !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(4) {
+		order: 5 !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(5) {
+		order: 3 !important;
+	}
+
+	.ui.two.cards > .card:nth-of-type(6) {
+		order: 6 !important;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	main {
+		height: auto;
+	}
+
+	.countyCasesIframe {
+		height: 100vh;
+	}
+
+	#btnMobileHome {
+		display: block;
+		text-transform: capitalize;
+	}
+
+	.header-text-wrapper {
+		padding-left: 5px;
+	}
+
+	.remove_mobile {
+		display: none;
+	}
+
+	#title_container {
+		order: 2;
+	}
+
+	#title_container h1 {
+		font-size: 1.5em;
+		font-weight: bold;
+		margin-top: -8px;
+		padding-left: 8px;
+	}
+	.box.responsive {
+		display: block;
+		position: absolute;
+		width: 100%;
+		z-index: 5;
+	}
+
+	#header_top,
+	#header_bottom,
+	#divHeader_image {
+		display: none;
+	}
+
+	#header_top,
+	#header_bottom {
+		display: none;
+	}
+
+	#header_nav {
+		order: 1;
+		position: relative;
+		/*overflow: hidden;*/
+		background-color: #333;
+		min-height: 40px;
+		padding: 5px 0 0 0;
+	}
+
+	#header_nav a.icon {
+		background: #333;
+		display: block;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	#header_nav a {
+		color: white;
+		//padding: 14px 16px;
+		padding-top: 10px;
+		text-decoration: none;
+		font-size: 17px;
+		display: block;
+		padding-bottom: 0px;
+	}
+
+	a.mobileBtn {
+		height: 100%;
+	}
+	.submenu_currentTxt {
+		font-weight: bold;
+		color: #007c91 !important;
+		font-size: 0.7em;
+	}
+	.mobileMenuHamburger {
+		font-size: 20px;
+	}
+	.item {
+		padding-top: 6px !important;
+	}
+
+	.boxbtn {
+		display: block;
+		//background-color: #333;
+		border: none !important;
+		//color: #fff;
+		text-align: left;
+		width: 100%;
+		//height: 40px;
+		margin: 0;
+		//padding: 12px 0 7px 10px;
+		font-size: 1.0625em !important;
+		margin-bottom: 0px !important;
+	}
+
+	.boxbtn:not(:first-child) {
+		border: 2px inset #444;
+	}
+
+	.boxbtnSelected:not(#btnMobileHome) {
+		color: #c84e07;
+	}
+
+	.linkableCat {
+		padding-left: 0px !important;
+	}
+
+	.subscription {
+		display: flex !important;
+		width: auto;
+		margin: 15px;
+	}
+	.subscription-mob {
+		display: flex !important;
+		width: auto;
+		margin: 0px;
+	}
+
+	#mainContent_Title {
+		font-size: 1rem;
+	}
+
+	[id^="high-case-msg-"] {
+		font-size: 0.9rem !important;
+	}
+}
+
+//***Vaccination custom styling **//
+.vacciations-titleSection {
+	margin-left: 15px !important;
+}
+
+// Teal Divider Line
+.border-top-teal {
+	border-top: 1px solid #007c91;
+}
+// there Boostrap has a class that forces in-line block
+// targets the div.text that is generated markup from semantic UI dropdown
+// this is pointing at wrong Element as Semantic UI creates the div with class of text and that is where the overide needs to happen
+@media only screen and (max-width: 1300px) {
+	.override-inline-block {
+		display: block !important;
+		text-overflow: ellipsis;
+		white-space: nowrap !important;
+		overflow: hidden;
+	}
+}
+
+.hgt-mobile-desktop {
+	height: 3em;
+}
+@media only screen and (max-width: 412px) {
+	//prevent content overflow give height mobile for extra small screens only
+	.hgt-mobile-desktop {
+		height: auto !important;
+	}
+	//fix for xtra small screens is essentially setting margins to 0 for viewportt 320 to 412 maybe wider
+	//the use of boostrap class "row" is using negative margins and this edge case is pushing the div too far to left altering
+	//the width of the contents inside and causing user not to be able to see border left style
+	.overide-neg-margins {
+		margin-left: 0;
+		margin-right: 0;
+	}
+}
+
+.metric_callout_box {
+  margin-top: 10px;
+  padding: 10px 10px 10px 10px;
+  text-align: left;
+  // background-color: #2F5980;
+  background-color: #b6c6d2;
+  color: black;
+  overflow-wrap: break-word;
+  width: 100%;
+}

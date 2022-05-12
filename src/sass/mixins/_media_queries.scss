@@ -1,0 +1,111 @@
+// @media query breakpoints mixin
+
+$mobile-max-width: 767px;
+$mobile-min-width: 320px;
+$tablet-min-width: 768px;
+$tablet-max-width: 1024px;
+$desktop-min-width: 1025px;
+$desktop-min-width-2: 1000px;
+$large-screen-min-width: 1400px;
+$large-screen-min-width-2: 1200px;
+$large-screen-min-width-3: 1600px;
+$large-screen-max-width: 2560px;
+$mobile-screen-max-width: 420px;
+$mobile-screen-only-max-width: 426px;
+
+@mixin mobile-max {
+	@media screen and (max-width: $mobile-max-width) {
+		@content;
+	}
+}
+
+@mixin mobile-min {
+	@media only screen and (min-width: $mobile-min-width) {
+		@content;
+	}
+}
+
+@mixin tablet-min {
+	@media only screen and (min-width: $tablet-min-width) {
+		@content;
+	}
+}
+@mixin mobile-max-time-stamp {
+	@media only screen and (max-width: $tablet-max-width) {
+		@content;
+	}
+}
+
+@mixin desktop-min {
+	@media only screen and (min-width: $desktop-min-width) {
+		@content;
+	}
+}
+
+@mixin mobile-breakpoint {
+	@media screen and (min-width: $mobile-min-width) and (max-width: $mobile-max-width) {
+		@content;
+	}
+}
+@mixin small-screen-breakpoint {
+	@media screen and (min-width: $mobile-min-width) and (max-width: $mobile-screen-max-width) {
+		@content;
+	}
+}
+@mixin small-screen-only-breakpoint {
+	@media screen and (min-width: $mobile-min-width) and (max-width: $mobile-screen-only-max-width) {
+		@content;
+	}
+}
+@mixin medium-screen-breakpoint {
+	@media screen and (min-width: $tablet-min-width) and (max-width: $mobile-max-width) {
+		@content;
+	}
+}
+@mixin medium-screen-breakpoint-2 {
+	@media screen and (min-width: $desktop-min-width-2) and (max-width: $large-screen-min-width-2) {
+		@content;
+	}
+}
+@mixin medium-screen-breakpoint-3 {
+	@media screen and (min-width: $large-screen-min-width-2) and (max-width: $large-screen-min-width) {
+		@content;
+	}
+}
+@mixin medium-screen-breakpoint-4 {
+	@media screen and (min-width: $large-screen-min-width) and (max-width: $large-screen-min-width-3) {
+		@content;
+	}
+}
+@mixin large-screen-breakpoint {
+	@media screen and (min-width: $large-screen-min-width) and (max-width: $large-screen-max-width) {
+		@content;
+	}
+}
+@mixin large-screen-min {
+	@media screen and (min-width: $large-screen-min-width) {
+		@content;
+	}
+}
+@mixin large-screen-min-2 {
+	@media screen and (min-width: $large-screen-min-width-3) {
+		@content;
+	}
+}
+@mixin ie-media-query {
+	@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+		@content;
+	}
+}
+
+@mixin ie-mobile-media-query {
+	@media screen and (-ms-high-contrast: active) and (-ms-high-contrast: none) and (max-width: $mobile-max-width) {
+		@content;
+	}
+}
+
+@mixin not-last-child($selector) {
+	& #{$selector}:not(:last-child) {
+		@content;
+	}
+}

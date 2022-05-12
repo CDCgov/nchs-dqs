@@ -1,0 +1,2128 @@
+#viz031_viewMap {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	width: 100%;
+}
+
+#loading {
+	margin: 0;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-right: -50%;
+	display: none;
+}
+
+#titleDiv {
+	position: absolute;
+	height: 55px;
+	width: 50%;
+	display: flex;
+	justify-content: space-between;
+	color: #f8f8f8;
+	background: #464646;
+	z-index: 1;
+	text-align: center;
+}
+
+#title {
+	margin: 15px;
+	font-size: 20px;
+	overflow: hidden;
+}
+
+#gtitleDiv {
+	position: absolute;
+	top: 10px;
+	left: 62px;
+	padding: 0 12px 0 12px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	text-align: center;
+}
+
+.esri-expand .esri-expand__content {
+	box-shadow: none;
+}
+
+.esri-view-height-xsmall .esri-ui-corner .esri-expand .esri-legend.esri-widget,
+.esri-view-height-small .esri-ui-corner .esri-expand .esri-legend.esri-widget {
+	max-height: 100%;
+}
+
+.esri-view-width-less-than-small .esri-zoom .esri-widget--button {
+	display: none;
+}
+
+.esri-legend__layer {
+	&-caption {
+		font-weight: bold;
+	}
+
+	&-cell--info {
+		font-weight: bold;
+	}
+}
+
+#device-indicator {
+	position: absolute;
+	top: -999em;
+	left: -999em;
+
+	&:after {
+		@include mobile-min {
+			content: "mobile";
+		}
+
+		@include tablet-min {
+			content: "tablet";
+		}
+
+		@include desktop-min {
+			content: "desktop";
+		}
+	}
+}
+
+.states {
+	fill: none;
+}
+
+.stateborder {
+	fill: none;
+	stroke: #3e3e3e;
+	stroke-linejoin: round;
+}
+
+.tooltip {
+	position: absolute;
+	opacity: 0;
+	background-color: white;
+	border: 2px solid;
+	border-radius: 0px;
+	padding: 5px;
+	z-index: 10;
+	visibility: hidden;
+}
+
+.center-container {
+	margin: 0 auto;
+
+	@include mobile-max {
+		margin: 0;
+		top: 0px;
+	}
+}
+
+#list_select {
+	&_state {
+		width: 100%;
+
+		@include mobile-max {
+			width: 90%;
+		}
+	}
+
+	&_county {
+		width: 100%;
+
+		@include mobile-max {
+			width: 90%;
+		}
+	}
+}
+
+.dropmenu {
+	padding: 0px 10px 20px 10px;
+	text-align: left;
+}
+
+.navbar-nav {
+	text-align: left;
+}
+
+.community-profile {
+	&-tooltip {
+		position: absolute;
+		opacity: 0;
+		background-color: white;
+		border: 1px solid;
+		border-radius: 5px;
+		padding: 5px;
+		z-index: 10;
+		box-shadow: 5px 5px rgba($color: #000000, $alpha: 0.5);
+	}
+}
+
+$colors: #949ea7;
+$repeat: 20;
+
+@for $i from 1 through $repeat {
+	.county-boundary:nth-child(#{length($colors)}n + #{$i}) {
+		fill: lighten(nth($colors, random(length($colors))), 1%);
+	}
+}
+
+.community-loader {
+	display: none;
+	position: fixed;
+	top: 45vh;
+	left: 45vw;
+	z-index: 10;
+	border: 16px solid #f3f3f3;
+	border-top: 16px solid #3498db;
+	border-radius: 50%;
+	width: 120px;
+	height: 120px;
+	animation: spin 2s linear infinite;
+
+	@include mobile-max {
+		left: 35%;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+#wws-content-container,
+#community-profile-wrapper {
+	#countyview-map {
+		cursor: pointer;
+	}
+
+	#community-profile-map-wrapper {
+		// min-width: 600px;
+		// flex: 1 1 600px;
+		position: relative;
+	}
+
+	#map-controls {
+		margin-left: calc(var(--bs-gutter-x) / 2);
+		position: absolute;
+		background: transparent;
+		top: 10px;
+		left: 10px;
+		z-index: 1;
+		width: calc(100% - 1rem - 10px);
+
+		@include mobile-max {
+			display: none;
+		}
+	}
+
+	.selected-county {
+		stroke: #8b8b8b !important;
+		stroke-width: 1.3px !important;
+
+		&[data-state="New-York-City"] {
+			stroke-width: 0.325px !important;
+		}
+	}
+
+	.dropmenu {
+		select {
+			padding: 6px;
+		}
+	}
+
+	#returnToMap {
+		display: none;
+		position: absolute;
+		top: 10px;
+		right: 10px;
+
+		.btn {
+			display: block;
+			margin: 5px 0 0 25px;
+
+			@include mobile-max {
+				margin: 0 0 0 10px;
+				padding: 2px 10px;
+			}
+		}
+	}
+
+	#segment-wrapper {
+		width: 100%;
+
+		@include mobile-max {
+			width: 100%;
+		}
+
+		svg {
+			width: 100%;
+
+			@include mobile-max {
+				overflow: visible !important;
+			}
+
+			g {
+				@include mobile-max {
+					z-index: -1 !important;
+				}
+			}
+		}
+	}
+
+	.segment {
+		&.secondary {
+			background: #ecf2f5;
+		}
+	}
+
+	.segments {
+		box-shadow: none !important;
+	}
+
+	#sub-view-info {
+		table,
+		td,
+		tr {
+			border: none !important;
+		}
+
+		td:first-child {
+			opacity: 0.6;
+		}
+	}
+
+	#community-burden-level,
+	#community-transmission-risk {
+		th {
+			font-size: small;
+			font-weight: 400;
+		}
+		td {
+			font-size: medium;
+		}
+		td:first-child {
+			width: 1rem;
+		}
+	}
+	#color-legend {
+		// position: absolute;
+		// bottom: 10px;
+		// left: 40vw;
+		display: flex;
+		flex-direction: column;
+		padding: 5px;
+		border-radius: 0.5rem;
+		background: #f2f2f2;
+
+		#time-period-callout {
+			padding: 5px 10px 5px;
+		}
+
+		ul {
+			padding: 0;
+			margin: 0;
+			list-style-type: none;
+			display: flex;
+			flex-wrap: wrap;
+
+			&.legend-Administered_Dose1_Pop_Pct,
+			&.legend-Administered_Dose1_Recip_5PlusPop_Pct,
+			&.legend-Administered_Dose1_Recip_12PlusPop_Pct,
+			&.legend-Administered_Dose1_Recip_18PlusPop_Pct,
+			&.legend-Administered_Dose1_Recip_65PlusPop_Pct {
+				li {
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #f7fcf0;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ccebc5;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #7bccc4;
+						}
+					}
+
+					&:nth-child(4) {
+						i.fa-circle {
+							color: #2b8cbe;
+						}
+					}
+					&:nth-child(5) {
+						i.fa-circle {
+							color: #08589e;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: grey;
+						}
+					}
+				}
+			}
+
+			&.legend-community_transmission_level_integer {
+				li {
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #ff0000;
+						}
+					}
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ff7134;
+						}
+					}
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #fff70e;
+						}
+					}
+					&:nth-child(4) {
+						i.fa-circle {
+							color: #1d8aff;
+						}
+					}
+				}
+			}
+
+			&.legend-RPL_THEMES {
+				li {
+					padding: 5px 10px 5px;
+					width: fit-content;
+
+					i.fa-circle {
+						box-shadow: 0px 0px 0px 1px #000;
+						border-radius: 50%;
+					}
+
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #e0f3db;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #a8ddb5;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #4eb3d3;
+						}
+					}
+
+					&:nth-child(4) {
+						i.fa-circle {
+							color: #08589e;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: grey;
+						}
+					}
+				}
+			}
+			&.legend-admissions_covid_confirmed_last_7_days_per_100k_population {
+				li {
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #00cc99;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ffff99;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #fc8d59;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: #808080;
+						}
+					}
+				}
+			}
+
+			&.legend-percent_adult_inpatient_beds_used_confirmed_covid {
+				li {
+					padding: 5px 10px 5px;
+					width: fit-content;
+
+					i.fa-circle {
+						box-shadow: 0px 0px 0px 1px #000;
+						border-radius: 50%;
+					}
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #00cc99;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ffff99;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #fc8d59;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: #808080;
+						}
+					}
+				}
+			}
+			&.legend-CCL_community_burden_level_integer {
+				li {
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #00cc99;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ffff99;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #fc8d59;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: #ececec;
+						}
+					}
+				}
+			}
+			&.legend-Series_Complete_Pop_Pct,
+			&.legend-Series_Complete_5PlusPop_Pct,
+			&.legend-Series_Complete_12PlusPop_Pct,
+			&.legend-Series_Complete_18PlusPop_Pct,
+			&.legend-Series_Complete_65PlusPop_Pct,
+			&.legend-Booster_Doses_Vax_Pct,
+			&.legend-Booster_Doses_18Plus_Vax_Pct,
+			&.legend-Booster_Doses_12Plus_Vax_Pct,
+			&.legend-Booster_Doses_65Plus_Vax_Pct {
+				li {
+					padding: 5px 10px 5px;
+					width: fit-content;
+
+					i.fa-circle {
+						box-shadow: 0px 0px 0px 1px #000;
+						border-radius: 50%;
+					}
+
+					&:nth-child(1) {
+						i.fa-circle {
+							color: #f7fcf0;
+						}
+					}
+
+					&:nth-child(2) {
+						i.fa-circle {
+							color: #ccebc5;
+						}
+					}
+
+					&:nth-child(3) {
+						i.fa-circle {
+							color: #7bccc4;
+						}
+					}
+
+					&:nth-child(4) {
+						i.fa-circle {
+							color: #2b8cbe;
+						}
+					}
+					&:nth-child(5) {
+						i.fa-circle {
+							color: #08589e;
+						}
+					}
+
+					&:last-child {
+						i.fa-circle {
+							color: grey;
+						}
+					}
+				}
+			}
+
+			li {
+				padding: 5px 10px 5px;
+				width: fit-content;
+
+				i.fa-circle {
+					box-shadow: 0px 0px 0px 1px #000;
+					border-radius: 50%;
+				}
+
+				&:nth-child(1) {
+					i.fa-circle {
+						color: #f7fcf0;
+					}
+				}
+				&:nth-child(2) {
+					i.fa-circle {
+						color: #e0f3db;
+					}
+				}
+				&:nth-child(3) {
+					i.fa-circle {
+						color: #ccebc5;
+					}
+				}
+				&:nth-child(4) {
+					i.fa-circle {
+						color: #a8ddb5;
+					}
+				}
+				&:nth-child(5) {
+					i.fa-circle {
+						color: #7bccc4;
+					}
+				}
+				&:nth-child(6) {
+					i.fa-circle {
+						color: #4eb3d3;
+					}
+				}
+				&:nth-child(7) {
+					i.fa-circle {
+						color: #2b8cbe;
+					}
+				}
+				&:nth-child(8) {
+					i.fa-circle {
+						color: #08589e;
+					}
+				}
+
+				&:last-child {
+					i.fa-circle {
+						color: grey;
+					}
+				}
+			}
+		}
+
+		// @include mobile-max {
+		// 	display: none;
+		// }
+	}
+}
+
+#wws-color-legend {
+	display: flex;
+	flex-direction: column;
+	padding: 5px;
+	border-radius: 0.5rem;
+	background: #f2f2f2;
+
+	#time-period-callout {
+		padding: 5px 10px 5px;
+	}
+
+	ul {
+		padding: 0;
+		margin: 0;
+		list-style-type: none;
+		display: flex;
+		flex-wrap: wrap;
+
+		li {
+			font-size: 14px;
+			margin: 0 5px;
+			padding: 5px;
+			width: fit-content;
+
+			&:last-child {
+				padding: 1px 10px;
+			}
+
+			span {
+				padding-left: 0.25em;
+			}
+
+			&.wws-legend-circle:hover {
+				cursor: pointer;
+			}
+
+			#clear-selections-btn {
+				display: none;
+				padding: 0 2rem;
+			}
+
+			&.wws-legend-selected {
+				border-radius: 0.5rem;
+				color: #007b91;
+				background-color: #eef6f6;
+				box-shadow: #17a2b8 0px 0px 0px 1px inset;
+			}
+		}
+	}
+}
+
+.sewershed:hover {
+	stroke: #3e3e3e;
+}
+
+.stripe-table div:nth-child(odd):not(div[class^="p-"]) {
+	background: #f2f2f2;
+}
+
+#map-metrics-wrapper {
+	table#county-metrics-table {
+		thead tr {
+			height: 3rem;
+		}
+		tbody {
+			border-color: #bdbdbd;
+			border-width: 1px 0;
+		}
+	}
+	.grayBackground {
+		background: #f2f2f2;
+	}
+	.table-striped > tbody > tr:nth-of-type(even) {
+		--bs-table-accent-bg: var(--bs-table-striped-bg);
+		color: var(--bs-table-striped-color);
+	}
+	.table-striped > tbody > tr:nth-of-type(odd) {
+		--bs-table-accent-bg: transparent;
+		color: var(--bs-table-striped-color);
+	}
+}
+
+#miscLegendContainer {
+	#color-legend {
+		ul {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+
+			li {
+				font-size: 14px;
+				display: inline-block;
+				width: 50%;
+				i {
+					border: 1px solid #777;
+					height: 1em;
+					width: 1em;
+					border-radius: 50%;
+					display: inline-block;
+					transform: translateY(0.15 * 1em);
+				}
+			}
+		}
+	}
+}
+
+.county-indepth-view {
+	display: none;
+	padding: 20px 0 0 0;
+}
+
+#community-profile-segment-wrapper {
+	display: flex;
+	flex-wrap: wrap-reverse;
+	@include mobile-max {
+		z-index: -1 !important;
+	}
+}
+
+#community-transmission-risk-wrapper {
+	@include mobile-max {
+		background-color: #fff;
+		z-index: 0;
+	}
+}
+
+#sub-graphs {
+	display: none;
+
+	h4 {
+		text-indent: 2em;
+		font-weight: bold !important;
+		font-size: 1.3em;
+	}
+
+	@include mobile-max {
+		margin: 0;
+		padding: 0;
+		zoom: 0.7; /* IE */
+		-moz-transform: scale(0.7); /* Firefox */
+		-moz-transform-origin: 0 0;
+		-o-transform: scale(0.7); /* Opera */
+		-o-transform-origin: 0 0;
+		-webkit-transform: scale(0.7); /* Safari And Chrome */
+		-webkit-transform-origin: 0 0;
+		transform: scale(0.7); /* Standard Property */
+		transform-origin: 0 0; /* Standard Property */
+	}
+}
+
+.timeseries-title {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 10px;
+	h5 {
+		line-height: 1.5;
+	}
+}
+
+#timeseries-modal {
+	display: none;
+
+	#community-profile-slider {
+		width: 60%;
+	}
+
+	.timeseries-expand {
+		display: none;
+	}
+
+	.modal-dialog {
+		max-width: 50vw !important;
+
+		.timeseries-chart {
+			width: 100% !important;
+			padding-bottom: 50px;
+
+			#percentMetric {
+				padding-top: 10px;
+			}
+		}
+
+		svg {
+			zoom: 1.1;
+		}
+
+		#time-series-total-title {
+			font-weight: bold !important;
+			padding: 0 0 0 20px;
+		}
+	}
+}
+
+.timeseries-header-wrapper {
+	display: flex;
+	justify-content: space-between;
+	padding: 10px 10px 0 0;
+
+	.timeseries-expand {
+		color: teal;
+		text-align: right;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+}
+
+#sub-view-info {
+	display: none;
+	width: 400px;
+	min-height: 300px;
+}
+
+#map-subview-wrapper {
+	flex-wrap: wrap;
+	justify-content: space-around;
+	@include mobile-max {
+		padding: 0px;
+		flex-direction: column;
+		overflow: hidden;
+	}
+	#level-comm-transmission-note,
+	#time-period-callout {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+}
+
+.community-profile-slider,
+#expanded-community-profile-slider {
+	display: none;
+
+	.amount,
+	#expanded-amount {
+		text-indent: 2em;
+		outline: 0;
+		border: 0;
+		cursor: default;
+	}
+
+	h4 {
+		font-size: 1.5em;
+		text-indent: 1.5em;
+	}
+}
+
+#days-segments {
+	display: none !important;
+
+	min-height: 0 !important;
+	padding: 10px !important;
+	background-color: rgba(235, 245, 246, 1);
+
+	h2 {
+		margin: 0;
+		padding: 0;
+		color: $teal;
+		font-weight: normal;
+		font-size: 1.2em;
+	}
+
+	h4 {
+		font-size: 1.2em;
+	}
+
+	.column {
+		border: 5px solid #ebf5f6;
+	}
+
+	.bg-white {
+		justify-content: center;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.teal-text {
+	color: $teal !important;
+}
+
+#communityCharacteristics,
+#accordionCases,
+#caseDemographics,
+#testDemographics {
+	padding: 20px 0;
+}
+
+.timeseries-chart {
+	min-height: 180px; // was being set inline in HTML template class already existed just moved it here for easier maintenance
+	padding: 0;
+	margin: 0;
+	width: 100% !important;
+
+	.table-content-layout {
+		display: flex;
+		justify-content: space-between;
+		padding-right: 0.2rem !important;
+		padding-left: 0.2rem !important;
+	}
+	.row-padding-override {
+		padding-left: 0;
+		padding-right: 0;
+	}
+	@media only screen and (max-width: 767px) {
+		//
+		& {
+			min-height: 90px;
+		}
+		.row-padding-override {
+			--gutter-padding: 1.5rem;
+			padding-left: 0;
+			padding-right: calc(var(--gutter-padding) / 6.5);
+		}
+	}
+	@media only screen and (min-width: 320px) and (max-width: 412px) {
+		.table-content-layout {
+			display: flex;
+			flex-direction: column;
+		}
+		.mobile-padding {
+			padding-top: 0.5rem;
+			padding-bottom: 0.2rem;
+		}
+		.left-mobile-padding-only {
+			padding-left: 0.4333rem !important;
+		}
+	}
+	div[class$="-expanded-title"] {
+		position: absolute;
+		top: -1px;
+		left: 0;
+	}
+
+	.astriskPlacement {
+		padding: 10px 0;
+		display: none;
+	}
+	.tick {
+		color: #ccc;
+		font-size: 0.8em;
+	}
+	.domain {
+		color: #ccc;
+	}
+
+	&#metro-hospital-covid {
+		margin-bottom: 10px;
+	}
+
+	.column {
+		height: 100px;
+	}
+
+	small:first-child {
+		font-weight: bold;
+	}
+
+	.grayBackground {
+		background: #f2f2f2;
+	}
+}
+
+ul#community-characteristics-list {
+	list-style-type: none;
+
+	span {
+		font-weight: bold;
+	}
+}
+
+#wws-content-container,
+#community-profile-wrapper {
+	display: flex;
+	flex-direction: column;
+
+	h3 {
+		// font-size: 3em;
+		font-weight: normal;
+	}
+
+	h4 {
+		font-weight: normal;
+	}
+
+	.list_select_map_data {
+		height: 3em !important;
+		max-width: 500px;
+
+		@include mobile-max {
+			width: 100%;
+		}
+	}
+
+	#map-data-dropdown-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+		padding-top: 15px;
+
+		#time-period-callout {
+			align-self: center;
+
+			@include mobile-max {
+				align-self: auto;
+				padding: 0 0 10px 0;
+			}
+		}
+
+		.list_select_map_data {
+			height: 3em !important;
+		}
+
+		.ui.selection.dropdown {
+			height: 3em !important;
+		}
+
+		#list_select_map_data_parent {
+			height: 3em !important;
+		}
+	}
+
+	#transmit-btn-wrapper,
+	#reset-selections-link-wrapper,
+	#wws-reset-selections-link-wrapper {
+		display: flex;
+		flex-wrap: wrap;
+		padding-top: 15px;
+
+		@media only screen and (max-width: 1190px) and (min-width: 1001px) {
+			.btn-text-small {
+				font-size: 0.5rem;
+			}
+		}
+	}
+
+	#map-header-wrapper,
+	#wws-map-header-wrapper {
+		background: #eef6f6;
+	}
+
+	#community-dropdown-wrapper,
+	#wws-dropdown-wrapper {
+		padding: 15px 0 0 0;
+	}
+
+	i {
+		&.green {
+			color: #007c91 !important;
+		}
+
+		&.red {
+			color: rgb(145, 13, 18) !important;
+		}
+	}
+
+	.rates {
+		margin: 5px 0 0 0;
+	}
+
+	&.secondary-view {
+		#summary-table {
+			display: none;
+		}
+		#community-risk {
+			width: 100%;
+
+			@include mobile-max {
+				margin-bottom: 20px;
+			}
+
+			#risk-of-transmission-cards {
+				display: flex;
+				div {
+					text-transform: uppercase;
+				}
+
+				@include mobile-max {
+					flex-direction: column;
+				}
+
+				div {
+					flex-grow: 1;
+					padding: 20px;
+					text-align: center;
+					vertical-align: middle;
+
+					opacity: 0.3;
+
+					&.active {
+						opacity: 1;
+					}
+				}
+			}
+		}
+
+		.list_select_map_data {
+			max-width: 450px;
+			height: 3em !important;
+		}
+
+		#returnToMap {
+			display: inline-block;
+
+			@include mobile-max {
+				display: flex;
+			}
+		}
+
+		#map-subview-wrapper {
+			justify-content: flex-start;
+			flex-direction: column;
+		}
+
+		#days-segments {
+			margin: 50px 0;
+		}
+
+		#map-header-wrapper,
+		#wws-map-header-wrapper {
+			#datanote {
+				width: 45%;
+
+				@include mobile-max {
+					width: 100%;
+				}
+			}
+
+			@include mobile-max {
+				flex-direction: column;
+			}
+		}
+
+		#segment-wrapper {
+			margin-left: 50px;
+			border: none !important;
+
+			@include mobile-max {
+				width: 100%;
+				overflow: hidden;
+			}
+		}
+
+		.center-container {
+			margin: 0;
+			padding: 0;
+			position: relative;
+			top: 0px;
+			@include mobile-max {
+				// padding-top: 200px;
+			}
+		}
+
+		#vaccinations {
+			display: flex;
+			padding: 20px 0;
+		}
+
+		#sub-graphs,
+		#sub-view-info {
+			visibility: visible !important;
+		}
+
+		#sub-graphs {
+			flex: 0 1 700px;
+			display: flex;
+			padding: 20px 0;
+
+			.x.axis {
+				font-size: 0.6em;
+			}
+		}
+	}
+}
+
+#community-profile-vaccinations,
+#community-profile-vaccinations-booster {
+	.pgdata-child {
+		padding: 10px 10px 20px 10px !important;
+
+		@include mobile-max {
+			padding-bottom: 10px !important;
+		}
+
+		div {
+			background-color: transparent !important;
+		}
+
+		.card-wrapper {
+			background-color: #fff !important;
+
+			.row {
+				background-color: #fff !important;
+			}
+
+			.vax-card-number {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				height: 2rem;
+				line-height: 2rem;
+				color: #007c91;
+				@include mobile-max {
+					font-size: 12px !important;
+				}
+			}
+
+			.grayBackground {
+				background-color: #f2f2f2 !important;
+			}
+
+			.w-34 {
+				display: flex;
+				align-items: center;
+				width: 34% !important;
+			}
+
+			.w-68 {
+				display: flex;
+				align-items: center;
+				width: 68% !important;
+			}
+		}
+	}
+}
+
+#vaccinations-booster-table-footnote::before {
+	content: "\2021";
+	position: absolute;
+}
+
+.summary-table {
+	.pgdata-child {
+		padding: 10px 10px 20px 10px !important;
+
+		@include mobile-max {
+			padding-bottom: 10px !important;
+		}
+
+		div {
+			background-color: transparent !important;
+		}
+
+		.card-wrapper {
+			background-color: #fff !important;
+
+			.row {
+				background-color: #fff !important;
+			}
+
+			.vax-card-number {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				height: 2rem;
+				line-height: 2rem;
+				color: #007c91;
+				@include mobile-max {
+					font-size: 12px !important;
+				}
+			}
+
+			.grayBackground {
+				background-color: #f2f2f2 !important;
+			}
+
+			.w-34 {
+				display: flex;
+				align-items: center;
+				width: 34% !important;
+			}
+
+			.w-20 {
+				display: flex;
+				align-items: center;
+				width: 20% !important;
+			}
+
+			.w-30 {
+				display: flex;
+				align-items: center;
+				width: 30% !important;
+			}
+
+			.w-1 {
+				display: flex;
+				align-items: center;
+				width: 20% !important;
+			}
+
+			.w-2 {
+				display: flex;
+				align-items: center;
+				width: 20% !important;
+			}
+
+			.w-3 {
+				display: flex;
+				align-items: center;
+				width: 20% !important;
+			}
+
+			.w-4 {
+				display: flex;
+				align-items: center;
+				width: 40% !important;
+			}
+		}
+	}
+}
+
+#vaccinations-wrapper {
+	margin-top: 25px;
+	display: flex;
+	flex-direction: column;
+
+	@include mobile-max {
+		flex-direction: column;
+	}
+
+	#vaccinations-map-title {
+		h3 {
+			padding: 20px 20px 1px 20px;
+		}
+	}
+
+	#vaccinations-map-legend {
+		text-align: center;
+		position: relative;
+		top: 26px;
+
+		h5 {
+			padding: 15px 0 0 0;
+			font-weight: bold;
+		}
+
+		ul {
+			list-style-type: none;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+
+			li {
+				display: flex;
+				padding: 15px;
+				padding-left: 0px;
+				div {
+					width: 25px;
+					height: 25px;
+					background: #fff;
+					border: 1px solid #333;
+					border-radius: 50%;
+				}
+
+				&:nth-child(1) {
+					div {
+						background: #fff;
+					}
+				}
+				&:nth-child(2) {
+					div {
+						background: rgb(204, 255, 204);
+					}
+				}
+				&:nth-child(3) {
+					div {
+						background: rgb(127, 205, 187);
+					}
+				}
+				&:nth-child(4) {
+					div {
+						background: rgb(65, 182, 196);
+					}
+				}
+				&:nth-child(5) {
+					div {
+						background: rgb(29, 145, 192);
+					}
+				}
+				&:nth-child(6) {
+					div {
+						background: rgb(34, 94, 168);
+					}
+				}
+				&:nth-child(7) {
+					div {
+						background: rgb(0, 51, 102);
+					}
+				}
+
+				span {
+					align-self: center;
+					margin-left: 5px;
+				}
+			}
+		}
+	}
+
+	#vaccinations-map-selections-wrapper {
+		display: block;
+		font-size: 0.9em;
+		text-align: center;
+		position: relative;
+		top: 0px;
+		width: 90%;
+	}
+
+	#vaccinations-territories {
+		position: relative;
+
+		h4 {
+			padding: 20px;
+			font-size: 1.3em;
+			font-weight: bold;
+		}
+
+		&-list {
+			ul {
+				list-style-type: none;
+
+				li {
+					display: inline-block !important;
+					margin: 10px 0px;
+					background: #ccc;
+					padding: 5px 10px;
+					border: 1px solid #333;
+
+					&:hover {
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+
+	#vaccinations-federal {
+		position: relative;
+
+		h4 {
+			padding: 20px;
+			font-size: 1.3em;
+			font-weight: bold;
+		}
+
+		&-list {
+			ul {
+				list-style-type: none;
+
+				li {
+					display: inline;
+					background: #ccc;
+					padding: 5px 10px;
+					border: 1px solid #333;
+
+					&:hover {
+						cursor: pointer;
+					}
+				}
+			}
+		}
+	}
+
+	#vaccinations-banner-wrapper {
+		padding: 0;
+		margin: 0;
+
+		@include mobile-max {
+			width: 96%;
+		}
+
+		.parent-card-container-padding {
+			padding-bottom: 5px !important;
+
+			@include mobile-max {
+				padding-bottom: 0 !important;
+				margin-bottom: 20px !important;
+			}
+		}
+
+		// .custom-for-1024 {
+		//   flex-basis: 27%;
+		// }
+		// .custom-for-1024:nth-of-type(2) {
+		//   flex-basis: 70%;
+		// }
+
+		@media only screen and (min-width: 1024px) and (max-width: 1313px) {
+			.custom-for-1024 {
+				flex-basis: 100%;
+			}
+			.custom-for-1024:nth-of-type(2) {
+				flex-basis: 100%;
+			}
+		}
+
+		.parent-card-container-background-color {
+			background-color: #cce5e9;
+		}
+
+		.container {
+			> h4 {
+				padding: 0;
+				margin: 0;
+				font-size: 1em;
+				padding: 0 0 25px 0;
+			}
+
+			@include mobile-max {
+				padding: 0;
+			}
+
+			.info-layout {
+				display: flex;
+				flex-flow: row wrap;
+
+				& > div:nth-of-type(1) {
+					flex-basis: 24.9999%;
+				}
+				& > div:nth-of-type(2) {
+					flex-basis: 72.999%;
+				}
+				@media only screen and (max-width: 767px) {
+					& > div:nth-of-type(1) {
+						flex-basis: 100%;
+					}
+					& > div:nth-of-type(2) {
+						flex-basis: 100%;
+					}
+				}
+				.us-vax-icon-layout {
+					display: flex;
+					p {
+						align-self: center;
+						padding-left: 0.3rem;
+					}
+				}
+				.time-info-wrapper {
+					display: flex;
+					justify-content: flex-end;
+					.time-info-content {
+						small {
+							font-size: 63%;
+						}
+					}
+				}
+			}
+		}
+
+		.pgdata-child {
+			padding: 10px 10px 20px 10px !important;
+
+			@include mobile-max {
+				padding-bottom: 10px !important;
+			}
+
+			div {
+				background-color: transparent !important;
+			}
+
+			.card-wrapper {
+				background-color: #fff !important;
+
+				.row {
+					background-color: #fff !important;
+				}
+
+				.grayBackground {
+					background-color: #f2f2f2 !important;
+				}
+			}
+		}
+
+		.newWidth {
+			width: 73%;
+
+			@include medium-screen-breakpoint-2 {
+				width: 100%;
+			}
+			@include medium-screen-breakpoint-3 {
+				width: 60%;
+			}
+			@include medium-screen-breakpoint-4 {
+				width: 66%;
+			}
+			@include large-screen-min-2 {
+				width: 73%;
+			}
+		}
+		.vax-height {
+			height: 500px !important;
+			@include tablet-min {
+				height: 475px !important;
+			}
+
+			a.item {
+				@include mobile-max {
+					font-size: 0.5em;
+				}
+			}
+		}
+
+		.card-wrapper {
+			padding-top: 10px;
+			height: 115px;
+			position: relative;
+
+			.card-content {
+				margin: 0;
+				width: 98%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.card-category {
+				font-size: 0.8em;
+			}
+			.description-card-category {
+				font-size: 0.8em;
+			}
+			@media only screen and (max-width: 410px) and (min-width: 320px) {
+				.card-category {
+					font-size: 0.62em;
+					line-height: 1.2em;
+				}
+				.description-card-category {
+					font-size: 0.62em;
+					line-height: 1.2em;
+				}
+
+				.mobile-padding {
+					padding-left: 0.2em;
+				}
+			}
+
+			.card-number {
+				font-size: 1.1em;
+
+				@include mobile-max {
+					font-size: 0.85em;
+				}
+			}
+		}
+		.jurisdiction-card {
+			background-color: transparent;
+			border-style: solid;
+			border-color: white;
+			padding-top: 10px;
+			height: 115px;
+			position: relative;
+			margin-top: 12px;
+			color: rgba(0, 0, 0, 0.87);
+			.card-content {
+				margin: 0;
+				width: 98%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+		}
+		.card-wrap {
+			.card-number {
+				font-size: 1.2em;
+			}
+		}
+
+		.card-updated {
+			min-width: 350px;
+			bottom: 10px;
+			right: 15px;
+			background: transparent !important;
+			font-size: 12px;
+		}
+
+		.time {
+			right: 45px;
+
+			@include mobile-max {
+				right: 0px;
+			}
+		}
+		.ui.menu.top {
+			font-family: "Open Sans", apple-system, blinkmacsystemfont, "Segoe UI", "Helvetica Neue", arial, sans-serif !important;
+		}
+		.ui.menu .item {
+			// display:inline-block;
+			background: transparent;
+			color: #7f7f7f;
+			cursor: pointer;
+			margin: 0;
+			padding: 5px 25px 5px 15px;
+			-webkit-clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0);
+			clip-path: polygon(100% 0, 90% 0, 100% 100%, 0 100%, 0.5% 0);
+		}
+		// update padding and clippath for "booster dose tab" for smaller screens 320 -374
+		@media only screen and (min-width: 320px) and (max-width: 374px) {
+			.ui.menu .item {
+				background: transparent;
+				color: #7f7f7f;
+				cursor: pointer;
+				margin: 0;
+				padding: 5px 7px 5px 15px;
+				-webkit-clip-path: polygon(100% 0, 100% 0, 100% 100%, 0 100%, 0.5% 0);
+				clip-path: polygon(100% 0, 100% 0, 100% 100%, 0 100%, 0.5% 0);
+			}
+		}
+		.ui.menu .active.item {
+			background-color: white;
+		}
+	}
+
+	#vaccinations-visual-wrapper {
+		width: 100%;
+		align-self: flex-end;
+
+		@include mobile-max {
+			width: 100%;
+			align-self: flex-start;
+		}
+	}
+
+	#vaccinations-graph-map-container {
+		display: flex;
+		flex-flow: column-reverse;
+
+		@include mobile-max {
+			width: auto;
+			flex-wrap: wrap;
+		}
+	}
+
+	#vaccinations-banner-wrapper2 {
+		padding: 0;
+		margin: 0;
+		margin-top: 20px;
+		display: flex;
+		width: 100%;
+		@include mobile-max {
+			display: block;
+			width: 100%;
+		}
+		#vaccinationsLongTermBarChart {
+			width: 100%;
+			justify-content: flex-start;
+			margin-bottom: 60px;
+		}
+		#vaccinationsLongTermBarChart2 {
+			width: 100%;
+			justify-content: flex-start;
+			margin-bottom: 60px;
+		}
+
+		.parent-card-container-padding {
+			padding-bottom: 5px !important;
+
+			@include mobile-max {
+				padding-bottom: 0 !important;
+				margin-bottom: 20px !important;
+			}
+		}
+		.vax-parent-card-container-padding {
+			padding-bottom: 5px !important;
+			@include mobile-max {
+				padding-bottom: 0 !important;
+				margin-bottom: 0 !important;
+			}
+		}
+
+		.container {
+			position: relative;
+			//COMMENTED THIS LINE BECAUSE IT WAS MAKING THE GRAPHS DISAPEAR
+			//ON IOS ONLY
+			/*display: flex;*/
+			justify-content: flex-end;
+			> h4 {
+				padding: 0;
+				margin: 0;
+				font-size: 1em;
+				padding: 0 0 25px 0;
+			}
+
+			@include mobile-max {
+				padding: 0;
+			}
+		}
+
+		.pgdata-child {
+			padding: 10px 10px 50px 10px !important;
+
+			@include mobile-max {
+				padding-bottom: 10px !important;
+			}
+		}
+
+		.card-wrapper {
+			padding-top: 10px;
+			height: 115px;
+			position: relative;
+
+			.card-content {
+				margin: 0;
+				width: 98%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.card-category {
+				font-size: 0.8em;
+			}
+
+			.card-number {
+				font-size: 1.2em;
+			}
+		}
+
+		.jurisdiction-card {
+			background-color: transparent;
+			border-style: solid;
+			border-color: white;
+
+			.card-content {
+				margin: 0;
+				width: 98%;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+		}
+
+		.card-updated {
+			position: absolute;
+			min-width: 350px;
+			bottom: 10px;
+			right: 15px;
+			background: transparent !important;
+			font-size: 13px;
+		}
+
+		.download-container {
+			display: flex;
+			flex-direction: column;
+			position: relative;
+			top: 0px;
+			width: 170px;
+			padding: 15px;
+			border: #d4d4d5 1px solid;
+			background-color: #ffffff;
+			border-radius: 0.25rem;
+			z-index: 999;
+		}
+
+		.graph-container {
+			display: flex;
+			flex-direction: column-reverse;
+			position: relative;
+			align-items: flex-end;
+		}
+		.download-button-fixes-ltc {
+			margin-left: 37%;
+			position: absolute;
+			bottom: -150px;
+		}
+
+		.download-button-fixes-US {
+			margin-left: 37%;
+			position: absolute;
+			bottom: -150px;
+		}
+
+		.container-fix-us-vaccinations {
+			width: 50%;
+			justify-content: flex-start;
+			margin-bottom: 60px;
+			@include mobile-max {
+				width: 100%;
+			}
+		}
+	}
+	table.expanded-data-table.vaccinations-fontsize th,
+	table.expanded-data-table.vaccinations-fontsize td {
+		font-size: 0.73em;
+		line-height: 1.4em;
+	}
+	table.expanded-data-table.vaccinations-fontsize th,
+	table.expanded-data-table.vaccinations-fontsize td {
+		font-size: 0.73em;
+		line-height: 1.4em;
+	}
+	#Booster_eligibility-chart {
+		position: relative;
+
+		.download-button-fixes-vax-equity {
+			margin-left: 37%;
+			position: absolute;
+			bottom: -145px;
+		}
+	}
+}
+.POC-iframe-parent-container {
+	flex-grow: 1;
+	.iframe-btn-container {
+		display: flex;
+		justify-content: flex-end;
+		min-height: 3em;
+		a {
+			border: 3px;
+			background-color: #007c91;
+			color: #ffffff !important;
+		}
+		padding: 3px;
+		border-radius: 5px;
+		align-self: center;
+
+		&:hover {
+			color: #ffffff !important;
+		}
+	}
+}
+.hide-container {
+	height: 0;
+	overflow: hidden;
+	display: none;
+}
+
+#reset-selections-link,
+#wws-reset-selections-link {
+	font-size: 1rem;
+	height: 38px;
+	padding: 6px 0;
+
+	@media only screen and (max-width: 1190px) and (min-width: 768px) {
+		font-size: 0.75rem;
+	}
+}
+
+#transmit-btn {
+	min-height: 2.5rem !important;
+	padding: 0.0625rem 0.375rem !important;
+}
+
+.ETT-child {
+	padding: 0.3em;
+}
+
+.btn-outline-theme {
+	background-color: transparent;
+	border-color: #007c91;
+	border-radius: 0;
+	border-width: 1px;
+	color: #007c91;
+	font-family: inherit;
+	margin-bottom: 20px;
+}
+
+.btn-outline-theme:hover {
+	background-color: #007c91;
+	color: white;
+}
+
+.dropdown {
+	width: 100%;
+}
+
+.ui.dimmer {
+	background-color: rgba(85, 85, 85, 0.6) !important;
+}
+
+#output-container {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.everyone-mask,
+.unvaccinated-mask,
+.choose-mask,
+.consider-mask,
+.wear-mask {
+	display: none;
+	padding-left: 1rem;
+}
+
+#output-main-box.low .color-indicator {
+	background-color: #1d8aff;
+}
+
+#output-main-box.moderate .color-indicator {
+	background-color: #fff70e;
+}
+
+#output-main-box.substantial .color-indicator {
+	background-color: #ff7134;
+}
+
+#output-main-box.high .color-indicator {
+	background-color: #ff0000;
+}
+
+#output-main-box.high .everyone-mask,
+#output-main-box.substantial .everyone-mask {
+	display: block;
+}
+
+#output-main-box.low .unvaccinated-mask,
+#output-main-box.moderate .unvaccinated-mask {
+	display: block;
+}
+
+#output-main-box.low .choose-mask {
+	display: block;
+}
+#output-main-box.medium .consider-mask {
+	display: block;
+}
+#output-main-box.high .wear-mask {
+	display: block;
+}
+
+#cases-value {
+	text-transform: capitalize;
+}
+
+.color-indicator {
+	display: inline-block;
+	vertical-align: top;
+	width: 20px;
+	height: 20px;
+	border-radius: 20px;
+	margin-right: 0.25em;
+	margin-top: 0.35em;
+	margin-bottom: 3px;
+	border: 1px solid gray;
+}
+
+#todays-date {
+	width: 100%;
+	text-align: right;
+	font-size: 0.8em;
+	margin-top: 1em;
+}
+
+#county-view-data-link {
+	justify-content: start;
+
+	a {
+		align-self: center;
+	}
+}
+
+#wws-data-link {
+	a {
+		align-self: center;
+	}
+}
+
+.top-of-page-link-container {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-end;
+	margin: 1rem 0;
+}
+
+.bootstrap-h4-font-size {
+	font-size: calc(1.275rem + 0.3vw);
+}
+
+.on-this-page {
+	cursor: pointer;
+}
+
+.top-of-page {
+	text-align: right;
+}
+
+.ui.dropdown > .text {
+	white-space: normal;
+	word-wrap: break-word;
+}

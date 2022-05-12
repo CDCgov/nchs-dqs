@@ -1,0 +1,628 @@
+.wLevel {
+	&_1 {
+		font-size: 2vw;
+
+		@include mobile-max {
+			font-size: 6vw;
+		}
+	}
+
+	&_2 {
+		font-size: 3.2vw;
+
+		@include mobile-max {
+			font-size: 7.4vw;
+		}
+	}
+
+	&_3 {
+		font-size: 1.7vw;
+
+		@include mobile-max {
+			font-size: 4.8vw;
+		}
+	}
+
+	&_4 {
+		font-size: 0.9vw;
+
+		@include mobile-max {
+			font-size: 2.3vw;
+		}
+	}
+
+	&_5 {
+		font-size: 0.85rem;
+
+		@include mobile-max {
+			font-size: 2.7vw;
+		}
+	}
+}
+
+.widget_text_content {
+	clear: both;
+	line-height: 1.2;
+}
+
+.widget_max_button {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.widget {
+	&-border {
+		&-left {
+			border-left: 16px solid $blue;
+		}
+
+		&-right {
+			border-right: 16px solid $blue;
+		}
+	}
+	&-margin {
+		&-bottom {
+			margin-bottom: 1em;
+		}
+	}
+}
+
+.wleft {
+	text-align: left;
+
+	@include mobile-max {
+		text-align: center;
+	}
+}
+.wright {
+	text-align: right;
+
+	@include mobile-max {
+		text-align: center;
+	}
+}
+
+.wbold {
+	font-weight: 700;
+}
+
+.widget_center {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 75%;
+}
+
+.widget {
+	.resources-button-group {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+	}
+}
+
+.resources-button-group {
+	.button {
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		height: 60px;
+		margin: 10px;
+		padding: 15px;
+		background-color: $offwhite !important;
+		border: 1px solid rgba(0, 0, 0, 0.125);
+		border-radius: 5px;
+		text-align: left;
+		color: $black;
+		text-decoration: none;
+		transition: 0.25s box-shadow;
+
+		i {
+			font-size: 45px;
+			text-align: left;
+			color: $red !important;
+			margin-right: 20px;
+		}
+
+		&:hover {
+			box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
+		}
+	}
+}
+
+.widget3 {
+	&_container {
+		&_main {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+
+		&_table {
+			flex: 1 1 auto;
+			min-height: 80px;
+			overflow-y: scroll;
+
+			@include mobile-max {
+				height: 40vh !important;
+				overflow-y: scroll;
+			}
+		}
+
+		&_table {
+			&_title {
+				flex: 1 1 auto;
+
+				@include mobile-max {
+					font-size: 1em;
+				}
+			}
+		}
+	}
+}
+
+.widget7_container_main,
+.widget5_container_main {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.widget7 {
+	&_container {
+		&_table {
+			flex: 1 1 auto;
+			height: 0px;
+			overflow-y: scroll;
+
+			@include mobile-max {
+				height: 500px;
+				overflow-y: scroll;
+			}
+		}
+
+		&chart {
+			flex: 1 1 auto;
+			min-height: 300px;
+			overflow-y: hidden;
+		}
+	}
+
+	&_table {
+		&_title {
+			flex: 1 1 auto;
+
+			@include mobile-max {
+				font-size: 1em;
+			}
+		}
+	}
+}
+
+.widget-border {
+	&-tb {
+		border-top: 1px solid darkgrey;
+		border-bottom: 1px solid darkgrey;
+	}
+
+	&-top {
+		border-top: 1px solid darkgrey;
+	}
+}
+
+.widget_general_notes_container-left {
+	display: flex;
+	justify-content: flex-end;
+
+	@include mobile-max {
+		justify-content: center;
+	}
+}
+
+.scrollWidget {
+	overflow-y: scroll;
+}
+
+.wtable {
+	> thead th {
+		@include mobile-max {
+			font-size: 0.9em;
+		}
+	}
+}
+
+/* updated big number card styles */
+.number-card-container {
+	background-color: #cce5e9;
+	height: 190px;
+	margin-bottom: 40px;
+
+	&.two-tier {
+		height: 180px;
+		&.two-tier {
+			background-color: #ebf5f6;
+		}
+
+		& > .card-note {
+			display: flex;
+			justify-content: space-between;
+			margin-left: 25px;
+
+			@include mobile-max {
+				position: relative;
+				top: 60px;
+			}
+			@include mobile-max-time-stamp {
+				top: 51px;
+				line-height: 1.3em;
+			}
+		}
+
+		@include mobile-max {
+			min-height: 520px;
+		}
+		@include mobile-max-time-stamp {
+			// min-height: 560px;
+			line-height: 1.3em;
+		}
+	}
+
+	&.three-tier {
+		height: 210px;
+
+		& > .card-note {
+			display: flex;
+			justify-content: space-between;
+			margin-left: 25px;
+
+			@include mobile-max {
+				position: relative;
+				top: 60px;
+			}
+			@include mobile-max-time-stamp {
+				top: 51px;
+				line-height: 1.3em;
+			}
+		}
+
+		@include mobile-max {
+			min-height: 520px;
+		}
+		@include mobile-max-time-stamp {
+			// min-height: 560px;
+			line-height: 1.3em;
+		}
+	}
+
+	& > .card-note {
+		margin-right: 3%;
+		text-align: right;
+		margin-top: -10px;
+		font-size: 14px;
+		color: #111111;
+
+		@include mobile-max {
+			position: relative;
+			top: 30px;
+		}
+	}
+
+	@include mobile-max {
+		min-height: 480px;
+	}
+}
+
+.number-card-date-container {
+	margin-right: 3%;
+	margin-left: 3%;
+	display: flex;
+	justify-content: space-between;
+	@include mobile-max {
+		position: relative;
+		top: 45px;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	& > .card-note {
+		text-align: right;
+		margin-top: -10px;
+		font-size: 14px;
+		color: #111111;
+		@include mobile-max {
+			margin-top: -5px;
+		}
+	}
+}
+
+.card-container {
+	width: 94%;
+	height: 128px;
+	margin-bottom: 38px;
+	margin-left: 3%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+	&.three-tier {
+		height: 148px;
+
+		@include mobile-max {
+			min-height: 400px !important;
+		}
+	}
+
+	@include mobile-max {
+		flex-direction: column;
+		justify-content: start;
+		min-height: 380px;
+	}
+}
+
+.mis-Summary {
+	padding: 1em;
+	margin-bottom: 20px;
+	background-color: #f0f0f0 !important;
+
+	& > ul {
+		padding-left: 2rem;
+		font-size: 0.85em;
+		margin-bottom: 1px;
+	}
+}
+
+.callout-heading {
+	font-size: 1.3em;
+	margin: 0.25em 0;
+}
+
+.misPreMapHeader {
+	font-size: 2rem;
+	line-height: 2rem;
+	margin-bottom: 10px;
+	margin-top: 35px;
+}
+
+.number-card.two-tier .callout-heading {
+	display: block;
+	text-align: center;
+	margin: 1em 0;
+}
+
+.number-card.two-tier span.count {
+	display: block;
+	text-align: center;
+	padding-top: 0.75em;
+	color: #007d91;
+	font-size: 1.7em;
+	font-weight: 500;
+}
+
+.number-card {
+	background-color: #ffffff;
+	width: 32%;
+	height: 128px;
+	margin-top: 20px;
+
+	&.two-tier {
+		width: 48.5%;
+	}
+
+	&.flexed {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		div h3.card-category {
+			line-height: inherit !important;
+		}
+	}
+
+	.level {
+		&-high {
+			background: #ff0000;
+			color: #000;
+			text-transform: capitalize;
+			padding: 0 3px;
+		}
+		&-moderate {
+			background: #fff70e;
+			color: #000;
+			text-transform: capitalize;
+			padding: 0 3px;
+		}
+		&-substantial {
+			background: #ff7134;
+			color: #000;
+			text-transform: capitalize;
+			padding: 0 3px;
+		}
+		&-low {
+			background: #1d8aff;
+			color: #000;
+			text-transform: capitalize;
+			padding: 0 3px;
+		}
+	}
+
+	&.three-tier {
+		height: 148px;
+
+		@include mobile-max {
+			min-height: 140px !important;
+		}
+	}
+
+	&:last-child {
+		@include mobile-max {
+			margin-bottom: 38px;
+		}
+	}
+
+	& > div {
+		text-align: center;
+	}
+
+	& > div div.card-number {
+		font-size: 30px;
+		height: 38px;
+		line-height: 38px;
+		color: #007c91;
+	}
+
+	& > div h3.card-category {
+		font-size: 18px;
+		line-height: 38px;
+	}
+
+	& > div div.card-category.save-space {
+		font-size: 17px !important;
+
+		@include mobile-max {
+			font-size: 26px;
+		}
+	}
+
+	& > div div.card-recent {
+		font-size: 16px;
+		padding-top: 16px;
+		color: #666666;
+	}
+
+	@include mobile-max {
+		width: 100%;
+		min-height: 120px !important;
+	}
+}
+
+/* Container for flexboxes */
+.generalCardContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	background-color: #cce5e9;
+	padding: 10px;
+
+	@include mobile-max {
+		.generalCardContainer {
+			flex-direction: column;
+		}
+
+		@include not-last-child(".generalCardColumn") {
+			margin-bottom: 10px;
+		}
+	}
+}
+
+/* Create four equal columns */
+.generalCardColumn {
+	width: calc(50% - 5px);
+	justify-content: space-between;
+	background-color: #fff;
+
+	@include mobile-max {
+		width: 100%;
+	}
+	& div {
+		text-align: center;
+		margin: 10px;
+	}
+	& .calloutHeading1 {
+		font-size: 1.3em;
+	}
+	& .count1 {
+		color: #007d91;
+		font-size: 1.7em;
+		font-weight: 500;
+	}
+}
+
+/* Container for flexboxes */
+.general4CardContainer {
+	display: flex;
+	flex-wrap: nowrap; /* need nowrap for desktop */
+	justify-content: space-between;
+	background-color: #fff;
+	padding: 5px;
+
+	@include mobile-max {
+		.general4CardContainer {
+			flex-direction: column;
+			flex-wrap: wrap;
+		}
+
+		@include not-last-child(".general4CardColumn") {
+			margin-bottom: 5px;
+		}
+	}
+	/* this is needed to get it to wrap on mobile devices */
+	@media only screen and (max-device-width: 480px) {
+		flex-wrap: wrap;
+	}
+}
+
+/* Create four equal columns */
+.general4CardColumn {
+	width: 25%; /* 4 columns */
+	justify-content: space-between;
+	background-color: #eef6f6;
+	border: 6px;
+	border-color: white; /* this is how I get white line between boxes */
+	padding: 15px 15px 15px 35px;
+	margin-right: 4px;
+	@include mobile-max {
+		width: 100%;
+	}
+
+	/* you can use internal styles like this on a div */
+	/* I did not use this approach because the styles I needed were nested */
+	& .calloutHeading1 {
+		color: #007d91;
+		font-size: calc(1.8em + 1.1vmin);
+		font-weight: 500;
+	}
+}
+
+
+.general2CardContainer {
+	display: flex;
+	flex-wrap: nowrap; /* need nowrap for desktop */
+	background-color: #fff;
+	padding: 5px;
+
+	@include mobile-max {
+		.general4CardContainer {
+			flex-direction: column;
+			flex-wrap: wrap;
+		}
+
+		@include not-last-child(".general4CardColumn") {
+			margin-bottom: 5px;
+		}
+	}
+	/* this is needed to get it to wrap on mobile devices */
+	@media only screen and (max-device-width: 480px) {
+		flex-wrap: wrap;
+	}
+}
+
+/* Create four equal columns */
+.general2CardColumn {
+	width: 40%; /* 4 columns */
+	justify-content: space-between;
+	background-color: #eef6f6;
+	border: 6px;
+	border-color: white; /* this is how I get white line between boxes */
+	padding: 15px 15px 15px 35px;
+	margin-right: 4px;
+	@include mobile-max {
+		width: 100%;
+	}
+
+	/* you can use internal styles like this on a div */
+	/* I did not use this approach because the styles I needed were nested */
+	& .calloutHeading1 {
+		color: #007d91;
+		font-size: calc(1.8em + 1.1vmin);
+		font-weight: 500;
+	}
+}

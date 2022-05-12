@@ -1,0 +1,98 @@
+body,
+html {
+	height: 50vh;
+}
+.min-hght-spacer {
+	@media only screen and (min-width: 1500px) {
+		min-height: 50vh;
+	}
+}
+.banner-txt {
+	font-size: 40px;
+	text-decoration: none;
+	color: #fff;
+	vertical-align: middle;
+}
+h1.warning-message {
+	font-size: 1.8rem;
+	white-space: normal;
+}
+h2.warning-message {
+	font-size: 1.3rem;
+	white-space: normal;
+}
+
+.mg-top {
+	margin-top: 2rem;
+}
+
+.browser-icon-container {
+	margin-top: 2rem;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+
+	div {
+		display: flex;
+		flex-flow: column nowrap;
+		justify-content: space-between;
+		align-items: center;
+		p {
+			font-size: 1.5rem;
+			margin-top: 0;
+			margin-bottom: 0;
+		}
+	}
+
+}
+
+.input-container {
+	div {
+		margin-top: 0.9rem;
+		display: flex;
+		justify-content: center;
+	}
+	& #url-link {
+		width: 40vw;
+	}
+	& button.theme-cyan.ui {
+		background-color: #007c91 !important;
+		border-color: #007c91 !important;
+		color: #fff !important;
+		max-width: 450px !important;
+		box-shadow: 0 0 0 1px transparent inset,
+			0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+		border-radius: 0px;
+		font-style: normal;
+		font-size: 16px !important;
+	}
+}
+
+div.copy-message-bkg {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	-ms-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+
+	align-self: center;
+	& p.copy-message {
+		font-size: 1.8rem;
+		align-items: center;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+}
+
+div.copy-message-bkg {
+	background-color: hsla(120, 60%, 70%, 0.21);
+	color: green;
+	-ms-transition: opacity 1s ease-in-out;
+	transition: opacity 1s ease-in-out;
+	& p.copy-message {
+		font-size: 1.8rem;
+	}
+}
+.hide {
+	display: none;
+}
