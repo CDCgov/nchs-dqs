@@ -5,6 +5,11 @@ import { downLoadGenChart } from "../utils/downloadimg";
 
 export const MainEvents = {
 	registerEvents() {
+		$("#data-topic-select").change((evt) => {
+			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
+			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
+			console.log("New data topic:", dataTopic);
+		});
 		$("#panel-num-select").change((evt) => {
 			let panelNum = evt.target.value;
 		    appState.ACTIVE_TAB.updatePanelNum(panelNum);
@@ -43,13 +48,46 @@ export const MainEvents = {
 			}
 		});
 
-		$("#classification-select").change((evt) => {
-			const notUpdating = !appState.ACTIVE_TAB.getClassUpdateState();
-			if (notUpdating) {
-				let classification = evt.target.value;
-				appState.ACTIVE_TAB.updateClassification(classification);
-				this.setDownloadAriaLabel();
-			}
+		// click Chart then show Chart
+		$(document).on("click", "#icons-tab-1", (event) => {
+			event.stopPropagation();
+			let theChart = document.getElementById("chart-tab");
+			theChart.style.display = "block";
+			theChart.classList.add("show");
+			theChart.classList.add("active");
+			let theTable = document.getElementById("table-tab");
+			theTable.style.display = "none";
+			theTable.classList.remove("show");
+			theTable.classList.remove("active");
+			// flip the colors
+			let theChartTab = document.getElementById("icons-tab-1");
+			theChartTab.style.backgroundColor = "#b3d2ce";
+			theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			let theTableTab = document.getElementById("icons-tab-2");
+			theTableTab.style.backgroundColor = "#ffffff";
+			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			event.preventDefault();
+		});
+		
+		// click Table then show Table
+		$(document).on("click", "#icons-tab-2", (event) => {
+    		event.stopPropagation();
+			let theTable = document.getElementById("table-tab");
+			theTable.style.display = "block";
+			theTable.classList.add("show");
+			theTable.classList.add("active");
+			let theChart = document.getElementById("chart-tab");
+			theChart.style.display = "none";
+			theChart.classList.remove("show");
+			theChart.classList.remove("active");
+			// flip the colors
+			let theChartTab = document.getElementById("icons-tab-1");
+			theChartTab.style.backgroundColor = "#ffffff";
+			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theTableTab = document.getElementById("icons-tab-2");
+			theTableTab.style.backgroundColor = "#b3d2ce";
+			theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			event.preventDefault();
 		});
 
 		$(document)

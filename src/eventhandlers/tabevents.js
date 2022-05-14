@@ -22,8 +22,8 @@ export const TabEvents = {
 		PageEvents.addButtonsClickListers(homeDataTrackerBtn);
 		PageEvents.addButtonsClickListers(externalLinksBtns);
 		PageEvents.addButtonsClickListers(individualPrntButton);
-		PageEvents.addMobileHamburgerCollapse();
-		PageEvents.tableToggle(); */
+		PageEvents.addMobileHamburgerCollapse(); */
+		PageEvents.tableToggle(); 
 	},
 	tabHTMLHandler(hash) {
 		// common page elements

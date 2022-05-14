@@ -36,10 +36,15 @@ export class LandingPage {
 		this.flattenedFilteredData = null;
 		this.vizId = "chart-container";
 		// select data items - set some defaults
+		this.dataTopic = "obesity"; // default
 		this.panelNum = 1;
 		this.stubNameNum = 0;
-		this.startPeriod = null;
-		this.endPeriod = null;
+		this.startPeriod = "1988-1994";
+		this.startYear = "1988"; // first year of the first period
+		this.endPeriod = "2013-2016";
+		this.endYear = "2013" // first year of the last period
+		this.footNotes = "";
+		this.footnoteMap = {};
 	}
 
 	renderTab() {
@@ -78,22 +83,55 @@ export class LandingPage {
 
 	getInitialData() {
 		// Will need to register events here when we get to changing selects
-		const getObesityData = () =>
-			DataCache.ObesityData ?? Utils.getJsonFile("content/json/HUS_OBESCH_2018.json");
+		async function getObesityData() {
+			return DataCache.ObesityData ?? Utils.getJsonFile("content/json/HUS_OBESCH_2018.json");
+		}
+
+		async function getFootnoteData() {
+			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
+		}
 		
-		Promise.all([
-			getObesityData(),
-		]).then((data) => {
-			const [destructuredData] = data;
-			this.allData = JSON.parse(destructuredData);
+/* 		const getObesityData = () =>
+			DataCache.ObesityData ?? Utils.getJsonFile("content/json/HUS_OBESCH_2018.json");
+
+		const getFootnoteData = () =>
+			DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
+ */		
+//		let footnotesData = getFootnoteData();
+//		debugger;
+		Promise.all([getObesityData(),getFootnoteData()]).then((data) => {
+			//const [destructuredData] = data;
+			[DataCache.ObesityData, DataCache.Footnotes] = data;
+			//debugger;
+			this.allData = JSON.parse(data[0]);
 			DataCache.ObesityData = this.allData;
+			this.footNotes = JSON.parse(data[1]);
+			DataCache.Footnotes = this.footNotes;
+
+			// build footnote map ONE TIME
+			this.footnoteMap = {};
+			let i = null;
+			for (i = 0; this.footNotes.length > i; i += 1) {
+				this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
+			}
+			//debugger;
+
 			// create a year_pt col from time period
 			this.allData = this.allData
 				.filter((d) => d.flag !== "- - -") // remove undefined data
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
 			this.renderAfterDataReady();
+
+			//debugger;
+			// now load the footnotes data
+			//DataCache.FootNotes = getFootnoteData();
+/* 		}).then((footnotes) => {
+			debugger;
+			DataCache.FootNotes = footnotes;
+			debugger;
+			//return Utils.getJsonFile("Content/CoronaViewJson_01/colors.json"); */
 		}).catch(function (err) {
-			console.error(`Runtime error in tabs/landingpage.js: ${err}`);
+			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
 		});
 	
 	}
@@ -127,7 +165,7 @@ export class LandingPage {
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
 		//debugger;
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
-		this.chartConfig.chartTitle = `Obesity in Children and Adolescents`;
+		this.chartConfig.chartTitle = ""; // dont use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
 		const genChart = new GenChart(this.chartConfig);
@@ -135,8 +173,8 @@ export class LandingPage {
 		//config.renderSlider(genChart.render(), this.currentSliderDomain);
 		genChart.render();
 
-		// set background to white
-		$("#chart-container-svg").style("background-color", '#FFFFFF');
+		// set background to white - THIS DOESNT WORK
+		//$("#chart-container-svg").style("background-color", '#FFFFFF');
 /* 		const removedCategories = this.savedNamedCategories.filter((s) => !this.currentNamedCategories.includes(s));
 		removedCategories.forEach((r) => $(`.${r}`).hide()); */
 	}
@@ -144,17 +182,17 @@ export class LandingPage {
 	getFlattenedFilteredData() {
 		const { classification } = this;
 		let selectedPanelData = this.allData.filter(
-			(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.stub_name_num) === this.stubNameNum
+			(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
 		);
-		// now we need to nest by stub_label
-/* 		let nestedPanelData = d3.nest() 
-    		.key(d => d.stub_label)
-			.entries(selectedPanelData); */
 		
 		selectedPanelData = selectedPanelData.map((d) => ({
 			...d,
 			subLine: d.stub_label,
 		}));
+		//debugger;
+		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys().join();
+		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
+		this.updateFootnotes(allFootnoteIdsArray);
 		//debugger;
 /* 		const noLocationNamedData = [...classifiedData, ...allCountiesData];
 		if (this.currentLocation === "United States")
@@ -176,21 +214,46 @@ export class LandingPage {
 
 		//const newTotalText = this.newOrCumulative === "seven" ? "7-day" : "14-day";
 
-		const yAxisTitle = "Percent of Population, crude (%)"
-
-		return { chartValueProperty, yAxisTitle };
+		const yAxisTitle = "Percent of Population, crude (%)";
+		const xAxisTitle = "Time Period";
+		return { chartValueProperty, yAxisTitle, xAxisTitle };
 	}
 
 	getAllChartProps = (data, chartBaseProps) => {
-		const { chartValueProperty, yAxisTitle } = chartBaseProps;
+		const { chartValueProperty, yAxisTitle, xAxisTitle } = chartBaseProps;
 		const vizId = "chart-container";
 
+		// figure out legend placement
+		let legendCoordPercents = [0.40, 0.58];
+		switch (this.stubNameNum) {
+			case 0:
+				legendCoordPercents = [0.38, 0.75];
+				break;
+			case 1:
+				legendCoordPercents = [0.40, 0.70];
+				break;
+			case 2:
+				legendCoordPercents = [0.40, 0.70];
+				break;
+			case 3:
+				legendCoordPercents = [0.25, 0.65];
+				break;
+			case 4:
+				legendCoordPercents = [0.25, 0.51];
+				break;
+			case 5:
+				legendCoordPercents = [0.38, 0.66];
+				break;
+			default:
+				legendCoordPercents = [0.40, 0.58];
+				break;
+		}
 		let props;
 		props = {
 			data,
 			chartProperties: {
 				yLeft1: chartValueProperty,
-				xAxis: "year_pt",
+				xAxis: "year",
 				yAxis: "estimate",
 			},
 			usesLegend: true,
@@ -199,10 +262,12 @@ export class LandingPage {
 			usesLeftAxis: true,
 			usesLeftAxisTitle: true,
 			usesBottomAxis: true,
+			usesBottomAxisTitle: true,
 			usesDateAsXAxis: true,
 			yLeftLabelScale: 3,
-			legendCoordinatePercents: [0.40, 0.58],
+			legendCoordinatePercents: legendCoordPercents,
 			leftAxisTitle: yAxisTitle,
+			bottomAxisTitle: xAxisTitle,
 			formatXAxis: "string",
 			usesMultiLineLeftAxis: true,
 			multiLineColors: [
@@ -281,7 +346,6 @@ export class LandingPage {
 			vizId: this.vizId,
 		});
 
-		debugger;
 		// use this if we need to adjust data at all
 		//this.chartConfig.data = this.updateCurrentData();
 		//if (this.yScaleType === "log") this.chartConfig.legendCoordinatePercents = [0.4, 0.65];
@@ -336,6 +400,37 @@ export class LandingPage {
 		return "deathRateCumulativeSubmission";
 	}
 
+	updateFootnotes(footnotesIdArray) {
+		let footnotesList = footnotesIdArray.split(",");
+		//console.log("footnote ids: ", footnotesList);
+		// foreach footnote ID, look it up in the tabnotes and ADD it to text
+		let allFootnotesText = "";
+		footnotesList.forEach(f =>
+			allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
+		);
+		// now update the footnotes on the page
+		$("#pageFooter").html(allFootnotesText);
+		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
+		//$("#pageFooter").show(); // let toggleTable do this
+	}
+
+	getFootnoteText(f) {
+		const footnote = this.searchJSONArray(DataCache.Footnotes.fn_text, {
+			fn_id
+		});
+
+		if (footnotes.length > 0) return footnote;
+		return `<p>There was an error pulling footnote` + fn_id + `. Try refreshing your browser to see them.</p>`;
+	}
+
+	updateDataTopic(dataTopic) {
+		this.dataTopic = dataTopic; // string
+		//this.setCategoriesSelect();
+		// now re-render the chart based on updated selection
+		this.renderChart();
+		//this.renderDataTable();
+	}
+
 
 	updatePanelNum(panelNum) {
 		this.panelNum = parseInt(panelNum);
@@ -357,11 +452,13 @@ export class LandingPage {
 	
 	updateStartPeriod(start) {
 		this.startPeriod = start;
+		this.startYear = this.getYear(start);
 		this.renderChart();
 	}
 
 	updateEndPeriod(end) {
 		this.endPeriod = end;
+		this.endYear = this.getYear(end);
 		this.renderChart();
 	}
 
@@ -391,11 +488,9 @@ export class LandingPage {
 			<span style="padding-bottom:0px; font-family:Open Sans,sans-serif;color: white; font-weight:300; ">Select a topic</span><br>
 			<span style="margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: white; font-weight:500;font-size:22px;">Topic</span>
 			<br>&nbsp;<br>
-			<select name="topic" id="topic" form="select-view-options"  class="select-style">
+			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  class="select-style">
 				<option value="obesity" selected>Obesity among children</option>
-				<option value="saab">Saab</option>
-				<option value="opel">Opel</option>
-				<option value="audi">Audi</option>
+				<option value="suicide">Death rates for suicide</option>
 			</select>
 		</div>
 		<div class="chevron-green"></div>
@@ -489,24 +584,63 @@ export class LandingPage {
 </div>
 
 <!-- #b3d2ce -->
-						<div tabindex="0" class="chart-titles space-util">
-							<span id="chart-title"></span>
-						</div>
-						<span tabindex="0" id="chart-subtitle" class=""></span>
+<br>
+	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
+		<span id="chart-title" class="chart-title"></span>
+		<br>
+		<span tabindex="0" id="chart-subtitle" class=""></span>
+	</div>
 
-<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:40px;padding-top:1px;">
-					<div id="chart-container" class="general-chart">
-					</div>
+	<!-- Tabs navs -->
+<ul class="nav nav-tabs justify-content-center" id="ex-with-icons" role="tablist" style="margin-top: 15px;">
+  <li class="nav-item" role="presentation">
+    <a class="nav-link active" id="icons-tab-1" data-mdb-toggle="tab" href="#chart-tab" role="tab"
+      aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-chart-line fa-fw me-2"></i>Chart</a>
+  </li>
+  <li class="nav-item" role="presentation">
+    <a class="nav-link" id="icons-tab-2" data-mdb-toggle="tab" href="#table-tab" role="tab"
+      aria-controls="ex-with-icons-tabs-2" aria-selected="false"><i class="fas fa-table fa-fw me-2"></i>Table</a>
+  </li>
+</ul>
+<!-- Tabs navs -->
+
+<!-- Tabs content -->
+<div class="tab-content" id="ex-with-icons-content">
+  <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
+		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+				<div id="chart-container" class="general-chart">
+				</div>
+				<br>
+				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+		</div><!-- end chart wrapper -->
+  </div>
+  <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
+		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
+				<div id="table-container">
+				THE TABLE OF DATA WILL GO HERE
+				</div>
+				<br>
+				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+		</div><!-- end chart wrapper -->
+
+  </div>
+
+</div>
+<!-- Tabs content -->
+
 					<div class="dwnl-img-container margin-spacer" data-html2canvas-ignore>
 						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn">Download Chart</button>
 					</div>
-					<div class="data-table-container" style="margin-top: 10px;" data-html2canvas-ignore>
-						<div id="compare-trends-table-toggle" class="table-toggle closed" tabindex="0"
-							aria-labelledby="compare-trends-table-title">
-							<h4 id="compare-trends-table-title" class="table-title">Data Table for Compare Trends</h4>
-							<div class="table-toggle-icon"><i id="compare-trends-table-header-icon" class="fas fa-plus"></i></div>
+					<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px;margin-bottom:15px;">
+						<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
+							<h4 class="table-title">Footnotes</h4>
+							<div class="table-toggle-icon">
+								<i id="footer-table-header-icon" class="fas fa-plus"></i>
+							</div>
 						</div>
-						<div id="compare-trends-table-container" class="data-table closed" tabindex="0" aria-label="Compare Trends table">
+						<div id="pageFooter" class="data-table closed"></div>
+					</div>
+						<div id="data-table-container" class="data-table closed" tabindex="0" aria-label="Data table">
 							<div class="table-info">
 								<div tabindex="0" class="general_note" style="margin-top: 10px;" id="table-note"></div>
 								<button id="btnCompareTrendsTableExport" class="btn data-download-btn" tabindex="0"
@@ -520,8 +654,6 @@ export class LandingPage {
 							</div>
 						</div>
 					</div>
-
-</div><!-- end chart wrapper -->
 
     `;
 }

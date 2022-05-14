@@ -80,7 +80,7 @@ export class GenChart {
 		const margin = {
 			top: axisSize, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
-			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 10, // add default extra 10px to bottom for below bottom line letters (like y)
+			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
 		};
 
@@ -189,8 +189,13 @@ export class GenChart {
 
 		// apply the svg to the container element
 		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
-
-
+		svg
+			.append("g")
+			.append("rect")
+			.attr("fill", "#FFFFFF")
+			.attr("height", svgHeight)
+			.attr("width", svgWidth)
+		
 		// CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component
 		if (!p.data.length) {
 			svg.append("text")
@@ -234,7 +239,7 @@ export class GenChart {
 					.attr("text-anchor", "middle")
 					.attr("font-size", axisTitleFontSize)
 					.attr("x", chartCenterX)
-					.attr("y", margin.top + chartHeight + bottomAxisScale * axisSize * p.xLabelScale + bottomTitleSize);
+					.attr("y", margin.top + chartHeight + bottomAxisScale * axisSize * p.xLabelScale + bottomTitleSize + 15);
 			}
 
 			// left yAxis
@@ -243,8 +248,8 @@ export class GenChart {
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY)
-					.attr("y", axisTitleSize / p.labelPaddingScale)
+					.attr("x", -chartCenterY)  // up and down bc rotated
+					.attr("y", axisTitleSize / p.labelPaddingScale + 10) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
 			}
@@ -678,20 +683,28 @@ export class GenChart {
 							.join(
 								(enter) => {
 									enter
-										.append("ellipse")
+									    .append("ellipse") // adding hover over ellipses
 										.style("fill", multiLineColors(i))
 										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 										.attr("rx", d3.max([5, offset]))
 										.attr("ry", d3.max([5, d3.min([offset, 15])]))
-										.style("opacity", 0);
+										.style("opacity", 0);		
+									enter
+										.append("ellipse") // add always visible "point" (TT)
+										.style("fill", multiLineColors(i))
+										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+										.attr("rx", d3.max([3, 1])) // 3 = point width in pixels
+										.attr("ry", d3.max([3, d3.min([offset, 1])]))
+										.style("opacity", 1);	
 								},
 								(update) => {
 									update
 										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 										.attr("rx", d3.max([5, offset]))
-										.attr("ry", d3.max([5, d3.min([offset, 15])]));
+										.attr("ry", d3.max([5, d3.min([offset, 15])]))
 								},
 								(exit) => {
 									exit.remove();

@@ -158,20 +158,45 @@ select  {
     margin-top: -91px;
 }
 
-#chart-title {
-    margin-top: 25px;
-    font-family: Open Sans,
-    sans-serif;
+.chart-title {
+    margin-top: 50px;
+    padding-top: 80px;
+    font-family: Open Sans,sans-serif;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 28px;
     text-align: center;
 }
 
-#chart-subtitle {
+.chart-subtitle {
     margin-top: 5px;
+    padding-bottom: 20px;
     font-family: Open Sans,
         sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    text-align: center;
+}
+
+.nav-link .active {
+    border-top-style: solid;
+    border-top-color: blue;
+}
+
+.source-text {
+    margin-left: 120px;
+    padding-bottom: 15px;
+    padding-top: 10px;
+    font-family: Open Sans, sans-serif;
     font-weight: 300;
     font-size: 12px;
-    text-align: center;
+    text-align: left;
+}
+
+.footnote-text {
+        font-family: Open Sans,
+        sans-serif;
+        font-weight: 300;
+        font-size: 14px;
+        text-align: left;
+        margin-bottom: 10px;
 }

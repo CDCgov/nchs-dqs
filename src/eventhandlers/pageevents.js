@@ -109,7 +109,7 @@ export const PageEvents = {
 				const action = $(e.currentTarget).hasClass("closed") ? "closed." : "opened.";
 				const tableTitle = $(e.currentTarget).children(".table-title").text();
 				let interaction = `${appState.NAV_ITEM}: ${tableTitle} ${action}`;
-				Analytics.triggerOmnitureInteractions(interaction);
+				//Analytics.triggerOmnitureInteractions(interaction);
 			}
 		};
 

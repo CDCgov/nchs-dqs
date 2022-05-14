@@ -19,17 +19,13 @@ import { storeHash } from "./utils/hashTab";
 	// the DOM will be available
 	setupAppStateVars();
 	setDeviceIndicator();
+	TabEvents.registerEvents(); // THIS IS WHAT CREATES FIRST MAIN PAGE
 	let hash = location.hash ? location.hash : "#nchs-home";
 	renderChartArea();
 	
 	//storeHash();
 
 	function renderChartArea() {
-/* 
-		document.getElementById("chart-title").innerHTML =
-			"Obesity in Children and Adolescents";
-		document.getElementById("chart-subtitle").innerHTML =
-			"Data provided by NCHS"; */
 
 		// render landing area
 		TabEvents.tabHTMLHandler(hash);
@@ -71,7 +67,7 @@ import { storeHash } from "./utils/hashTab";
 		if (location.href && location.href.includes("#")) {
 			newMainTab = location.href.split("#")[1].split("_")[0].split("?")[0];
 		}
-		debugger;
+
 		let checkLinks = skipLinks.includes(newMainTab);
 		if (checkLinks) {
 			return;
