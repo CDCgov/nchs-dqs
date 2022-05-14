@@ -37,6 +37,8 @@ export class LandingPage {
 		this.vizId = "chart-container";
 		// select data items - set some defaults
 		this.dataTopic = "obesity"; // default
+		this.dataFile = "content/json/HUS_OBESCH_2018.json"; // default is Obesity
+		this.chartTitle = "";
 		this.panelNum = 1;
 		this.stubNameNum = 0;
 		this.startPeriod = "1988-1994";
@@ -82,8 +84,8 @@ export class LandingPage {
 	}
 
 	getInitialData() {
-		// Will need to register events here when we get to changing selects
-		async function getObesityData() {
+		
+		async function getSelectedData() {
 			return DataCache.ObesityData ?? Utils.getJsonFile("content/json/HUS_OBESCH_2018.json");
 		}
 
@@ -98,8 +100,8 @@ export class LandingPage {
 			DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
  */		
 //		let footnotesData = getFootnoteData();
-//		debugger;
-		Promise.all([getObesityData(),getFootnoteData()]).then((data) => {
+		//debugger;
+		Promise.all([getSelectedData(),getFootnoteData()]).then((data) => {
 			//const [destructuredData] = data;
 			[DataCache.ObesityData, DataCache.Footnotes] = data;
 			//debugger;
@@ -117,19 +119,19 @@ export class LandingPage {
 			//debugger;
 
 			// create a year_pt col from time period
-			this.allData = this.allData
-				.filter((d) => d.flag !== "- - -") // remove undefined data
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
-			this.renderAfterDataReady();
+			if (this.dataTopic === "obesity") {
+				this.allData = this.allData
+					.filter((d) => d.flag !== "- - -") // remove undefined data
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
+				this.renderAfterDataReady();
+			} else {
+				this.allData = this.allData
+					.filter((d) => d.flag !== "- - -") // remove undefined data
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year}));
+				this.renderAfterDataReady();
+			}
 
-			//debugger;
-			// now load the footnotes data
-			//DataCache.FootNotes = getFootnoteData();
-/* 		}).then((footnotes) => {
-			debugger;
-			DataCache.FootNotes = footnotes;
-			debugger;
-			//return Utils.getJsonFile("Content/CoronaViewJson_01/colors.json"); */
+
 		}).catch(function (err) {
 			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
 		});
@@ -153,14 +155,14 @@ export class LandingPage {
 
 	renderChart() {
 // ${this.updateTitle()} in next line and have function to set it based on selectors
-		$("#chart-title").html(`<strong>Obesity in Children and Adolescents</strong>`);
+		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`Data from NCHS.`);
 
 		// $("#metric_callout_box").html(config.calloutText.get(this.casesOrDeaths + this.newOrCumulative));
 
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
-		console.log("landing obesity filtered data: ", flattenedData);
+		console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
 		this.chartConfig = this.getChartBaseProps();
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
 		//debugger;
@@ -181,10 +183,22 @@ export class LandingPage {
 
 	getFlattenedFilteredData() {
 		const { classification } = this;
-		let selectedPanelData = this.allData.filter(
-			(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
-		);
-		
+
+		let selectedPanelData
+		switch (this.dataTopic) {
+			case "obesity":
+				selectedPanelData = this.allData.filter(
+					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+				);
+				break;
+			case "suicide":
+				selectedPanelData = this.allData.filter(
+					(d) => parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+				);
+				break;
+		}
+
+
 		selectedPanelData = selectedPanelData.map((d) => ({
 			...d,
 			subLine: d.stub_label,
@@ -214,8 +228,20 @@ export class LandingPage {
 
 		//const newTotalText = this.newOrCumulative === "seven" ? "7-day" : "14-day";
 
-		const yAxisTitle = "Percent of Population, crude (%)";
-		const xAxisTitle = "Time Period";
+		let yAxisTitle;
+		let xAxisTitle;
+
+		switch (this.dataTopic) {
+			case "obesity":
+				yAxisTitle = "Percent of Population, crude (%)";
+				xAxisTitle = "Time Period";
+				break;
+			case "suicide":
+				yAxisTitle = "Deaths per 100,000 resident population, crude";
+				xAxisTitle = "Time Period";
+				break;
+		}
+
 		return { chartValueProperty, yAxisTitle, xAxisTitle };
 	}
 
@@ -425,12 +451,83 @@ export class LandingPage {
 
 	updateDataTopic(dataTopic) {
 		this.dataTopic = dataTopic; // string
-		//this.setCategoriesSelect();
-		// now re-render the chart based on updated selection
-		this.renderChart();
-		//this.renderDataTable();
+
+		// get the data
+		async function getSelectedData(dataFile) {
+			return Utils.getJsonFile(dataFile);
+		}
+		switch (dataTopic) {
+			case "obesity":
+				this.dataFile = "content/json/HUS_OBESCH_2018.json";
+				this.chartTitle = "Obesity in Children and Adolescents";
+				break;
+			case "suicide":
+				this.dataFile = "content/json/DeathRatesForSuicide.json";
+				this.chartTitle = "Death Rates for Suicide";
+				break;
+		}
+		// now get the data if it has not been fetched already
+		Promise.all([getSelectedData(this.dataFile)]).then((data) => {
+			//const [destructuredData] = data;
+			[DataCache.ObesityData, DataCache.Footnotes] = data;
+			//debugger;
+			this.allData = JSON.parse(data[0]);
+			DataCache.ObesityData = this.allData;
+
+			// create a year_pt col from time period
+			this.allData = this.allData
+				.filter((d) => d.flag !== "- - -") // remove undefined data
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
+			this.renderAfterDataReady();
+			this.setAllSelectDropdowns();
+			// now re-render the chart based on updated selection
+			this.renderChart();
+			//this.renderDataTable();
+
+		}).catch(function (err) {
+			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
+		});
+
+
+
 	}
 
+	setAllSelectDropdowns () {
+	
+		switch (this.dataTopic) {
+			case "obesity":
+				// subtopic
+				$('#panel-num-select')
+					.empty()
+					.append('<option selected="selected" value="1">2-19 years</option>')
+					.append('<option selected="selected" value="2">2-5 years</option>')
+					.append('<option selected="selected" value="3">6-11 years</option>')
+					.append('<option selected="selected" value="4">12-19 years</option>')
+					;
+				break;
+			case "suicide":
+				// subtopic
+				$('#panel-num-select')
+					.empty()
+					.append('<option selected="selected" value="NA">N/A</option>')
+					;
+				// Get the start year options
+				let allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
+				console.log("allyears start:", allYearsArray);
+
+				$('#year-start-select').empty();
+				$('#year-end-select').empty();
+				allYearsArray.forEach((y) => {
+					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
+					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+				});
+				// fix labels
+				$('#year-start-label').text("Start Year");
+				$('#year-end-label').text("End Year");
+				break;
+		}
+
+	}
 
 	updatePanelNum(panelNum) {
 		this.panelNum = parseInt(panelNum);
@@ -451,14 +548,31 @@ export class LandingPage {
 	}
 	
 	updateStartPeriod(start) {
-		this.startPeriod = start;
-		this.startYear = this.getYear(start);
+		switch (this.dataTopic) {
+			case "obesity":
+				this.startPeriod = start;
+				this.startYear = this.getYear(start);
+				break;
+			case "suicide":
+				this.startPeriod = start;
+				this.startYear = start;
+				break;
+		}
 		this.renderChart();
 	}
 
 	updateEndPeriod(end) {
-		this.endPeriod = end;
-		this.endYear = this.getYear(end);
+
+		switch (this.dataTopic) {
+			case "obesity":
+				this.endPeriod = end;
+				this.endYear = this.getYear(end);
+				break;
+			case "suicide":
+				this.endPeriod = end;
+				this.endYear = end;
+				break;
+		}
 		this.renderChart();
 	}
 
@@ -548,7 +662,7 @@ export class LandingPage {
 		</div>
 		<div style="display: flex;">
 			<div style="flex-direction: column;">
-				<div class="label-style">Start Period <br> </div>
+				<div class="label-style" id="year-start-label">Start Period <br> </div>
 				<div>
 					<select name="year-start" id="year-start-select" form="select-view-options" class="select-style" style="width:100px;">
 						<option value="1988-1994" selected>1988-1994</option>
