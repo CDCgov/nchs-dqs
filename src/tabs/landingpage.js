@@ -504,6 +504,8 @@ export class LandingPage {
 					.append('<option selected="selected" value="3">6-11 years</option>')
 					.append('<option selected="selected" value="4">12-19 years</option>')
 					;
+				// set stub names
+				this.setStubNameSelect();
 				break;
 			case "suicide":
 				// subtopic
@@ -511,6 +513,9 @@ export class LandingPage {
 					.empty()
 					.append('<option selected="selected" value="NA">N/A</option>')
 					;
+				// set stub names
+				this.setStubNameSelect();
+
 				// Get the start year options
 				let allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
 				console.log("allyears start:", allYearsArray);
@@ -529,10 +534,34 @@ export class LandingPage {
 
 	}
 
+
+	setStubNameSelect() {
+
+		console.log("flattenedData before:", this.flattenedFilteredData);
+		// Creates an array of objects with unique "name" property values.
+		// have to iterate over the unfiltered data
+		let allStubsArray = [
+			...new Map(this.allData.map((item) => [item["stub_name"], item])).values(),
+		];
+		// now sort them in id order
+		allStubsArray.sort((a, b) => {
+   			 return a.stub_name_num - b.stub_name_num;
+		});
+		console.log("allStubsArray", allStubsArray);
+		$('#stub-name-num-select').empty();
+
+		allStubsArray.forEach((y) => {
+			$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+		});
+	}
+	
 	updatePanelNum(panelNum) {
 		this.panelNum = parseInt(panelNum);
 		//this.setCategoriesSelect();
 		console.log("new panel num: ", this.panelNum)
+		// update stubname select dropdown 
+		// Get the start year options
+				
 		// now re-render the chart based on updated selection
 		this.renderChart();
 		//this.renderDataTable();
@@ -605,6 +634,7 @@ export class LandingPage {
 			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  class="select-style">
 				<option value="obesity" selected>Obesity among children</option>
 				<option value="suicide">Death rates for suicide</option>
+				<option value="injury">Initial injury-related visits to hospital emergency departments
 			</select>
 		</div>
 		<div class="chevron-green"></div>
