@@ -34,6 +34,18 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
 			console.log("New End Period:", yrEnd);
 		});
+		// on the chart tab
+		$("#unit-num-select").change((evt) => {
+			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
+			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			console.log("New Unit num:", unitNum);
+		});
+		// on the table tab
+		$("#unit-num-select2").change((evt) => {
+			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
+			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			console.log("New Unit num:", unitNum);
+		});
 		$("#show-one-period-checkbox").on('change',(evt) => {
 			let isChecked = evt.target.checked; // if you dont do this then stubNum is string
 			if (isChecked) {
@@ -41,11 +53,18 @@ export const MainEvents = {
 				// hide the ending period select dropdown
 				$("#year-end-label").hide();
 				$("#year-end-select").hide();
+				// set to enable bar chart
+				appState.ACTIVE_TAB.updateShowBarChart(1);
   			} else {
     			// show the ending period select dropdown
 				$("#year-end-label").show();
 				$("#year-end-select").show();
+				// set to enable line chart
+				appState.ACTIVE_TAB.updateShowBarChart(0);
 			}
+
+
+
 		});
 
 		// click Chart then show Chart

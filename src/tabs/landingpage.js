@@ -38,7 +38,7 @@ export class LandingPage {
 		// select data items - set some defaults
 		this.dataTopic = "obesity"; // default
 		this.dataFile = "content/json/HUS_OBESCH_2018.json"; // default is Obesity
-		this.chartTitle = "";
+		this.chartTitle = "Obesity Among Children and Adolescents";
 		this.panelNum = 1;
 		this.stubNameNum = 0;
 		this.startPeriod = "1988-1994";
@@ -47,6 +47,8 @@ export class LandingPage {
 		this.endYear = "2013" // first year of the last period
 		this.footNotes = "";
 		this.footnoteMap = {};
+		this.unitNum = 1; // default 1 obesity
+		this.showBarChart = 0;
 	}
 
 	renderTab() {
@@ -80,6 +82,9 @@ export class LandingPage {
 
 		//updateTitle(this.charttype, this.numbertype, this.neworcumulative);
 		$(".dimmer").attr("class", "ui inverted dimmer");
+
+		this.setStubNameSelect() 
+		
 		this.renderChart();
 	}
 
@@ -100,11 +105,9 @@ export class LandingPage {
 			DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
  */		
 //		let footnotesData = getFootnoteData();
-		//debugger;
 		Promise.all([getSelectedData(),getFootnoteData()]).then((data) => {
 			//const [destructuredData] = data;
 			[DataCache.ObesityData, DataCache.Footnotes] = data;
-			//debugger;
 			this.allData = JSON.parse(data[0]);
 			DataCache.ObesityData = this.allData;
 			this.footNotes = JSON.parse(data[1]);
@@ -116,7 +119,6 @@ export class LandingPage {
 			for (i = 0; this.footNotes.length > i; i += 1) {
 				this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
 			}
-			//debugger;
 
 			// create a year_pt col from time period
 			if (this.dataTopic === "obesity") {
@@ -155,17 +157,17 @@ export class LandingPage {
 
 	renderChart() {
 // ${this.updateTitle()} in next line and have function to set it based on selectors
+		
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`Data from NCHS.`);
 
 		// $("#metric_callout_box").html(config.calloutText.get(this.casesOrDeaths + this.newOrCumulative));
-
+		//debugger;
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 		console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
 		this.chartConfig = this.getChartBaseProps();
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
-		//debugger;
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
 		this.chartConfig.chartTitle = ""; // dont use the built in chart title
 
@@ -175,34 +177,52 @@ export class LandingPage {
 		//config.renderSlider(genChart.render(), this.currentSliderDomain);
 		genChart.render();
 
+		// render data table too
+		this.renderDataTable(this.flattenedFilteredData);
+
 		// set background to white - THIS DOESNT WORK
 		//$("#chart-container-svg").style("background-color", '#FFFFFF');
+
+		// example of removing lines from the graph
 /* 		const removedCategories = this.savedNamedCategories.filter((s) => !this.currentNamedCategories.includes(s));
 		removedCategories.forEach((r) => $(`.${r}`).hide()); */
 	}
 
 	getFlattenedFilteredData() {
 		const { classification } = this;
-
+		//debugger;
 		let selectedPanelData
 		switch (this.dataTopic) {
 			case "obesity":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
 				);
 				break;
 			case "suicide":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+					(d) =>  parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+				);
+				break;
+			case "injury":
+				selectedPanelData = this.allData.filter(
+					(d) =>  parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
 				);
 				break;
 		}
+		//debugger;
+		if (this.showBarChart) {
+			// filter to just the start year
+			selectedPanelData = selectedPanelData.filter(
+					(d) =>  parseInt(d.year_pt) === parseInt(this.startYear)
+			);
+		} else {
+			// set up for line chart
+			selectedPanelData = selectedPanelData.map((d) => ({
+				...d,
+				subLine: d.stub_label,
+			}));
+		}
 
-
-		selectedPanelData = selectedPanelData.map((d) => ({
-			...d,
-			subLine: d.stub_label,
-		}));
 		//debugger;
 		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys().join();
 		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
@@ -240,6 +260,10 @@ export class LandingPage {
 				yAxisTitle = "Deaths per 100,000 resident population, crude";
 				xAxisTitle = "Time Period";
 				break;
+			case "injury":
+				yAxisTitle = "Initial injury-related visits in thousands, crude";
+				xAxisTitle = "Time Period";
+				break;
 		}
 
 		return { chartValueProperty, yAxisTitle, xAxisTitle };
@@ -248,8 +272,8 @@ export class LandingPage {
 	getAllChartProps = (data, chartBaseProps) => {
 		const { chartValueProperty, yAxisTitle, xAxisTitle } = chartBaseProps;
 		const vizId = "chart-container";
-
-		// figure out legend placement
+		let props;
+				// figure out legend placement
 		let legendCoordPercents = [0.40, 0.58];
 		switch (this.stubNameNum) {
 			case 0:
@@ -274,8 +298,12 @@ export class LandingPage {
 				legendCoordPercents = [0.40, 0.58];
 				break;
 		}
-		let props;
-		props = {
+		// if one single year then use bar chart
+		let useBars;
+		debugger;
+		if (this.showBarChart) {
+			useBars = true;
+			props = {
 			data,
 			chartProperties: {
 				yLeft1: chartValueProperty,
@@ -284,9 +312,41 @@ export class LandingPage {
 			},
 			usesLegend: true,
 			usesDateDomainSlider: false,
+			usesBars: true,
+			usesHoverBars: true,
+			barColor: "red",
 			usesChartTitle: true,
 			usesLeftAxis: true,
-			usesLeftAxisTitle: true,
+			usesLeftAxisTitle: false,
+			usesBottomAxis: true,
+			usesBottomAxisTitle: true,
+			usesDateAsXAxis: true,
+			yLeftLabelScale: 3,
+			legendCoordinatePercents: legendCoordPercents,
+			leftAxisTitle: yAxisTitle,
+			bottomAxisTitle: xAxisTitle,
+			formatXAxis: "string",
+			usesMultiLineLeftAxis: false,
+			vizId,
+			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
+	    };
+
+		} else {
+			useBars = false;
+					props = {
+			data,
+			chartProperties: {
+				yLeft1: chartValueProperty,
+				xAxis: "year",
+				yAxis: "estimate",
+			},
+			usesLegend: true,
+			usesDateDomainSlider: false,
+			usesBars: false,
+			usesHoverBars: false,
+			usesChartTitle: true,
+			usesLeftAxis: true,
+			usesLeftAxisTitle: false,
 			usesBottomAxis: true,
 			usesBottomAxisTitle: true,
 			usesDateAsXAxis: true,
@@ -311,6 +371,9 @@ export class LandingPage {
 			vizId,
 			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
 	    };
+
+		}
+
 
 	    return props;
 	};
@@ -456,33 +519,48 @@ export class LandingPage {
 		async function getSelectedData(dataFile) {
 			return Utils.getJsonFile(dataFile);
 		}
+		//debugger;
 		switch (dataTopic) {
 			case "obesity":
 				this.dataFile = "content/json/HUS_OBESCH_2018.json";
-				this.chartTitle = "Obesity in Children and Adolescents";
+				this.chartTitle = "Obesity Among Children and Adolescents";
 				break;
 			case "suicide":
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
 				break;
+			case "injury":
+				this.dataFile = "content/json/InjuryEDVis.json";
+				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
+				break;			
+			
 		}
+		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
+
 		// now get the data if it has not been fetched already
 		Promise.all([getSelectedData(this.dataFile)]).then((data) => {
 			//const [destructuredData] = data;
-			[DataCache.ObesityData, DataCache.Footnotes] = data;
-			//debugger;
+			[DataCache.ObesityData] = data;
+
 			this.allData = JSON.parse(data[0]);
 			DataCache.ObesityData = this.allData;
-
+			//debugger;
 			// create a year_pt col from time period
 			this.allData = this.allData
 				.filter((d) => d.flag !== "- - -") // remove undefined data
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
-			this.renderAfterDataReady();
+			//this.renderAfterDataReady();
+
+			// need data in place before filling year selects
+			this.flattenedFilteredData = this.getFlattenedFilteredData();
+
 			this.setAllSelectDropdowns();
+
+			// set the Adjust vertical axis via unit_num in data
+			this.setVerticalUnitAxisSelect();
+			
 			// now re-render the chart based on updated selection
 			this.renderChart();
-			//this.renderDataTable();
 
 		}).catch(function (err) {
 			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
@@ -493,33 +571,70 @@ export class LandingPage {
 	}
 
 	setAllSelectDropdowns () {
-	
+		let allYearsArray;
+
 		switch (this.dataTopic) {
 			case "obesity":
 				// subtopic
-				$('#panel-num-select')
+/* 				$('#panel-num-select')
 					.empty()
 					.append('<option selected="selected" value="1">2-19 years</option>')
 					.append('<option selected="selected" value="2">2-5 years</option>')
 					.append('<option selected="selected" value="3">6-11 years</option>')
 					.append('<option selected="selected" value="4">12-19 years</option>')
-					;
+					; */
+				
+				// this is Subtooic
+				this.setPanelSelect();
+
 				// set stub names
 				this.setStubNameSelect();
+
+				// set the Adjust vertical axis via unit_num in data
+				this.setVerticalUnitAxisSelect();
 				break;
 			case "suicide":
 				// subtopic
 				$('#panel-num-select')
 					.empty()
-					.append('<option selected="selected" value="NA">N/A</option>')
+					.append('<option selected="selected" value="NA">Not Applicable</option>')
 					;
 				// set stub names
 				this.setStubNameSelect();
 
 				// Get the start year options
-				let allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
+				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
 				console.log("allyears start:", allYearsArray);
+				//debugger;
+				$('#year-start-select').empty();
+				$('#year-end-select').empty();
 
+				allYearsArray.forEach((y) => {
+					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
+					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+				});
+				// make the last end year selected
+				$("#year-end-select option:last"). attr("selected", "selected");
+				// fix labels
+				$('#year-start-label').text("Start Year");
+				$('#year-end-label').text("End Year");
+
+				// set the Adjust vertical axis via unit_num in data
+				this.setVerticalUnitAxisSelect();
+
+				break;
+			case "injury":
+								// subtopic
+				$('#panel-num-select')
+					.empty()
+					.append('<option selected="selected" value="NA">Not Applicable</option>')
+					;
+				// set stub names
+				this.setStubNameSelect();
+
+				// Get the start year options
+				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year_pt; }).keys();
+				console.log("allyears start:", allYearsArray);
 				$('#year-start-select').empty();
 				$('#year-end-select').empty();
 				allYearsArray.forEach((y) => {
@@ -534,15 +649,47 @@ export class LandingPage {
 
 	}
 
+	// Subtopic
+	setPanelSelect() {
+
+		//console.log("flattenedData before:", this.flattenedFilteredData);
+		// Creates an array of objects with unique "name" property values.
+		// have to iterate over the unfiltered data
+		let allPanelsArray = [
+			...new Map(this.allData.map((item) => [item["panel"], item])).values(),
+		];
+		// now sort them in id order
+		allPanelsArray.sort((a, b) => {
+   			 return a.panel_num - b.panel_num;
+		});
+		console.log("allPanelsArray", allPanelsArray);
+		$('#panel-num-select').empty();
+
+		allPanelsArray.forEach((y) => {
+			$('#panel-num-select').append(`<option value="${y.panel_num}">${y.panel}</option>`);
+		});
+	}
 
 	setStubNameSelect() {
 
+		let allStubsArray;
 		console.log("flattenedData before:", this.flattenedFilteredData);
+		//debugger;
+		// try this BEFORE getting the unique options
+		// filter by panel selection if applicable
+		if (this.dataTopic === "obesity") {
+			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === this.panelNum));
+		} else {
+			allStubsArray = this.allData;
+		}
+
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
-		let allStubsArray = [
-			...new Map(this.allData.map((item) => [item["stub_name"], item])).values(),
+		allStubsArray = [
+			...new Map(allStubsArray.map((item) => [item["stub_name"], item])).values(),
 		];
+		//debugger;
+
 		// now sort them in id order
 		allStubsArray.sort((a, b) => {
    			 return a.stub_name_num - b.stub_name_num;
@@ -554,6 +701,41 @@ export class LandingPage {
 			$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 		});
 	}
+
+	setVerticalUnitAxisSelect() {
+
+		console.log("UNIT flattenedData before:", this.flattenedFilteredData);
+		// filter out by characteristic / stub_name bc some stub_names do not have both UNIT options
+		// only show the ones related to selected CHaracteristic
+		let theSelectedStubNum = this.stubNameNum;
+		//debugger;
+		allUnitsArray = this.allData.filter(item => (parseInt(item.stub_name_num) === this.stubNameNum));
+
+
+		// Creates an array of objects with unique "name" property values.
+		// have to iterate over the unfiltered data
+		let allUnitsArray = [
+			...new Map(allUnitsArray.map((item) => [item["unit"], item])).values(),
+		];
+	
+		// now sort them in id order
+		allUnitsArray.sort((a, b) => {
+   			 return a.unit_num - b.unit_num;
+		});
+		console.log("allUnitsArray", allUnitsArray);
+		$('#unit-num-select').empty();
+		// on the table tab
+		$('#unit-num-select2').empty();
+
+
+		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
+		allUnitsArray.forEach((y) => {
+			$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+			//this.unitNum = y.unit_num; // bc maybe there is no 1 and have to set to a valid value
+			// on table tab
+			$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+		});
+	}
 	
 	updatePanelNum(panelNum) {
 		this.panelNum = parseInt(panelNum);
@@ -562,15 +744,22 @@ export class LandingPage {
 		// update stubname select dropdown 
 		// Get the start year options
 				
+		// set stub names
+		this.setStubNameSelect();
+		
 		// now re-render the chart based on updated selection
 		this.renderChart();
-		//this.renderDataTable();
+
 	}
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
 		//this.setCategoriesSelect();
 		console.log("new stub name num: ", this.stubNameNum)
+
+		// have to update UNIT bc some stubs dont have both units
+		this.setVerticalUnitAxisSelect();
+
 		// now re-render the chart based on updated selection
 		this.renderChart();
 		//this.renderDataTable();
@@ -578,7 +767,7 @@ export class LandingPage {
 	
 	updateStartPeriod(start) {
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity" || "injury":
 				this.startPeriod = start;
 				this.startYear = this.getYear(start);
 				break;
@@ -593,7 +782,7 @@ export class LandingPage {
 	updateEndPeriod(end) {
 
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity" || "injury":
 				this.endPeriod = end;
 				this.endYear = this.getYear(end);
 				break;
@@ -602,6 +791,17 @@ export class LandingPage {
 				this.endYear = end;
 				break;
 		}
+		this.renderChart();
+	}
+
+	updateUnitNum(unitNum) {
+
+		this.unitNum = parseInt(unitNum);
+		this.renderChart();
+	}
+
+	updateShowBarChart(value) {
+		this.showBarChart = value;
 		this.renderChart();
 	}
 
@@ -620,6 +820,184 @@ export class LandingPage {
 		PageEvents.addButtonsClickListers(this.communityButtons); */
 	}
 
+	/* getTableInfo(state) {
+		let tableTitle = config.leftAxisLookup.get(this.selection.leftAxis).tableTitle;
+
+		const keys = ["state", "displayDate", this.selection.leftAxis];
+		if (this.selection.dayCheckBox && this.selection.leftAxis === "New_case") keys.push("seven_day_avg_new_cases");
+		else if (this.selection.dayCheckBox && this.selection.leftAxis === "new_death")
+			keys.push("seven_day_avg_new_deaths");
+		else if (this.selection.dayCheckBox && this.selection.leftAxis === "new_test_results_reported")
+			keys.push("new_test_results_reported_7_day_rolling_average");
+
+		if (this.selection.rightAxis !== "select") keys.push(this.selection.rightAxis);
+
+		const cols = ["State", "Date", config.leftAxisLookup.get(this.selection.leftAxis).dtHeader];
+		if (
+			this.selection.dayCheckBox &&
+			(this.selection.leftAxis === "New_case" ||
+				this.selection.leftAxis === "new_death" ||
+				this.selection.leftAxis === "new_test_results_reported")
+		)
+			cols.push("7-Day Moving Avg");
+
+		if (this.selection.rightAxis !== "select")
+			cols.push(config.rightAxisLookup.get(this.selection.rightAxis).dtHeader);
+
+		if (state === "The United States") {
+			if (this.selection.leftAxis === "New_case") {
+				keys.push("historical_new_total_cases");
+				cols.push("Historic Cases");
+			} else if (this.selection.leftAxis === "new_death") {
+				keys.push("historical_new_total_deaths");
+				cols.push("Historic Deaths");
+			}
+		}
+
+		const rightTitle = config.rightAxisLookup.get(this.selection.rightAxis)?.titleText ?? "";
+		let chartTitle = config.leftAxisLookup.get(this.selection.leftAxis).titleText;
+		if (chartTitle.includes("COVID-19") && rightTitle.includes("COVID-19"))
+			chartTitle = chartTitle.replace("COVID-19 ", "");
+		chartTitle += `${rightTitle}in ${state} Reported to CDC`;
+		chartTitle += config.rightAxisLookup.get(this.selection.rightAxis)?.titleEnd ?? "";
+
+		let callout = config.leftAxisLookup.get(this.selection.leftAxis).calloutText;
+		if (
+			this.selection.dayCheckBox &&
+			(this.selection.leftAxis === "New_case" || this.selection.leftAxis === "new_death")
+		)
+			callout += ` The red line is the 7-day moving average of ${this.selection.leftAxis.split("_")[1]}s.`;
+
+		// to get the specific text this had to be a separate callout case
+		if (this.selection.dayCheckBox && this.selection.leftAxis === "new_test_results_reported")
+			callout += ` The red line is the 7-day moving average of NAATs that were performed.`;
+
+		callout += config.rightAxisLookup.get(this.selection.rightAxis)?.calloutText ?? "";
+
+		return { chartTitle, tableTitle, keys, cols, callout };
+	}
+ */
+	renderDataTable(tableData) {
+		// DATATABLE FUNCTION
+		let tableTitleId = "table-title";
+		let tableId = "nchs-table";
+		let tableHeading = "";
+
+/* 		const formattedData = tableData.map((d) => ({
+			...d,
+			displayDate: genFormat(d.date, "tableDate"),
+			value: d[keys[0]],
+		}));
+
+		formattedData.sort((a, b) => b.date - a.date); */
+
+		let keys = Object.keys(tableData[0]);
+				// information saved for csv download
+		this.csv = {
+			data: tableData,
+			dataKeys: keys,
+			title: this.chartTitle,
+			headers: cols,
+		};
+		// Now delete a couple cols for visual table
+		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit'));
+		const cols = keys;
+
+
+		/* Table element manipulation and rendering */
+		//document.getElementById(tableTitleId).innerHTML = "";  // dont show title this.chartTitle;
+		let tableContainer = document.getElementById(`${tableId}-container`);
+		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
+		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
+		let table = d3.select(`#${tableId}`);
+		table.select("thead").remove();
+		table.select("tbody").remove();
+		let thead = table.append("thead");
+
+		thead
+			.append("tr")
+			.selectAll("th")
+			.data(cols)
+			.enter()
+			.append("th")
+			.attr("scope", "col")
+			.attr("tabindex", "0")
+			.attr("id", (column, i) => `${keys[i]}-th`)
+			.text(function (column) {
+				return column;
+			})
+/* 			.attr("class", function (column, i) {
+				let classString;
+				if (column === "Date") {
+					classString = "table-sort-header data-table-header date-sort";
+				} else {
+					classString = "table-sort-header data-table-header number-sort";
+				}
+				if (keys[i] === "state") {
+					classString += " sorted";
+				}
+				return classString;
+			}) */
+			.append("i")
+			.attr("id", (column, i) => `${keys[i]}-icon`)
+			.attr("class", "sort icon");
+
+		let tbody = table.append("tbody");
+		let row = tbody.selectAll("tr").data(tableData);
+
+		row.enter()
+			.append("tr")
+			.selectAll("td")
+			.data((row) => {
+				return keys.map((column) => {
+					return {
+						column,
+						value: row[column],
+					};
+				});
+			})
+			.enter()
+			.append("td")
+			.attr("tabindex", "0")
+			.text(function (d, i) {
+				if (d.value == null) return "N/A";
+				return typeof i === "number" ? d.value.toLocaleString() : d.value;
+			})
+			.each(function (column, index, i) {
+				let columnIndex = index;
+				let columnHeader = cols[columnIndex];
+				let firstColumnVal = i[0].innerText;
+				if (columnIndex === 0) {
+					this.setAttribute("aria-label", `${columnHeader} ${column.value}`);
+				} else if (column.value === null) {
+					this.setAttribute("aria-label", `${firstColumnVal} ${columnHeader} Not Available`);
+				} else {
+					this.setAttribute("aria-label", `${firstColumnVal} ${columnHeader} ${column.value}`);
+				}
+			});
+
+		const numberCells = $(".wtable td ~ td");
+		numberCells.wrapInner("<div class='number-cells'></div>");
+		$(`#${tableId}`).tablesort();
+		$("thead  .date-sort").data("sortBy", (th, td) => {
+			return new Date(td[0].textContent);
+		});
+
+		$("thead th.number-sort").data("sortBy", (th, td) => {
+			const cellValue = td.text();
+			if (cellValue === "N/A") {
+				return 1;
+			}
+			return -1 * parseFloat(cellValue.replace(/,/g, ""));
+		});
+
+		//document.getElementById("table-note").innerHTML = DataCache.JSONReleaseWithPullTime;
+	}
+
+	exportCSV() {
+		downloadCSV(this.csv);
+	}
+
 	// TO DO: Change the selectors to be filled using data code??
 	tabContent = `<!-- TOP SELECTORS --><div class="color-area-wrapper">
 	<div class="rectangle-green">
@@ -631,11 +1009,15 @@ export class LandingPage {
 			<span style="padding-bottom:0px; font-family:Open Sans,sans-serif;color: white; font-weight:300; ">Select a topic</span><br>
 			<span style="margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: white; font-weight:500;font-size:22px;">Topic</span>
 			<br>&nbsp;<br>
-			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  class="select-style">
+			<div class="styled-select">
+			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
+				<optgroup style="font-size:12px;">
 				<option value="obesity" selected>Obesity among children</option>
 				<option value="suicide">Death rates for suicide</option>
-				<option value="injury">Initial injury-related visits to hospital emergency departments
+				</optgroup>
 			</select>
+			</div>
+			<!-- REMOVE FOR NOW <option value="injury">Initial injury-related visits to hospital emergency departments -->
 		</div>
 		<div class="chevron-green"></div>
 	</div>
@@ -648,11 +1030,13 @@ export class LandingPage {
 			<span style="font-family:Open Sans,sans-serif;color: #010101; font-weight:300; ">Refine to a</span><br>
 			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:500;font-size:22px;">Subtopic</span>
 			<br>&nbsp;<br>
-			<select name="panel-num-select" id="panel-num-select" form="select-view-options" class="custom-select">
+			<select name="panel-num-select" id="panel-num-select" form="select-view-options" class="styled-select"  style="font-size:12px;height:2em;width:180px;">
+				<optgroup>
 				<option value="1" selected>2-19 years</option>
 				<option value="2">2-5 years</option>
 				<option value="3">6-11 years</option>
 				<option value="4">12-19 years</option>
+				</optgroup>
 			</select>
 		</div>
 		<div class="chevron-yellow"></div>
@@ -666,7 +1050,7 @@ export class LandingPage {
 			<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">View data by</span><br>
 			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;">Characteristic</span>
 			<br>&nbsp;<br>
-			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="select-style">
+			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>
 				<option value="1">Sex</option>
 				<option value="2">Age</option>
@@ -694,7 +1078,7 @@ export class LandingPage {
 			<div style="flex-direction: column;">
 				<div class="label-style" id="year-start-label">Start Period <br> </div>
 				<div>
-					<select name="year-start" id="year-start-select" form="select-view-options" class="select-style" style="width:100px;">
+					<select name="year-start" id="year-start-select" form="select-view-options" class="select-style"  style="font-size:12px;height:2em;width:100px;">
 						<option value="1988-1994" selected>1988-1994</option>
 						<option value="1999-2002">1999-2002</option>
 						<option value="2001-2004">2001-2004</option>
@@ -710,7 +1094,7 @@ export class LandingPage {
 			<div style="flex-direction: column;">
 				<div class="label-style" id="year-end-label">End Period</div>
 				<div>
-					<select name="year-end" id="year-end-select" form="select-view-options" class="select-style" style="width:100px;">
+					<select name="year-end" id="year-end-select" form="select-view-options" class="select-style"  style="font-size:12px;height:2em;width:100px;">
 						<option value="1988-1994">1988-1994</option>
 						<option value="1999-2002">1999-2002</option>
 						<option value="2001-2004">2001-2004</option>
@@ -752,7 +1136,12 @@ export class LandingPage {
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
 		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-				<div id="chart-container" class="general-chart">
+		<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
+			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
+				<option value="1" selected>Percent of population, crude</option>
+			</select>
+		</div>
+				<div id="chart-container" class="general-chart" style="align:left;">
 				</div>
 				<br>
 				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
@@ -760,9 +1149,17 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
-				<div id="table-container">
-				THE TABLE OF DATA WILL GO HERE
+			<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
+				<select name="unit-num-select" id="unit-num-select2" form="select-view-options" class="custom-select">
+					<option value="1" selected>Percent of population, crude</option>
+				</select>
+			</div>
+				<div id="nchs-table-container">
+					<div id="table-title" class="title"></div>
 				</div>
+				<div id="topOfTable" class="scrolling-table-container">
+                    <table id="nchs-table" class="expanded-data-table"></table>
+                </div>
 				<br>
 				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end chart wrapper -->

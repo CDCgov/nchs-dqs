@@ -131,6 +131,9 @@ table.expanded-data-table {
 		padding-left: 15px;
 	}
 
+	tbody tr:nth-child(odd) {
+		background-color: #ffffff;
+	}
 	tbody tr:nth-child(even) {
 		background-color: #f2f2f2;
 	}

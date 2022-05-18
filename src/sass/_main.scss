@@ -126,9 +126,12 @@ img {
 	display: flex;
 	flex-direction: row;
 	padding-left: 0em;
-	padding-right: 0em;
-	margin: 0 auto;
-	max-width: 1900px;
+	padding-right: 20px;
+	//margin: 0 auto;
+	//max-width: 1500px;
+	margin: 0;
+	width: 95%;
+	margin-right: 25px;
 	border-left: 0;
 
 	@include mobile-max {
@@ -139,9 +142,12 @@ img {
 /* put the style on the class not the id */
 .outRightMainContainer {
 	width: 100%;
-	padding-left: 1.5em;
-	padding-right: 4em;
+	align: left;
+	margin-left: 0px;
+	padding-left: 25px;
+	padding-right: 25px;
 	margin-top: 5px;
+	//border: solid 1px red;
 
 	@include mobile-max {
 		//padding: 0 1rem;
@@ -986,7 +992,8 @@ ul#stlyeplaceHolder {
 }
 
 /*  Micrograph code */
-#ed-trends-chart-container {
+#chart-container {
+	margin-left: 10px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
