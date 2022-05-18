@@ -300,7 +300,7 @@ export class LandingPage {
 		}
 		// if one single year then use bar chart
 		let useBars;
-		debugger;
+		//debugger;
 		if (this.showBarChart) {
 			useBars = true;
 			props = {
@@ -309,12 +309,13 @@ export class LandingPage {
 				yLeft1: chartValueProperty,
 				xAxis: "year",
 				yAxis: "estimate",
+				bars: "estimate",
 			},
 			usesLegend: true,
 			usesDateDomainSlider: false,
 			usesBars: true,
 			usesHoverBars: true,
-			barColor: "red",
+			barColor: "steelblue",
 			usesChartTitle: true,
 			usesLeftAxis: true,
 			usesLeftAxisTitle: false,

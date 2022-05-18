@@ -122,7 +122,8 @@ export class GenChart {
 		if (p.firefoxReversed === true) {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
-			xScale = d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);
+			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 0.7
+			xScale = d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(1.7);
 		}
 
 		let yScaleExtent = [0];
@@ -170,6 +171,8 @@ export class GenChart {
 		const xAxis = d3
 			.axisBottom(xScale)
 			.tickSize(3)
+			.tickSizeOuter(5)
+			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
 
 		const yAxisLeft = d3
