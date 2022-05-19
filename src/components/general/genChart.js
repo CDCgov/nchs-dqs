@@ -194,7 +194,7 @@ export class GenChart {
 		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
 		svg
 			.append("g")
-			.append("rect")
+			.append("rect").attr("id", "whitebox")
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
 			.attr("width", svgWidth)
@@ -432,11 +432,27 @@ export class GenChart {
 					});
 				}
 
-				const legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
-				const legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
-
+				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
+				let legendTx;
+				let legendTy;
+				
+				if (p.legendBottom) {
+					svg.attr("height", svgHeight + legendHeight + 30);
+					svg.select("#whitebox")
+						.attr("height", svgHeight + legendHeight + 30);
+					
+					// try to center it
+					legendTx = svgWidth / 2 - margin.left + 25;
+					// move it down outside the bottom margin
+					legendTy = margin.top + svgHeight; 
+					// now move the legend below the axis
 
+				} else {
+					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
+					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
+				}
+				
 				const legendContainer = svg
 					.append("g")
 					.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -483,9 +499,13 @@ export class GenChart {
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 13);
 
-				if (p.legendBottom) {
-					svg.attr("height", svgHeight + legendHeight);
-				}
+				// (TT) the code below never worked bc it only moved the outer legend wrapper not
+				// try to move container
+				// try to center it
+				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
+					// move it down outside the bottom margin
+				//legendTy = legendContainer.attr("y") + legendHeight;
+				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
 			}
 
 			const endRangeSpecialSectionStartDate = p.usesMultiLineLeftAxis

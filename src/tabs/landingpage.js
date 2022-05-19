@@ -195,13 +195,14 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			case "obesity":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
 			case "suicide":
 				selectedPanelData = this.allData.filter(
 					(d) =>  parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				//debugger;
 				break;
 			case "injury":
 				selectedPanelData = this.allData.filter(
@@ -312,6 +313,7 @@ export class LandingPage {
 				bars: "estimate",
 			},
 			usesLegend: true,
+			legendBottom: true,
 			usesDateDomainSlider: false,
 			usesBars: true,
 			usesHoverBars: true,
@@ -342,6 +344,7 @@ export class LandingPage {
 				yAxis: "estimate",
 			},
 			usesLegend: true,
+			legendBottom: true,
 			usesDateDomainSlider: false,
 			usesBars: false,
 			usesHoverBars: false,
@@ -559,6 +562,9 @@ export class LandingPage {
 
 			// set the Adjust vertical axis via unit_num in data
 			this.setVerticalUnitAxisSelect();
+
+			// now filter data again to pick up unit num
+			this.flattenedFilteredData = this.getFlattenedFilteredData();
 			
 			// now re-render the chart based on updated selection
 			this.renderChart();
@@ -574,8 +580,15 @@ export class LandingPage {
 	setAllSelectDropdowns () {
 		let allYearsArray;
 
+		if (this.flattenedFilteredData.length === 0) {
+			this.flattenedFilteredData = this.getFlattenedFilteredData();
+		}
+		
 		switch (this.dataTopic) {
 			case "obesity":
+				// reset unit_num or else it breaks
+				this.unitNum = 1;
+
 				// subtopic
 /* 				$('#panel-num-select')
 					.empty()
@@ -593,6 +606,22 @@ export class LandingPage {
 
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
+
+				console.log("BEFORE all data OBESIty", this.allData);
+				console.log("BEFORE flattened data OBESIty", this.flattenedFilteredData);
+
+				// Get the start year options
+				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year_pt; }).keys();
+				console.log("allyears OBESITY start:", allYearsArray);
+				$('#year-start-select').empty();
+				$('#year-end-select').empty();
+				allYearsArray.forEach((y) => {
+					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
+					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+				});
+				// fix labels
+				$('#year-start-label').text("Start Year");
+				$('#year-end-label').text("End Year");
 				break;
 			case "suicide":
 				// subtopic
@@ -605,7 +634,7 @@ export class LandingPage {
 
 				// Get the start year options
 				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
-				console.log("allyears start:", allYearsArray);
+				console.log("allyears SUICIDE start:", allYearsArray);
 				//debugger;
 				$('#year-start-select').empty();
 				$('#year-end-select').empty();
@@ -674,7 +703,13 @@ export class LandingPage {
 	setStubNameSelect() {
 
 		let allStubsArray;
-		console.log("flattenedData before:", this.flattenedFilteredData);
+
+		if (this.flattenedFilteredData) {
+			if (this.flattenedFilteredData.length === 0) {
+				this.flattenedFilteredData = this.getFlattenedFilteredData();
+			}
+		}
+		console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
 		//debugger;
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
@@ -728,11 +763,12 @@ export class LandingPage {
 		// on the table tab
 		$('#unit-num-select2').empty();
 
+		//debugger;
 
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
 			$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
-			//this.unitNum = y.unit_num; // bc maybe there is no 1 and have to set to a valid value
+			this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 			// on table tab
 			$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 		});
