@@ -155,11 +155,13 @@ export class LandingPage {
 		}
 	} */
 
+	getSelectorText(sel) {
+  		return(sel.options[sel.selectedIndex].text);
+	}
+
+
+
 	renderChart() {
-// ${this.updateTitle()} in next line and have function to set it based on selectors
-		
-		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
-		$("#chart-subtitle").html(`Data from NCHS.`);
 
 		// $("#metric_callout_box").html(config.calloutText.get(this.casesOrDeaths + this.newOrCumulative));
 		//debugger;
@@ -176,7 +178,20 @@ export class LandingPage {
 		// not using a slider here
 		//config.renderSlider(genChart.render(), this.currentSliderDomain);
 		genChart.render();
-
+		
+		// set the title - easier to do it all here based on selectors
+		let indicatorText = $("#data-topic-select option:selected").text(); //this.getSelectorText("#data-topic-select");
+		let stubText = $("#stub-name-num-select option:selected").text(); //this.getSelectorText("#stub-name-num-select");
+		if (this.showBarChart) {
+			this.chartTitle = indicatorText + " by " + stubText + " in " + this.startPeriod;
+		} else {
+			this.chartTitle = indicatorText + " by " + stubText + " from " + this.startPeriod + " to " + this.endPeriod;
+		}
+		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
+		let panelText = $("#panel-num-select option:selected").text(); //this.getSelectorText("#data-topic-select");
+		this.chartSubTitle = "Subtopic: " + panelText;
+		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
+		
 		// render data table too
 		this.renderDataTable(this.flattenedFilteredData);
 
@@ -191,25 +206,43 @@ export class LandingPage {
 	getFlattenedFilteredData() {
 		const { classification } = this;
 		//debugger;
+		// Make sure panel num is correct
+		this.panelNum = $("#panel-num-select option:selected").val();
+		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
+
 		let selectedPanelData
 		switch (this.dataTopic) {
 			case "obesity":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === this.panelNum && parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
 			case "suicide":
 				selectedPanelData = this.allData.filter(
-					(d) =>  parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				//debugger;
 				break;
 			case "injury":
 				selectedPanelData = this.allData.filter(
-					(d) =>  parseInt(d.unit_num) === this.unitNum && parseInt(d.stub_name_num) === this.stubNameNum && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
 				);
 				break;
 		}
+		// remove any remaining data where estimate is blank or null
+		selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
+		selectedPanelData = selectedPanelData.filter(function (d) { 
+			if(isNaN(d.estimate)){
+            	return false;
+			} else {
+				return true;
+			}
+		});
+		//debugger;
+		// now sort in order of the year
+		selectedPanelData.sort((a, b) => {
+   			 return a.year_pt - b.year_pt;
+		});
 		//debugger;
 		if (this.showBarChart) {
 			// filter to just the start year
@@ -225,7 +258,7 @@ export class LandingPage {
 		}
 
 		//debugger;
-		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys().join();
+		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys();
 		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
 		this.updateFootnotes(allFootnoteIdsArray);
 		//debugger;
@@ -238,6 +271,31 @@ export class LandingPage {
 			})); */
 
 		return [...selectedPanelData];
+	}
+
+	// can't use getFlattenedFilteredData bc that filters down to existing year set
+	// - we need this one to pull all the available years BUT still filter by panel, unit and stubname
+	getFilteredYearData() {
+		//debugger;
+		// Make sure panel num is correct
+		this.panelNum = $("#panel-num-select option:selected").val();
+		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
+
+		let allYearsData
+		switch (this.dataTopic) {
+			case "obesity":
+				allYearsData = this.allData.filter(
+					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
+				);
+				break;
+			case "suicide" || "injury":
+				allYearsData = this.allData.filter(
+					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) 
+				);
+				//debugger;
+				break;
+		}
+		return [...allYearsData];
 	}
 
 	getChartBaseProps() {
@@ -255,18 +313,19 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			case "obesity":
 				yAxisTitle = "Percent of Population, crude (%)";
-				xAxisTitle = "Time Period";
+				//xAxisTitle = "Time Period";
 				break;
 			case "suicide":
 				yAxisTitle = "Deaths per 100,000 resident population, crude";
-				xAxisTitle = "Time Period";
+				//xAxisTitle = "Time Period";
 				break;
 			case "injury":
 				yAxisTitle = "Initial injury-related visits in thousands, crude";
-				xAxisTitle = "Time Period";
+				//xAxisTitle = "Time Period";
 				break;
 		}
-
+		// X Axis Title is the "Characteristic" selected
+		xAxisTitle = $("#stub-name-num-select option:selected").text();
 		return { chartValueProperty, yAxisTitle, xAxisTitle };
 	}
 
@@ -308,7 +367,7 @@ export class LandingPage {
 			data,
 			chartProperties: {
 				yLeft1: chartValueProperty,
-				xAxis: "year",
+				xAxis: "stub_label",
 				yAxis: "estimate",
 				bars: "estimate",
 			},
@@ -318,11 +377,34 @@ export class LandingPage {
 			usesBars: true,
 			usesHoverBars: true,
 			barColor: "steelblue",
+			barColors: [
+				"#88419d",
+				"#1f78b4",
+				"#b2df8a",
+				"#33a02c",
+				"#0b84a5",
+				"#cc4c02",
+				"#690207",
+				"#e1ed3e",
+				"#7c7e82",
+				"#8dddd0",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+				],
+			chartRotate: true,
+			chartRotationPercent: 90,
+			bottomAxisRotation: -90,
+			xLabelRotatedYAdjust: 10,
+			xLabelRotatedXAdjust: -40,
 			usesChartTitle: true,
 			usesLeftAxis: true,
 			usesLeftAxisTitle: false,
+			usesRightAxis: true,
 			usesBottomAxis: true,
-			usesBottomAxisTitle: true,
+			usesBottomAxisTitle: false,
 			usesDateAsXAxis: true,
 			yLeftLabelScale: 3,
 			legendCoordinatePercents: legendCoordPercents,
@@ -362,7 +444,9 @@ export class LandingPage {
 			usesMultiLineLeftAxis: true,
 			multiLineColors: [
 				"#88419d",
-				"#57b452",
+				"#1f78b4",
+				"#b2df8a",
+				"#33a02c",
 				"#0b84a5",
 				"#cc4c02",
 				"#690207",
@@ -370,6 +454,10 @@ export class LandingPage {
 				"#7c7e82",
 				"#8dddd0",
 				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
 			],
 			multiLineLeftAxisKey: "subLine",
 			vizId,
@@ -494,17 +582,38 @@ export class LandingPage {
 	}
 
 	updateFootnotes(footnotesIdArray) {
-		let footnotesList = footnotesIdArray.split(",");
-		//console.log("footnote ids: ", footnotesList);
-		// foreach footnote ID, look it up in the tabnotes and ADD it to text
+		let footnotesList;
+		let sourceList;
 		let allFootnotesText = "";
-		footnotesList.forEach(f =>
-			allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
-		);
+		let sourceText = "";
+		//debugger;
+		// in some cases this gets called with no footnotes.
+		if (footnotesIdArray[0]) {
+			footnotesList = footnotesIdArray[0].split(",");
+
+			// get the source codes list
+			sourceList = footnotesList;
+			sourceList = sourceList.filter((d) => d.toString().startsWith("SC"));  // match(/SC/));
+			sourceList.forEach(f =>
+				sourceText += "<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>"
+			);
+
+			// now remove the SC notes from footnotesList
+			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
+			
+			//console.log("footnote ids: ", footnotesList);
+			// foreach footnote ID, look it up in the tabnotes and ADD it to text
+			allFootnotesText = "";
+			footnotesList.forEach(f =>
+				allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
+			);
+		}
+		// update source text
+		$("#source-text").html(sourceText);
 		// now update the footnotes on the page
 		$("#pageFooter").html(allFootnotesText);
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
-		//$("#pageFooter").show(); // let toggleTable do this
+
 	}
 
 	getFootnoteText(f) {
@@ -579,11 +688,17 @@ export class LandingPage {
 
 	setAllSelectDropdowns () {
 		let allYearsArray;
-
+/* 
 		if (this.flattenedFilteredData.length === 0) {
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
-		}
-		
+		} */
+		// always filter the data again
+		//debugger;
+		this.flattenedFilteredData = this.getFlattenedFilteredData();
+		let yearsData;
+		let max;
+		let index;
+		let singleYearsArray = [];
 		switch (this.dataTopic) {
 			case "obesity":
 				// reset unit_num or else it breaks
@@ -611,17 +726,29 @@ export class LandingPage {
 				console.log("BEFORE flattened data OBESIty", this.flattenedFilteredData);
 
 				// Get the start year options
-				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year_pt; }).keys();
+				yearsData = this.getFilteredYearData();
+				allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
 				console.log("allyears OBESITY start:", allYearsArray);
 				$('#year-start-select').empty();
 				$('#year-end-select').empty();
 				allYearsArray.forEach((y) => {
 					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
 					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+					singleYearsArray.push(this.getYear(y));
 				});
+				// make the last end year selected
+				$("#year-end-select option:last"). attr("selected", "selected");
 				// fix labels
-				$('#year-start-label').text("Start Year");
-				$('#year-end-label').text("End Year");
+				$('#year-start-label').text("Start Period");
+				$('#year-end-label').text("End Period");
+
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = singleYearsArray[0];
+				// max converts the strings to integers and gets the max
+				max = Math.max(...singleYearsArray);
+				// indexOf gets the index of the maximum value so we can set as the "End year"
+				index = singleYearsArray.indexOf(max); 
+				this.endYear = singleYearsArray[index]; // now get that year
 				break;
 			case "suicide":
 				// subtopic
@@ -633,12 +760,13 @@ export class LandingPage {
 				this.setStubNameSelect();
 
 				// Get the start year options
-				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year; }).keys();
+				yearsData = this.getFilteredYearData();
+				allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
 				console.log("allyears SUICIDE start:", allYearsArray);
-				//debugger;
 				$('#year-start-select').empty();
 				$('#year-end-select').empty();
 
+				// have to build an array of "only the first year"
 				allYearsArray.forEach((y) => {
 					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
 					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
@@ -649,9 +777,17 @@ export class LandingPage {
 				$('#year-start-label').text("Start Year");
 				$('#year-end-label').text("End Year");
 
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = allYearsArray[0];
+				this.startPeriod = this.startYear;
+				// max converts the strings to integers and gets the max
+				max = Math.max(...allYearsArray);
+				// indexOf however fails unless we convert max back to a string!
+				index = allYearsArray.indexOf(max.toString()); 
+				this.endYear = allYearsArray[index];
+				this.endPeriod = this.endYear;
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
-
 				break;
 			case "injury":
 								// subtopic
@@ -663,7 +799,8 @@ export class LandingPage {
 				this.setStubNameSelect();
 
 				// Get the start year options
-				allYearsArray = d3.map(this.flattenedFilteredData, function (d) { return d.year_pt; }).keys();
+				yearsData = this.getFilteredYearData();
+				allYearsArray = d3.map(yearsData, function (d) { return d.year_pt; }).keys();
 				console.log("allyears start:", allYearsArray);
 				$('#year-start-select').empty();
 				$('#year-end-select').empty();
@@ -671,9 +808,23 @@ export class LandingPage {
 					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
 					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
 				});
+				// make the last end year selected
+				$("#year-end-select option:last"). attr("selected", "selected");
 				// fix labels
 				$('#year-start-label').text("Start Year");
 				$('#year-end-label').text("End Year");
+								
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = allYearsArray[0];
+				this.startPeriod = this.startYear;
+				// max converts the strings to integers and gets the max
+				max = Math.max(...allYearsArray);
+				// indexOf however fails unless we convert max back to a string!
+				index = allYearsArray.indexOf(max.toString()); 
+				this.endYear = allYearsArray[index];
+				this.endPeriod = this.endYear;
+				// set the Adjust vertical axis via unit_num in data
+				this.setVerticalUnitAxisSelect();
 				break;
 		}
 
@@ -710,11 +861,11 @@ export class LandingPage {
 			}
 		}
 		console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
-		//debugger;
+
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
 		if (this.dataTopic === "obesity") {
-			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === this.panelNum));
+			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === parseInt(this.panelNum)));
 		} else {
 			allStubsArray = this.allData;
 		}
@@ -724,7 +875,6 @@ export class LandingPage {
 		allStubsArray = [
 			...new Map(allStubsArray.map((item) => [item["stub_name"], item])).values(),
 		];
-		//debugger;
 
 		// now sort them in id order
 		allStubsArray.sort((a, b) => {
@@ -736,6 +886,13 @@ export class LandingPage {
 		allStubsArray.forEach((y) => {
 			$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 		});
+		// set first item to "selected"
+		$('#stub-name-num-select option:first-child').attr("selected", "selected");
+
+		// now update the stubname num to the selected
+		this.stubNameNum = $("#stub-name-num-select option:selected").val();
+		//document.getElementById("stub-name-num-select").selectedIndex; 
+		//debugger;
 	}
 
 	setVerticalUnitAxisSelect() {
@@ -744,8 +901,8 @@ export class LandingPage {
 		// filter out by characteristic / stub_name bc some stub_names do not have both UNIT options
 		// only show the ones related to selected CHaracteristic
 		let theSelectedStubNum = this.stubNameNum;
-		//debugger;
-		allUnitsArray = this.allData.filter(item => (parseInt(item.stub_name_num) === this.stubNameNum));
+
+		allUnitsArray = this.allData.filter(item => (parseInt(item.stub_name_num) === parseInt(this.stubNameNum)));
 
 
 		// Creates an array of objects with unique "name" property values.
@@ -799,7 +956,7 @@ export class LandingPage {
 
 		// now re-render the chart based on updated selection
 		this.renderChart();
-		//this.renderDataTable();
+
 	}
 	
 	updateStartPeriod(start) {
@@ -834,6 +991,11 @@ export class LandingPage {
 	updateUnitNum(unitNum) {
 
 		this.unitNum = parseInt(unitNum);
+
+		// actually have to go update the Stubname options after a unit num change
+		// - call set stub names
+		this.setStubNameSelect();
+		
 		this.renderChart();
 	}
 
@@ -937,7 +1099,7 @@ export class LandingPage {
 			headers: cols,
 		};
 		// Now delete a couple cols for visual table
-		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit'));
+		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num"));
 		const cols = keys;
 
 
@@ -998,7 +1160,8 @@ export class LandingPage {
 			.attr("tabindex", "0")
 			.text(function (d, i) {
 				if (d.value == null) return "N/A";
-				return typeof i === "number" ? d.value.toLocaleString() : d.value;
+				return typeof i === "number" ? d.value : d.value; //.toLocaleString() <- this makes year have comma in it
+																	// so I removed it - could further reduce this return code
 			})
 			.each(function (column, index, i) {
 				let columnIndex = index;
@@ -1049,8 +1212,8 @@ export class LandingPage {
 			<div class="styled-select">
 			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
 				<optgroup style="font-size:12px;">
-				<option value="obesity" selected>Obesity among children</option>
-				<option value="suicide">Death rates for suicide</option>
+				<option value="obesity" selected>Obesity among Children</option>
+				<option value="suicide">Death Rates for Suicide</option>
 				</optgroup>
 			</select>
 			</div>
@@ -1181,7 +1344,7 @@ export class LandingPage {
 				<div id="chart-container" class="general-chart" style="align:left;">
 				</div>
 				<br>
-				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end chart wrapper -->
   </div>
   <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
@@ -1198,7 +1361,6 @@ export class LandingPage {
                     <table id="nchs-table" class="expanded-data-table"></table>
                 </div>
 				<br>
-				<div class="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end chart wrapper -->
 
   </div>

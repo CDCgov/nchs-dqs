@@ -45,6 +45,17 @@ export class GenChart {
 			genTooltip.mouseout();
 		}
 
+		var insertLinebreaks = function (d) {
+			var el = d3.select(this);
+			var words = d.split(':'); // split labels on : colon
+			el.text('');
+			for (var i = 0; i < words.length; i++) {
+				var tspan = el.append('tspan').text(words[i]);
+				if (i > 0)
+					tspan.attr('x', 0).attr('dy', '15');
+			}
+		};
+
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -84,14 +95,27 @@ export class GenChart {
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
 		};
 
+		if (p.chartRotate === true) {
+			// increase bottom margin - which ends up being left side where Characteristics are displayed
+			margin.bottom = margin.bottom + 50;
+		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
 
-		const svgWidth = fullSvgWidth * svgScale;
-		const svgHeight = svgWidth * svgHeightRatio;
-
-		const chartWidth = svgWidth - xMargin;
-		const chartHeight = svgHeight - yMargin;
+		let svgWidth = fullSvgWidth * svgScale;
+		let svgHeight = svgWidth * svgHeightRatio;
+		let chartWidth = svgWidth - xMargin;
+		let chartHeight = svgHeight - yMargin;
+		// change dimensions some for rotated bar chart (TT)
+		// - these ratios could be converted to props and passed in TODO
+		if (p.chartRotate === true) { 
+			// increase height some
+			svgHeight = svgHeight * 1.4;
+			chartHeight = chartHeight * 1.4;			
+			// reduce width some
+			svgWidth = svgWidth * 0.8;
+			chartWidth = chartWidth * 0.8;
+		} 
 
 		// get chart x and y centers
 		const halfXMargins = xMargin / 2;
@@ -180,7 +204,8 @@ export class GenChart {
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
 			.ticks(p.leftTickCount)
-			.tickFormat((d) => genFormat(d, p.formatYAxisLeft));
+			.tickFormat((d) => genFormat(d, p.formatYAxisLeft)); // this is what sets the tick labels
+					  // but where do we rotate them???
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
 
@@ -192,6 +217,8 @@ export class GenChart {
 
 		// apply the svg to the container element
 		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
+		// - this could also be enabled or disabled from a PROP 
 		svg
 			.append("g")
 			.append("rect").attr("id", "whitebox")
@@ -212,18 +239,34 @@ export class GenChart {
 			// xAxis
 			let xAxisDraw;
 			if (p.usesBottomAxis) {
-				xAxisDraw = svg
-					.append("g")
-					.attr("class", "axis bottom")
-					.attr("transform", `translate(${margin.left}, ${margin.top + chartHeight})`);
+					xAxisDraw = svg
+						.append("g")
+						.attr("class", "axis bottom")
+						.attr("transform", `translate(${margin.left}, ${margin.top + chartHeight})`);
 			}
 
 			// left yAxis
 			if (p.usesLeftAxis) {
-				svg.append("g")
+				if (p.usesBars === true && p.chartRotate === true) {
+					// need to rotate axis values
+					svg.append("g")
 					.attr("class", "y axis left")
 					.attr("transform", `translate(${margin.left}, ${margin.top})`)
-					.call(yAxisLeft);
+					.call(yAxisLeft)
+				  	.selectAll("text")
+					.attr("y", 0)
+					.attr("x", 0)
+					.attr("dy", "-0.15em")
+					.attr("transform", "rotate(-90)")
+					.style("text-anchor", "start");
+				} else {
+					// dont rotate - show normal
+					svg.append("g")
+						.attr("class", "y axis left")
+						.attr("transform", `translate(${margin.left}, ${margin.top})`)
+						.call(yAxisLeft);
+				}
+
 			}
 
 			// right yAxis
@@ -926,7 +969,15 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) xAxis.tickValues(tickValues);
-				xAxisDraw.call(xAxis);
+				if (p.usesBars === true && p.chartRotate === true) {
+					// need to format axis tick vals
+					xAxisDraw.call(xAxis);
+					d3.selectAll(`#${svgId} .axis.bottom text`)
+						.each(insertLinebreaks)		
+				} else {
+					// draw regular/normal
+					xAxisDraw.call(xAxis);
+				}
 
 				if (p.bottomAxisRotation)
 					d3.selectAll(`#${svgId} .axis.bottom text`)
@@ -998,6 +1049,24 @@ export class GenChart {
 			d3.selectAll(`#${svgId} .left .tick line`).attr("stroke", p.leftAxisColor).attr("opacity", "0.4");
 
 			genTooltip.render();
+		}
+
+		if (p.chartRotate) {
+			// try to rotate the entire chart
+			d3.selectAll(`#${svgId}`)
+				.attr(
+					"transform",
+					`rotate(${p.chartRotationPercent})`
+				);
+		}
+		if (p.usesBars === true && p.chartRotate === true) {
+			// need to format axis tick vals
+			//svg.selectAll('.g .axis .bottom .tick .text').each(insertLinebreaks);
+/* 			svg.select('.axis.axis--x')
+				.selectAll("text") 
+				.each(insertLinebreaks); */
+/* 			d3.selectAll(`#${svgId} .axis.bottom text`)
+				.each(insertLinebreaks)		 */	
 		}
 
 		return {
