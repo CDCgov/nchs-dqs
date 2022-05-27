@@ -45,15 +45,27 @@ export class GenChart {
 			genTooltip.mouseout();
 		}
 
+		// inserts line breaks where every : is in the Characteristic on the bar left axis
 		var insertLinebreaks = function (d) {
 			var el = d3.select(this);
 			var words = d.split(':'); // split labels on : colon
 			el.text('');
+			//this.dy = this.dy + offset;
 			for (var i = 0; i < words.length; i++) {
 				var tspan = el.append('tspan').text(words[i]);
 				if (i > 0)
-					tspan.attr('x', 0).attr('dy', '15');
+					tspan.attr('x', 0).attr('dy', '15'); // was 15
 			}
+			// based on number of lines, adjust height
+			let offset = words.length * 0.005;
+			if (words.length > 2) {
+				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
+			} else {
+				// move it down closer to hash
+				offset = 3 * offset;
+				d3.select(this).attr("dy", 25);
+			}
+
 		};
 
 		const svgId = `${p.vizId}-svg`;
@@ -97,7 +109,7 @@ export class GenChart {
 
 		if (p.chartRotate === true) {
 			// increase bottom margin - which ends up being left side where Characteristics are displayed
-			margin.bottom = margin.bottom + 50;
+			margin.bottom = margin.bottom + 75;
 		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -146,7 +158,7 @@ export class GenChart {
 		if (p.firefoxReversed === true) {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
-			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 0.7
+			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 1.7
 			xScale = d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(1.7);
 		}
 
@@ -194,7 +206,7 @@ export class GenChart {
 		// set up axes
 		const xAxis = d3
 			.axisBottom(xScale)
-			.tickSize(3)
+			.tickSize(1)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
@@ -434,7 +446,7 @@ export class GenChart {
 							text: d.key,
 						};
 					});
-				} else if (p.usesStackedBars) {
+				} else if (p.usesStackedBars) { 
 					stack(p.data).forEach((d, i) => {
 						legendData[i] = {
 							stroke: color(d.key),
@@ -443,6 +455,18 @@ export class GenChart {
 						};
 					});
 					legendData.reverse();
+			// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
+					// - also even if I got this working it CAN"T GO HERE
+					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
+/* 				} else if (p.usesBars) { 
+					p.data.forEach((d, i) => {
+						legendData[i] = {
+							stroke: p.barColors[i],
+							dashArrayScale: p.left1DashArrayScale,
+							text: d.key,
+						};
+					});
+					legendData.reverse(); */
 				} else {
 					if (p.usesLeftLine1) {
 						legendData.push({

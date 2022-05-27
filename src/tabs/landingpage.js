@@ -7,10 +7,6 @@ import * as config from "../components/landingPage/config";
 import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 
-//import { CommunityTransmissionMap } from "../components/landingPage/communityMap";
-//import { CommunityTransmissionMapLegend } from "../components/landingPage/communityMapLegend";
-//import { landingStatusBar } from "../components/landingPage/landingStatusBar";
-
 export class LandingPage {
 	constructor() {
 		resetAppStateVars();
@@ -406,7 +402,7 @@ export class LandingPage {
 			usesBottomAxis: true,
 			usesBottomAxisTitle: false,
 			usesDateAsXAxis: true,
-			yLeftLabelScale: 3,
+			yLeftLabelScale: 1,
 			legendCoordinatePercents: legendCoordPercents,
 			leftAxisTitle: yAxisTitle,
 			bottomAxisTitle: xAxisTitle,
