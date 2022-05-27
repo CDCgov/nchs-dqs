@@ -395,6 +395,7 @@ export class LandingPage {
 			bottomAxisRotation: -90,
 			xLabelRotatedYAdjust: 10,
 			xLabelRotatedXAdjust: -40,
+			axisLabelFontScale: 0.55,
 			usesChartTitle: true,
 			usesLeftAxis: true,
 			usesLeftAxisTitle: false,
@@ -402,7 +403,8 @@ export class LandingPage {
 			usesBottomAxis: true,
 			usesBottomAxisTitle: false,
 			usesDateAsXAxis: true,
-			yLeftLabelScale: 1,
+				yLeftLabelScale: 1,
+			
 			legendCoordinatePercents: legendCoordPercents,
 			leftAxisTitle: yAxisTitle,
 			bottomAxisTitle: xAxisTitle,

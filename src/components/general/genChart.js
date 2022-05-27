@@ -60,10 +60,11 @@ export class GenChart {
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
+				d3.select(this).attr("dy", 25);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
-				d3.select(this).attr("dy", 25);
+				d3.select(this).attr("dy", 50);
 			}
 
 		};
@@ -82,8 +83,13 @@ export class GenChart {
 
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
 		const axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
-		const axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
-
+		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
+		// this scaling often makes the label sizes too big
+		if (axisLabelFontSize > 16) {
+			// knock it back down
+			axisLabelFontSize = 16;
+		}
+		//debugger;
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
 		// but not always titles
@@ -109,7 +115,7 @@ export class GenChart {
 
 		if (p.chartRotate === true) {
 			// increase bottom margin - which ends up being left side where Characteristics are displayed
-			margin.bottom = margin.bottom + 75;
+			margin.bottom = margin.bottom + 90;
 		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -206,7 +212,7 @@ export class GenChart {
 		// set up axes
 		const xAxis = d3
 			.axisBottom(xScale)
-			.tickSize(1)
+			.tickSize(3)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
@@ -1075,22 +1081,19 @@ export class GenChart {
 			genTooltip.render();
 		}
 
-		if (p.chartRotate) {
-			// try to rotate the entire chart
+		// (TT) this is where we rotate the entire bar chart
+		if (p.usesBars === true && p.chartRotate === true) {
+			// rotate the entire chart
 			d3.selectAll(`#${svgId}`)
 				.attr(
 					"transform",
 					`rotate(${p.chartRotationPercent})`
-				);
-		}
-		if (p.usesBars === true && p.chartRotate === true) {
-			// need to format axis tick vals
-			//svg.selectAll('.g .axis .bottom .tick .text').each(insertLinebreaks);
-/* 			svg.select('.axis.axis--x')
-				.selectAll("text") 
-				.each(insertLinebreaks); */
-/* 			d3.selectAll(`#${svgId} .axis.bottom text`)
-				.each(insertLinebreaks)		 */	
+			);
+			
+			// now add the LEGEND! - have to do this last
+			if (p.usesLegend === true) {
+
+			}
 		}
 
 		return {
