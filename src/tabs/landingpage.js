@@ -403,7 +403,7 @@ export class LandingPage {
 			usesBottomAxis: true,
 			usesBottomAxisTitle: false,
 			usesDateAsXAxis: true,
-				yLeftLabelScale: 1,
+			yLeftLabelScale: 1,
 			
 			legendCoordinatePercents: legendCoordPercents,
 			leftAxisTitle: yAxisTitle,
@@ -1333,13 +1333,13 @@ export class LandingPage {
 <!-- Tabs content -->
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
-		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 		<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
 			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
 				<option value="1" selected>Percent of population, crude</option>
 			</select>
 		</div>
-				<div id="chart-container" class="general-chart" style="align:left;">
+				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;border:1px solid red;">
 				</div>
 				<br>
 				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>

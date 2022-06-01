@@ -1092,7 +1092,150 @@ export class GenChart {
 			
 			// now add the LEGEND! - have to do this last
 			if (p.usesLegend === true) {
+				let legendData=[];
+/* 				fullNestedData = d3
+					.nest()
+					.key((d) => d[p.multiLineLeftAxisKey])
+					.entries(p.data); */
+				// set up the data first
+				//console.log("p.data:", p.data);
 
+				p.data.forEach((d, i) => {
+					legendData[i] = {
+						stroke: p.barColors[i],
+						dashArrayScale: 0,
+						text: d.stub_label,
+					};
+				});
+				////
+				// need height first
+				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
+				let legendTx;
+				let legendTy;
+				
+				if (p.legendBottom) {
+/* 					svg.attr("height", svgHeight + legendHeight + 30);
+					svg.select("#whitebox")
+						.attr("height", svgHeight + legendHeight + 30);
+					
+					// try to center it
+					legendTx = svgWidth / 2 - margin.left + 25;
+					// move it down outside the bottom margin
+					legendTy = margin.top + svgHeight; 
+					// now move the legend below the axis */
+
+					// (TT) try swapping height and width
+/* 					svg.attr("height", svgWidth + legendHeight + 30);
+					svg.select("#whitebox")
+						.attr("height", svgWidth + legendHeight + 30); */
+					
+					// try increasing the width even though it is rotated?
+					svg.attr("width", svgWidth + legendHeight + 100);
+					svg.select("#whitebox")
+						.attr("width", svgWidth + legendHeight + 30);
+					
+					console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
+					
+					// try to center it
+					legendTx = svgHeight / 2 - margin.left + 25;
+					// move it down outside the bottom margin
+					legendTy = margin.top + svgWidth; 
+
+					legendTx = svgWidth + 10;
+					legendTy = svgHeight / 3 * 2 + 25;
+
+					console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
+
+				} else {
+					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
+					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
+				}
+				
+				const legendContainer = svg
+					.append("g")
+					.attr("transform", `translate(${legendTx}, ${legendTy})`)
+					.append("rect")
+					.attr("id", `${svgId}-chart-legend`)
+					.attr("height", legendHeight)
+					.attr("fill", "#F2F2F2")
+					.attr("rx", "5")
+					.attr("ry", "5")
+					.attr("stroke", "black");  
+				
+				legendData.forEach((d, i) => {
+					const legendItem = svg
+						.append("g")
+						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+						.attr(
+							"transform",
+							`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
+								${legendTy + axisLabelFontSize / 2 - 15})`
+					); 
+					
+/* 						.attr(
+							"transform",
+							`translate(${legendTx + axisLabelFontSize / 2},
+								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
+						);  */
+
+					legendItem
+						.append("line")
+						.attr("x1", 0)
+						.attr("y1", 0)
+						.attr("x2", 40)
+						.attr("y2", 0)
+						.attr("stroke", d.stroke)
+						.attr("stroke-width", 4)
+						.attr("stroke-dasharray", d.dashArrayScale)
+						.attr(
+							"transform",
+							`rotate(-${p.chartRotationPercent})`
+						);
+
+					legendItem
+						.append("g")
+						.append("text")
+						.attr("x", 60)
+						.attr("y", axisLabelFontSize * 0.4)
+						.text(d.text)
+						.attr("font-size", axisLabelFontSize)
+						.attr(
+							"transform",
+							`rotate(-${p.chartRotationPercent})`
+						);
+					
+					//rotate legend item
+/* 					legendItem
+						.attr(
+							"transform",
+							`rotate(${p.chartRotationPercent})`
+						); */
+				});
+
+				// get all legend items and find the longest then set the legend container size
+				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width); 
+				const newWidth = d3.max(legendWidths);
+				legendContainer
+					.attr("width", newWidth + 13)
+					.attr(
+						"transform",
+						`rotate(-${p.chartRotationPercent})`
+					);
+
+				// enlarge chart container - NOT WORKING FOR SOME REASON
+				const chartContainer = document.querySelectorAll(`.chart-container`);
+				chartContainer
+					.attr("margin-top",50)
+					.attr("width", svgHeight + 100)
+					.attr("height", svgWidth + 75);
+				const tabContainer = document.querySelectorAll(`.ex-with-icons-content`);
+				tabContainer
+					.attr("margin-top",50)
+					.attr("width", svgHeight + 100)
+					.attr("height", svgWidth + 75);
+				
+				///
 			}
 		}
 

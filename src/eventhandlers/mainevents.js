@@ -74,6 +74,8 @@ export const MainEvents = {
 			theChart.style.display = "block";
 			theChart.classList.add("show");
 			theChart.classList.add("active");
+			// have to render Chart again otherwise svg has no "size" = NaN
+			appState.ACTIVE_TAB.renderChart();
 			let theTable = document.getElementById("table-tab");
 			theTable.style.display = "none";
 			theTable.classList.remove("show");
