@@ -1097,7 +1097,7 @@ export class LandingPage {
 			headers: cols,
 		};
 		// Now delete a couple cols for visual table
-		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num"));
+		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num") && !item.match("year_pt")  && !item.match("subLine"));
 		const cols = keys;
 
 

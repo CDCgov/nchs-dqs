@@ -1170,7 +1170,24 @@ export class GenChart {
 							"transform",
 							`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
 								${legendTy + axisLabelFontSize / 2 - 15})`
-					); 
+						);
+						//.append("label")
+						//.text(function(d) { return "legCheck" + i; })
+
+/* 					var pair = optionArray[option];
+					var checkbox = document.createElement("input");
+					checkbox.type = "checkbox";
+					checkbox.name = pair;
+					checkbox.value = pair;
+					s2.appendChild(checkbox);
+
+					var label = document.createElement('label')
+					label.htmlFor = pair;
+					label.appendChild(document.createTextNode(pair));
+
+					s2.appendChild(label);
+								s2.appendChild(document.createElement("br"));   */  
+					
 					
 /* 						.attr(
 							"transform",
@@ -1190,7 +1207,17 @@ export class GenChart {
 						.attr(
 							"transform",
 							`rotate(-${p.chartRotationPercent})`
-						);
+					);
+					
+					legendItem
+						.append("input")
+						.attr("checked", true)
+						.attr("type", "checkbox")
+						//.attr("label", function(d, i) { return i; })
+						.attr("id", function (d, i) { return "legCheck" + i; });
+						//.attr("onClick", "change(this)")
+						//.attr("for", function(d,i) { return "legCheck" + i; }); 
+
 
 					legendItem
 						.append("g")
@@ -1224,7 +1251,7 @@ export class GenChart {
 					);
 
 				// enlarge chart container - NOT WORKING FOR SOME REASON
-				const chartContainer = document.querySelectorAll(`.chart-container`);
+/* 				const chartContainer = document.querySelectorAll(`.chart-container`);
 				chartContainer
 					.attr("margin-top",50)
 					.attr("width", svgHeight + 100)
@@ -1233,7 +1260,7 @@ export class GenChart {
 				tabContainer
 					.attr("margin-top",50)
 					.attr("width", svgHeight + 100)
-					.attr("height", svgWidth + 75);
+					.attr("height", svgWidth + 75); */
 				
 				///
 			}
