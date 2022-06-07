@@ -31,6 +31,16 @@ export class GenChart {
 		const p = this.props;
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 
+		////////////////////////////////////////////////////////////////////////////////
+		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
+		// BUT leave all data items on the legend!!!
+		// (1) backup ORIGINAL p.data that has ALL DATA in it
+		const allIncomingData = p.data // this has to be used for the LEGENDS
+		// (2) go ahead and filter out that dontDraw data so that scales etc. will be correct
+		// - this keeps us from having to edit a LOT of code
+		p.data = p.data.filter((d) => d.dontDraw === false);
+		///////////////////////////////////////////////////////////////////////////////
+	
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
 				genTooltip.mouseover(d3.select(this), ["data"]);
@@ -209,20 +219,22 @@ export class GenChart {
 			)
 			.range([chartHeight, 0]);
 
+
+
 		// set up axes
 		const xAxis = d3
 			.axisBottom(xScale)
 			.tickSize(3)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
-			.tickFormat((d) => genFormat(d, p.formatXAxis));
+			.tickFormat((drawD) => genFormat(drawD, p.formatXAxis));
 
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
 			.ticks(p.leftTickCount)
-			.tickFormat((d) => genFormat(d, p.formatYAxisLeft)); // this is what sets the tick labels
+			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisLeft)); // this is what sets the tick labels
 					  // but where do we rotate them???
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
@@ -231,7 +243,7 @@ export class GenChart {
 			.axisRight(yScaleRight)
 			.tickSize(3)
 			.ticks(p.rightTickCount)
-			.tickFormat((d) => genFormat(d, p.formatYAxisRight));
+			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
 		// apply the svg to the container element
 		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
@@ -665,8 +677,9 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
+					const drawData = data.filter((d) => d.dontDraw === false);
 					bars.selectAll("rect")
-						.data(data)
+						.data(drawData)
 						.join(
 							(enter) => {
 								enter
@@ -1106,7 +1119,12 @@ export class GenChart {
 				// set up the data first
 				//console.log("p.data:", p.data);
 
-				p.data.forEach((d, i) => {
+				// HERE IS WHERE WE USE ALL DATA even if dontDraw = false
+				// THis the bar chart LEGEND gives option of turning on and off ALL values
+				// without this the clicking slowly disappears the options never to return
+
+				// ???? HOW DO WE REMOVE THE COLOR LINES ON ONES WITH dontDraw = TRUE????
+				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
 						stroke: p.barColors[i],
 						dashArrayScale: 0,
@@ -1199,21 +1217,23 @@ export class GenChart {
 														s2.appendChild(document.createElement("br"));   */
 					
 						console.log("1 data d:", d);
-
-						legendItem
-							.append("line")
-							.attr("x1", 0)
-							.attr("y1", 0)
-							.attr("x2", 40)
-							.attr("y2", 0)
-							.attr("stroke", d.stroke)
-							.attr("stroke-width", 4)
-							.attr("stroke-dasharray", d.dashArrayScale)
-							.attr(
-								"transform",
-								`rotate(-${p.chartRotationPercent})`
-							);
-					
+						
+						// only draw color line if data is drawn
+						if (!d.dontDraw) {
+							legendItem
+								.append("line")
+								.attr("x1", 0)
+								.attr("y1", 0)
+								.attr("x2", 40)
+								.attr("y2", 0)
+								.attr("stroke", d.stroke)
+								.attr("stroke-width", 4)
+								.attr("stroke-dasharray", d.dashArrayScale)
+								.attr(
+									"transform",
+									`rotate(-${p.chartRotationPercent})`
+								);
+						}
 						console.log("2 data d:", d);
 
 						// Could not get these methods of implementing a checkbox to work
@@ -1245,21 +1265,19 @@ export class GenChart {
 						legendItem
 							.append("g")
 							.append('text')
-							//.attr('font-family', 'FontAwesome')
+							//.attr('font-family', 'FontAwesome') // this method does not work (TT)
 							.attr("class", "far")
 							.attr('font-size', axisLabelFontSize * 1.1)
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
 								console.log("GenChart-Legend - set checked or not - 3 data curD:", d);
-
 								if (d.dontDraw) {
 									return '\uf0c8';  // square unicode [&#xf0c8;]
 								} else {
 									return '\uf14a';  // check square unicode 
 								}
-							}) // checkbox unicode
-							//.text(function (d) { return '\uf0c8' }) // square unicode [&#xf0c8;]
+							}) 
 							.attr(
 								"transform",
 								`rotate(-${p.chartRotationPercent})`

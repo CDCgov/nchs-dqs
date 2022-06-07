@@ -120,12 +120,12 @@ export class LandingPage {
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: 0 }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: 0}));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false}));
 				this.renderAfterDataReady();
 			}
 
