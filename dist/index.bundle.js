@@ -23287,7 +23287,7 @@ var GenChart = /*#__PURE__*/function () {
         } else {
           // move it down closer to hash
           offset = 3 * offset;
-          _lib_d3_min__WEBPACK_IMPORTED_MODULE_0__["select"](this).attr("dy", 50);
+          _lib_d3_min__WEBPACK_IMPORTED_MODULE_0__["select"](this).attr("dy", 30);
         }
       };
 
@@ -23542,7 +23542,8 @@ var GenChart = /*#__PURE__*/function () {
               legendData[i] = {
                 stroke: multiLineColors(i),
                 dashArrayScale: p.left1DashArrayScale,
-                text: d.key
+                text: d.key,
+                dontDraw: d.dontDraw
               };
             });
           } else if (p.usesStackedBars) {
@@ -23550,7 +23551,8 @@ var GenChart = /*#__PURE__*/function () {
               legendData[i] = {
                 stroke: color(d.key),
                 dashArrayScale: p.left1DashArrayScale,
-                text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0]
+                text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
+                dontDraw: d.dontDraw
               };
             });
             legendData.reverse(); // CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
@@ -23571,7 +23573,8 @@ var GenChart = /*#__PURE__*/function () {
               legendData.push({
                 stroke: leftLine1Color,
                 dashArrayScale: p.left1DashArrayScale,
-                text: p.leftLegendText
+                text: p.leftLegendText,
+                dontDraw: d.dontDraw
               });
             }
 
@@ -23579,7 +23582,8 @@ var GenChart = /*#__PURE__*/function () {
               legendData.push({
                 stroke: p.leftLine2Color,
                 dashArrayScale: p.left2DashArrayScale,
-                text: p.left2LegendText
+                text: p.left2LegendText,
+                dontDraw: d.dontDraw
               });
             }
 
@@ -23587,7 +23591,8 @@ var GenChart = /*#__PURE__*/function () {
               legendData.push({
                 stroke: p.leftLine3Color,
                 dashArrayScale: p.left3DashArrayScale,
-                text: p.left3LegendText
+                text: p.left3LegendText,
+                dontDraw: d.dontDraw
               });
             }
           }
@@ -23596,7 +23601,8 @@ var GenChart = /*#__PURE__*/function () {
             legendData.push({
               stroke: rightLineColor,
               dashArrayScale: p.rightDashArrayScale,
-              text: p.rightLegendText
+              text: p.rightLegendText,
+              dontDraw: d.dontDraw
             });
           } // need height first
 
@@ -24034,7 +24040,8 @@ var GenChart = /*#__PURE__*/function () {
             _legendData[i] = {
               stroke: p.barColors[i],
               dashArrayScale: 0,
-              text: d.stub_label
+              text: d.stub_label,
+              dontDraw: d.dontDraw
             };
           }); ////
           // need height first
@@ -24076,58 +24083,84 @@ var GenChart = /*#__PURE__*/function () {
             _legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
           }
 
-          var _legendContainer = svg.append("g").attr("transform", "translate(".concat(_legendTx, ", ").concat(_legendTy, ")")).append("rect").attr("id", "".concat(svgId, "-chart-legend")).attr("height", _legendHeight).attr("fill", "#F2F2F2").attr("rx", "5").attr("ry", "5").attr("stroke", "black");
+          if (_legendData[0].text.length > 0) {
+            var _legendContainer = svg.append("g").attr("transform", "translate(".concat(_legendTx, ", ").concat(_legendTy, ")")).append("rect").attr("id", "".concat(svgId, "-chart-legend")).attr("height", _legendHeight).attr("fill", "#F2F2F2").attr("rx", "5").attr("ry", "5").attr("stroke", "black");
 
-          _legendData.forEach(function (d, i) {
-            var legendItem = svg.append("g").attr("class", "".concat(svgId, "-legendItem ").concat(d.text.replace(/[\W_]+/g, ""))).attr("transform", "translate(".concat(_legendTx + 1.1 * axisLabelFontSize * (i + 1), ",\n\t\t\t\t\t\t\t\t").concat(_legendTy + axisLabelFontSize / 2 - 15, ")")); //.append("label")
-            //.text(function(d) { return "legCheck" + i; })
+            _legendData.forEach(function (d, i) {
+              // create unique id name
+              var legendId = d.text.replace(/ /g, "_");
+              var legendItem = svg.append("g").attr("class", "".concat(svgId, "-legendItem ").concat(d.text.replace(/[\W_]+/g, ""))).attr("id", legendId).attr("transform", "translate(".concat(_legendTx + 1.1 * axisLabelFontSize * (i + 1), ",\n\t\t\t\t\t\t\t\t").concat(_legendTy + axisLabelFontSize / 2 - 15, ")"));
+              /* 					var pair = optionArray[option];
+              					var checkbox = document.createElement("input");
+              					checkbox.type = "checkbox";
+              					checkbox.name = pair;
+              					checkbox.value = pair;
+              					s2.appendChild(checkbox);
+              
+              					var label = document.createElement('label')
+              					label.htmlFor = pair;
+              					label.appendChild(document.createTextNode(pair));
+              
+              					s2.appendChild(label);
+              								s2.appendChild(document.createElement("br"));   */
 
-            /* 					var pair = optionArray[option];
-            					var checkbox = document.createElement("input");
-            					checkbox.type = "checkbox";
-            					checkbox.name = pair;
-            					checkbox.value = pair;
-            					s2.appendChild(checkbox);
-            
-            					var label = document.createElement('label')
-            					label.htmlFor = pair;
-            					label.appendChild(document.createTextNode(pair));
-            
-            					s2.appendChild(label);
-            								s2.appendChild(document.createElement("br"));   */
+              console.log("1 data d:", d);
+              legendItem.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 40).attr("y2", 0).attr("stroke", d.stroke).attr("stroke-width", 4).attr("stroke-dasharray", d.dashArrayScale).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")"));
+              console.log("2 data d:", d); // Could not get these methods of implementing a checkbox to work
+              // just see a white space and no checkbox and not aligned in proper location either
 
-            /* 						.attr(
-            							"transform",
-            							`translate(${legendTx + axisLabelFontSize / 2},
-            								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-            						);  */
+              /* 					legendItem
+              						.append("input")
+              						.attr("checked", true)
+              						.attr("type", "checkbox")
+              						//.attr("label", function(d, i) { return i; })
+              						.attr("id", function (d, i) { return "legCheck" + i; });
+              						//.attr("onClick", "change(this)")
+              						//.attr("for", function(d,i) { return "legCheck" + i; }); */
 
-            legendItem.append("line").attr("x1", 0).attr("y1", 0).attr("x2", 40).attr("y2", 0).attr("stroke", d.stroke).attr("stroke-width", 4).attr("stroke-dasharray", d.dashArrayScale).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")"));
-            legendItem.append("input").attr("checked", true).attr("type", "checkbox") //.attr("label", function(d, i) { return i; })
-            .attr("id", function (d, i) {
-              return "legCheck" + i;
-            }); //.attr("onClick", "change(this)")
-            //.attr("for", function(d,i) { return "legCheck" + i; }); 
+              /* 					legendItem
+              						.append("foreignObject")
+              						.attr("width", 20)
+              						.attr("height", 20)
+              						.append("xhtml:body")
+              						//.html("<form><input type=checkbox id=check /></form>")
+              						.html("<i class='fas fa-check-square'></i>")
+              						.on("click", function(d, i){
+              							console.log("checkbox icon clicked");  // legendItem.select("#check").node().checked
+              						}); */
+              // could not get d alone to work in function below
+              // -- if you use d in the foreach above, you can't then use the same d
+              // in a function inside it.  Have to use another variable (TT)
 
-            legendItem.append("g").append("text").attr("x", 60).attr("y", axisLabelFontSize * 0.4).text(d.text).attr("font-size", axisLabelFontSize).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")")); //rotate legend item
+              var curD = d;
+              legendItem.append("g").append('text') //.attr('font-family', 'FontAwesome')
+              .attr("class", "far").attr('font-size', axisLabelFontSize * 1.1).attr("x", 45).attr("y", axisLabelFontSize * 0.5).text(function (curD) {
+                console.log("GenChart-Legend - set checked or not - 3 data curD:", d);
 
-            /* 					legendItem
-            						.attr(
-            							"transform",
-            							`rotate(${p.chartRotationPercent})`
-            						); */
-          }); // get all legend items and find the longest then set the legend container size
+                if (d.dontDraw) {
+                  return "\uF0C8"; // square unicode [&#xf0c8;]
+                } else {
+                  return "\uF14A"; // check square unicode 
+                }
+              }) // checkbox unicode
+              //.text(function (d) { return '\uf0c8' }) // square unicode [&#xf0c8;]
+              .attr("transform", "rotate(-".concat(p.chartRotationPercent, ")"));
+              legendItem.append("g").append("text").attr('font-family', 'sans-serif').attr('font-size', axisLabelFontSize * 1.0).attr("x", 62).attr("y", axisLabelFontSize * 0.5) // axisLabelFontSize * 0.4
+              .text(d.text).attr("font-size", axisLabelFontSize).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")"));
+            }); // get all legend items and find the longest then set the legend container size
 
 
-          var _legendItems = document.querySelectorAll(".".concat(svgId, "-legendItem"));
+            var _legendItems = document.querySelectorAll(".".concat(svgId, "-legendItem"));
 
-          var _legendWidths = _toConsumableArray(_legendItems).map(function (l) {
-            return l.getBoundingClientRect().width;
-          });
+            var _legendWidths = _toConsumableArray(_legendItems).map(function (l) {
+              return l.getBoundingClientRect().width;
+            });
 
-          var _newWidth = _lib_d3_min__WEBPACK_IMPORTED_MODULE_0__["max"](_legendWidths);
+            var _newWidth = _lib_d3_min__WEBPACK_IMPORTED_MODULE_0__["max"](_legendWidths);
 
-          _legendContainer.attr("width", _newWidth + 13).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")")); // enlarge chart container - NOT WORKING FOR SOME REASON
+            _legendContainer.attr("width", _newWidth + 13).attr("transform", "rotate(-".concat(p.chartRotationPercent, ")"));
+          } // end if legendData.length > 0
+          // enlarge chart container - NOT WORKING FOR SOME REASON
 
           /* 				const chartContainer = document.querySelectorAll(`.chart-container`);
           				chartContainer
@@ -24838,6 +24871,14 @@ var MainEvents = {
 
         appState.ACTIVE_TAB.updateShowBarChart(0);
       }
+    });
+    $(document).on("click", ".chart-container-svg-legendItem", function (event) {
+      event.stopPropagation(); // get the unique id of the legend item
+
+      var legItem = event.target.parentNode.parentNode.id;
+      console.log("legendItem clicked: ", legItem);
+      appState.ACTIVE_TAB.toggleLegendItem(legItem);
+      event.preventDefault();
     }); // click Chart then show Chart
 
     $(document).on("click", "#icons-tab-1", function (event) {
@@ -38609,7 +38650,7 @@ var LandingPage = /*#__PURE__*/function () {
       };
     });
 
-    _defineProperty(this, "tabContent", "<!-- TOP SELECTORS --><div class=\"color-area-wrapper\">\n\t<div class=\"rectangle-green\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">1</strong>\n\t\t\t</span>\n\t\t\t<span style=\"padding-bottom:0px; font-family:Open Sans,sans-serif;color: white; font-weight:300; \">Select a topic</span><br>\n\t\t\t<span style=\"margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: white; font-weight:500;font-size:22px;\">Topic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<div class=\"styled-select\">\n\t\t\t<select name=\"data-topic-select\" id=\"data-topic-select\" form=\"select-view-options\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup style=\"font-size:12px;\">\n\t\t\t\t<option value=\"obesity\" selected>Obesity among Children</option>\n\t\t\t\t<option value=\"suicide\">Death Rates for Suicide</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t\t</div>\n\t\t\t<!-- REMOVE FOR NOW <option value=\"injury\">Initial injury-related visits to hospital emergency departments -->\n\t\t</div>\n\t\t<div class=\"chevron-green\"></div>\n\t</div>\n\t<div class=\"rectangle-yellow\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">2</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color: #010101; font-weight:300; \">Refine to a</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:500;font-size:22px;\">Subtopic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"panel-num-select\" id=\"panel-num-select\" form=\"select-view-options\" class=\"styled-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup>\n\t\t\t\t<option value=\"1\" selected>2-19 years</option>\n\t\t\t\t<option value=\"2\">2-5 years</option>\n\t\t\t\t<option value=\"3\">6-11 years</option>\n\t\t\t\t<option value=\"4\">12-19 years</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-yellow\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">3</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">View data by</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;\">Characteristic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"stub-name-num-select\" id=\"stub-name-num-select\" form=\"select-view-options\"  class=\"custom-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<option value=\"0\" selected>Total</option>\n\t\t\t\t<option value=\"1\">Sex</option>\n\t\t\t\t<option value=\"2\">Age</option>\n\t\t\t\t<option value=\"3\"\">Race and Hispanic origin</option>\n        \t\t<option value=\"4\">Sex and race and Hispanic origin</option>\n\t\t\t\t<option value=\"5\">Percent of poverty level</option>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<!-- last section with no chevron -->\n\t<div class=\"inner-content-wrapper\">\n\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">4</strong>\n\t\t</span>\n\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">Choose from available</span><br>\n\t\t<span style=\"margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;\">Time\n\t\t\tPeriods</span>\n\t\t<div class=\"checkbox-style\">\n\t\t\t<input type=\"checkbox\" id=\"show-one-period-checkbox\" name=\"show-one-period-checkbox\">\n\t\t\t<label for=\"show-one-period-checkbox\">View single period</label>\n\t\t</div>\n\t\t<div style=\"display: flex;\">\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-start-label\">Start Period <br> </div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-start\" id=\"year-start-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\" selected>1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\">2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-end-label\">End Period</div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-end\" id=\"year-end-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\">1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\" selected>2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n\n<!-- #b3d2ce -->\n<br>\n\t<div tabindex=\"0\" class=\"chart-titles space-util\" style=\"text-align: center;\">\n\t\t<span id=\"chart-title\" class=\"chart-title\"></span>\n\t\t<br>\n\t\t<span tabindex=\"0\" id=\"chart-subtitle\" class=\"\"></span>\n\t</div>\n\n\t<!-- Tabs navs -->\n<ul class=\"nav nav-tabs justify-content-center\" id=\"ex-with-icons\" role=\"tablist\" style=\"margin-top: 15px;\">\n  <li class=\"nav-item\" role=\"presentation\">\n    <a class=\"nav-link active\" id=\"icons-tab-1\" data-mdb-toggle=\"tab\" href=\"#chart-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-1\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;\"><i class=\"fas fa-chart-line fa-fw me-2\"></i>Chart</a>\n  </li>\n  <li class=\"nav-item\" role=\"presentation\">\n    <a class=\"nav-link\" id=\"icons-tab-2\" data-mdb-toggle=\"tab\" href=\"#table-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-2\" aria-selected=\"false\"><i class=\"fas fa-table fa-fw me-2\"></i>Table</a>\n  </li>\n</ul>\n<!-- Tabs navs -->\n\n<!-- Tabs content -->\n<div class=\"tab-content\" id=\"ex-with-icons-content\">\n  <div class=\"tab-pane fade show active\" id=\"chart-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-1\">\n\t\t<div class=\"chart-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t<select name=\"unit-num-select\" id=\"unit-num-select\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t</select>\n\t\t</div>\n\t\t\t\t<div id=\"chart-container\" class=\"general-chart\" style=\"height:fit-content;align:left;border:1px solid red;\">\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end chart wrapper -->\n  </div>\n  <div class=\"tab-pane fade\" id=\"table-tab\" onClick=\"\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-2\">\n\t\t<div class=\"table-wrapper\" style=\"background-color:#b3d2ce;margin-top:0px;padding-top:1px;\">\n\t\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t\t<select name=\"unit-num-select\" id=\"unit-num-select2\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t\t\t<div id=\"nchs-table-container\">\n\t\t\t\t\t<div id=\"table-title\" class=\"title\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n                    <table id=\"nchs-table\" class=\"expanded-data-table\"></table>\n                </div>\n\t\t\t\t<br>\n\t\t</div><!-- end chart wrapper -->\n\n  </div>\n\n</div>\n<!-- Tabs content -->\n\n\t\t\t\t\t<div class=\"dwnl-img-container margin-spacer\" data-html2canvas-ignore>\n\t\t\t\t\t\t<button tabindex=\"0\" id=\"dwn-chart-img\" class=\"theme-cyan ui btn\">Download Chart</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"data-table-container\" id=\"pageFooterTable\" style=\"margin-top: 10px;margin-bottom:15px;\">\n\t\t\t\t\t\t<div class=\"table-toggle closed\" id=\"footer-table-toggle\" tabindex=\"0\">\n\t\t\t\t\t\t\t<h4 class=\"table-title\">Footnotes</h4>\n\t\t\t\t\t\t\t<div class=\"table-toggle-icon\">\n\t\t\t\t\t\t\t\t<i id=\"footer-table-header-icon\" class=\"fas fa-plus\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"pageFooter\" class=\"data-table closed\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"data-table-container\" class=\"data-table closed\" tabindex=\"0\" aria-label=\"Data table\">\n\t\t\t\t\t\t\t<div class=\"table-info\">\n\t\t\t\t\t\t\t\t<div tabindex=\"0\" class=\"general_note\" style=\"margin-top: 10px;\" id=\"table-note\"></div>\n\t\t\t\t\t\t\t\t<button id=\"btnCompareTrendsTableExport\" class=\"btn data-download-btn\" tabindex=\"0\"\n\t\t\t\t\t\t\t\t\taria-label=\"Download Data for Data Table for Seven-day moving average of new cases\">\n\t\t\t\t\t\t\t\t\tDownload Data <i class='fas fa-download' aria-hidden=\"true\"></i>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div tabindex=\"0\" id=\"skipTableLink\" class=\"skipOptions\"><a href=\"#viewHistoricLink\">Skip Table</a> </div>\n\t\t\t\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n\t\t\t\t\t\t\t\t<table tabindex=\"0\" id=\"compare-trends-table\" class=\"expanded-data-table\"></table>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n    ");
+    _defineProperty(this, "tabContent", "<!-- TOP SELECTORS --><div class=\"color-area-wrapper\">\n\t<div class=\"rectangle-green\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">1</strong>\n\t\t\t</span>\n\t\t\t<span style=\"padding-bottom:0px; font-family:Open Sans,sans-serif;color: white; font-weight:300; \">Select a topic</span><br>\n\t\t\t<span style=\"margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: white; font-weight:500;font-size:22px;\">Topic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<div class=\"styled-select\">\n\t\t\t<select name=\"data-topic-select\" id=\"data-topic-select\" form=\"select-view-options\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup style=\"font-size:12px;\">\n\t\t\t\t<option value=\"obesity\" selected>Obesity among Children</option>\n\t\t\t\t<option value=\"suicide\">Death Rates for Suicide</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t\t</div>\n\t\t\t<!-- REMOVE FOR NOW <option value=\"injury\">Initial injury-related visits to hospital emergency departments -->\n\t\t</div>\n\t\t<div class=\"chevron-green\"></div>\n\t</div>\n\t<div class=\"rectangle-yellow\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">2</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color: #010101; font-weight:300; \">Refine to a</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:500;font-size:22px;\">Subtopic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"panel-num-select\" id=\"panel-num-select\" form=\"select-view-options\" class=\"styled-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup>\n\t\t\t\t<option value=\"1\" selected>2-19 years</option>\n\t\t\t\t<option value=\"2\">2-5 years</option>\n\t\t\t\t<option value=\"3\">6-11 years</option>\n\t\t\t\t<option value=\"4\">12-19 years</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-yellow\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">3</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">View data by</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;\">Characteristic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"stub-name-num-select\" id=\"stub-name-num-select\" form=\"select-view-options\"  class=\"custom-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<option value=\"0\" selected>Total</option>\n\t\t\t\t<option value=\"1\">Sex</option>\n\t\t\t\t<option value=\"2\">Age</option>\n\t\t\t\t<option value=\"3\"\">Race and Hispanic origin</option>\n        \t\t<option value=\"4\">Sex and race and Hispanic origin</option>\n\t\t\t\t<option value=\"5\">Percent of poverty level</option>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<!-- last section with no chevron -->\n\t<div class=\"inner-content-wrapper\">\n\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">4</strong>\n\t\t</span>\n\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">Choose from available</span><br>\n\t\t<span style=\"margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;\">Time\n\t\t\tPeriods</span>\n\t\t<div class=\"checkbox-style\">\n\t\t\t<input type=\"checkbox\" id=\"show-one-period-checkbox\" name=\"show-one-period-checkbox\">\n\t\t\t<label for=\"show-one-period-checkbox\">View single period</label>\n\t\t</div>\n\t\t<div style=\"display: flex;\">\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-start-label\">Start Period <br> </div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-start\" id=\"year-start-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\" selected>1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\">2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-end-label\">End Period</div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-end\" id=\"year-end-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\">1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\" selected>2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n\n<!-- #b3d2ce -->\n\n<br>\n\t<div tabindex=\"0\" class=\"chart-titles space-util\" style=\"text-align: center;\">\n\t\t<span id=\"chart-title\" class=\"chart-title\"></span>\n\t\t<br>\n\t\t<span tabindex=\"0\" id=\"chart-subtitle\" class=\"\"></span>\n\t</div>\n\n\t<!-- Tabs navs -->\n<ul class=\"nav nav-tabs justify-content-center\" id=\"ex-with-icons\" role=\"tablist\" style=\"margin-top: 15px;\">\n  <li class=\"nav-item\" role=\"presentation\">\n    <a class=\"nav-link active\" id=\"icons-tab-1\" data-mdb-toggle=\"tab\" href=\"#chart-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-1\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;\"><i class=\"fas fa-chart-line fa-fw me-2\"></i>Chart</a>\n  </li>\n  <li class=\"nav-item\" role=\"presentation\">\n    <a class=\"nav-link\" id=\"icons-tab-2\" data-mdb-toggle=\"tab\" href=\"#table-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-2\" aria-selected=\"false\"><i class=\"fas fa-table fa-fw me-2\"></i>Table</a>\n  </li>\n</ul>\n<!-- Tabs navs -->\n\n<!-- Tabs content -->\n<div class=\"tab-content\" id=\"ex-with-icons-content\">\n  <div class=\"tab-pane fade show active\" id=\"chart-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-1\">\n\t\t<div class=\"chart-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t<select name=\"unit-num-select\" id=\"unit-num-select\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t</select>\n\t\t</div>\n\t\t\t\t<div id=\"chart-container\" class=\"general-chart\" style=\"height:fit-content;align:left;border:1px solid red;\">\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end chart wrapper -->\n  </div>\n  <div class=\"tab-pane fade\" id=\"table-tab\" onClick=\"\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-2\">\n\t\t<div class=\"table-wrapper\" style=\"background-color:#b3d2ce;margin-top:0px;padding-top:1px;\">\n\t\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t\t<select name=\"unit-num-select\" id=\"unit-num-select2\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t\t\t<div id=\"nchs-table-container\">\n\t\t\t\t\t<div id=\"table-title\" class=\"title\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n                    <table id=\"nchs-table\" class=\"expanded-data-table\"></table>\n                </div>\n\t\t\t\t<br>\n\t\t</div><!-- end chart wrapper -->\n\n  </div>\n\n</div>\n<!-- Tabs content -->\n\n\t\t\t\t\t<div class=\"dwnl-img-container margin-spacer\" data-html2canvas-ignore>\n\t\t\t\t\t\t<button tabindex=\"0\" id=\"dwn-chart-img\" class=\"theme-cyan ui btn\">Download Chart</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"data-table-container\" id=\"pageFooterTable\" style=\"margin-top: 10px;margin-bottom:15px;\">\n\t\t\t\t\t\t<div class=\"table-toggle closed\" id=\"footer-table-toggle\" tabindex=\"0\">\n\t\t\t\t\t\t\t<h4 class=\"table-title\">Footnotes</h4>\n\t\t\t\t\t\t\t<div class=\"table-toggle-icon\">\n\t\t\t\t\t\t\t\t<i id=\"footer-table-header-icon\" class=\"fas fa-plus\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"pageFooter\" class=\"data-table closed\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"data-table-container\" class=\"data-table closed\" tabindex=\"0\" aria-label=\"Data table\">\n\t\t\t\t\t\t\t<div class=\"table-info\">\n\t\t\t\t\t\t\t\t<div tabindex=\"0\" class=\"general_note\" style=\"margin-top: 10px;\" id=\"table-note\"></div>\n\t\t\t\t\t\t\t\t<button id=\"btnCompareTrendsTableExport\" class=\"btn data-download-btn\" tabindex=\"0\"\n\t\t\t\t\t\t\t\t\taria-label=\"Download Data for Data Table for Seven-day moving average of new cases\">\n\t\t\t\t\t\t\t\t\tDownload Data <i class='fas fa-download' aria-hidden=\"true\"></i>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div tabindex=\"0\" id=\"skipTableLink\" class=\"skipOptions\"><a href=\"#viewHistoricLink\">Skip Table</a> </div>\n\t\t\t\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n\t\t\t\t\t\t\t\t<table tabindex=\"0\" id=\"compare-trends-table\" class=\"expanded-data-table\"></table>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n    ");
 
     Object(_utils_appState__WEBPACK_IMPORTED_MODULE_0__["resetAppStateVars"])();
     appState.CURRENT_TAB = "nchs-home";
@@ -38776,7 +38817,8 @@ var LandingPage = /*#__PURE__*/function () {
           .map(function (d) {
             return _objectSpread(_objectSpread({}, d), {}, {
               estimate: parseFloat(d.estimate),
-              year_pt: _this2.getYear(d.year)
+              year_pt: _this2.getYear(d.year),
+              dontDraw: 0
             });
           });
 
@@ -38788,7 +38830,8 @@ var LandingPage = /*#__PURE__*/function () {
           .map(function (d) {
             return _objectSpread(_objectSpread({}, d), {}, {
               estimate: parseFloat(d.estimate),
-              year_pt: d.year
+              year_pt: d.year,
+              dontDraw: 0
             });
           });
 
@@ -39535,6 +39578,24 @@ var LandingPage = /*#__PURE__*/function () {
     key: "updateShowBarChart",
     value: function updateShowBarChart(value) {
       this.showBarChart = value;
+      this.renderChart();
+    }
+  }, {
+    key: "toggleLegendItem",
+    value: function toggleLegendItem(value) {
+      var _this10 = this;
+
+      //this.showBarChart = value;
+      var selDataPt = value.replace(/_/g, " ");
+      console.log("toggle:", selDataPt); // have to do this in allData then render the chart again
+
+      this.allData.forEach(function (d) {
+        if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(_this10.panelNum) && parseInt(d.unit_num) === parseInt(_this10.unitNum) && parseInt(d.stub_name_num) === parseInt(_this10.stubNameNum) && parseInt(d.year_pt) >= parseInt(_this10.startYear) && parseInt(d.year_pt) <= parseInt(_this10.endYear)) {
+          d.dontDraw = !d.dontDraw; // toggle it
+
+          console.log("toggle new val dontDraw", d.dontDraw);
+        }
+      });
       this.renderChart();
     }
   }, {

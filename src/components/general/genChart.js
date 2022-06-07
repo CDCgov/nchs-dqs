@@ -64,7 +64,7 @@ export class GenChart {
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
-				d3.select(this).attr("dy", 50);
+				d3.select(this).attr("dy", 30);
 			}
 
 		};
@@ -450,6 +450,7 @@ export class GenChart {
 							stroke: multiLineColors(i),
 							dashArrayScale: p.left1DashArrayScale,
 							text: d.key,
+							dontDraw: d.dontDraw,
 						};
 					});
 				} else if (p.usesStackedBars) { 
@@ -458,6 +459,7 @@ export class GenChart {
 							stroke: color(d.key),
 							dashArrayScale: p.left1DashArrayScale,
 							text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
+							dontDraw: d.dontDraw,
 						};
 					});
 					legendData.reverse();
@@ -479,6 +481,7 @@ export class GenChart {
 							stroke: leftLine1Color,
 							dashArrayScale: p.left1DashArrayScale,
 							text: p.leftLegendText,
+							dontDraw: d.dontDraw,
 						});
 					}
 					if (p.usesLeftLine2) {
@@ -486,6 +489,7 @@ export class GenChart {
 							stroke: p.leftLine2Color,
 							dashArrayScale: p.left2DashArrayScale,
 							text: p.left2LegendText,
+							dontDraw: d.dontDraw,
 						});
 					}
 					if (p.usesLeftLine3) {
@@ -493,6 +497,7 @@ export class GenChart {
 							stroke: p.leftLine3Color,
 							dashArrayScale: p.left3DashArrayScale,
 							text: p.left3LegendText,
+							dontDraw: d.dontDraw,
 						});
 					}
 				}
@@ -502,6 +507,7 @@ export class GenChart {
 						stroke: rightLineColor,
 						dashArrayScale: p.rightDashArrayScale,
 						text: p.rightLegendText,
+						dontDraw: d.dontDraw,
 					});
 				}
 
@@ -1105,6 +1111,7 @@ export class GenChart {
 						stroke: p.barColors[i],
 						dashArrayScale: 0,
 						text: d.stub_label,
+						dontDraw: d.dontDraw,
 					};
 				});
 				////
@@ -1151,105 +1158,139 @@ export class GenChart {
 					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
 				}
 				
-				const legendContainer = svg
-					.append("g")
-					.attr("transform", `translate(${legendTx}, ${legendTy})`)
-					.append("rect")
-					.attr("id", `${svgId}-chart-legend`)
-					.attr("height", legendHeight)
-					.attr("fill", "#F2F2F2")
-					.attr("rx", "5")
-					.attr("ry", "5")
-					.attr("stroke", "black");  
+				if (legendData[0].text.length > 0) {
+
+					const legendContainer = svg
+						.append("g")
+						.attr("transform", `translate(${legendTx}, ${legendTy})`)
+						.append("rect")
+						.attr("id", `${svgId}-chart-legend`)
+						.attr("height", legendHeight)
+						.attr("fill", "#F2F2F2")
+						.attr("rx", "5")
+						.attr("ry", "5")
+						.attr("stroke", "black");  
 				
-				legendData.forEach((d, i) => {
-					const legendItem = svg
-						.append("g")
-						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
-						.attr(
-							"transform",
-							`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
+					legendData.forEach((d, i) => {
+						// create unique id name
+						const legendId = d.text.replace(/ /g, "_");
+						const legendItem = svg
+							.append("g")
+							.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+							.attr("id", legendId)
+							.attr(
+								"transform",
+								`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
 								${legendTy + axisLabelFontSize / 2 - 15})`
-						);
-						//.append("label")
-						//.text(function(d) { return "legCheck" + i; })
+							);
 
-/* 					var pair = optionArray[option];
-					var checkbox = document.createElement("input");
-					checkbox.type = "checkbox";
-					checkbox.name = pair;
-					checkbox.value = pair;
-					s2.appendChild(checkbox);
-
-					var label = document.createElement('label')
-					label.htmlFor = pair;
-					label.appendChild(document.createTextNode(pair));
-
-					s2.appendChild(label);
-								s2.appendChild(document.createElement("br"));   */  
+						/* 					var pair = optionArray[option];
+											var checkbox = document.createElement("input");
+											checkbox.type = "checkbox";
+											checkbox.name = pair;
+											checkbox.value = pair;
+											s2.appendChild(checkbox);
+						
+											var label = document.createElement('label')
+											label.htmlFor = pair;
+											label.appendChild(document.createTextNode(pair));
+						
+											s2.appendChild(label);
+														s2.appendChild(document.createElement("br"));   */
 					
-					
-/* 						.attr(
-							"transform",
-							`translate(${legendTx + axisLabelFontSize / 2},
-								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-						);  */
+						console.log("1 data d:", d);
 
-					legendItem
-						.append("line")
-						.attr("x1", 0)
-						.attr("y1", 0)
-						.attr("x2", 40)
-						.attr("y2", 0)
-						.attr("stroke", d.stroke)
-						.attr("stroke-width", 4)
-						.attr("stroke-dasharray", d.dashArrayScale)
-						.attr(
-							"transform",
-							`rotate(-${p.chartRotationPercent})`
-					);
+						legendItem
+							.append("line")
+							.attr("x1", 0)
+							.attr("y1", 0)
+							.attr("x2", 40)
+							.attr("y2", 0)
+							.attr("stroke", d.stroke)
+							.attr("stroke-width", 4)
+							.attr("stroke-dasharray", d.dashArrayScale)
+							.attr(
+								"transform",
+								`rotate(-${p.chartRotationPercent})`
+							);
 					
-					legendItem
-						.append("input")
-						.attr("checked", true)
-						.attr("type", "checkbox")
-						//.attr("label", function(d, i) { return i; })
-						.attr("id", function (d, i) { return "legCheck" + i; });
-						//.attr("onClick", "change(this)")
-						//.attr("for", function(d,i) { return "legCheck" + i; }); 
+						console.log("2 data d:", d);
 
+						// Could not get these methods of implementing a checkbox to work
+						// just see a white space and no checkbox and not aligned in proper location either
+						/* 					legendItem
+												.append("input")
+												.attr("checked", true)
+												.attr("type", "checkbox")
+												//.attr("label", function(d, i) { return i; })
+												.attr("id", function (d, i) { return "legCheck" + i; });
+												//.attr("onClick", "change(this)")
+												//.attr("for", function(d,i) { return "legCheck" + i; }); */
 
-					legendItem
-						.append("g")
-						.append("text")
-						.attr("x", 60)
-						.attr("y", axisLabelFontSize * 0.4)
-						.text(d.text)
-						.attr("font-size", axisLabelFontSize)
-						.attr(
-							"transform",
-							`rotate(-${p.chartRotationPercent})`
-						);
+						/* 					legendItem
+												.append("foreignObject")
+												.attr("width", 20)
+												.attr("height", 20)
+												.append("xhtml:body")
+												//.html("<form><input type=checkbox id=check /></form>")
+												.html("<i class='fas fa-check-square'></i>")
+												.on("click", function(d, i){
+													console.log("checkbox icon clicked");  // legendItem.select("#check").node().checked
+												}); */
 					
-					//rotate legend item
-/* 					legendItem
-						.attr(
-							"transform",
-							`rotate(${p.chartRotationPercent})`
-						); */
+						// could not get d alone to work in function below
+						// -- if you use d in the foreach above, you can't then use the same d
+						// in a function inside it.  Have to use another variable (TT)
+						const curD = d; 
+						legendItem
+							.append("g")
+							.append('text')
+							//.attr('font-family', 'FontAwesome')
+							.attr("class", "far")
+							.attr('font-size', axisLabelFontSize * 1.1)
+							.attr("x", 45)
+							.attr("y", axisLabelFontSize * 0.5)
+							.text(function (curD) {
+								console.log("GenChart-Legend - set checked or not - 3 data curD:", d);
+
+								if (d.dontDraw) {
+									return '\uf0c8';  // square unicode [&#xf0c8;]
+								} else {
+									return '\uf14a';  // check square unicode 
+								}
+							}) // checkbox unicode
+							//.text(function (d) { return '\uf0c8' }) // square unicode [&#xf0c8;]
+							.attr(
+								"transform",
+								`rotate(-${p.chartRotationPercent})`
+							);
+
+						legendItem
+							.append("g")
+							.append("text")
+							.attr('font-family', 'sans-serif')
+							.attr('font-size', axisLabelFontSize * 1.0)
+							.attr("x", 62)
+							.attr("y", axisLabelFontSize * 0.5) // axisLabelFontSize * 0.4
+							.text(d.text)
+							.attr("font-size", axisLabelFontSize)
+							.attr(
+								"transform",
+								`rotate(-${p.chartRotationPercent})`
+							);
 				});
 
-				// get all legend items and find the longest then set the legend container size
-				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
-				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width); 
-				const newWidth = d3.max(legendWidths);
-				legendContainer
-					.attr("width", newWidth + 13)
-					.attr(
-						"transform",
-						`rotate(-${p.chartRotationPercent})`
-					);
-
+					// get all legend items and find the longest then set the legend container size
+					const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+					const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
+					const newWidth = d3.max(legendWidths);
+					legendContainer
+						.attr("width", newWidth + 13)
+						.attr(
+							"transform",
+							`rotate(-${p.chartRotationPercent})`
+						);
+ 				} // end if legendData.length > 0
 				// enlarge chart container - NOT WORKING FOR SOME REASON
 /* 				const chartContainer = document.querySelectorAll(`.chart-container`);
 				chartContainer

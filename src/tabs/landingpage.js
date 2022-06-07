@@ -120,12 +120,12 @@ export class LandingPage {
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: 0 }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year}));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: 0}));
 				this.renderAfterDataReady();
 			}
 
@@ -1002,6 +1002,20 @@ export class LandingPage {
 		this.renderChart();
 	}
 
+	toggleLegendItem(value) {
+		//this.showBarChart = value;
+		const selDataPt = value.replace(/_/g," ");
+		console.log("toggle:", selDataPt)
+		// have to do this in allData then render the chart again
+		this.allData.forEach((d) => {
+			if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
+				d.dontDraw = !d.dontDraw; // toggle it
+				console.log("toggle new val dontDraw", d.dontDraw);
+			}
+		});
+		this.renderChart();
+	}
+
 	addClickListeners() {
 /* 		// this is a weird eslint rule. class methods must use this for assigments unless static.
 		const buttons = document.querySelectorAll(".landing-card-main");
@@ -1310,6 +1324,7 @@ export class LandingPage {
 </div>
 
 <!-- #b3d2ce -->
+
 <br>
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
 		<span id="chart-title" class="chart-title"></span>

@@ -62,11 +62,17 @@ export const MainEvents = {
 				// set to enable line chart
 				appState.ACTIVE_TAB.updateShowBarChart(0);
 			}
-
-
-
 		});
 
+		$(document).on("click", ".chart-container-svg-legendItem", (event) => {
+			event.stopPropagation();
+			// get the unique id of the legend item
+			let legItem = event.target.parentNode.parentNode.id;
+			console.log("legendItem clicked: ", legItem);
+			appState.ACTIVE_TAB.toggleLegendItem(legItem);
+			event.preventDefault();
+		});
+		
 		// click Chart then show Chart
 		$(document).on("click", "#icons-tab-1", (event) => {
 			event.stopPropagation();
