@@ -36,11 +36,35 @@ export class GenChart {
 		// BUT leave all data items on the legend!!!
 		// (1) backup ORIGINAL p.data that has ALL DATA in it
 		const allIncomingData = p.data // this has to be used for the LEGENDS
-		// (2) go ahead and filter out that dontDraw data so that scales etc. will be correct
+		// (2) Limit the draw data to max of 10 lines or bars
+		let barCount=0;
+		const maxBarCount = 10; /// this could be a PROP PASSED INTO genChart (TT)
+		// For barchart limit drawData to first 10
+		// - note cannot do exact same for lines bc there are data points not just one data per line
+		// whereas in the bar charts each bar is one data point so the below approach works
+		if (p.usesBars) {
+			p.data.forEach((d, i) => {
+				if (d.dontDraw === false && barCount < maxBarCount) {
+					barCount++; // increment barCount
+				} else {
+					// then either dontDraw already true or needs to be set to true 
+					// bc bar count is exceeded
+					d.dontDraw = true;
+				}
+			});
+		}
+		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
+
+		// NOW filter down to only bars to be drawn
+		const drawData = p.data;
 		///////////////////////////////////////////////////////////////////////////////
 	
+		// Need to store list of used colors bc we have a legend with all data,
+		// but dontDraw property that may not draw it, plus a limit of 10
+		// incoming prop = p.assignedBarColor
+
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
 				genTooltip.mouseover(d3.select(this), ["data"]);
@@ -141,8 +165,8 @@ export class GenChart {
 			svgHeight = svgHeight * 1.4;
 			chartHeight = chartHeight * 1.4;			
 			// reduce width some
-			svgWidth = svgWidth * 0.8;
-			chartWidth = chartWidth * 0.8;
+			svgWidth = svgWidth * 0.6;
+			chartWidth = chartWidth * 0.6;
 		} 
 
 		// get chart x and y centers
@@ -227,14 +251,14 @@ export class GenChart {
 			.tickSize(3)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
-			.tickFormat((drawD) => genFormat(drawD, p.formatXAxis));
+			.tickFormat((drawData) => genFormat(drawData, p.formatXAxis));
 
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
 			.ticks(p.leftTickCount)
-			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisLeft)); // this is what sets the tick labels
+			.tickFormat((drawData) => genFormat(drawData, p.formatYAxisLeft)); // this is what sets the tick labels
 					  // but where do we rotate them???
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
@@ -677,7 +701,6 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
-					const drawData = data.filter((d) => d.dontDraw === false);
 					bars.selectAll("rect")
 						.data(drawData)
 						.join(
@@ -687,7 +710,11 @@ export class GenChart {
 									.attr("class", "bar")
 									.attr("width", xScale.bandwidth())
 									.attr("fill", (d, i) => {
-										if (p.barColors) return p.barColors[i];
+										if (p.barColors) {
+											// save the color used
+											d.assignedBarColor = p.barColors[i];
+											return p.barColors[i];
+										}
 										if (
 											p.finalDataPointsDaysCount &&
 											d[p.chartProperties.xAxis] >= endRangeSpecialSectionStartDate
@@ -704,7 +731,11 @@ export class GenChart {
 								update
 									.attr("width", xScale.bandwidth())
 									.attr("fill", (d, i) => {
-										if (p.barColors) return p.barColors[i];
+										if (p.barColors) {
+											// save the color used
+											d.assignedBarColor = p.barColors[i];
+											return p.barColors[i];
+										}
 										if (
 											p.finalDataPointsDaysCount &&
 											d[p.chartProperties.xAxis] >= endRangeSpecialSectionStartDate
@@ -740,6 +771,11 @@ export class GenChart {
 
 				const dataLength = p.usesMultiLineLeftAxis ? nestedData[0].values.length : data.length;
 
+				if (p.usesBars) {
+					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
+					p.numberOfEquallySpacedDates = drawData.length + 1;
+					//console.log("numberOfEquallySpacedDates set to:", p.numberOfEquallySpacedDates);
+				}
 				const allDateTicksButLast = xScale
 					.domain()
 					.filter((d, i) => !(i % Math.ceil(xScale.domain().length / (p.numberOfEquallySpacedDates - 1))))
@@ -1126,7 +1162,7 @@ export class GenChart {
 				// ???? HOW DO WE REMOVE THE COLOR LINES ON ONES WITH dontDraw = TRUE????
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
-						stroke: p.barColors[i],
+						stroke: d.assignedBarColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
 						dashArrayScale: 0,
 						text: d.stub_label,
 						dontDraw: d.dontDraw,
@@ -1216,8 +1252,8 @@ export class GenChart {
 											s2.appendChild(label);
 														s2.appendChild(document.createElement("br"));   */
 					
-						console.log("1 data d:", d);
-						
+						//console.log("1 data d:", d);
+
 						// only draw color line if data is drawn
 						if (!d.dontDraw) {
 							legendItem
@@ -1234,7 +1270,7 @@ export class GenChart {
 									`rotate(-${p.chartRotationPercent})`
 								);
 						}
-						console.log("2 data d:", d);
+						//console.log("2 data d:", d);
 
 						// Could not get these methods of implementing a checkbox to work
 						// just see a white space and no checkbox and not aligned in proper location either
@@ -1303,7 +1339,7 @@ export class GenChart {
 					const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 					const newWidth = d3.max(legendWidths);
 					legendContainer
-						.attr("width", newWidth + 13)
+						.attr("width", newWidth + 50)
 						.attr(
 							"transform",
 							`rotate(-${p.chartRotationPercent})`

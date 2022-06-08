@@ -120,12 +120,12 @@ export class LandingPage {
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedBarColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false}));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedBarColor: "#FFFFFF",}));
 				this.renderAfterDataReady();
 			}
 
@@ -221,7 +221,7 @@ export class LandingPage {
 				break;
 			case "injury":
 				selectedPanelData = this.allData.filter(
-					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) >= this.startYear && parseInt(d.year_pt) <= this.endYear
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
 		}
@@ -285,6 +285,7 @@ export class LandingPage {
 				);
 				break;
 			case "suicide" || "injury":
+				// does not use the panel_num
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) 
 				);
@@ -372,18 +373,17 @@ export class LandingPage {
 			usesDateDomainSlider: false,
 			usesBars: true,
 			usesHoverBars: true,
-			barColor: "steelblue",
 			barColors: [
-				"#88419d",
-				"#1f78b4",
-				"#b2df8a",
+				"#6a3d9a",
+				"#cab2d6",
+				"#ff7f00",
+				"#fdbf6f",
+				"#e31a1c",
+				"#fb9a99",
 				"#33a02c",
-				"#0b84a5",
-				"#cc4c02",
-				"#690207",
-				"#e1ed3e",
-				"#7c7e82",
-				"#8dddd0",
+				"#b2df8a",
+				"#1f78b4",
+				"#a6cee3",
 				"#A6A6A6",
 				"#fb9a99",
 				"#e31a1c",
@@ -468,6 +468,25 @@ export class LandingPage {
 	    return props;
 	};
 	
+	// ORIG SET OF COLORS
+/* 				barColors: [
+				"#88419d",
+				"#1f78b4",
+				"#b2df8a",
+				"#33a02c",
+				"#0b84a5",
+				"#cc4c02",
+				"#690207",
+				"#e1ed3e",
+				"#7c7e82",
+				"#8dddd0",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+	], */
+				
 	getTooltipConstructor = (vizId, chartValueProperty) => {
 		const propertyLookup = {
 			// list properties needed in tooltip body and give their line titles and datum types
@@ -514,28 +533,6 @@ export class LandingPage {
 		};
 	};
     
-
-/* 	renderComparisonChart() {
-		//const { ySelect } = currentViz;
-		const vizKey = getVizKey();
-		chartConfig  = config.getGenChartConfig ({
-			currentViz,
-			data: this.allData,
-			vizKey: this.vizKey,
-			vizId: this.vizId,
-		});
-
-		// use this if we need to adjust data at all
-		//this.chartConfig.data = this.updateCurrentData();
-		//if (this.yScaleType === "log") this.chartConfig.legendCoordinatePercents = [0.4, 0.65];
-		this.chartConfig.left1ScaleType = this.yScaleType;
-
-		const genChart = new GenChart(this.chartConfig);
-		genChart.render;
-		//functions.renderSlider(genChart.render(this.chartConfig.data), this.currentSliderDomain);
-		//this.tableData = this.formatDataForTable(this.chartConfig.data);
-		//this.renderComparisonTable(this.tableData);
-	} */
 
 	// THIS IS WHERE WE CAN SET WHAT TO VISUALIZE
 	// -- compare trends ties viewtype, metric and measure to CORRECT DATA
@@ -659,7 +656,7 @@ export class LandingPage {
 			// create a year_pt col from time period
 			this.allData = this.allData
 				.filter((d) => d.flag !== "- - -") // remove undefined data
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year) }));
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedBarColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
 			// need data in place before filling year selects
@@ -1006,13 +1003,29 @@ export class LandingPage {
 		//this.showBarChart = value;
 		const selDataPt = value.replace(/_/g," ");
 		console.log("toggle:", selDataPt)
-		// have to do this in allData then render the chart again
-		this.allData.forEach((d) => {
-			if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
-				d.dontDraw = !d.dontDraw; // toggle it
-				console.log("toggle new val dontDraw", d.dontDraw);
-			}
-		});
+
+		switch (this.dataTopic) {
+			case "obesity":
+				// has a "panel"
+				this.allData.forEach((d) => {
+					if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
+						d.dontDraw = !d.dontDraw; // toggle it
+						console.log("toggle has panel dontDraw=", d.dontDraw);
+					}
+				});
+				break;
+			case "suicide" || "injury":
+				// does not have any panelNum
+				this.allData.forEach((d) => {
+					if (d.stub_label === selDataPt && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
+						d.dontDraw = !d.dontDraw; // toggle it
+						console.log("toggle no panel dontDraw=", d.dontDraw);
+					}
+				});
+				//debugger;
+				break;
+		}
+
 		this.renderChart();
 	}
 
@@ -1354,7 +1367,7 @@ export class LandingPage {
 				<option value="1" selected>Percent of population, crude</option>
 			</select>
 		</div>
-				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;border:1px solid red;">
+				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;">
 				</div>
 				<br>
 				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
