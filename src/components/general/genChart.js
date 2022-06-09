@@ -88,13 +88,14 @@ export class GenChart {
 			for (var i = 0; i < words.length; i++) {
 				var tspan = el.append('tspan').text(words[i]);
 				if (i > 0)
-					tspan.attr('x', 0).attr('dy', '15'); // was 15
+					// the dy value is the "space between label lines" - try to calc so it adjusts some
+					tspan.attr('x', 0).attr('dy', axisLabelFontSize/2 + 5); // was 15
 			}
 			// based on number of lines, adjust height
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 25);
+				d3.select(this).attr("dy", 27);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
@@ -1148,10 +1149,6 @@ export class GenChart {
 			// now add the LEGEND! - have to do this last
 			if (p.usesLegend === true) {
 				let legendData=[];
-/* 				fullNestedData = d3
-					.nest()
-					.key((d) => d[p.multiLineLeftAxisKey])
-					.entries(p.data); */
 				// set up the data first
 				//console.log("p.data:", p.data);
 
@@ -1159,7 +1156,7 @@ export class GenChart {
 				// THis the bar chart LEGEND gives option of turning on and off ALL values
 				// without this the clicking slowly disappears the options never to return
 
-				// ???? HOW DO WE REMOVE THE COLOR LINES ON ONES WITH dontDraw = TRUE????
+				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE 
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
 						stroke: d.assignedBarColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
@@ -1339,7 +1336,7 @@ export class GenChart {
 					const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 					const newWidth = d3.max(legendWidths);
 					legendContainer
-						.attr("width", newWidth + 50)
+						.attr("width", newWidth + 53) //might need to calculate the 53 based on fontsize or something
 						.attr(
 							"transform",
 							`rotate(-${p.chartRotationPercent})`
