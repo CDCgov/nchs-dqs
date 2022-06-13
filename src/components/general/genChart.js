@@ -421,17 +421,23 @@ export class GenChart {
 			}
 
 			// lines
-			let multiLineColors, fullNestedData;
+			let multiLineColors, fullNestedData, fullNestedLegendData; //bc legends have to have ALL nests
 			let lines = [];
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			if (p.usesMultiLineLeftAxis) {
 				multiLineColors = d3.scaleOrdinal(p.multiLineColors);
+				// need the legend Nests from ALL incoming data
+				fullNestedLegendData = d3
+					.nest()
+					.key((d) => d[p.multiLineLeftAxisKey])
+					.entries(allIncomingData);
+				
 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
 					.entries(p.data);
-
+				
 				fullNestedData.forEach((nd, i) => {
 					console.log("nested nd,i", nd, i);
 					lines[i] = d3.line();
@@ -488,7 +494,8 @@ export class GenChart {
 			//debugger;
 			if (p.usesLegend) {
 				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
-					fullNestedData.forEach((d, i) => {
+					// use the nested legend data not fullNestedData
+					fullNestedLegendData.forEach((d, i) => {
 						legendData[i] = {
 							stroke: multiLineColors(i),
 							dashArrayScale: p.left1DashArrayScale,
@@ -496,6 +503,17 @@ export class GenChart {
 							dontDraw: d.values[0].dontDraw,
 						};
 					});
+
+					// cannot do it this way below because
+					// the data is NOT nested and lists too many legend entries
+/* 					allIncomingData.forEach((d, i) => {
+						legendData[i] = {
+						stroke: d.assignedBarColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
+						dashArrayScale: 0,
+						text: d.stub_label,
+						dontDraw: d.dontDraw,
+					}; */
+
 				} else if (p.usesStackedBars) { 
 					stack(p.data).forEach((d, i) => {
 						legendData[i] = {
@@ -1181,7 +1199,7 @@ export class GenChart {
 					`rotate(${p.chartRotationPercent})`
 			);
 			
-			// now add the LEGEND! - have to do this last
+			// now add the LEGEND! - have to do this last after Bar Chart drawn
 			if (p.usesLegend === true) {
 				// set up the data first
 				//console.log("p.data:", p.data);
