@@ -94,13 +94,6 @@ export class LandingPage {
 			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
 		}
 		
-/* 		const getObesityData = () =>
-			DataCache.ObesityData ?? Utils.getJsonFile("content/json/HUS_OBESCH_2018.json");
-
-		const getFootnoteData = () =>
-			DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
- */		
-//		let footnotesData = getFootnoteData();
 		Promise.all([getSelectedData(),getFootnoteData()]).then((data) => {
 			//const [destructuredData] = data;
 			[DataCache.ObesityData, DataCache.Footnotes] = data;
@@ -109,7 +102,7 @@ export class LandingPage {
 			this.footNotes = JSON.parse(data[1]);
 			DataCache.Footnotes = this.footNotes;
 
-			// build footnote map ONE TIME
+			// build footnote map ONE TIME (OR DO WE NEED TO GET IT ONLY ON SELECTED LEGEND ITEMS)
 			this.footnoteMap = {};
 			let i = null;
 			for (i = 0; this.footNotes.length > i; i += 1) {
@@ -169,6 +162,7 @@ export class LandingPage {
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
 		this.chartConfig.chartTitle = ""; // dont use the built in chart title
 
+		//debugger;
 		$(`#${this.chartConfig.vizId}`).empty();
 		const genChart = new GenChart(this.chartConfig);
 		// not using a slider here
@@ -234,12 +228,12 @@ export class LandingPage {
 				return true;
 			}
 		});
-		//debugger;
+
 		// now sort in order of the year
 		selectedPanelData.sort((a, b) => {
    			 return a.year_pt - b.year_pt;
 		});
-		//debugger;
+
 		if (this.showBarChart) {
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter(

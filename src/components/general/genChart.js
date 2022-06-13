@@ -30,7 +30,7 @@ export class GenChart {
 	render() {
 		const p = this.props;
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
-
+		let legendData=[];
 		////////////////////////////////////////////////////////////////////////////////
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
@@ -52,6 +52,12 @@ export class GenChart {
 					d.dontDraw = true;
 				}
 			});
+		} else {
+			// for LINE data we have to do something different
+			// - bc there are MANY points for each line not just one data point
+
+			// need to look at the "nested" data and use only MAX of 10 "nests"
+
 		}
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
@@ -124,7 +130,7 @@ export class GenChart {
 			// knock it back down
 			axisLabelFontSize = 16;
 		}
-		//debugger;
+
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
 		// but not always titles
@@ -427,11 +433,11 @@ export class GenChart {
 					.entries(p.data);
 
 				fullNestedData.forEach((nd, i) => {
+					console.log("nested nd,i", nd, i);
 					lines[i] = d3.line();
 					const lineGroup = svg
 						.append("g")
 						.attr("class", nd.key.replace(/[\W_]+/g, ""))
-
 						.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 					lineGroups[i] = lineGroup;
@@ -479,15 +485,15 @@ export class GenChart {
 				.attr("stroke", rightLineColor)
 				.attr("stroke-width", 4);
 
+			//debugger;
 			if (p.usesLegend) {
-				let legendData = [];
 				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
 					fullNestedData.forEach((d, i) => {
 						legendData[i] = {
 							stroke: multiLineColors(i),
 							dashArrayScale: p.left1DashArrayScale,
 							text: d.key,
-							dontDraw: d.dontDraw,
+							dontDraw: d.values[0].dontDraw,
 						};
 					});
 				} else if (p.usesStackedBars) { 
@@ -496,7 +502,7 @@ export class GenChart {
 							stroke: color(d.key),
 							dashArrayScale: p.left1DashArrayScale,
 							text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
-							dontDraw: d.dontDraw,
+							dontDraw: d.values[0].dontDraw,
 						};
 					});
 					legendData.reverse();
@@ -518,7 +524,7 @@ export class GenChart {
 							stroke: leftLine1Color,
 							dashArrayScale: p.left1DashArrayScale,
 							text: p.leftLegendText,
-							dontDraw: d.dontDraw,
+							dontDraw: d.values[0].dontDraw,
 						});
 					}
 					if (p.usesLeftLine2) {
@@ -526,7 +532,7 @@ export class GenChart {
 							stroke: p.leftLine2Color,
 							dashArrayScale: p.left2DashArrayScale,
 							text: p.left2LegendText,
-							dontDraw: d.dontDraw,
+							dontDraw: d.values[0].dontDraw,
 						});
 					}
 					if (p.usesLeftLine3) {
@@ -534,7 +540,7 @@ export class GenChart {
 							stroke: p.leftLine3Color,
 							dashArrayScale: p.left3DashArrayScale,
 							text: p.left3LegendText,
-							dontDraw: d.dontDraw,
+							dontDraw: d.values[0].dontDraw,
 						});
 					}
 				}
@@ -544,7 +550,7 @@ export class GenChart {
 						stroke: rightLineColor,
 						dashArrayScale: p.rightDashArrayScale,
 						text: p.rightLegendText,
-						dontDraw: d.dontDraw,
+						dontDraw: d.values[0].dontDraw,
 					});
 				}
 
@@ -579,27 +585,56 @@ export class GenChart {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-
+// TTT
 				legendData.forEach((d, i) => {
+					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
 						.append("g")
 						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+						.attr("id", legendId)
 						.attr(
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
 								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
 						);
 
-					legendItem
-						.append("line")
-						.attr("x1", 0)
-						.attr("y1", 0)
-						.attr("x2", 40)
-						.attr("y2", 0)
-						.attr("stroke", d.stroke)
-						.attr("stroke-width", 4)
-						.attr("stroke-dasharray", d.dashArrayScale);
+					//console.log("legendItem d,i:", d, i);
+				
+					// only draw color line if data is drawn
+					if (!d.dontDraw) {
+						legendItem
+							.append("line")
+							.attr("x1", 0)
+							.attr("y1", 0)
+							.attr("x2", 40)
+							.attr("y2", 0)
+							.attr("stroke", d.stroke)
+							.attr("stroke-width", 4)
+							.attr("stroke-dasharray", d.dashArrayScale);
+					}
 
+
+					const curD = d; 
+					legendItem
+						.append("g")
+						.append('text')
+						//.attr('font-family', 'FontAwesome') // this method does not work (TT)
+						.attr("class", "far")
+						.attr('font-size', axisLabelFontSize * 1.1)
+						.attr("x", 45)
+						.attr("y", axisLabelFontSize * 0.5)
+						.text(function (d) { // TRICKY: you can do a function on any variable but then use 
+											// curD to get the value of dontDraw
+											// if you use d or curD in both places it does not work!
+							//console.log("GenChart-Legend LINES - set checked or not - 3 data curD,d,td:", curD, d);
+							if (curD.dontDraw === true) {
+								return '\uf0c8'  // square unicode [&#xf0c8;]
+							} else {
+								return '\uf14a'  // check square unicode 
+							}
+						});
+					//debugger;
+					
 					legendItem
 						.append("g")
 						.append("text")
@@ -1148,7 +1183,6 @@ export class GenChart {
 			
 			// now add the LEGEND! - have to do this last
 			if (p.usesLegend === true) {
-				let legendData=[];
 				// set up the data first
 				//console.log("p.data:", p.data);
 
@@ -1172,21 +1206,7 @@ export class GenChart {
 				let legendTy;
 				
 				if (p.legendBottom) {
-/* 					svg.attr("height", svgHeight + legendHeight + 30);
-					svg.select("#whitebox")
-						.attr("height", svgHeight + legendHeight + 30);
-					
-					// try to center it
-					legendTx = svgWidth / 2 - margin.left + 25;
-					// move it down outside the bottom margin
-					legendTy = margin.top + svgHeight; 
-					// now move the legend below the axis */
 
-					// (TT) try swapping height and width
-/* 					svg.attr("height", svgWidth + legendHeight + 30);
-					svg.select("#whitebox")
-						.attr("height", svgWidth + legendHeight + 30); */
-					
 					// try increasing the width even though it is rotated?
 					svg.attr("width", svgWidth + legendHeight + 100);
 					svg.select("#whitebox")
@@ -1234,22 +1254,6 @@ export class GenChart {
 								`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
 								${legendTy + axisLabelFontSize / 2 - 15})`
 							);
-
-						/* 					var pair = optionArray[option];
-											var checkbox = document.createElement("input");
-											checkbox.type = "checkbox";
-											checkbox.name = pair;
-											checkbox.value = pair;
-											s2.appendChild(checkbox);
-						
-											var label = document.createElement('label')
-											label.htmlFor = pair;
-											label.appendChild(document.createTextNode(pair));
-						
-											s2.appendChild(label);
-														s2.appendChild(document.createElement("br"));   */
-					
-						//console.log("1 data d:", d);
 
 						// only draw color line if data is drawn
 						if (!d.dontDraw) {
