@@ -30,7 +30,13 @@ export class GenChart {
 	render() {
 		const p = this.props;
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
-		let legendData=[];
+		let legendData = [];
+		let multiLineColors;
+		if (!p.usesBars) {
+			multiLineColors = d3.scaleOrdinal(p.multiLineColors);
+		}
+		//console.log("multilinecolors TOP:", multiLineColors);
+		let fullNestedData;
 		////////////////////////////////////////////////////////////////////////////////
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
@@ -69,7 +75,9 @@ export class GenChart {
 	
 		// Need to store list of used colors bc we have a legend with all data,
 		// but dontDraw property that may not draw it, plus a limit of 10
-		// incoming prop = p.assignedBarColor
+		// incoming prop = p.assignedLegendColor
+		// and for lines using exact same prop 
+		// (it's easier to create a prop and pass it in than do new map to create)
 
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
@@ -289,12 +297,26 @@ export class GenChart {
 		
 		// CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component
 		if (!p.data.length) {
-			svg.append("text")
-				.text(p.noDataMessage)
-				.attr("text-anchor", "middle")
-				.attr("font-size", axisTitleFontSize)
-				.attr("x", chartCenterX)
-				.attr("y", chartCenterY);
+			if (p.usesBars) {
+				svg.append("text")
+					.text(p.noDataMessage)
+					.attr("text-anchor", "middle")
+					.attr("font-size", axisTitleFontSize)
+					.attr("x", -chartCenterX - 25)
+					.attr("y", chartCenterY)
+					.attr(
+						"transform",
+						`rotate(-${p.chartRotationPercent})`
+					);
+			} else {
+				// if line chart then dont rotate
+				svg.append("text")
+					.text(p.noDataMessage)
+					.attr("text-anchor", "middle")
+					.attr("font-size", axisTitleFontSize)
+					.attr("x", chartCenterX)
+					.attr("y", chartCenterY);
+			}
 		} else {
 			// append the axes
 			// xAxis
@@ -421,14 +443,13 @@ export class GenChart {
 			}
 
 			// lines
-			let multiLineColors, fullNestedData, fullNestedLegendData; //bc legends have to have ALL nests
 			let lines = [];
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			let lineCount=0;
 			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
-				multiLineColors = d3.scaleOrdinal(p.multiLineColors);
+				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
 				//debugger;
 				// need the legend Nests from ALL incoming data
 				fullNestedData = d3
@@ -467,10 +488,17 @@ export class GenChart {
 
 						lineGroups[i] = lineGroup;
 
+						nd.values[0].assignedLegendColor = multiLineColors(i);
+						console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
+						
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
 							.attr("fill", "none")
 							.attr("stroke", multiLineColors(i))
+/* 							.attr("stroke", (nd) => {
+								// save the color used
+								return multiLineColors[i];
+							}) */
 							.attr("stroke-width", 2);
 					}
 				});
@@ -512,190 +540,7 @@ export class GenChart {
 				.attr("stroke-width", 4);
 
 			//debugger;
-			if (p.usesLegend) {
-				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
-					// ALL nests go on the legend but only draw those that are set to dontDraw = false
-					fullNestedData.forEach((d, i) => {
-						legendData[i] = {
-							stroke: multiLineColors(i),
-							dashArrayScale: p.left1DashArrayScale,
-							text: d.key,
-							dontDraw: d.values[0].dontDraw,
-						};
-					});
 
-					// cannot do it this way below because
-					// the data is NOT nested and lists too many legend entries
-/* 					allIncomingData.forEach((d, i) => {
-						legendData[i] = {
-						stroke: d.assignedBarColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
-						dashArrayScale: 0,
-						text: d.stub_label,
-						dontDraw: d.dontDraw,
-					}; */
-
-				} else if (p.usesStackedBars) { 
-					stack(p.data).forEach((d, i) => {
-						legendData[i] = {
-							stroke: color(d.key),
-							dashArrayScale: p.left1DashArrayScale,
-							text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
-							dontDraw: d.values[0].dontDraw,
-						};
-					});
-					legendData.reverse();
-			// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
-					// - also even if I got this working it CAN"T GO HERE
-					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
-/* 				} else if (p.usesBars) { 
-					p.data.forEach((d, i) => {
-						legendData[i] = {
-							stroke: p.barColors[i],
-							dashArrayScale: p.left1DashArrayScale,
-							text: d.key,
-						};
-					});
-					legendData.reverse(); */
-				} else {
-					if (p.usesLeftLine1) {
-						legendData.push({
-							stroke: leftLine1Color,
-							dashArrayScale: p.left1DashArrayScale,
-							text: p.leftLegendText,
-							dontDraw: d.values[0].dontDraw,
-						});
-					}
-					if (p.usesLeftLine2) {
-						legendData.push({
-							stroke: p.leftLine2Color,
-							dashArrayScale: p.left2DashArrayScale,
-							text: p.left2LegendText,
-							dontDraw: d.values[0].dontDraw,
-						});
-					}
-					if (p.usesLeftLine3) {
-						legendData.push({
-							stroke: p.leftLine3Color,
-							dashArrayScale: p.left3DashArrayScale,
-							text: p.left3LegendText,
-							dontDraw: d.values[0].dontDraw,
-						});
-					}
-				}
-
-				if (p.usesRightLine) {
-					legendData.push({
-						stroke: rightLineColor,
-						dashArrayScale: p.rightDashArrayScale,
-						text: p.rightLegendText,
-						dontDraw: d.values[0].dontDraw,
-					});
-				}
-
-				// need height first
-				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
-				let legendTx;
-				let legendTy;
-				
-				if (p.legendBottom) {
-					svg.attr("height", svgHeight + legendHeight + 30);
-					svg.select("#whitebox")
-						.attr("height", svgHeight + legendHeight + 30);
-					
-					// try to center it
-					legendTx = svgWidth / 2 - margin.left + 25;
-					// move it down outside the bottom margin
-					legendTy = margin.top + svgHeight; 
-					// now move the legend below the axis
-
-				} else {
-					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
-					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
-				}
-				
-				const legendContainer = svg
-					.append("g")
-					.attr("transform", `translate(${legendTx}, ${legendTy})`)
-					.append("rect")
-					.attr("id", `${svgId}-chart-legend`)
-					.attr("height", legendHeight)
-					.attr("fill", "#F2F2F2")
-					.attr("rx", "5")
-					.attr("ry", "5")
-					.attr("stroke", "black");
-// TTT
-				legendData.forEach((d, i) => {
-					const legendId = d.text.replace(/ /g, "_");
-					const legendItem = svg
-						.append("g")
-						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
-						.attr("id", legendId)
-						.attr(
-							"transform",
-							`translate(${legendTx + axisLabelFontSize / 2},
-								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-						);
-
-					//console.log("legendItem d,i:", d, i);
-				
-					// only draw color line if data is drawn
-					if (!d.dontDraw) {
-						legendItem
-							.append("line")
-							.attr("x1", 0)
-							.attr("y1", 0)
-							.attr("x2", 40)
-							.attr("y2", 0)
-							.attr("stroke", d.stroke)
-							.attr("stroke-width", 4)
-							.attr("stroke-dasharray", d.dashArrayScale);
-					}
-
-
-					const curD = d; 
-					legendItem
-						.append("g")
-						.append('text')
-						//.attr('font-family', 'FontAwesome') // this method does not work (TT)
-						.attr("class", "far")
-						.attr('font-size', axisLabelFontSize * 1.1)
-						.attr("x", 45)
-						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (d) { // TRICKY: you can do a function on any variable but then use 
-											// curD to get the value of dontDraw
-											// if you use d or curD in both places it does not work!
-							//console.log("GenChart-Legend LINES - set checked or not - 3 data curD,d,td:", curD, d);
-							if (curD.dontDraw === true) {
-								return '\uf0c8'  // square unicode [&#xf0c8;]
-							} else {
-								return '\uf14a'  // check square unicode 
-							}
-						});
-					//debugger;
-					
-					legendItem
-						.append("g")
-						.append("text")
-						.attr("x", 67) // this moves the text to the right
-						.attr("y", axisLabelFontSize * 0.5) // up and down
-						.text(d.text)
-						.attr("font-size", axisLabelFontSize);
-				});
-
-				// get all legend items and find the longest then set the legend container size
-				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
-				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-				const newWidth = d3.max(legendWidths);
-				legendContainer.attr("width", newWidth + 56);
-
-				// (TT) the code below never worked bc it only moved the outer legend wrapper not
-				// try to move container
-				// try to center it
-				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
-					// move it down outside the bottom margin
-				//legendTy = legendContainer.attr("y") + legendHeight;
-				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
-			}
 
 			const endRangeSpecialSectionStartDate = p.usesMultiLineLeftAxis
 				? fullNestedData[0].values.slice(-p.finalDataPointsDaysCount)[0].date
@@ -786,7 +631,7 @@ export class GenChart {
 									.attr("fill", (d, i) => {
 										if (p.barColors) {
 											// save the color used
-											d.assignedBarColor = p.barColors[i];
+											d.assignedLegendColor = p.barColors[i];
 											return p.barColors[i];
 										}
 										if (
@@ -807,7 +652,7 @@ export class GenChart {
 									.attr("fill", (d, i) => {
 										if (p.barColors) {
 											// save the color used
-											d.assignedBarColor = p.barColors[i];
+											d.assignedLegendColor = p.barColors[i];
 											return p.barColors[i];
 										}
 										if (
@@ -915,6 +760,12 @@ export class GenChart {
 										enter
 											.append("ellipse") // adding hover over ellipses
 											.style("fill", multiLineColors(i))
+/* 											.style("fill", (d, i) => {
+												// save the color used
+												d.assignedLegendColor = multiLineColors[i];
+												console.log("color assigned to i,d,multilinecolor:", d.assignedLegendColor,d,multiLineColors[i]);
+												return multiLineColors[i];
+											}) */
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
@@ -935,6 +786,11 @@ export class GenChart {
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
 											.attr("ry", d3.max([5, d3.min([offset, 15])]))
+/* 											.style("fill", (d, i) => {
+												// save the color used
+												d.assignedLegendColor = multiLineColors[i];
+												return multiLineColors[i];
+											}) */
 									},
 									(exit) => {
 										exit.remove();
@@ -1170,7 +1026,7 @@ export class GenChart {
 				d3.select("#outerContainer").on("touchmove", mouseout);
 			};
 
-			/* ***************************************************************************
+		/* ***************************************************************************
 		/*  GenTrendsSlider Section
 		/* ************************************************************************* */
 			if (p.usesDateDomainSlider) {
@@ -1237,11 +1093,14 @@ export class GenChart {
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE 
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
-						stroke: d.assignedBarColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
+						stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
 						dashArrayScale: 0,
 						text: d.stub_label,
 						dontDraw: d.dontDraw,
 					};
+					if (!d.draw) {
+						console.log("legend incoming data:", i, d.stub_label);
+					}
 				});
 				////
 				// need height first
@@ -1352,7 +1211,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend - set checked or not - 3 data curD:", d);
+								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD:", d);
 								if (d.dontDraw) {
 									return '\uf0c8';  // square unicode [&#xf0c8;]
 								} else {
@@ -1379,17 +1238,18 @@ export class GenChart {
 							);
 				});
 
-					// get all legend items and find the longest then set the legend container size
-					const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
-					const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-					const newWidth = d3.max(legendWidths);
-					legendContainer
-						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
-						.attr(
-							"transform",
-							`rotate(-${p.chartRotationPercent})`
-						);
- 				} // end if legendData.length > 0
+				// get all legend items and find the longest then set the legend container size
+				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
+				const newWidth = d3.max(legendWidths);
+				legendContainer
+					.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
+					.attr(
+						"transform",
+						`rotate(-${p.chartRotationPercent})`
+					);
+				} // end if legendData.length > 0
+
 				// enlarge chart container - NOT WORKING FOR SOME REASON
 /* 				const chartContainer = document.querySelectorAll(`.chart-container`);
 				chartContainer
@@ -1403,6 +1263,198 @@ export class GenChart {
 					.attr("height", svgWidth + 75); */
 				
 				///
+			}
+		} else {
+			// DRAW LEGEND FOR NON-ROTATED CHARTS
+			//debugger;
+			if (p.usesLegend) {
+				// FOR ASSIGNED LEGEND COLOR TO WORK, LEGEND HAS TO BE DRAWN
+				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
+				// - therefore all legend drawing must be moved to the END
+				// of this code
+				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
+					// ALL nests go on the legend but only draw those that are set to dontDraw = false
+					fullNestedData.forEach((d, i) => {
+						//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
+						legendData[i] = {
+							stroke: d.values[0].assignedLegendColor,
+							dashArrayScale: p.left1DashArrayScale,
+							text: d.key,
+							dontDraw: d.values[0].dontDraw,
+						};
+					});
+
+					// cannot do it this way below because
+					// the data is NOT nested and lists too many legend entries
+/* 					allIncomingData.forEach((d, i) => {
+						legendData[i] = {
+						stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
+						dashArrayScale: 0,
+						text: d.stub_label,
+						dontDraw: d.dontDraw,
+					}; */
+
+				} else if (p.usesStackedBars) { 
+					stack(p.data).forEach((d, i) => {
+						legendData[i] = {
+							stroke: color(d.key),
+							dashArrayScale: p.left1DashArrayScale,
+							text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
+							dontDraw: d.values[0].dontDraw,
+						};
+					});
+					legendData.reverse();
+			// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
+					// - also even if I got this working it CAN"T GO HERE
+					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
+/* 				} else if (p.usesBars) { 
+					p.data.forEach((d, i) => {
+						legendData[i] = {
+							stroke: p.barColors[i],
+							dashArrayScale: p.left1DashArrayScale,
+							text: d.key,
+						};
+					});
+					legendData.reverse(); */
+				} else {
+					if (p.usesLeftLine1) {
+						legendData.push({
+							stroke: leftLine1Color,
+							dashArrayScale: p.left1DashArrayScale,
+							text: p.leftLegendText,
+							dontDraw: d.values[0].dontDraw,
+						});
+					}
+					if (p.usesLeftLine2) {
+						legendData.push({
+							stroke: p.leftLine2Color,
+							dashArrayScale: p.left2DashArrayScale,
+							text: p.left2LegendText,
+							dontDraw: d.values[0].dontDraw,
+						});
+					}
+					if (p.usesLeftLine3) {
+						legendData.push({
+							stroke: p.leftLine3Color,
+							dashArrayScale: p.left3DashArrayScale,
+							text: p.left3LegendText,
+							dontDraw: d.values[0].dontDraw,
+						});
+					}
+				}
+
+				if (p.usesRightLine) {
+					legendData.push({
+						stroke: rightLineColor,
+						dashArrayScale: p.rightDashArrayScale,
+						text: p.rightLegendText,
+						dontDraw: d.values[0].dontDraw,
+					});
+				}
+
+				// need height first
+				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
+				let legendTx;
+				let legendTy;
+				
+				if (p.legendBottom) {
+					svg.attr("height", svgHeight + legendHeight + 30);
+					svg.select("#whitebox")
+						.attr("height", svgHeight + legendHeight + 30);
+					
+					// try to center it
+					legendTx = svgWidth / 2 - margin.left + 25;
+					// move it down outside the bottom margin
+					legendTy = margin.top + svgHeight; 
+					// now move the legend below the axis
+
+				} else {
+					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
+					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
+				}
+				
+				const legendContainer = svg
+					.append("g")
+					.attr("transform", `translate(${legendTx}, ${legendTy})`)
+					.append("rect")
+					.attr("id", `${svgId}-chart-legend`)
+					.attr("height", legendHeight)
+					.attr("fill", "#F2F2F2")
+					.attr("rx", "5")
+					.attr("ry", "5")
+					.attr("stroke", "black");
+// TTT
+				legendData.forEach((d, i) => {
+					const legendId = d.text.replace(/ /g, "_");
+					const legendItem = svg
+						.append("g")
+						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+						.attr("id", legendId)
+						.attr(
+							"transform",
+							`translate(${legendTx + axisLabelFontSize / 2},
+								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
+						);
+
+					//console.log("legendItem d,i:", d, i);
+				
+					// only draw color line if data is drawn
+					if (!d.dontDraw) {
+						legendItem
+							.append("line")
+							.attr("x1", 0)
+							.attr("y1", 0)
+							.attr("x2", 40)
+							.attr("y2", 0)
+							.attr("stroke", d.stroke)
+							.attr("stroke-width", 4)
+							.attr("stroke-dasharray", d.dashArrayScale);
+					}
+
+
+					const curD = d; 
+					legendItem
+						.append("g")
+						.append('text')
+						//.attr('font-family', 'FontAwesome') // this method does not work (TT)
+						.attr("class", "far")
+						.attr('font-size', axisLabelFontSize * 1.1)
+						.attr("x", 45)
+						.attr("y", axisLabelFontSize * 0.5)
+						.text(function (curD) { // TRICKY: you can do a function on any variable but then use 
+											// curD to get the value of dontDraw
+											// if you use d or curD in both places it does not work!
+							console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD, d);
+							if (d.dontDraw === true) {
+								return '\uf0c8'  // square unicode [&#xf0c8;]
+							} else {
+								return '\uf14a'  // check square unicode 
+							}
+						});
+					//debugger;
+					
+					legendItem
+						.append("g")
+						.append("text")
+						.attr("x", 67) // this moves the text to the right
+						.attr("y", axisLabelFontSize * 0.5) // up and down
+						.text(d.text)
+						.attr("font-size", axisLabelFontSize);
+				});
+
+				// get all legend items and find the longest then set the legend container size
+				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
+				const newWidth = d3.max(legendWidths);
+				legendContainer.attr("width", newWidth + 56);
+
+				// (TT) the code below never worked bc it only moved the outer legend wrapper not
+				// try to move container
+				// try to center it
+				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
+					// move it down outside the bottom margin
+				//legendTy = legendContainer.attr("y") + legendHeight;
+				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
 			}
 		}
 

@@ -68,7 +68,7 @@ export const MainEvents = {
 			event.stopPropagation();
 			// get the unique id of the legend item
 			let legItem = event.target.parentNode.parentNode.id;
-			//console.log("legendItem clicked: ", legItem);
+			console.log("legendItem clicked: event.target,item",event.target, legItem);
 			appState.ACTIVE_TAB.toggleLegendItem(legItem);
 			event.preventDefault();
 		});

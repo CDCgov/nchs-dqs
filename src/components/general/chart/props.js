@@ -98,7 +98,7 @@ export const getProps = (props) => {
 		marginLeftMin: props.marginLeftMin || (props.usesDateAsXAxis ? 35 : 0), // same as above for left margin
 		legendBottom: props.legendBottom, // true/false to put the legend in the margin-bottom area, below axis title, but above a slider, if used
 		firefoxReversed: props.firefoxReversed || false, // this prop is used when firefox reverses the order of the bars compared to chrome
-		noDataMessage: props.noDataMessage || "Please select an option to visualize data", // message to be displayed in place of chart when no data array is passed into genChart (CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component)
+		noDataMessage: props.noDataMessage || "There is no data for your selections. Please change your options.", // message to be displayed in place of chart when no data array is passed into genChart (CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component)
 		chartRotate: props.chartRotate, // true/false on ewhether to rotate the entire chart
 		chartRotationPercent: props.chartRotationPercent,
 	};

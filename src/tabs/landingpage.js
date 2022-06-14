@@ -113,12 +113,12 @@ export class LandingPage {
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedBarColor: "#FFFFFF", }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
 					.filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedBarColor: "#FFFFFF",}));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			}
 
@@ -229,17 +229,22 @@ export class LandingPage {
 			}
 		});
 
-		// now sort in order of the year
-		selectedPanelData.sort((a, b) => {
-   			 return a.year_pt - b.year_pt;
-		});
+
 
 		if (this.showBarChart) {
+			// now sort in order of the year
+			selectedPanelData.sort((a, b) => {
+				return a.year_pt - b.year_pt;
+			});
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter(
 					(d) =>  parseInt(d.year_pt) === parseInt(this.startYear)
 			);
 		} else {
+			// now sort by stub_label_num
+			selectedPanelData.sort((a, b) => {
+				return a.stub_label_num - b.stub_label_num;
+			});
 			// set up for line chart
 			selectedPanelData = selectedPanelData.map((d) => ({
 				...d,
@@ -650,7 +655,7 @@ export class LandingPage {
 			// create a year_pt col from time period
 			this.allData = this.allData
 				.filter((d) => d.flag !== "- - -") // remove undefined data
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedBarColor: "#FFFFFF", }));
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
 			// need data in place before filling year selects
@@ -996,7 +1001,7 @@ export class LandingPage {
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
 		const selDataPt = value.replace(/_/g," ");
-		console.log("toggle:", selDataPt)
+		console.log("#### toggle:", selDataPt)
 
 		switch (this.dataTopic) {
 			case "obesity":
@@ -1010,10 +1015,10 @@ export class LandingPage {
 				break;
 			case "suicide" || "injury":
 				// does not have any panelNum
-				this.allData.forEach((d) => {
+				this.allData.forEach((d,i) => {
 					if (d.stub_label === selDataPt && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
 						d.dontDraw = !d.dontDraw; // toggle it
-						console.log("toggle no panel dontDraw=", d.dontDraw);
+						console.log("toggle no panel year,i,dontDraw=",d.year_pt,i, d.dontDraw);
 					}
 				});
 				//debugger;
@@ -1118,7 +1123,7 @@ export class LandingPage {
 			headers: cols,
 		};
 		// Now delete a couple cols for visual table
-		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num") && !item.match("year_pt")  && !item.match("subLine") && !item.match("dontDraw") && !item.match("assignedBarColor"));
+		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num") && !item.match("year_pt")  && !item.match("subLine") && !item.match("dontDraw") && !item.match("assignedLegendColor"));
 		const cols = keys;
 
 
