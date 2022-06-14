@@ -425,34 +425,54 @@ export class GenChart {
 			let lines = [];
 			let lineGroups = [];
 			let lineGroupPaths = [];
+			let lineCount=0;
+			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				multiLineColors = d3.scaleOrdinal(p.multiLineColors);
+				//debugger;
 				// need the legend Nests from ALL incoming data
-				fullNestedLegendData = d3
+				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
 					.entries(allIncomingData);
 				
-				fullNestedData = d3
+				// limit legend to 10 max
+				fullNestedData.forEach((d, i) => {
+					console.log("nested dontDraw on data d,i", d, i);
+					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
+						lineCount++; // increment barCount
+					} else {
+						// then either dontDraw already true or needs to be set to true 
+						// bc line count is exceeded
+						// --- might need to iterate over ALL values and set ALL to true
+						d.values[0].dontDraw = true;
+					}
+				});
+				
+/* 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
-					.entries(p.data);
+					.entries(p.data); */
 				
 				fullNestedData.forEach((nd, i) => {
-					console.log("nested nd,i", nd, i);
-					lines[i] = d3.line();
-					const lineGroup = svg
-						.append("g")
-						.attr("class", nd.key.replace(/[\W_]+/g, ""))
-						.attr("transform", `translate(${margin.left}, ${margin.top})`);
+					//debugger;
+					// only draw those whose first data point is dontDraw = false
+					if (nd.values[0].dontDraw === false) {
+						console.log("nested nd,i", nd, i);
+						lines[i] = d3.line();
+						const lineGroup = svg
+							.append("g")
+							.attr("class", nd.key.replace(/[\W_]+/g, ""))
+							.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-					lineGroups[i] = lineGroup;
+						lineGroups[i] = lineGroup;
 
-					lineGroupPaths[i] = lineGroups[i]
-						.append("path")
-						.attr("fill", "none")
-						.attr("stroke", multiLineColors(i))
-						.attr("stroke-width", 2);
+						lineGroupPaths[i] = lineGroups[i]
+							.append("path")
+							.attr("fill", "none")
+							.attr("stroke", multiLineColors(i))
+							.attr("stroke-width", 2);
+					}
 				});
 			}
 
@@ -494,8 +514,8 @@ export class GenChart {
 			//debugger;
 			if (p.usesLegend) {
 				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
-					// use the nested legend data not fullNestedData
-					fullNestedLegendData.forEach((d, i) => {
+					// ALL nests go on the legend but only draw those that are set to dontDraw = false
+					fullNestedData.forEach((d, i) => {
 						legendData[i] = {
 							stroke: multiLineColors(i),
 							dashArrayScale: p.left1DashArrayScale,
@@ -656,8 +676,8 @@ export class GenChart {
 					legendItem
 						.append("g")
 						.append("text")
-						.attr("x", 60)
-						.attr("y", axisLabelFontSize * 0.4)
+						.attr("x", 67) // this moves the text to the right
+						.attr("y", axisLabelFontSize * 0.5) // up and down
 						.text(d.text)
 						.attr("font-size", axisLabelFontSize);
 				});
@@ -666,7 +686,7 @@ export class GenChart {
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
-				legendContainer.attr("width", newWidth + 13);
+				legendContainer.attr("width", newWidth + 56);
 
 				// (TT) the code below never worked bc it only moved the outer legend wrapper not
 				// try to move container
@@ -877,44 +897,50 @@ export class GenChart {
 
 				if (p.usesMultiLineLeftAxis) {
 					nestedData.forEach((nd, i) => {
-						lines[i]
-							.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
+						//debugger;
+						//console.log("nestedData nd, i", nd, i);
+						//debugger;
+						// only draw those whose first data point is dontDraw = false
+						if (nd.values[0].dontDraw === false) {
+							lines[i]
+								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
+								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
-						lineGroupPaths[i].attr("d", lines[i](nd.values));
-						lineGroups[i]
-							.selectAll("ellipse")
-							.data(nd.values, (d) => d[p.chartProperties.xAxis])
-							.join(
-								(enter) => {
-									enter
-									    .append("ellipse") // adding hover over ellipses
-										.style("fill", multiLineColors(i))
-										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-										.attr("rx", d3.max([5, offset]))
-										.attr("ry", d3.max([5, d3.min([offset, 15])]))
-										.style("opacity", 0);		
-									enter
-										.append("ellipse") // add always visible "point" (TT)
-										.style("fill", multiLineColors(i))
-										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-										.attr("rx", d3.max([3, 1])) // 3 = point width in pixels
-										.attr("ry", d3.max([3, d3.min([offset, 1])]))
-										.style("opacity", 1);	
-								},
-								(update) => {
-									update
-										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-										.attr("rx", d3.max([5, offset]))
-										.attr("ry", d3.max([5, d3.min([offset, 15])]))
-								},
-								(exit) => {
-									exit.remove();
-								}
-							);
+							lineGroupPaths[i].attr("d", lines[i](nd.values));
+							lineGroups[i]
+								.selectAll("ellipse")
+								.data(nd.values, (d) => d[p.chartProperties.xAxis])
+								.join(
+									(enter) => {
+										enter
+											.append("ellipse") // adding hover over ellipses
+											.style("fill", multiLineColors(i))
+											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+											.attr("rx", d3.max([5, offset]))
+											.attr("ry", d3.max([5, d3.min([offset, 15])]))
+											.style("opacity", 0);
+										enter
+											.append("ellipse") // add always visible "point" (TT)
+											.style("fill", multiLineColors(i))
+											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+											.attr("rx", d3.max([3, 1])) // 3 = point width in pixels
+											.attr("ry", d3.max([3, d3.min([offset, 1])]))
+											.style("opacity", 1);
+									},
+									(update) => {
+										update
+											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+											.attr("rx", d3.max([5, offset]))
+											.attr("ry", d3.max([5, d3.min([offset, 15])]))
+									},
+									(exit) => {
+										exit.remove();
+									}
+								);
+						}
 					});
 				}
 
@@ -1343,7 +1369,7 @@ export class GenChart {
 							.append("text")
 							.attr('font-family', 'sans-serif')
 							.attr('font-size', axisLabelFontSize * 1.0)
-							.attr("x", 62)
+							.attr("x", 67)
 							.attr("y", axisLabelFontSize * 0.5) // axisLabelFontSize * 0.4
 							.text(d.text)
 							.attr("font-size", axisLabelFontSize)
@@ -1358,7 +1384,7 @@ export class GenChart {
 					const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 					const newWidth = d3.max(legendWidths);
 					legendContainer
-						.attr("width", newWidth + 53) //might need to calculate the 53 based on fontsize or something
+						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr(
 							"transform",
 							`rotate(-${p.chartRotationPercent})`
