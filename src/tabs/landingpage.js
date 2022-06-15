@@ -214,9 +214,29 @@ export class LandingPage {
 				//debugger;
 				break;
 			case "injury":
+				if (this.stubNameNum === "0") {
+					// set to a valid value
+					this.stubNameNum = "1";
+				}
+				if (this.unitNum === "1") {
+					// set to a valid value
+					this.unitNum = "2";
+				}
+				if (this.unitNum === 1) {
+					// set to a valid value
+					this.unitNum = 2;
+				}
+				// This is returning NO DATA
+				console.log("INJURY unit,stub_name_num", this.unitNum, this.stubNameNum);
+				console.log("INJURY start_yr,end_yr", this.startYear,this.endYear);
 				selectedPanelData = this.allData.filter(
-					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				// backup
+/* 				selectedPanelData = this.allData.filter(
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+				); */
+				//debugger;
 				break;
 		}
 		// remove any remaining data where estimate is blank or null
@@ -228,8 +248,6 @@ export class LandingPage {
 				return true;
 			}
 		});
-
-
 
 		if (this.showBarChart) {
 			// now sort in order of the year
@@ -283,7 +301,8 @@ export class LandingPage {
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
 				break;
-			case "suicide" || "injury":
+			case "suicide":
+			case "injury":
 				// does not use the panel_num
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) 
@@ -621,11 +640,15 @@ export class LandingPage {
 
 	updateDataTopic(dataTopic) {
 		this.dataTopic = dataTopic; // string
-
+		//debugger;
 		// get the data
 		async function getSelectedData(dataFile) {
-			return Utils.getJsonFile(dataFile);
+			const theData = await Utils.getJsonFile(dataFile);
+			return theData;
 		}
+/* 		const getSelectedData = async (dataFile) =>
+			Utils.getJsonFile(dataFile); */
+
 		//debugger;
 		switch (dataTopic) {
 			case "obesity":
@@ -645,7 +668,11 @@ export class LandingPage {
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 
 		// now get the data if it has not been fetched already
+		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR INJURY DATA TO LOAD
+		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED EVER
+		console.log("ATTEMPTING dataFile Promise:", this.dataFile);
 		Promise.all([getSelectedData(this.dataFile)]).then((data) => {
+			console.log("FULFILLED dataFile Promise:", this.dataFile);
 			//const [destructuredData] = data;
 			[DataCache.ObesityData] = data;
 
@@ -682,10 +709,6 @@ export class LandingPage {
 
 	setAllSelectDropdowns () {
 		let allYearsArray;
-/* 
-		if (this.flattenedFilteredData.length === 0) {
-			this.flattenedFilteredData = this.getFlattenedFilteredData();
-		} */
 		// always filter the data again
 		//debugger;
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
@@ -695,17 +718,9 @@ export class LandingPage {
 		let singleYearsArray = [];
 		switch (this.dataTopic) {
 			case "obesity":
+			case "injury":  // can't use || in case switch statement
 				// reset unit_num or else it breaks
 				this.unitNum = 1;
-
-				// subtopic
-/* 				$('#panel-num-select')
-					.empty()
-					.append('<option selected="selected" value="1">2-19 years</option>')
-					.append('<option selected="selected" value="2">2-5 years</option>')
-					.append('<option selected="selected" value="3">6-11 years</option>')
-					.append('<option selected="selected" value="4">12-19 years</option>')
-					; */
 				
 				// this is Subtooic
 				this.setPanelSelect();
@@ -771,43 +786,6 @@ export class LandingPage {
 				$('#year-start-label').text("Start Year");
 				$('#year-end-label').text("End Year");
 
-				// now set the start and end years otherwise flattenedfiltereddata is WRONG
-				this.startYear = allYearsArray[0];
-				this.startPeriod = this.startYear;
-				// max converts the strings to integers and gets the max
-				max = Math.max(...allYearsArray);
-				// indexOf however fails unless we convert max back to a string!
-				index = allYearsArray.indexOf(max.toString()); 
-				this.endYear = allYearsArray[index];
-				this.endPeriod = this.endYear;
-				// set the Adjust vertical axis via unit_num in data
-				this.setVerticalUnitAxisSelect();
-				break;
-			case "injury":
-								// subtopic
-				$('#panel-num-select')
-					.empty()
-					.append('<option selected="selected" value="NA">Not Applicable</option>')
-					;
-				// set stub names
-				this.setStubNameSelect();
-
-				// Get the start year options
-				yearsData = this.getFilteredYearData();
-				allYearsArray = d3.map(yearsData, function (d) { return d.year_pt; }).keys();
-				console.log("allyears start:", allYearsArray);
-				$('#year-start-select').empty();
-				$('#year-end-select').empty();
-				allYearsArray.forEach((y) => {
-					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
-					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
-				});
-				// make the last end year selected
-				$("#year-end-select option:last"). attr("selected", "selected");
-				// fix labels
-				$('#year-start-label').text("Start Year");
-				$('#year-end-label').text("End Year");
-								
 				// now set the start and end years otherwise flattenedfiltereddata is WRONG
 				this.startYear = allYearsArray[0];
 				this.startPeriod = this.startYear;
@@ -954,23 +932,51 @@ export class LandingPage {
 	}
 	
 	updateStartPeriod(start) {
+		// NOW update END period
+		// - get ALL END OPTION AGAIN
+		// - then REMOVE any that are <= START YEAR
+		// Get the start year options
+		let yearsData = this.getFilteredYearData();
+		let allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
+		//console.log("allyears OBESITY start:", allYearsArray);
+		$('#year-end-select').empty();
 		switch (this.dataTopic) {
-			case "obesity" || "injury":
+			case "obesity":
+			case "injury": 
 				this.startPeriod = start;
 				this.startYear = this.getYear(start);
+				allYearsArray.forEach((y) => {
+					if (this.getYear(y) > this.startYear) {
+						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+						//singleYearsArray.push(this.getYear(y));
+					}
+				});
 				break;
 			case "suicide":
 				this.startPeriod = start;
 				this.startYear = start;
+				allYearsArray.forEach((y) => {
+					if (parseInt(y) > this.startYear) {
+						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+						//singleYearsArray.push(this.getYear(y));
+					}
+				});
 				break;
 		}
+
+
+		// make the last end year selected
+		$("#year-end-select option:last"). attr("selected", "selected");
+
+
 		this.renderChart();
 	}
 
 	updateEndPeriod(end) {
 
 		switch (this.dataTopic) {
-			case "obesity" || "injury":
+			case "obesity":
+			case "injury": 
 				this.endPeriod = end;
 				this.endYear = this.getYear(end);
 				break;
@@ -1013,7 +1019,8 @@ export class LandingPage {
 					}
 				});
 				break;
-			case "suicide" || "injury":
+			case "suicide":
+			case "injury":
 				// does not have any panelNum
 				this.allData.forEach((d,i) => {
 					if (d.stub_label === selDataPt && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
@@ -1238,10 +1245,10 @@ export class LandingPage {
 				<optgroup style="font-size:12px;">
 				<option value="obesity" selected>Obesity among Children</option>
 				<option value="suicide">Death Rates for Suicide</option>
+				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
 				</optgroup>
 			</select>
 			</div>
-			<!-- REMOVE FOR NOW <option value="injury">Initial injury-related visits to hospital emergency departments -->
 		</div>
 		<div class="chevron-green"></div>
 	</div>

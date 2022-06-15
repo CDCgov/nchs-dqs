@@ -28,6 +28,7 @@ export class GenChart {
 	}
 
 	render() {
+		
 		const p = this.props;
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
@@ -63,13 +64,14 @@ export class GenChart {
 			// - bc there are MANY points for each line not just one data point
 
 			// need to look at the "nested" data and use only MAX of 10 "nests"
+			// - see below by searching for fullNestedData
 
 		}
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
 
-		// NOW filter down to only bars to be drawn
+		// NOW filter down to only bars/lines to be drawn
 		const drawData = p.data;
 		///////////////////////////////////////////////////////////////////////////////
 	
@@ -459,21 +461,17 @@ export class GenChart {
 				
 				// limit legend to 10 max
 				fullNestedData.forEach((d, i) => {
-					console.log("nested dontDraw on data d,i", d, i);
+					if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
 					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
 						lineCount++; // increment barCount
 					} else {
 						// then either dontDraw already true or needs to be set to true 
 						// bc line count is exceeded
 						// --- might need to iterate over ALL values and set ALL to true
+						console.log("nested dontDraw SET TRUE on data d,i", d, i);
 						d.values[0].dontDraw = true;
 					}
 				});
-				
-/* 				fullNestedData = d3
-					.nest()
-					.key((d) => d[p.multiLineLeftAxisKey])
-					.entries(p.data); */
 				
 				fullNestedData.forEach((nd, i) => {
 					//debugger;
@@ -1211,7 +1209,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD:", d);
+								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
 								if (d.dontDraw) {
 									return '\uf0c8';  // square unicode [&#xf0c8;]
 								} else {
@@ -1412,7 +1410,7 @@ export class GenChart {
 					}
 
 
-					const curD = d; 
+					let curD2 = d; 
 					legendItem
 						.append("g")
 						.append('text')
@@ -1421,10 +1419,10 @@ export class GenChart {
 						.attr('font-size', axisLabelFontSize * 1.1)
 						.attr("x", 45)
 						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (curD) { // TRICKY: you can do a function on any variable but then use 
+						.text(function (dtemp) { // TRICKY: you can do a function on any variable but then use 
 											// curD to get the value of dontDraw
 											// if you use d or curD in both places it does not work!
-							console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD, d);
+							console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
 							if (d.dontDraw === true) {
 								return '\uf0c8'  // square unicode [&#xf0c8;]
 							} else {
