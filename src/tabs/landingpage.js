@@ -44,8 +44,13 @@ export class LandingPage {
 		this.footNotes = "";
 		this.footnoteMap = {};
 		this.unitNum = 1; // default 1 obesity
+		this.unitNumText = "";
 		this.showBarChart = 0;
 	}
+
+	// capString(str) {
+	// 	return str.charAt(0).toUpperCase() + str.slice(1);
+	// }
 
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
@@ -83,6 +88,7 @@ export class LandingPage {
 		
 		this.renderChart();
 	}
+    
 
 	getInitialData() {
 		
@@ -112,12 +118,22 @@ export class LandingPage {
 			// create a year_pt col from time period
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
-					.filter((d) => d.flag !== "- - -") // remove undefined data
+					.filter(function (d) {
+						if (d.flag === "- - -") {
+							return d.estimate = null;
+						}  else { return d; }
+					})
 					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
-			} else {
+		} else {
 				this.allData = this.allData
-					.filter((d) => d.flag !== "- - -") // remove undefined data
+					.filter(function (d) {
+						if (d.flag === "- - -") {
+							d.estimate = null;
+							return d;
+						} else { return d; }
+					})		
+					//.filter((d) => d.flag !== "- - -") // remove undefined data
 					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			}
@@ -207,7 +223,14 @@ export class LandingPage {
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
-			case "suicide":
+			case "suicide": 
+				// this "if" statement is data specific
+				// - suicide ONLY has a unit num of 2 and no other
+				if (this.unitNum === 1) {
+					// set to a valid value
+					this.unitNum = 2; // only option is crude
+				}
+				//console.log("suicide data unit num:", this.unitNum);
 				selectedPanelData = this.allData.filter(
 					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
@@ -227,8 +250,8 @@ export class LandingPage {
 					this.unitNum = 2;
 				}
 				// This is returning NO DATA
-				console.log("INJURY unit,stub_name_num", this.unitNum, this.stubNameNum);
-				console.log("INJURY start_yr,end_yr", this.startYear,this.endYear);
+				console.log("INJURY unit,stub_name_num:", this.unitNum, this.stubNameNum);
+				console.log("INJURY start_yr,end_yr:", this.startYear,this.endYear);
 				selectedPanelData = this.allData.filter(
 					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
@@ -239,30 +262,35 @@ export class LandingPage {
 				//debugger;
 				break;
 		}
+
+		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
 		// remove any remaining data where estimate is blank or null
-		selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
-		selectedPanelData = selectedPanelData.filter(function (d) { 
+		//selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
+/* 		selectedPanelData = selectedPanelData.filter(function (d) { 
 			if(isNaN(d.estimate)){
             	return false;
 			} else {
 				return true;
 			}
-		});
+		}); */
 
+		// now sort in order of the year for Bar Charts & Line Charts
+		// - D3 draws in order sent to the charting function
+		selectedPanelData.sort((a, b) => {
+			return a.year_pt - b.year_pt;
+		});
+		
 		if (this.showBarChart) {
-			// now sort in order of the year
-			selectedPanelData.sort((a, b) => {
-				return a.year_pt - b.year_pt;
-			});
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter(
 					(d) =>  parseInt(d.year_pt) === parseInt(this.startYear)
 			);
 		} else {
+			// DONT DO THIS HERE - DO ONLY ON LEGEND NOT THE LINE
 			// now sort by stub_label_num
-			selectedPanelData.sort((a, b) => {
+/* 			selectedPanelData.sort((a, b) => {
 				return a.stub_label_num - b.stub_label_num;
-			});
+			}); */
 			// set up for line chart
 			selectedPanelData = selectedPanelData.map((d) => ({
 				...d,
@@ -377,6 +405,7 @@ export class LandingPage {
 		let useBars;
 		//debugger;
 		if (this.showBarChart) {
+			//yAxisTitle = this.unitNumText;
 			useBars = true;
 			props = {
 			data,
@@ -416,7 +445,7 @@ export class LandingPage {
 			axisLabelFontScale: 0.55,
 			usesChartTitle: true,
 			usesLeftAxis: true,
-			usesLeftAxisTitle: false,
+			usesLeftAxisTitle: true,
 			usesRightAxis: true,
 			usesBottomAxis: true,
 			usesBottomAxisTitle: false,
@@ -450,7 +479,7 @@ export class LandingPage {
 			usesLeftAxis: true,
 			usesLeftAxisTitle: false,
 			usesBottomAxis: true,
-			usesBottomAxisTitle: true,
+			usesBottomAxisTitle: false,  // they dont want a title there
 			usesDateAsXAxis: true,
 			yLeftLabelScale: 3,
 			legendCoordinatePercents: legendCoordPercents,
@@ -536,11 +565,15 @@ export class LandingPage {
 				title: "Stub Label: ",
 				datumType: "string",
 			},
+			age: {
+				title: "Age Group: ",
+				datumType: "string",
+			},
 			"": { title: "", datumType: "empty" },
 		};
 
 		const headerProps = ["stub_name","stub_label"]; 
-		const bodyProps = ["panel","unit", chartValueProperty, "year"];
+		const bodyProps = ["panel","unit", chartValueProperty, "year","age"];
 
 		return {
 			propertyLookup,
@@ -640,11 +673,19 @@ export class LandingPage {
 
 	updateDataTopic(dataTopic) {
 		this.dataTopic = dataTopic; // string
+		let selectedDataCache;
 		//debugger;
-		// get the data
-		async function getSelectedData(dataFile) {
-			const theData = await Utils.getJsonFile(dataFile);
-			return theData;
+		// return the cached data or get the data from file
+		async function getSelectedData(dataFile, selectedDataCache) {
+			if (selectedDataCache) {
+				return selectedDataCache;
+			} else {
+				// load from file
+				const theData = await Utils.getJsonFile(dataFile);
+				//debugger;
+				return theData;
+			}
+
 		}
 /* 		const getSelectedData = async (dataFile) =>
 			Utils.getJsonFile(dataFile); */
@@ -654,14 +695,23 @@ export class LandingPage {
 			case "obesity":
 				this.dataFile = "content/json/HUS_OBESCH_2018.json";
 				this.chartTitle = "Obesity Among Children and Adolescents";
+				selectedDataCache = DataCache.ObesityData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
 				break;
 			case "suicide":
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
+				selectedDataCache = DataCache.SuicideData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
 				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
+				selectedDataCache = DataCache.InjuryData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 2;
 				break;			
 			
 		}
@@ -669,19 +719,32 @@ export class LandingPage {
 
 		// now get the data if it has not been fetched already
 		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR INJURY DATA TO LOAD
-		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED EVER
+		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
 		console.log("ATTEMPTING dataFile Promise:", this.dataFile);
-		Promise.all([getSelectedData(this.dataFile)]).then((data) => {
+		Promise.all([getSelectedData(this.dataFile,selectedDataCache)]).then((data) => {
 			console.log("FULFILLED dataFile Promise:", this.dataFile);
-			//const [destructuredData] = data;
-			[DataCache.ObesityData] = data;
+			//debugger;
+			if (selectedDataCache !== undefined) {
+				this.allData = data[0];
+			} else {
+				this.allData = JSON.parse(data[0]);
+			}
 
-			this.allData = JSON.parse(data[0]);
-			DataCache.ObesityData = this.allData;
+			switch (dataTopic) {
+			case "obesity":
+				DataCache.ObesityData = this.allData;
+				break;
+			case "suicide":
+				DataCache.SuicideData = this.allData;
+				break;
+			case "injury":
+				DataCache.InjuryData = this.allData;
+				break;			
+			}
 			//debugger;
 			// create a year_pt col from time period
 			this.allData = this.allData
-				.filter((d) => d.flag !== "- - -") // remove undefined data
+				//.filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
@@ -717,10 +780,10 @@ export class LandingPage {
 		let index;
 		let singleYearsArray = [];
 		switch (this.dataTopic) {
-			case "obesity":
-			case "injury":  // can't use || in case switch statement
-				// reset unit_num or else it breaks
-				this.unitNum = 1;
+			case "obesity": // stack cases if you want to share code between data sets
+			case "injury":  // - can't use || in case switch statement
+				// NO DONT DO THIS HERE - reset unit_num or else it breaks
+				//this.unitNum = 1;
 				
 				// this is Subtooic
 				this.setPanelSelect();
@@ -758,6 +821,7 @@ export class LandingPage {
 				// indexOf gets the index of the maximum value so we can set as the "End year"
 				index = singleYearsArray.indexOf(max); 
 				this.endYear = singleYearsArray[index]; // now get that year
+				//debugger;
 				break;
 			case "suicide":
 				// subtopic
@@ -834,6 +898,7 @@ export class LandingPage {
 		}
 		console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
 
+		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
 		if (this.dataTopic === "obesity") {
@@ -855,15 +920,20 @@ export class LandingPage {
 		console.log("allStubsArray", allStubsArray);
 		$('#stub-name-num-select').empty();
 
+		// reload the stubs but if new list has match for current selection 
+		// then - keep current selected
 		allStubsArray.forEach((y) => {
-			$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+			if (this.stubNameNum === parseInt(y.stub_name_num)) {
+				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`);
+			} else {
+				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+			}
 		});
-		// set first item to "selected"
-		$('#stub-name-num-select option:first-child').attr("selected", "selected");
+		// NO DONT DO THIS - set first item to "selected"
+		//$('#stub-name-num-select option:first-child').attr("selected", "selected");
 
 		// now update the stubname num to the selected
 		this.stubNameNum = $("#stub-name-num-select option:selected").val();
-		//document.getElementById("stub-name-num-select").selectedIndex; 
 		//debugger;
 	}
 
@@ -896,10 +966,18 @@ export class LandingPage {
 
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
-			$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
-			this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
-			// on table tab
-			$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+			if (this.unitNum === parseInt(y.unit_num)) {
+				$('#unit-num-select').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
+				// on table tab
+				$('#unit-num-select2').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				this.unitNumText = y.unit;
+			} else {
+				$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
+				// on table tab
+				$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+			}
 		});
 	}
 	
@@ -991,6 +1069,10 @@ export class LandingPage {
 	updateUnitNum(unitNum) {
 
 		this.unitNum = parseInt(unitNum);
+
+		// have to update the "text" to draw on the chart
+		this.unitNumText = $("#unit-num-select option:selected").text();   //(TTT)
+		console.log("unitNum text=",this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
 		// - call set stub names
@@ -1132,7 +1214,7 @@ export class LandingPage {
 		// Now delete a couple cols for visual table
 		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num") && !item.match("year_pt")  && !item.match("subLine") && !item.match("dontDraw") && !item.match("assignedLegendColor"));
 		const cols = keys;
-
+		//debugger;
 
 		/* Table element manipulation and rendering */
 		//document.getElementById(tableTitleId).innerHTML = "";  // dont show title this.chartTitle;
@@ -1154,7 +1236,12 @@ export class LandingPage {
 			.attr("tabindex", "0")
 			.attr("id", (column, i) => `${keys[i]}-th`)
 			.text(function (column) {
-				return column;
+				if (column === "panel") { column = "Subtopic" };
+				if (column === "stub_name") { column = "Characteristic" };
+				if (column === "stub_label") { column = "Group" };
+				if (column === "se") { column = "Standard Error" };
+				return column.charAt(0).toUpperCase() + column.slice(1);
+				//return this.capString(column);
 			})
 /* 			.attr("class", function (column, i) {
 				let classString;
@@ -1368,7 +1455,7 @@ export class LandingPage {
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
 		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-		<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
+		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
 			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
 				<option value="1" selected>Percent of population, crude</option>
 			</select>

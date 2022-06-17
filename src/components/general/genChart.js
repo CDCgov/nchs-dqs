@@ -133,12 +133,18 @@ export class GenChart {
 		const { fullSvgWidth, overallScale, svgHeightRatio, svgScale } = getGenSvgScale(p.vizId);
 
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
-		const axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
+		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling often makes the label sizes too big
-		if (axisLabelFontSize > 16) {
+		if (axisTitleFontSize > 14) {
 			// knock it back down
-			axisLabelFontSize = 16;
+			axisTitleFontSize = 12;
+		}
+
+		// this scaling often makes the label sizes too big
+		if (axisLabelFontSize > 14) {
+			// knock it back down
+			axisLabelFontSize = 12;
 		}
 
 		// setup chart labels and title sizes
@@ -161,7 +167,7 @@ export class GenChart {
 			top: axisSize, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
-			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
+			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
 		};
 
 		if (p.chartRotate === true) {
@@ -216,6 +222,7 @@ export class GenChart {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
 			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 1.7
+			//xScale = d3.scaleTime().range([0, chartWidth]);
 			xScale = d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(1.7);
 		}
 
@@ -304,7 +311,7 @@ export class GenChart {
 					.text(p.noDataMessage)
 					.attr("text-anchor", "middle")
 					.attr("font-size", axisTitleFontSize)
-					.attr("x", -chartCenterX - 25)
+					.attr("x", -chartCenterX - 20)
 					.attr("y", chartCenterY)
 					.attr(
 						"transform",
@@ -379,7 +386,7 @@ export class GenChart {
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY)  // up and down bc rotated
+					.attr("x", -chartCenterY + 24)  // up and down bc rotated
 					.attr("y", axisTitleSize / p.labelPaddingScale + 10) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
@@ -468,7 +475,7 @@ export class GenChart {
 						// then either dontDraw already true or needs to be set to true 
 						// bc line count is exceeded
 						// --- might need to iterate over ALL values and set ALL to true
-						console.log("nested dontDraw SET TRUE on data d,i", d, i);
+						//console.log("nested dontDraw SET TRUE on data d,i", d, i);
 						d.values[0].dontDraw = true;
 					}
 				});
@@ -477,7 +484,7 @@ export class GenChart {
 					//debugger;
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
-						console.log("nested nd,i", nd, i);
+						//console.log("nested nd,i", nd, i);
 						lines[i] = d3.line();
 						const lineGroup = svg
 							.append("g")
@@ -487,7 +494,7 @@ export class GenChart {
 						lineGroups[i] = lineGroup;
 
 						nd.values[0].assignedLegendColor = multiLineColors(i);
-						console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
+						//console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
 						
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
@@ -1088,6 +1095,11 @@ export class GenChart {
 				// THis the bar chart LEGEND gives option of turning on and off ALL values
 				// without this the clicking slowly disappears the options never to return
 
+				// now sort by stub_label_num
+				allIncomingData.sort((a, b) => {
+					return a.stub_label_num - b.stub_label_num;
+				});
+				
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE 
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
@@ -1209,7 +1221,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
+								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
 								if (d.dontDraw) {
 									return '\uf0c8';  // square unicode [&#xf0c8;]
 								} else {
@@ -1422,7 +1434,7 @@ export class GenChart {
 						.text(function (dtemp) { // TRICKY: you can do a function on any variable but then use 
 											// curD to get the value of dontDraw
 											// if you use d or curD in both places it does not work!
-							console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
+							//console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
 							if (d.dontDraw === true) {
 								return '\uf0c8'  // square unicode [&#xf0c8;]
 							} else {
