@@ -84,7 +84,9 @@ export class LandingPage {
 		//updateTitle(this.charttype, this.numbertype, this.neworcumulative);
 		$(".dimmer").attr("class", "ui inverted dimmer");
 
-		this.setStubNameSelect() 
+		this.setStubNameSelect();
+
+		this.setVerticalUnitAxisSelect();
 		
 		this.renderChart();
 	}
@@ -224,12 +226,13 @@ export class LandingPage {
 				);
 				break;
 			case "suicide": 
-				// this "if" statement is data specific
+				// NO SUICIDE HAS 2 valid unit nums so DONT DO THIS
+/* 				// this "if" statement is data specific
 				// - suicide ONLY has a unit num of 2 and no other
 				if (this.unitNum === 1) {
 					// set to a valid value
 					this.unitNum = 2; // only option is crude
-				}
+				} */
 				//console.log("suicide data unit num:", this.unitNum);
 				selectedPanelData = this.allData.filter(
 					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
@@ -237,6 +240,7 @@ export class LandingPage {
 				//debugger;
 				break;
 			case "injury":
+				// BE CAREFUL not sure if this will work universally
 				if (this.stubNameNum === "0") {
 					// set to a valid value
 					this.stubNameNum = "1";
@@ -353,17 +357,19 @@ export class LandingPage {
 		let yAxisTitle;
 		let xAxisTitle;
 
+		// (TTT) since this is driven from text - GET RID OF SWITCH???
+		// - wait for a few more datasets to be sure
 		switch (this.dataTopic) {
 			case "obesity":
-				yAxisTitle = "Percent of Population, crude (%)";
+				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
 				//xAxisTitle = "Time Period";
 				break;
 			case "suicide":
-				yAxisTitle = "Deaths per 100,000 resident population, crude";
+				yAxisTitle = this.unitNumText;  //"Deaths per 100,000 resident population, crude";
 				//xAxisTitle = "Time Period";
 				break;
 			case "injury":
-				yAxisTitle = "Initial injury-related visits in thousands, crude";
+				yAxisTitle = this.unitNumText;  //"Initial injury-related visits in thousands, crude";
 				//xAxisTitle = "Time Period";
 				break;
 		}
@@ -477,7 +483,7 @@ export class LandingPage {
 			usesHoverBars: false,
 			usesChartTitle: true,
 			usesLeftAxis: true,
-			usesLeftAxisTitle: false,
+			usesLeftAxisTitle: true,
 			usesBottomAxis: true,
 			usesBottomAxisTitle: false,  // they dont want a title there
 			usesDateAsXAxis: true,
@@ -569,6 +575,11 @@ export class LandingPage {
 				title: "Age Group: ",
 				datumType: "string",
 			},
+			// re-enable this when we go to sql server
+/* 			flag: {
+				title: "Flag:",
+				datumType: "string",
+			}, */
 			"": { title: "", datumType: "empty" },
 		};
 
@@ -744,7 +755,7 @@ export class LandingPage {
 			//debugger;
 			// create a year_pt col from time period
 			this.allData = this.allData
-				//.filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
+				.filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
@@ -816,11 +827,13 @@ export class LandingPage {
 
 				// now set the start and end years otherwise flattenedfiltereddata is WRONG
 				this.startYear = singleYearsArray[0];
+				this.startPeriod = $("#year-start-select option:selected").text(); // set this for the chart title
 				// max converts the strings to integers and gets the max
 				max = Math.max(...singleYearsArray);
 				// indexOf gets the index of the maximum value so we can set as the "End year"
 				index = singleYearsArray.indexOf(max); 
 				this.endYear = singleYearsArray[index]; // now get that year
+				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
 				//debugger;
 				break;
 			case "suicide":
@@ -922,9 +935,13 @@ export class LandingPage {
 
 		// reload the stubs but if new list has match for current selection 
 		// then - keep current selected
-		allStubsArray.forEach((y) => {
+		let foundUnit = false;
+		console.log("### current stubnamenum before rebuilding dropdown:", this.stubNameNum);
+		allStubsArray.forEach((y,i) => {
+			console.log("i , stubnamename", i, y.stub_name_num);
 			if (this.stubNameNum === parseInt(y.stub_name_num)) {
 				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`);
+				foundUnit = true;
 			} else {
 				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 			}
@@ -932,8 +949,17 @@ export class LandingPage {
 		// NO DONT DO THIS - set first item to "selected"
 		//$('#stub-name-num-select option:first-child').attr("selected", "selected");
 
-		// now update the stubname num to the selected
-		this.stubNameNum = $("#stub-name-num-select option:selected").val();
+
+		if (foundUnit === false) {
+			// now update the stubname num to the first on the list
+			this.stubNameNum = $("#stub-name-num-select option:first").val();
+		}
+		/* else {
+			// now update the stubname num to the ALREADY selected
+			this.stubNameNum = $("#stub-name-num-select option:selected").val();
+		} */
+		console.log("### stubnamenum after rebuilding dropdown:", this.stubNameNum);
+
 		//debugger;
 	}
 
@@ -964,6 +990,7 @@ export class LandingPage {
 
 		//debugger;
 
+		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
 			if (this.unitNum === parseInt(y.unit_num)) {
@@ -972,6 +999,7 @@ export class LandingPage {
 				// on table tab
 				$('#unit-num-select2').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				this.unitNumText = y.unit;
+				foundUnit = true;
 			} else {
 				$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
@@ -979,6 +1007,13 @@ export class LandingPage {
 				$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 			}
 		});
+		if (foundUnit === false) {
+			// have to set to a valid unit num or data will error out
+			this.unitNum = $("#unit-num-select option:first").val(); // set to first item on the unit list
+			this.unitNumText = $("#unit-num-select option:first").text(); // set to first item on the unit list
+		}
+		//console.log("### Leaving setVertUnit: unitNumText TITLE is: ",this.unitNumText);
+		//debugger;
 	}
 	
 	updatePanelNum(panelNum) {
@@ -998,6 +1033,7 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
+		//debugger;
 		//this.setCategoriesSelect();
 		console.log("new stub name num: ", this.stubNameNum)
 

@@ -138,7 +138,7 @@ export class GenChart {
 		// this scaling often makes the label sizes too big
 		if (axisTitleFontSize > 14) {
 			// knock it back down
-			axisTitleFontSize = 12;
+			axisTitleFontSize = 14;
 		}
 
 		// this scaling often makes the label sizes too big
@@ -752,6 +752,8 @@ export class GenChart {
 						//debugger;
 						// only draw those whose first data point is dontDraw = false
 						if (nd.values[0].dontDraw === false) {
+							console.log("nd values:", nd);
+
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
@@ -778,7 +780,23 @@ export class GenChart {
 											.style("opacity", 0);
 										enter
 											.append("ellipse") // add always visible "point" (TT)
-											.style("fill", multiLineColors(i))
+											// change to a function and set based on the "flag"
+											.style("fill", "white") // multiLineColors(i)
+											.style("fill", function (d) {
+												if (d.flag !== undefined) {
+													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
+													return "white";
+												} else {
+													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
+													return multiLineColors(i);
+												}
+											})
+											.style("stroke", function (d) {
+												if (d.flag !== undefined) {
+													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
+													return multiLineColors(i);
+												}
+											})
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([3, 1])) // 3 = point width in pixels
@@ -802,6 +820,7 @@ export class GenChart {
 									}
 								);
 						}
+
 					});
 				}
 
