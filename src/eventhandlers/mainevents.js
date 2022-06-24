@@ -73,9 +73,43 @@ export const MainEvents = {
 			event.preventDefault();
 		});
 		
-		// click Chart then show Chart
+		// click Map then show Map
 		$(document).on("click", "#icons-tab-1", (event) => {
 			event.stopPropagation();
+			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "block";
+			theMap.classList.add("show");
+			theMap.classList.add("active");
+			let theChart = document.getElementById("chart-tab");
+			theChart.style.display = "none";
+			theChart.classList.remove("show");
+			theChart.classList.remove("active");
+			// have to render Chart again otherwise svg has no "size" = NaN
+			appState.ACTIVE_TAB.renderChart();
+			let theTable = document.getElementById("table-tab");
+			theTable.style.display = "none";
+			theTable.classList.remove("show");
+			theTable.classList.remove("active");
+			// flip the colors
+			let theMapTab = document.getElementById("icons-tab-1");
+			theMapTab.style.backgroundColor = "#b3d2ce";
+			theMapTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			let theChartTab = document.getElementById("icons-tab-2");
+			theChartTab.style.backgroundColor = "#ffffff";
+			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theTableTab = document.getElementById("icons-tab-3");
+			theTableTab.style.backgroundColor = "#ffffff";
+			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			event.preventDefault();
+		});
+
+		// click Chart then show Chart
+		$(document).on("click", "#icons-tab-2", (event) => {
+			event.stopPropagation();
+			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "none";
+			theMap.classList.remove("show");
+			theMap.classList.remove("active");
 			let theChart = document.getElementById("chart-tab");
 			theChart.style.display = "block";
 			theChart.classList.add("show");
@@ -87,18 +121,25 @@ export const MainEvents = {
 			theTable.classList.remove("show");
 			theTable.classList.remove("active");
 			// flip the colors
-			let theChartTab = document.getElementById("icons-tab-1");
+			let theMapTab = document.getElementById("icons-tab-1");
+			theMapTab.style.backgroundColor = "#ffffff";
+			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#b3d2ce";
 			theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
-			let theTableTab = document.getElementById("icons-tab-2");
+			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
 			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
 			event.preventDefault();
 		});
 		
 		// click Table then show Table
-		$(document).on("click", "#icons-tab-2", (event) => {
-    		event.stopPropagation();
+		$(document).on("click", "#icons-tab-3", (event) => {
+			event.stopPropagation();
+			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "none";
+			theMap.classList.remove("show");
+			theMap.classList.remove("active");
 			let theTable = document.getElementById("table-tab");
 			theTable.style.display = "block";
 			theTable.classList.add("show");
@@ -108,10 +149,13 @@ export const MainEvents = {
 			theChart.classList.remove("show");
 			theChart.classList.remove("active");
 			// flip the colors
-			let theChartTab = document.getElementById("icons-tab-1");
+			let theMapTab = document.getElementById("icons-tab-1");
+			theMapTab.style.backgroundColor = "#ffffff";
+			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#ffffff";
 			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
-			let theTableTab = document.getElementById("icons-tab-2");
+			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#b3d2ce";
 			theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
 			event.preventDefault();

@@ -265,6 +265,12 @@ export class LandingPage {
 				); */
 				//debugger;
 				break;
+			case "birthweight":
+			case "medicaidU65":
+				selectedPanelData = this.allData.filter(
+					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+				);
+				break;
 		}
 
 		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
@@ -329,12 +335,14 @@ export class LandingPage {
 		let allYearsData
 		switch (this.dataTopic) {
 			case "obesity":
+			case "birthweight":
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
 				break;
 			case "suicide":
 			case "injury":
+			case "medicaidU65":
 				// does not use the panel_num
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) 
@@ -361,6 +369,8 @@ export class LandingPage {
 		// - wait for a few more datasets to be sure
 		switch (this.dataTopic) {
 			case "obesity":
+			case "birthweight":
+			case "medicaidU65":
 				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
 				//xAxisTitle = "Time Period";
 				break;
@@ -709,6 +719,12 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
 				break;
 			case "suicide":
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
@@ -716,6 +732,12 @@ export class LandingPage {
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -723,8 +745,47 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
 				break;			
-			
+			case "birthweight":	
+				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
+				this.chartTitle = "Low Birthweight Live Births";
+				selectedDataCache = DataCache.BirthweightData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
+				// show the map tab
+				$('#icons-tab-1').click();
+				$('#tab-map').css("visibility", "visible");
+				$('#icons-tab-1').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-1').css('border-top', 'solid 5px #8ab9bb');
+				// hide the chart tab
+				//$('#tab-chart').css("visibility", "hidden");
+				// set chart tab to white
+				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+				let theChartTab = document.getElementById("icons-tab-2");
+				theChartTab.style.backgroundColor = "#ffffff";
+				theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0';
+				break;
+			case "medicaidU65":
+				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
+				this.chartTitle = "Medicaid Coverage Among Persons Under Age 65";
+				selectedDataCache = DataCache.MedicaidU65Data;
+				this.panelNum = 0; // no panel
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
+				break;
 		}
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 
@@ -750,7 +811,13 @@ export class LandingPage {
 				break;
 			case "injury":
 				DataCache.InjuryData = this.allData;
-				break;			
+				break;	
+			case "birthweight":
+				DataCache.BirthweightData = this.allData;
+				break;		
+			case "medicaidU65":
+				DataCache.MedicaidU65Data = this.allData;
+				break;
 			}
 			//debugger;
 			// create a year_pt col from time period
@@ -793,6 +860,7 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			case "obesity": // stack cases if you want to share code between data sets
 			case "injury":  // - can't use || in case switch statement
+			case "birthweight":
 				// NO DONT DO THIS HERE - reset unit_num or else it breaks
 				//this.unitNum = 1;
 				
@@ -837,6 +905,7 @@ export class LandingPage {
 				//debugger;
 				break;
 			case "suicide":
+			case "medicaidU65":			
 				// subtopic
 				$('#panel-num-select')
 					.empty()
@@ -1067,6 +1136,7 @@ export class LandingPage {
 				});
 				break;
 			case "suicide":
+			case "medicaidU65":
 				this.startPeriod = start;
 				this.startYear = start;
 				allYearsArray.forEach((y) => {
@@ -1095,6 +1165,7 @@ export class LandingPage {
 				this.endYear = this.getYear(end);
 				break;
 			case "suicide":
+			case "medicaidU65":
 				this.endPeriod = end;
 				this.endYear = end;
 				break;
@@ -1139,6 +1210,7 @@ export class LandingPage {
 				break;
 			case "suicide":
 			case "injury":
+			case "medicaidU65":
 				// does not have any panelNum
 				this.allData.forEach((d,i) => {
 					if (d.stub_label === selDataPt && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
@@ -1369,6 +1441,8 @@ export class LandingPage {
 				<option value="obesity" selected>Obesity among Children</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
+				<option value="birthweight">Low birthweight live births</option>
+				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 				</optgroup>
 			</select>
 			</div>
@@ -1476,20 +1550,37 @@ export class LandingPage {
 
 	<!-- Tabs navs -->
 <ul class="nav nav-tabs justify-content-center" id="ex-with-icons" role="tablist" style="margin-top: 15px;">
-  <li class="nav-item" role="presentation">
-    <a class="nav-link active" id="icons-tab-1" data-mdb-toggle="tab" href="#chart-tab" role="tab"
-      aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-chart-line fa-fw me-2"></i>Chart</a>
+  <li class="nav-item" role="presentation" id="tab-map" style="visibility:hidden">
+    <a class="nav-link active" id="icons-tab-1" data-mdb-toggle="tab" href="#map-tab" role="tab"
+      aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-map fa-fw me-2"></i>Map</a>
   </li>
-  <li class="nav-item" role="presentation">
-    <a class="nav-link" id="icons-tab-2" data-mdb-toggle="tab" href="#table-tab" role="tab"
-      aria-controls="ex-with-icons-tabs-2" aria-selected="false"><i class="fas fa-table fa-fw me-2"></i>Table</a>
+    <li class="nav-item" role="presentation" id="tab-chart">
+    <a class="nav-link active" id="icons-tab-2" data-mdb-toggle="tab" href="#chart-tab" role="tab"
+      aria-controls="ex-with-icons-tabs-2" aria-selected="true"  style="background-color:#b3d2ce;border-top:solid 5px #8ab9bb;"><i class="fas fa-chart-line fa-fw me-2"></i>Chart</a>
+  </li>
+  <li class="nav-item" role="presentation"  id="tab-table">
+    <a class="nav-link" id="icons-tab-3" data-mdb-toggle="tab" href="#table-tab" role="tab"
+      aria-controls="ex-with-icons-tabs-3" aria-selected="false"  style="border-top:solid 1px #C0C0C0;"><i class="fas fa-table fa-fw me-2"></i>Table</a>
   </li>
 </ul>
 <!-- Tabs navs -->
 
 <!-- Tabs content -->
 <div class="tab-content" id="ex-with-icons-content">
-  <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
+  <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
+		<div class="map-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
+			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
+				<option value="1" selected>Percent of population, crude</option>
+			</select>
+		</div>
+				<div id="map-container" class="general-chart" style="height:fit-content;align:left;">
+				</div>
+				<br>
+				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+		</div><!-- end map wrapper -->
+  </div>
+  <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
 			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
@@ -1502,7 +1593,7 @@ export class LandingPage {
 				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end chart wrapper -->
   </div>
-  <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
+  <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
 		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
 			<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
 				<select name="unit-num-select" id="unit-num-select2" form="select-view-options" class="custom-select">
