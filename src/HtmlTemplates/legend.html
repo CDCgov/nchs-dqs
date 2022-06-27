@@ -1,0 +1,10 @@
+﻿<!--   24Feb2022 <div id="{{LegendDivID}}" class="legendWrapper"> -->
+<div id="{{LegendDivID}}" class="d-flex justify-content-center da-map-legend mb-1">
+    {{#each LegendItems}}
+    <!--  24Feb2022 <div class="dataBox" style="{{ColorStyle}}"> -->
+    <div class="px-2 py-1 da-maplegend-box border border-secondary" style="{{ColorStyle}}">
+        <input class="form-check-input" type="checkbox" value="{{ItemValue}}" {{checkedIf IsChecked}} style="margin-right:3px;cursor:pointer"
+            aria-label="{{DisplayLabel}}" autocomplete="off">{{DisplayLabel}}</input>
+    </div>
+    {{/each}}
+</div>

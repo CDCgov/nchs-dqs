@@ -1,0 +1,7 @@
+{{#each DatasetList}}
+<div class="btn-group" role="group">
+    <input id="{{setDatasetFilterItemID DatasetID}}" type="radio" class="btn-check" name="Dataset"
+        rel="js-DatasetFilter" checked />
+    <label class="btn btn-outline-primary" for="{{setDatasetFilterItemID DatasetID}}">{{DatasetLabel}}</label>
+</div>
+{{/each}}

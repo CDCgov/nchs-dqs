@@ -34,14 +34,20 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
 			console.log("New End Period:", yrEnd);
 		});
+		// on the map tab
+		$("#unit-num-select-map").change((evt) => {
+			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
+			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			console.log("New Unit num:", unitNum);
+		});
 		// on the chart tab
-		$("#unit-num-select").change((evt) => {
+		$("#unit-num-select-chart").change((evt) => {
 			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);
 		});
 		// on the table tab
-		$("#unit-num-select2").change((evt) => {
+		$("#unit-num-select-table").change((evt) => {
 			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);

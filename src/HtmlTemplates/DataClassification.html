@@ -1,0 +1,8 @@
+{{#each DataClassificationList}}
+<div class="btn-group w-100" role="group">
+    <input id="{{setDataClassificationFilterItemID DataClassificationID}}" type="radio" class="btn-check"
+        name="DataClassification" rel="js-DataClassificationFilter" checked />
+    <label class="btn btn-outline-primary"
+        for="{{setDataClassificationFilterItemID DataClassificationID}}">{{DataClassificationName}}</label>
+</div>
+{{/each}}

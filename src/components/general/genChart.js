@@ -747,9 +747,6 @@ export class GenChart {
 
 				if (p.usesMultiLineLeftAxis) {
 					nestedData.forEach((nd, i) => {
-						//debugger;
-						//console.log("nestedData nd, i", nd, i);
-						//debugger;
 						// only draw those whose first data point is dontDraw = false
 						if (nd.values[0].dontDraw === false) {
 							console.log("nd values:", nd);
@@ -781,7 +778,6 @@ export class GenChart {
 										enter
 											.append("ellipse") // add always visible "point" (TT)
 											// change to a function and set based on the "flag"
-											.style("fill", "white") // multiLineColors(i)
 											.style("fill", function (d) {
 												if (d.flag !== undefined) {
 													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
@@ -799,7 +795,7 @@ export class GenChart {
 											})
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-											.attr("rx", d3.max([5, 1])) // 3 = point width in pixels
+											.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
 											.attr("ry", d3.max([5, d3.min([offset, 1])]))
 											.style("opacity", 1);
 									},

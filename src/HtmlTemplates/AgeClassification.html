@@ -1,0 +1,8 @@
+{{#each AgeClassificationList}}
+<div class="btn-group w-100" role="group">
+    <input id="{{setAgeClassificationFilterItemID AgeClassificationTypeID}}" type="radio" class="btn-check"
+        name="AgeClassification" rel="js-AgeClassificationFilter" checked />
+    <label class="btn btn-outline-primary"
+        for="{{setAgeClassificationFilterItemID AgeClassificationTypeID}}">{{AgeClassificationTypeLabel}}</label>
+</div>
+{{/each}}

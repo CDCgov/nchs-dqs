@@ -656,9 +656,10 @@ export class LandingPage {
 		//debugger;
 		// in some cases this gets called with no footnotes.
 		if (footnotesIdArray[0]) {
+			// this includes every item in the footnotes
 			footnotesList = footnotesIdArray[0].split(",");
 
-			// get the source codes list
+			// get ONLY the source codes list
 			sourceList = footnotesList;
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC"));  // match(/SC/));
 			sourceList.forEach(f =>
@@ -676,7 +677,10 @@ export class LandingPage {
 			);
 		}
 		// update source text
-		$("#source-text").html(sourceText);
+		//console.log("#Source text is: ", sourceText);
+		$("#source-text-map").html(sourceText);
+		$("#source-text-chart").html(sourceText);
+		
 		// now update the footnotes on the page
 		$("#pageFooter").html(allFootnotesText);
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
@@ -779,6 +783,8 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// if we switch to this start with Total every time
+				this.stubNameNum = 0;
 				// show the chart tab
 				$('#tab-chart').css("visibility", "visible");
 				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
@@ -814,6 +820,7 @@ export class LandingPage {
 				break;	
 			case "birthweight":
 				DataCache.BirthweightData = this.allData;
+				this.loadUSMapData();
 				break;		
 			case "medicaidU65":
 				DataCache.MedicaidU65Data = this.allData;
@@ -846,6 +853,21 @@ export class LandingPage {
 
 
 
+	}
+
+	loadUSMapData() {
+		Utils.getJsonFile("content/json/State_Territory_FluView1.json")
+			.then((topo) => {
+				DataCache.USTopo = JSON.parse(topo);
+				return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
+			})
+			.then((legenddata) => {
+				DataCache.LegendData = JSON.parse(legenddata);
+				return;
+			})
+			.catch(function (err) {
+				console.error(`Initial data load failure!! Error: ${err.stack}`);
+			});
 	}
 
 	setAllSelectDropdowns () {
@@ -1053,33 +1075,34 @@ export class LandingPage {
    			 return a.unit_num - b.unit_num;
 		});
 		console.log("allUnitsArray", allUnitsArray);
-		$('#unit-num-select').empty();
+		$('#unit-num-select-chart').empty();
 		// on the table tab
-		$('#unit-num-select2').empty();
+		$('#unit-num-select-table').empty();
 
-		//debugger;
+
 
 		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
+			//debugger;
 			if (this.unitNum === parseInt(y.unit_num)) {
-				$('#unit-num-select').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				$('#unit-num-select-chart').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
-				$('#unit-num-select2').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				$('#unit-num-select-table').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				this.unitNumText = y.unit;
 				foundUnit = true;
 			} else {
-				$('#unit-num-select').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				$('#unit-num-select-chart').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
-				$('#unit-num-select2').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				$('#unit-num-select-table').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 			}
 		});
 		if (foundUnit === false) {
 			// have to set to a valid unit num or data will error out
-			this.unitNum = $("#unit-num-select option:first").val(); // set to first item on the unit list
-			this.unitNumText = $("#unit-num-select option:first").text(); // set to first item on the unit list
+			this.unitNum = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
+			this.unitNumText = $("#unit-num-select-chart option:first").text(); // set to first item on the unit list
 		}
 		//console.log("### Leaving setVertUnit: unitNumText TITLE is: ",this.unitNumText);
 		//debugger;
@@ -1178,7 +1201,7 @@ export class LandingPage {
 		this.unitNum = parseInt(unitNum);
 
 		// have to update the "text" to draw on the chart
-		this.unitNumText = $("#unit-num-select option:selected").text();   //(TTT)
+		this.unitNumText = $("#unit-num-select-chart option:selected").text();   //(TTT)
 		console.log("unitNum text=",this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
@@ -1441,7 +1464,7 @@ export class LandingPage {
 				<option value="obesity" selected>Obesity among Children</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
-				<option value="birthweight">Low birthweight live births</option>
+
 				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 				</optgroup>
 			</select>
@@ -1570,33 +1593,33 @@ export class LandingPage {
   <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
 		<div class="map-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
-			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
+			<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
 				<option value="1" selected>Percent of population, crude</option>
 			</select>
 		</div>
 				<div id="map-container" class="general-chart" style="height:fit-content;align:left;">
 				</div>
 				<br>
-				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+				<div class="source-text" id="source-text-map"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
-			<select name="unit-num-select" id="unit-num-select" form="select-view-options" class="custom-select">
+			<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 				<option value="1" selected>Percent of population, crude</option>
 			</select>
 		</div>
 				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;">
 				</div>
 				<br>
-				<div class="source-text" id="source-text"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end chart wrapper -->
   </div>
   <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
 		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
 			<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
-				<select name="unit-num-select" id="unit-num-select2" form="select-view-options" class="custom-select">
+				<select name="unit-num-select-table" id="unit-num-select-table" form="select-view-options" class="custom-select">
 					<option value="1" selected>Percent of population, crude</option>
 				</select>
 			</div>
