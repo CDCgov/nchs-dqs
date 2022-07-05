@@ -138,9 +138,12 @@ export class GenTooltip {
 	mouseover(element, additionalProperties) {
 		this.incomingElement = element;
 		const { sides, leftBounds } = getWhichSvgSides(this.svgId);
-		let data = element.data()[0];
-
+		// States need .properties but Territories dont
+		// - so the following statement picks off whichever is available
+		let data = element.data()[0].properties ? element.data()[0].properties : element.data()[0];
+		//debugger;
 		if (additionalProperties) data = data[additionalProperties[0]];
+
 		const bodyData = [];
 		let prop;
 		this.bodyProps.forEach((bp) => {

@@ -82,6 +82,8 @@ export const MainEvents = {
 		// click Map then show Map
 		$(document).on("click", "#icons-tab-1", (event) => {
 			event.stopPropagation();
+			// have to do this LAST not FIRST - appState.ACTIVE_TAB.updateShowMap(1);
+			// the map div must be visible in the Dom before you can render the map
 			let theMap = document.getElementById("map-tab");
 			theMap.style.display = "block";
 			theMap.classList.add("show");
@@ -106,6 +108,15 @@ export const MainEvents = {
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
 			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			// also need to reset the Characteristic stubNameNum back to what is selected!!!
+			appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT) 
+			// NOW show the map
+			appState.ACTIVE_TAB.updateShowMap(1);
+			// FOR NOW FORCE SINGLE TIME PERIOD AS ONLY OPTION 
+			// - must check if it is already checked though
+			if (!document.getElementById('show-one-period-checkbox').checked) {
+				$("#show-one-period-checkbox").click();
+			}
 			event.preventDefault();
 		});
 
@@ -136,6 +147,10 @@ export const MainEvents = {
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
 			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			appState.ACTIVE_TAB.updateShowMap(0);
+			// also need to reset the Characteristic back to default value
+			appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
+						// if a data set does not have 0 on the stub_label_num then this will FAIL
 			event.preventDefault();
 		});
 		
@@ -164,6 +179,7 @@ export const MainEvents = {
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#b3d2ce";
 			theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			appState.ACTIVE_TAB.updateShowMap(0);
 			event.preventDefault();
 		});
 

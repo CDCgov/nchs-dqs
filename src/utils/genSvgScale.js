@@ -1,5 +1,10 @@
 export const getGenSvgScale = (vizId) => {
+	//console.log("getGenSvgScale vizId:", vizId);
 	const fullSvgWidth = parseInt(d3.select(`#${vizId}`).style("width"), 10);
+	// could not get the above line to work so tried the one below
+	// but problem was that the map div was not rendered yet PRIOR to me calling renderMap
+	//const fullSvgWidth =  parseInt(d3.select(`#${this.mapVizId}`).node().getBoundingClientRect().width);
+
 	let overallScale;
 	switch (true) {
 		case fullSvgWidth > 1050:

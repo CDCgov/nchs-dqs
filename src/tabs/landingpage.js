@@ -6,6 +6,7 @@ import * as config from "../components/landingPage/config";
 //import { SubCard } from "../components/landingPage/subCard";
 import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
+import { GenMap } from "../components/general/genMap";
 
 export class LandingPage {
 	constructor() {
@@ -46,6 +47,8 @@ export class LandingPage {
 		this.unitNum = 1; // default 1 obesity
 		this.unitNumText = "";
 		this.showBarChart = 0;
+		this.showMap = 0;
+		this.geometries = {};
 	}
 
 	// capString(str) {
@@ -84,9 +87,12 @@ export class LandingPage {
 		//updateTitle(this.charttype, this.numbertype, this.neworcumulative);
 		$(".dimmer").attr("class", "ui inverted dimmer");
 
-		this.setStubNameSelect();
+		//debugger;
 
-		this.setVerticalUnitAxisSelect();
+		//(TTT 06-27-2022 might need this but it just started erroring on thes)
+		//this.setStubNameSelect();
+
+		//this.setVerticalUnitAxisSelect();
 		
 		this.renderChart();
 	}
@@ -101,22 +107,43 @@ export class LandingPage {
 		async function getFootnoteData() {
 			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
 		}
+
+		async function getUSMapData() {
+			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
+		}
+/* 			.then((topo) => {
+				DataCache.USTopo = JSON.parse(topo);
+				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
+				this.geometries = geometries;
+				return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
+			})
+			.then((legenddata) => {
+				DataCache.LegendData = JSON.parse(legenddata);
+				return;
+			}) */
 		
-		Promise.all([getSelectedData(),getFootnoteData()]).then((data) => {
+		// getUSMapData - if we do it here we just load the map date ONE TIME
+		Promise.all([getSelectedData(),getFootnoteData(),getUSMapData()]).then((data) => {
 			//const [destructuredData] = data;
-			[DataCache.ObesityData, DataCache.Footnotes] = data;
+			[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
+			DataCache.USTopo = JSON.parse(DataCache.USTopo);
+			const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
+			this.geometries = geometries;
+
 			this.allData = JSON.parse(data[0]);
 			DataCache.ObesityData = this.allData;
 			this.footNotes = JSON.parse(data[1]);
 			DataCache.Footnotes = this.footNotes;
 
-			// build footnote map ONE TIME (OR DO WE NEED TO GET IT ONLY ON SELECTED LEGEND ITEMS)
+			// build footnote map - but this needs to be done on EVERY data change
 			this.footnoteMap = {};
 			let i = null;
 			for (i = 0; this.footNotes.length > i; i += 1) {
 				this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
 			}
 
+			//debugger;
+			
 			// create a year_pt col from time period
 			if (this.dataTopic === "obesity") {
 				this.allData = this.allData
@@ -139,7 +166,6 @@ export class LandingPage {
 					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			}
-
 
 		}).catch(function (err) {
 			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
@@ -166,7 +192,44 @@ export class LandingPage {
   		return(sel.options[sel.selectedIndex].text);
 	}
 
+	renderMap() {
+		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
+		$('#us-map-container').show();
 
+		// If TOTAL is selected we CANNOT DRAW THE MAP, so show a message
+		if (this.stubNameNum === 0) {
+			// need to SHOW A MESSAGE
+			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			// hide the map in case it's not hidden
+/* 			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "none";
+			theMap.classList.remove("show");
+			theMap.classList.remove("active"); */
+		} else {
+			$('#us-map-message').html("");
+			// Get filtered data
+			let stateData = this.getFlattenedFilteredData();
+			// but need to narrow it to the selected time period
+			stateData = stateData.filter(
+					(d) => parseInt(d.year_pt) === parseInt(this.startYear)
+				);
+			this.flattenedFilteredData = stateData;
+			// filter out Total data
+			/* let stateData = this.allData
+				.filter(function (d) {
+					if (d.stub_name !== "Total") {
+						return d;
+					}
+				}); */
+			//debugger;
+			const mapVizId = "us-map";
+			let map = new GenMap({
+				mapData: stateData,  // misCdata[3].Jurisdiction2,
+				vizId: mapVizId,
+			});
+			map.render(this.geometries);
+		}
+	}
 
 	renderChart() {
 
@@ -221,6 +284,12 @@ export class LandingPage {
 		let selectedPanelData
 		switch (this.dataTopic) {
 			case "obesity":
+			case "birthweight":
+				selectedPanelData = this.allData.filter(
+					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+				);
+				break;
+			case "birthweight":
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
@@ -265,7 +334,6 @@ export class LandingPage {
 				); */
 				//debugger;
 				break;
-			case "birthweight":
 			case "medicaidU65":
 				selectedPanelData = this.allData.filter(
 					(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
@@ -729,6 +797,8 @@ export class LandingPage {
 				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
 				// hide the map tab
 				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				//$('#icons-tab-2').click();
 				break;
 			case "suicide":
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
@@ -742,6 +812,8 @@ export class LandingPage {
 				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
 				// hide the map tab
 				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				//$('#icons-tab-2').click(); // dont do this here - causes infinite loop
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -755,6 +827,8 @@ export class LandingPage {
 				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
 				// hide the map tab
 				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				//$('#icons-tab-2').click();
 				break;			
 			case "birthweight":	
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
@@ -762,19 +836,20 @@ export class LandingPage {
 				selectedDataCache = DataCache.BirthweightData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the map tab
-				$('#icons-tab-1').click();
+				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+				//$('#icons-tab-1').click();
 				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 5px #8ab9bb');
+				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
 				// hide the chart tab
 				//$('#tab-chart').css("visibility", "hidden");
 				// set chart tab to white
 				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
 				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 				let theChartTab = document.getElementById("icons-tab-2");
-				theChartTab.style.backgroundColor = "#ffffff";
-				theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0';
+				theChartTab.style.backgroundColor = "#b3d2ce";
+				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+				this.updateShowMap(0);
 				break;
 			case "medicaidU65":
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
@@ -783,20 +858,26 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// if we switch to this start with Total every time
-				this.stubNameNum = 0;
 				// show the chart tab
 				$('#tab-chart').css("visibility", "visible");
 				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
 				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
 				// hide the map tab
 				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				//$('#icons-tab-2').click();
 				break;
 		}
+		// if we switch Topic then start with Total every time
+		this.stubNameNum = 0;
+
+		// set the chart title
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 
+		//debugger;
+
 		// now get the data if it has not been fetched already
-		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR INJURY DATA TO LOAD
+		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR DATA TO LOAD
 		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
 		console.log("ATTEMPTING dataFile Promise:", this.dataFile);
 		Promise.all([getSelectedData(this.dataFile,selectedDataCache)]).then((data) => {
@@ -820,7 +901,6 @@ export class LandingPage {
 				break;	
 			case "birthweight":
 				DataCache.BirthweightData = this.allData;
-				this.loadUSMapData();
 				break;		
 			case "medicaidU65":
 				DataCache.MedicaidU65Data = this.allData;
@@ -855,10 +935,12 @@ export class LandingPage {
 
 	}
 
-	loadUSMapData() {
+/* 	loadUSMapData() {
 		Utils.getJsonFile("content/json/State_Territory_FluView1.json")
 			.then((topo) => {
 				DataCache.USTopo = JSON.parse(topo);
+				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
+				this.geometries = geometries;
 				return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
 			})
 			.then((legenddata) => {
@@ -868,7 +950,7 @@ export class LandingPage {
 			.catch(function (err) {
 				console.error(`Initial data load failure!! Error: ${err.stack}`);
 			});
-	}
+	} */
 
 	setAllSelectDropdowns () {
 		let allYearsArray;
@@ -1075,6 +1157,7 @@ export class LandingPage {
    			 return a.unit_num - b.unit_num;
 		});
 		console.log("allUnitsArray", allUnitsArray);
+		$('#unit-num-select-map').empty();
 		$('#unit-num-select-chart').empty();
 		// on the table tab
 		$('#unit-num-select-table').empty();
@@ -1086,6 +1169,7 @@ export class LandingPage {
 		allUnitsArray.forEach((y) => {
 			//debugger;
 			if (this.unitNum === parseInt(y.unit_num)) {
+				$('#unit-num-select-map').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$('#unit-num-select-chart').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
@@ -1093,6 +1177,7 @@ export class LandingPage {
 				this.unitNumText = y.unit;
 				foundUnit = true;
 			} else {
+				$('#unit-num-select-map').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 				$('#unit-num-select-chart').append(`<option value="${y.unit_num}">${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
@@ -1119,7 +1204,11 @@ export class LandingPage {
 		this.setStubNameSelect();
 		
 		// now re-render the chart based on updated selection
-		this.renderChart();
+		if (this.showMap) {
+			this.renderMap();
+		} else {
+			this.renderChart();
+		}
 
 	}
 
@@ -1132,9 +1221,28 @@ export class LandingPage {
 		// have to update UNIT bc some stubs dont have both units
 		this.setVerticalUnitAxisSelect();
 
-		// now re-render the chart based on updated selection
-		this.renderChart();
+		if (stubNameNum === 0) {
+			// disable the map for TOTAL
+			this.updateShowMap(0);
+		}
 
+		// now re-render the chart based on updated selection
+		if (this.showMap) {
+			this.renderMap();
+		} else {
+			// need to hide map and show the chart? 
+			// --- depends on what tab is selected????
+			$('#us-map-message').show();
+			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			// cant just call click = infinite loop
+			//$('#icons-tab-2').click(); // click event will render the chart
+			// only call chart render if map NOT selected
+			// - map could be selected but data does not support map
+			//if (document.getElementById("icons-tab-1").display === 'none') {
+				// always call this
+				this.renderChart();
+			//}
+		}
 	}
 	
 	updateStartPeriod(start) {
@@ -1169,14 +1277,22 @@ export class LandingPage {
 					}
 				});
 				break;
+			case "birthweight":
+				this.startPeriod = start;
+				this.startYear = start;
+				// do nothing with end period - not using end period
+				break;
 		}
 
 
 		// make the last end year selected
 		$("#year-end-select option:last"). attr("selected", "selected");
 
-
-		this.renderChart();
+		if (this.showMap) {
+			this.renderMap();
+		} else {
+			this.renderChart();
+		}
 	}
 
 	updateEndPeriod(end) {
@@ -1193,7 +1309,11 @@ export class LandingPage {
 				this.endYear = end;
 				break;
 		}
-		this.renderChart();
+		if (this.showMap) {
+			this.renderMap();
+		} else {
+			this.renderChart();
+		}
 	}
 
 	updateUnitNum(unitNum) {
@@ -1208,13 +1328,84 @@ export class LandingPage {
 		// - call set stub names
 		this.setStubNameSelect();
 		
-		this.renderChart();
+		if (this.showMap) {
+			this.renderMap();
+		} else {
+			this.renderChart();
+		}
 	}
 
 	updateShowBarChart(value) {
 		this.showBarChart = value;
 		this.renderChart();
 	}
+
+	updateShowMap(value) {
+		//debugger;
+		this.showMap = value;
+		let theMapWrapper = document.getElementById("map-wrapper");
+		if (this.showMap) {
+			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "block";
+			theMap.classList.add("show");
+			theMap.classList.add("active");
+			let theChart = document.getElementById("chart-tab");
+			theChart.style.display = "none";
+			theChart.classList.remove("show");
+			theChart.classList.remove("active");
+			let theTable = document.getElementById("table-tab");
+			theTable.style.display = "none";
+			theTable.classList.remove("show");
+			theTable.classList.remove("active");
+			// flip the colors
+			let theMapTab = document.getElementById("icons-tab-1");
+			theMapTab.style.backgroundColor = "#b3d2ce";
+			theMapTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			let theChartTab = document.getElementById("icons-tab-2");
+			theChartTab.style.backgroundColor = "#ffffff";
+			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theTableTab = document.getElementById("icons-tab-3");
+			theTableTab.style.backgroundColor = "#ffffff";
+			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			$('#us-map-wrapper').show();
+			$('#us-map-container').show();
+			$('#us-map-message').show();
+			this.renderMap();
+		} else {
+			// need to hide the map (TTTT)
+			if (theMapWrapper) {
+				theMapWrapper.style.display = "none";
+			}
+			$('#us-map').empty();
+			$('#us-map-container').html = "<div id='us-map-message' class='chart-title'></div>";
+			let theMap = document.getElementById("map-tab");
+			theMap.style.display = "none";
+			theMap.classList.remove("show");
+			theMap.classList.remove("active");
+			let theChart = document.getElementById("chart-tab");
+			theChart.style.display = "block";
+			theChart.classList.add("show"); 
+			theChart.classList.add("active");
+			let theTable = document.getElementById("table-tab");
+			theTable.style.display = "none";
+			theTable.classList.remove("show");
+			theTable.classList.remove("active");
+			$('#us-map-wrapper').hide();
+			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			// flip the colors
+			let theMapTab = document.getElementById("icons-tab-1");
+			theMapTab.style.backgroundColor = "#ffffff";
+			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			let theChartTab = document.getElementById("icons-tab-2");
+			theChartTab.style.backgroundColor = "#b3d2ce";
+			theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			let theTableTab = document.getElementById("icons-tab-3");
+			theTableTab.style.backgroundColor = "#ffffff";
+			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+		}
+	}
+
+
 
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
@@ -1449,14 +1640,14 @@ export class LandingPage {
 
 	// TO DO: Change the selectors to be filled using data code??
 	tabContent = `<!-- TOP SELECTORS --><div class="color-area-wrapper">
-	<div class="rectangle-green">
+	<div class="rectangle-white">
 		<div class="inner-content-wrapper">
 			<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
 				<i class="fa fa-circle fa-stack-2x"></i>
 				<strong class="fa-stack-1x fa-stack-text fa-inverse">1</strong>
 			</span>
-			<span style="padding-bottom:0px; font-family:Open Sans,sans-serif;color: white; font-weight:300; ">Select a topic</span><br>
-			<span style="margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: white; font-weight:500;font-size:22px;">Topic</span>
+			<span style="padding-bottom:0px; font-family:Open Sans,sans-serif;color: black; font-weight:300; ">Select a topic</span><br>
+			<span style="margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: black; font-weight:600;font-size:22px;">Topic</span>
 			<br>&nbsp;<br>
 			<div class="styled-select">
 			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
@@ -1464,22 +1655,22 @@ export class LandingPage {
 				<option value="obesity" selected>Obesity among Children</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
-
+				<option value="birthweight">Low birthweight live births</option>
 				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 				</optgroup>
 			</select>
 			</div>
 		</div>
-		<div class="chevron-green"></div>
+		<div class="chevron-white"></div>
 	</div>
-	<div class="rectangle-yellow">
+	<div class="rectangle-white">
 		<div class="inner-content-wrapper">
 			<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
 				<i class="fa fa-circle fa-stack-2x"></i>
 				<strong class="fa-stack-1x fa-stack-text fa-inverse">2</strong>
 			</span>
 			<span style="font-family:Open Sans,sans-serif;color: #010101; font-weight:300; ">Refine to a</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:500;font-size:22px;">Subtopic</span>
+			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:600;font-size:22px;">Subtopic</span>
 			<br>&nbsp;<br>
 			<select name="panel-num-select" id="panel-num-select" form="select-view-options" class="styled-select"  style="font-size:12px;height:2em;width:180px;">
 				<optgroup>
@@ -1490,7 +1681,7 @@ export class LandingPage {
 				</optgroup>
 			</select>
 		</div>
-		<div class="chevron-yellow"></div>
+		<div class="chevron-white"></div>
 	</div>
 	<div class="rectangle-white">
 		<div class="inner-content-wrapper">
@@ -1499,7 +1690,7 @@ export class LandingPage {
 				<strong class="fa-stack-1x fa-stack-text fa-inverse">3</strong>
 			</span>
 			<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">View data by</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;">Characteristic</span>
+			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Characteristic</span>
 			<br>&nbsp;<br>
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>
@@ -1519,7 +1710,7 @@ export class LandingPage {
 			<strong class="fa-stack-1x fa-stack-text fa-inverse">4</strong>
 		</span>
 		<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">Choose from available</span><br>
-		<span style="margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:500;font-size:22px;">Time
+		<span style="margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Time
 			Periods</span>
 		<div class="checkbox-style">
 			<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox">
@@ -1573,15 +1764,15 @@ export class LandingPage {
 
 	<!-- Tabs navs -->
 <ul class="nav nav-tabs justify-content-center" id="ex-with-icons" role="tablist" style="margin-top: 15px;">
-  <li class="nav-item" role="presentation" id="tab-map" style="visibility:hidden">
+  <li class="nav-item center" role="presentation" id="tab-map" style="visibility:hidden;width: 200px;  text-align: center;">
     <a class="nav-link active" id="icons-tab-1" data-mdb-toggle="tab" href="#map-tab" role="tab"
       aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-map fa-fw me-2"></i>Map</a>
   </li>
-    <li class="nav-item" role="presentation" id="tab-chart">
+    <li class="nav-item center" role="presentation" id="tab-chart" style="width: 200px;  text-align: center;">
     <a class="nav-link active" id="icons-tab-2" data-mdb-toggle="tab" href="#chart-tab" role="tab"
       aria-controls="ex-with-icons-tabs-2" aria-selected="true"  style="background-color:#b3d2ce;border-top:solid 5px #8ab9bb;"><i class="fas fa-chart-line fa-fw me-2"></i>Chart</a>
   </li>
-  <li class="nav-item" role="presentation"  id="tab-table">
+  <li class="nav-item center" role="presentation"  id="tab-table" style="width: 200px;  text-align: center;">
     <a class="nav-link" id="icons-tab-3" data-mdb-toggle="tab" href="#table-tab" role="tab"
       aria-controls="ex-with-icons-tabs-3" aria-selected="false"  style="border-top:solid 1px #C0C0C0;"><i class="fas fa-table fa-fw me-2"></i>Table</a>
   </li>
@@ -1592,24 +1783,37 @@ export class LandingPage {
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
 		<div class="map-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
-			<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
-				<option value="1" selected>Percent of population, crude</option>
-			</select>
-		</div>
-				<div id="map-container" class="general-chart" style="height:fit-content;align:left;">
+			<div style="display:inline;float:left;">
+				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
+					<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
+						<option value="1" selected>Percent of population, crude</option>
+					</select>
 				</div>
+				<fieldset style="margin-left: 90px; margin-top: 12px;">
+					<div class="toggle">
+						<input type="radio" name="sizeBy" value="weight" id="sizeWeight" checked="checked" />
+						<label for="sizeWeight">Natural Breaks</label>
+						<input type="radio" name="sizeBy" value="dimensions" id="sizeDimensions" />
+						<label for="sizeDimensions">Quartiles</label>
+					</div>
+				</fieldset>
+			</div>
+				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;">
+					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;"></div>				
+					<div id="us-map-message" class="chart-title"></div>
+				</div>
+				<div id="divMapLegend"></div>
 				<br>
 				<div class="source-text" id="source-text-map"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-		<div style="margin-left:90px;width:400px;">Adjust Unit<br>
-			<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
-				<option value="1" selected>Percent of population, crude</option>
-			</select>
-		</div>
+				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
+					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
+						<option value="1" selected>Percent of population, crude</option>
+					</select>
+				</div>
 				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;">
 				</div>
 				<br>

@@ -69,6 +69,8 @@
 }
 
 .custom-select {
+	margin-bottom: 10px;
+	
 	> div {
 		@include mobile-max {
 			display: none;
