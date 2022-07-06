@@ -49,6 +49,7 @@ export class LandingPage {
 		this.showBarChart = 0;
 		this.showMap = 0;
 		this.geometries = {};
+		this.classifyType = 2;  // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 	}
 
 	// capString(str) {
@@ -226,6 +227,7 @@ export class LandingPage {
 			let map = new GenMap({
 				mapData: stateData,  // misCdata[3].Jurisdiction2,
 				vizId: mapVizId,
+				classifyType: this.classifyType,
 			});
 			map.render(this.geometries);
 		}
@@ -1405,7 +1407,23 @@ export class LandingPage {
 		}
 	}
 
-
+	updateClassifyType(value) {
+		switch (value) {
+			case "natural":
+				this.classifyType = 2; // natural
+				break;
+			case "quartiles":
+				this.classifyType = 1; // standard
+				break;
+			case "equal":
+				this.classifyType = 3;
+				break;
+			default:
+				this.classifyType = 2; // natural
+				break;
+		}
+		this.renderMap();
+	}
 
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
@@ -1790,11 +1808,11 @@ export class LandingPage {
 					</select>
 				</div>
 				<fieldset style="margin-left: 90px; margin-top: 12px;">
-					<div class="toggle">
-						<input type="radio" name="sizeBy" value="weight" id="sizeWeight" checked="checked" />
-						<label for="sizeWeight">Natural Breaks</label>
-						<input type="radio" name="sizeBy" value="dimensions" id="sizeDimensions" />
-						<label for="sizeDimensions">Quartiles</label>
+					<div class="btnToggle">
+						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
+						<label for="classNBreaks">Natural Breaks</label>
+						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
+						<label for="classQuartiles">Quartiles</label>
 					</div>
 				</fieldset>
 			</div>

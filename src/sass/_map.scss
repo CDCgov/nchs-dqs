@@ -2192,21 +2192,6 @@ fieldset {
 	min-width: 0;
 	background-color: #b3d2ce;
 
-	legend {
-		margin: 0; // 0 0 0.5rem;
-		padding: 0;
-		width: 100%;
-		float: left;
-		display: table;
-		font-size: 1.5rem;
-		line-height: 100%;
-		font-weight: 600;
-		color: #333;
-
-		+* {
-			clear: both;
-		}
-	}
 }
 
 body:not(:-moz-handler-blocked) fieldset {
@@ -2214,7 +2199,7 @@ body:not(:-moz-handler-blocked) fieldset {
 }
 
 /* TOGGLE STYLING */
-.toggle {
+.btnToggle {
 	margin: 0 0 0rem;
 	box-sizing: border-box;
 	font-size: 0;

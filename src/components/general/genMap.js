@@ -8,12 +8,15 @@ export class GenMap {
 	constructor(props) {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
+		this.classifyType = parseInt(props.classifyType);
+		
 		this.mLegendData;
 		this.mSuppressedFlagID = -2;
   		this.mNoDataFlagID = -1;
   		this.mInActiveFlagID = -3;
   		this.mColorByStateID = {};
-  		this.mInActiveColor = "#FFFFFF";
+		this.mInActiveColor = "#FFFFFF";
+
 	}
 
 	render(geometries) {
@@ -83,7 +86,32 @@ export class GenMap {
         // NATURAL BREAKS   = 2
         // EQUAL INTERVAL   = 3
 
-        var StandardBreaksObj = ClassifyData(this.data, "estimate", 5, 1);
+		let ClassifiedDataObj;
+
+		switch (this.classifyType) {
+			case 1:
+				// Standard Breaks - with 4 Quartiles
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 4, 1);
+				console.log("%c%s\t%o", "background-color:Aqua;", "Standard Breaks", ClassifiedDataObj);
+				console.log(JSON.stringify(ClassifiedDataObj.legend));
+				break;
+			case 2:
+				// Natural Breaks
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 2);
+        		console.log("%c%s\t%o", "background-color:PaleGoldenrod;", "Natural Breaks", ClassifiedDataObj);
+        		console.log(JSON.stringify(ClassifiedDataObj.legend));
+				break;
+			case 3:
+				// Equal Intervals - NOT USED
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 3);
+        		console.log("%c%s\t%o", "background-color:LightGreen;", "Equal Interval", ClassifiedDataObj);
+				console.log(JSON.stringify(ClassifiedDataObj.legend));
+				break;
+
+		}
+			
+		//debugger;
+/*         var StandardBreaksObj = ClassifyData(this.data, "estimate", 5, 1);
         console.log("%c%s\t%o", "background-color:Aqua;", "Standard Breaks", StandardBreaksObj);
         console.log(JSON.stringify(StandardBreaksObj.legend));
 
@@ -93,8 +121,11 @@ export class GenMap {
 
         var EqualIntervalObj = ClassifyData(this.data, "estimate", 5, 3);
         console.log("%c%s\t%o", "background-color:LightGreen;", "Equal Interval", EqualIntervalObj);
-		console.log(JSON.stringify(EqualIntervalObj.legend));
+		console.log(JSON.stringify(EqualIntervalObj.legend)); */
 		
+		this.data = ClassifiedDataObj.classifiedData;
+		// the data now has a "Class" assigned to it
+		//debugger;
 
 		// for testing hardcode one year period
 /* 		this.data = this.data.filter(
@@ -105,7 +136,7 @@ export class GenMap {
 
 		function mouseover() {
 			const thisElement = d3.select(this);
-			console.log("rollover selected element:", thisElement);
+			//console.log("rollover selected element:", thisElement);
 			// dont need this right now but keep as example if we need later
 /* 			if (thisElement.node().tagName.toLowerCase() === "path") {
 				let additionalProperties = ["properties"];
@@ -127,18 +158,19 @@ export class GenMap {
 			genTooltip.mouseout(d3.select(this));
 		}
 
-		const colors = {
-			"No case reported": "white",
-			"1-49 cases": "#e4f2e1",
-			"50-99 cases": "#8dcebb",
-			"100-199 cases": "#00a9b5",
-			"200-299 cases": "#007fbe",
-			"300-399 cases": "#004fb8",
-			"400+ cases": "#00008b",
-		};
+		const bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
+		function getColor(bin) {
+			//console.log("color bin:", bin);
+			return bgColors[bin];
+		}
 
-		const dotColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe","#00008b", "#FFFFFF"];
-		function getColor(p) {
+		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+		function getFontColor(bin) {
+			//console.log("font color bin:", bin);
+			return fontColors[bin];
+		}
+
+/* 		function getColor(p) {
 			switch (true) {
 				case p === null:
 					return dotColors[0];
@@ -155,7 +187,7 @@ export class GenMap {
 				default:
 					return dotColors[6];
 			}
-		};
+		}; */
 
 /* 		console.log("color for 2.6:", getColor(2.6));
 		console.log("color for 5.6:", getColor(5.6));
@@ -194,8 +226,17 @@ export class GenMap {
 						return d.estimate ? d.estimate : 0;
 					}
 				});
+			
+			let classBin = this.data
+				.filter(function (d) {
+					//console.log("d , d.bin:", d, d.class);
+					if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
+						//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+						return d.class ? d.class : 0;
+					}
+				});
 
-			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch);
+			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch, " classBin:",classBin[0].class);
 
 			if (estimateMatch.length > 0) {
 				estimateMatch = estimateMatch[0].estimate;
@@ -203,10 +244,17 @@ export class GenMap {
 				estimateMatch = 0;
 			}
 
-			g.properties = {
-				...g.properties,
-				estimate: parseFloat(estimateMatch),
-			};
+			if (classBin[0] !== undefined) { 
+				if (classBin[0].hasOwnProperty("class")) {
+					g.properties = {
+						...g.properties,
+						estimate: parseFloat(estimateMatch),
+						class: parseInt(classBin[0].class),
+					};
+				} else {
+					console.log("### classBin has no class!", classBin[0]);
+				}
+			}
 		});
 
 		console.log("###genMAP geometries w estimate:", geometries);
@@ -241,8 +289,7 @@ export class GenMap {
 			.attr("d", path)
 			.style("stroke", "#000")
 			.style("stroke-width", 0.4) // was 0.3
-			.style("fill", (d) => getColor(d.properties.estimate));
-			//.style("fill", (d) => getColor(d.estimate));
+			.style("fill", (d) => getColor(d.properties.class));
 
 		const territories = [
 			{
@@ -294,6 +341,15 @@ export class GenMap {
 					}
 				});
 
+			let classBin = this.data
+				.filter(function (d) {
+					//console.log("TERRITORIES: d , d.bin, t", d, d.class, t);
+					if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
+						//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+						return d.class ? d.class : 0;
+					}
+				});
+
 			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch);
 
 			if (estimateMatch.length > 0) {
@@ -302,11 +358,23 @@ export class GenMap {
 				estimateMatch = "No case reported.";
 			}
 
-			filteredTerritories.push({
-				...t,
-				estimate: estimateMatch,
-			});
+			
+			if (classBin[0] !== undefined) { 
+				if (classBin[0].hasOwnProperty("class")) {		
+					//console.log("### TERRITORY classBin has REAL class!", classBin[0].class);
+					filteredTerritories.push({
+						...t,
+						estimate: estimateMatch,
+						class: parseInt(classBin[0].class),
+					});
+				} else {
+					console.log("### TERRITORY classBin has no class!", classBin[0]);
+				}
+			}
+
 		});
+
+		console.log("filtered Territories:", filteredTerritories);
 
 		const numberOfTerritories = filteredTerritories.length + 1;
 		const territoryRectWidth = 60 * overallScale;
@@ -333,7 +401,8 @@ export class GenMap {
 			.attr("width", territoryRectWidth * 0.8)
 			.attr("height", territoryRectHeight)
 			//.style("fill", "#e4f2e1")
-			.style("fill", (d) => getColor(d.estimate))
+			.style("fill", (d) => getColor(d.class))
+			//.style("fill", (d) => getColor(d.properties.estimate));
 			.attr("rx", 5 * overallScale)
 			.attr("ry", 5 * overallScale)
 			.attr("stroke-width", 0.7)
@@ -348,7 +417,9 @@ export class GenMap {
 			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween + 23 * overallScale)
 			.attr("y", 18 * overallScale)
 			.attr("text-anchor", "middle")
-			.attr("font-family", "monospace")
+			.attr("font-family", "arial,helvetica,sans-serif")
+			.attr("stroke", (d) => getFontColor(d.class))
+			.style("fill", (d) => getFontColor(d.class))
 			.text((d) => d.desiredAbbr)
 			.attr("pointer-events", "none");
 

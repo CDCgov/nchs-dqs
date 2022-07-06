@@ -8,6 +8,10 @@ export const MainEvents = {
 		$("#data-topic-select").change((evt) => {
 			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
+			// force "year" to reset and not have single year clicked
+			if (document.getElementById('show-one-period-checkbox').checked) {
+				$("#show-one-period-checkbox").click();
+			}
 			console.log("New data topic:", dataTopic);
 		});
 		$("#panel-num-select").change((evt) => {
@@ -154,6 +158,26 @@ export const MainEvents = {
 			event.preventDefault();
 		});
 		
+		$(document).on("click", "#classNBreaks", (event) => {
+			//event.stopPropagation();
+			// get the unique id of the legend item
+			//let legItem = event.target.parentNode.parentNode.id;
+			let classifyBy = event.target.value;
+			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
+			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
+			//event.preventDefault();
+		});
+				
+		$(document).on("click", "#classQuartiles", (event) => {
+			//event.stopPropagation();
+			// get the unique id of the legend item
+			//let legItem = event.target.parentNode.parentNode.id;
+			let classifyBy = event.target.value;
+			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
+			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
+			//event.preventDefault();
+		});
+			
 		// click Table then show Table
 		$(document).on("click", "#icons-tab-3", (event) => {
 			event.stopPropagation();
