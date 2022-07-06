@@ -160,22 +160,20 @@ export const MainEvents = {
 		
 		$(document).on("click", "#classNBreaks", (event) => {
 			//event.stopPropagation();
-			// get the unique id of the legend item
-			//let legItem = event.target.parentNode.parentNode.id;
+			// get the unique walue
 			let classifyBy = event.target.value;
 			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
 			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
-			//event.preventDefault();
+			//event.preventDefault(); // kills the toggle
 		});
 				
 		$(document).on("click", "#classQuartiles", (event) => {
 			//event.stopPropagation();
-			// get the unique id of the legend item
-			//let legItem = event.target.parentNode.parentNode.id;
+			// get the unique value
 			let classifyBy = event.target.value;
 			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
 			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
-			//event.preventDefault();
+			//event.preventDefault(); // kills the toggle
 		});
 			
 		// click Table then show Table

@@ -172,7 +172,8 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
                 tempObj[data[i][classKey]] = {
                     "c": data[i][classKey],
                     "min": data[i][valKey],
-                    "max": data[i][valKey]
+                    "max": data[i][valKey],
+                    "active": 1,
                 };
             } else {
                 if (data[i][valKey] < tempObj[data[i][classKey]]["min"]) tempObj[data[i][classKey]]["min"] = data[i][valKey];
@@ -398,29 +399,32 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
         }
 
         function createEILegend(classArray, minval) {
-        let legendArray = [];
+            let legendArray = [];
 
-	    if (suppressedDataObjArray.length > 0)
-            legendArray.push({ 'c': 0, 'min': null, 'max': null });
+            if (suppressedDataObjArray.length > 0)
+                legendArray.push({ 'c': 0, 'min': null, 'max': null });
 
-            for (let b = 0; b < classArray.length; b++) {
-                if (b == 0) {
-                    legendArray.push({
-                        "c": b + 1,
-                        "min": minval,
-                        "max": classArray[b]
-                    });
+                for (let b = 0; b < classArray.length; b++) {
+                    if (b == 0) {
+                        legendArray.push({
+                            "c": b + 1,
+                            "min": minval,
+                            "max": classArray[b],
+                            "active": 1,  // (TT) for legend with checks add "active" flag
+                        });
+                    }
+                    else {
+                        legendArray.push({
+                            "c": b + 1,
+                            "min": classArray[b - 1],
+                            "max": classArray[b],
+                            "active": 1, // (TT) for legend with checks add "active" flag
+                        });
+                    }
                 }
-                else {
-                    legendArray.push({
-                        "c": b + 1,
-                        "min": classArray[b - 1],
-                        "max": classArray[b]
-                    });
-                }
-            }
-            return legendArray;
-        }
+                return legendArray;
+        } // end createEILegend
+
         for (let q = 0; q < ntile; q++) {
             classRangeArray.push(+currentMax.toFixed(1));
             currentMax += commonDifference;

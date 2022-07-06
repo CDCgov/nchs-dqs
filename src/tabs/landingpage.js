@@ -208,6 +208,9 @@ export class LandingPage {
 			theMap.classList.remove("active"); */
 		} else {
 			$('#us-map-message').html("");
+			// get rid of the big margins
+			$('#us-map-message').attr("margin-bottom", 0);
+			
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
@@ -1816,11 +1819,11 @@ export class LandingPage {
 					</div>
 				</fieldset>
 			</div>
-				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;">
-					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;"></div>				
-					<div id="us-map-message" class="chart-title"></div>
+				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;border: solid 1px red;">
+					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;border: solid 1px blue;"></div>				
+					<div id="us-map-message" class="chart-title" style="border: solid 1px green;"></div>
+					<div id="us-map-legend"></div>
 				</div>
-				<div id="divMapLegend"></div>
 				<br>
 				<div class="source-text" id="source-text-map"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
 		</div><!-- end map wrapper -->

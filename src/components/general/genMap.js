@@ -9,17 +9,18 @@ export class GenMap {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
 		this.classifyType = parseInt(props.classifyType);
-		
-		this.mLegendData;
-		this.mSuppressedFlagID = -2;
-  		this.mNoDataFlagID = -1;
-  		this.mInActiveFlagID = -3;
-  		this.mColorByStateID = {};
-		this.mInActiveColor = "#FFFFFF";
 
 	}
-
+	
 	render(geometries) {
+		let mLegendData;
+		let mActiveLegendItems = [];
+		const mSuppressedFlagID = -2;
+		const mNoDataFlagID = -1;
+		const mInActiveFlagID = -3;
+		let mColorByStateID = {};
+		let mInActiveColor = "#FFFFFF";
+		
 		//const svgId = this.mapVizId;
 		const svgId = `${this.mapVizId}-svg`;
 		
@@ -82,7 +83,7 @@ export class GenMap {
 		
 		// CLASSIFY THE DATA
        	//   METHODS  \\
-        // STANDARD BREAKS  = 1
+        // STANDARD BREAKS  = 1 -> pass 4 to do 4 quartiles
         // NATURAL BREAKS   = 2
         // EQUAL INTERVAL   = 3
 
@@ -109,19 +110,6 @@ export class GenMap {
 				break;
 
 		}
-			
-		//debugger;
-/*         var StandardBreaksObj = ClassifyData(this.data, "estimate", 5, 1);
-        console.log("%c%s\t%o", "background-color:Aqua;", "Standard Breaks", StandardBreaksObj);
-        console.log(JSON.stringify(StandardBreaksObj.legend));
-
-        var NaturalBreaksObj = ClassifyData(this.data, "estimate", 5, 2);
-        console.log("%c%s\t%o", "background-color:PaleGoldenrod;", "Natural Breaks", NaturalBreaksObj);
-        console.log(JSON.stringify(NaturalBreaksObj.legend));
-
-        var EqualIntervalObj = ClassifyData(this.data, "estimate", 5, 3);
-        console.log("%c%s\t%o", "background-color:LightGreen;", "Equal Interval", EqualIntervalObj);
-		console.log(JSON.stringify(EqualIntervalObj.legend)); */
 		
 		this.data = ClassifiedDataObj.classifiedData;
 		// the data now has a "Class" assigned to it
@@ -164,37 +152,12 @@ export class GenMap {
 			return bgColors[bin];
 		}
 
+		// (TT) this let's you use white text on darker backgrounds
 		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 		function getFontColor(bin) {
 			//console.log("font color bin:", bin);
 			return fontColors[bin];
 		}
-
-/* 		function getColor(p) {
-			switch (true) {
-				case p === null:
-					return dotColors[0];
-				case p <= 4:
-					return dotColors[1];
-				case p <= 8:
-					return dotColors[2];
-				case p <= 12:
-					return dotColors[3];
-				case p < 16:
-					return dotColors[4];
-				case p < 20:
-					return dotColors[5];
-				default:
-					return dotColors[6];
-			}
-		}; */
-
-/* 		console.log("color for 2.6:", getColor(2.6));
-		console.log("color for 5.6:", getColor(5.6));
-		console.log("color for 9.6:", getColor(9.6));
-		console.log("color for 10.6:", getColor(10.6));
-		console.log("color for 13.6:", getColor(13.6));
-		console.log("color for 17.6:", getColor(17.6)); */
 		
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 50 * overallScale;
@@ -250,6 +213,7 @@ export class GenMap {
 						...g.properties,
 						estimate: parseFloat(estimateMatch),
 						class: parseInt(classBin[0].class),
+						active: 1,  // default initial to all checked
 					};
 				} else {
 					console.log("### classBin has no class!", classBin[0]);
@@ -430,10 +394,84 @@ export class GenMap {
 
 		genTooltip.render();
 
+ 		mLegendData = ClassifiedDataObj.legend;
 
+		loadMapLegend();
+
+		function isNoDataOrSuppressedAndActive(activeLegendItem, val) {
+			if (
+			(activeLegendItem === String(mNoDataFlagID) ||
+				activeLegendItem === String(mSuppressedFlagID)) &&
+			String(val) === activeLegendItem
+			) {
+			return true;
+			}
+			return false;
+		}
 		
+		function isValueInActiveLegend(val) {
+			var minVal;
+			var maxVal;
+			var splitVal;
 
-			// original from Diabetes Atlas app 6/30/22
+			for (let i = 0; i < mActiveLegendItems.length; i += 1) {
+			if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
+				return true;
+			}
+			splitVal = mActiveLegendItems[i].split("-");
+			minVal = +splitVal[0];
+			maxVal = +splitVal[1];
+			if (+val >= minVal && +val <= maxVal) {
+				return true;
+			}
+			}
+
+			return false;
+		}
+
+		function legendClickHandler(evt) {
+			// 12Apr2021  var legendItemLabel;
+			var index;
+			var itemLabel;
+			var $chkBxObj;
+
+			// 12Apr2021 DIAB-13
+			if (
+			evt.target &&
+			evt.target.nodeName.toLowerCase() === "input".toLowerCase()
+			) {
+			itemLabel = $(evt.target).val();
+			$chkBxObj = $(evt.target);
+			// 24Feb2022 } else if (evt.target.className === "dataBox") {
+			} else if ($(evt.target).hasClass("da-maplegend-box")) {
+			itemLabel = $(evt.target).find("input").val();
+			$chkBxObj = $(evt.target).find("input");
+			}
+			index = mActiveLegendItems.indexOf(itemLabel);
+			if (index > -1) {
+			mActiveLegendItems.splice(index, 1);
+			$chkBxObj.prop("checked", false);
+			} else {
+			// 12Apr2021 DIAB-13  mActiveLegendItems.push(legendItemLabel);
+			mActiveLegendItems.push(itemLabel);
+			$chkBxObj.prop("checked", true);
+			}
+
+			// 12Apr2021 setData();
+			updateData(); // 12Apr2021 DIAB-13
+			renderMap();
+			}
+		
+		function addEventListeners() {
+			//removeEventListeners();
+			$(document).on("click", "#us-map-legend", legendClickHandler);
+/* 			window.addEventListener("resize", createMap);
+			publicAPI["on" + mConfig.ChangeEventTypesList.Viz1ContainerResizedEvent] =
+			function () {
+				createMap();
+			}; */
+		}
+		// original from Diabetes Atlas app 6/30/22
 		function loadMapLegend() {
 			var i;
 			var legendTemplateConfig;
@@ -447,46 +485,52 @@ export class GenMap {
 			var legendCompiledTemplateHTML;
 			var legendGeneratedHTML;
 			var legendItemVal; // 11Apr2019
+			let bgColor;
+			let fontColor;
+			let isActive;
 
-			$("#divMapLegend").remove();
+			$("#us-map-legend").empty();
 
-			if (mLegendData.length) {
-			for (i = 0; i < mLegendData.length; i += 1) {
-				displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
-				legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
-				colorHexVal = mLegendData[i].color_hexval;
-
-				// 18Mar2022, DIAB-88 colorStyle = "color:black !important;background-color:" + colorHexVal;
-				// 18Mar2022, DIAB-88
-				if (i > 1) {
-				colorStyle = "color:white !important;background-color:" + colorHexVal;
-				} else {
-				colorStyle = "color:black !important;background-color:" + colorHexVal;
-				}
-
-				legendItemObj = {
-				ColorStyle: colorStyle,
-				DisplayLabel: displayLabel,
-				ItemValue: legendItemVal,
-				IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
-				};
-				legendItems.push(legendItemObj);
-			}
-
-			// No Data
-			noDataColorHexVal = mConfig.DataParameters.getNoDataColorHexVal();
+			// No Data Box is First
+			noDataColorHexVal = "#dee2e6";   // mConfig.DataParameters.getNoDataColorHexVal();
 			legendItemObj = {
 				ColorStyle:
 				"color:black !important; background-color:" + noDataColorHexVal,
 				DisplayLabel: "No Data",
 				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
-				IsChecked: mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
+				IsChecked: 1,  // mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
 			};
 			legendItems.push(legendItemObj);
 
-			// Suppressed Data
-			suppressedDataColorHexVal =
-				mConfig.DataParameters.getSuppressedDataColorHexVal();
+			if (mLegendData.length) {
+			for (i = 0; i < mLegendData.length; i += 1) {
+				displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
+				legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
+				//colorHexVal = mLegendData[i].color_hexval;
+
+				//debugger;
+
+				// 18Mar2022, DIAB-88 colorStyle = "color:black !important;background-color:" + colorHexVal;
+				// 18Mar2022, DIAB-88
+				bgColor = getColor(i+1);
+				fontColor = getFontColor(i+1);
+				colorStyle = "color:" + fontColor + " !important;background-color:" + bgColor;
+				isActive = mLegendData[i].active;
+				
+				legendItemObj = {
+					ColorStyle: colorStyle,
+					DisplayLabel: displayLabel,
+					ItemValue: legendItemVal,
+					IsChecked: isActive,
+					//IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
+				};
+				legendItems.push(legendItemObj);
+			}
+
+
+
+/* 			// Suppressed Data
+			suppressedDataColorHexVal = "Gray";  // mConfig.DataParameters.getSuppressedDataColorHexVal();
 			legendItemObj = {
 				ColorStyle:
 				"color:black !important; background-color:" +
@@ -495,17 +539,43 @@ export class GenMap {
 				ItemValue: mSuppressedFlagID.toString(), // 12Apr2021 DIAB-13
 				IsChecked: mActiveLegendItems.indexOf(String(mSuppressedFlagID)) > -1
 			};
-			legendItems.push(legendItemObj);
+			legendItems.push(legendItemObj); */
 
 			legendTemplateConfig = {
-				LegendDivID: "divMapLegend",
+				LegendDivID: "us-map-legend",
 				LegendItems: legendItems
 			};
 
-			legendCompiledTemplateHTML = Handlebars.compile(legendTemplateHTML);
-			legendGeneratedHTML = legendCompiledTemplateHTML(legendTemplateConfig);
-			const $MapContainer = $("#" + mConfig.ParentID); // 25Feb2022
-			$MapContainer.append(legendGeneratedHTML);
+			// Generate the HTML for the legend
+			//legendCompiledTemplateHTML = Handlebars.compile(legendTemplateHTML);
+			//	legendGeneratedHTML = legendCompiledTemplateHTML(legendTemplateConfig);
+				
+				legendGeneratedHTML = "<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
+				legendItems.forEach((leg) => {
+					let isCheckedStr;
+					let seeLeg = leg;
+					if (leg.IsChecked === 1) {
+						isCheckedStr = "checked";
+					} else {
+						isCheckedStr = "";
+					}
+					//debugger;
+					legendGeneratedHTML += `<div class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
+        			<input class='form-check-input' type='checkbox' value='${leg.ItemValue}' ${isCheckedStr} style='margin-right:3px;cursor:pointer"
+            			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;
+				});
+
+
+
+				legendGeneratedHTML += "</div>";
+				
+			// now add the legend to the map div
+				// - could use this method to pass in the parent id
+/* 				const $MapContainer = $("#" + mConfig.ParentID); // 25Feb2022
+				$MapContainer.append(legendGeneratedHTML); */
+				
+				// now add the legend to the map div
+				$("#us-map-legend").html(legendGeneratedHTML);
 			}
 		}
 	}
