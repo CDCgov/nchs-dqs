@@ -153,8 +153,15 @@ export const MainEvents = {
 			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
 			appState.ACTIVE_TAB.updateShowMap(0);
 			// also need to reset the Characteristic back to default value
-			appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
-						// if a data set does not have 0 on the stub_label_num then this will FAIL
+			// - 7/8/22 NO dont do it this way
+			// - if we blindly set to 0 the visible Characteristic could be set to 1 but draws
+			// chart based on set to 0
+			//appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
+			// also need to reset the Characteristic stubNameNum back to what is selected!!!
+			// - actually may not even need this
+			//appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT) 
+		
+			// if a data set does not have 0 on the stub_label_num then this will FAIL
 			event.preventDefault();
 		});
 		
@@ -179,6 +186,8 @@ export const MainEvents = {
 		// click Table then show Table
 		$(document).on("click", "#icons-tab-3", (event) => {
 			event.stopPropagation();
+			// do this first but then code AFTER will fix it
+			//appState.ACTIVE_TAB.updateShowMap(0);
 			let theMap = document.getElementById("map-tab");
 			theMap.style.display = "none";
 			theMap.classList.remove("show");
@@ -201,7 +210,8 @@ export const MainEvents = {
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#b3d2ce";
 			theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
-			appState.ACTIVE_TAB.updateShowMap(0);
+			// dont do this here bc updateShowMap is defaulting to Chart
+			// appState.ACTIVE_TAB.updateShowMap(0);
 			event.preventDefault();
 		});
 

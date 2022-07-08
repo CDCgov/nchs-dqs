@@ -1124,7 +1124,7 @@ export class GenChart {
 						dontDraw: d.dontDraw,
 					};
 					if (!d.draw) {
-						console.log("legend incoming data:", i, d.stub_label);
+						//console.log("legend incoming data:", i, d.stub_label);
 					}
 				});
 				////
@@ -1140,7 +1140,7 @@ export class GenChart {
 					svg.select("#whitebox")
 						.attr("width", svgWidth + legendHeight + 30);
 					
-					console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
+					//console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
 					
 					// try to center it
 					legendTx = svgHeight / 2 - margin.left + 25;
@@ -1150,7 +1150,7 @@ export class GenChart {
 					legendTx = svgWidth + 10;
 					legendTy = svgHeight / 3 * 2 + 25;
 
-					console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
+					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 
 				} else {
 					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;

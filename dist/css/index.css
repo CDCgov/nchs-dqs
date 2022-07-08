@@ -14379,7 +14379,7 @@ button.close {
   font-size: 12px; }
 
 .rectangle-yellow {
-  width: 240px;
+  width: 260px;
   height: 190px;
   background: #ffd200;
   padding: 0px; }
@@ -14389,7 +14389,7 @@ button.close {
     padding-bottom: -3 0px; }
 
 .rectangle-white {
-  width: 240px;
+  width: 260px;
   height: 190px;
   background: #ffffff;
   padding: 0px; }
@@ -14399,7 +14399,7 @@ button.close {
     padding-bottom: -3 0px; }
 
 .rectangle-green {
-  width: 240px;
+  width: 260px;
   height: 190px;
   background: #006858;
   padding: 0px; }
@@ -17114,7 +17114,7 @@ body:not(:-moz-handler-blocked) fieldset {
   background-color: rgba(0, 0, 0, 0.1); }
 
 .custom-select {
-  margin-bottom: 10px; }
+  margin-bottom: 0px; }
   @media screen and (max-width: 767px) {
     .custom-select > div {
       display: none; } }

@@ -33,7 +33,7 @@ export class LandingPage {
 		this.flattenedFilteredData = null;
 		this.vizId = "chart-container";
 		// select data items - set some defaults
-		this.dataTopic = "obesity"; // default
+		this.dataTopic = "obesity-child"; // default
 		this.dataFile = "content/json/HUS_OBESCH_2018.json"; // default is Obesity
 		this.chartTitle = "Obesity Among Children and Adolescents";
 		this.panelNum = 1;
@@ -146,7 +146,7 @@ export class LandingPage {
 			//debugger;
 			
 			// create a year_pt col from time period
-			if (this.dataTopic === "obesity") {
+			if (this.dataTopic === "obesity-child") {
 				this.allData = this.allData
 					.filter(function (d) {
 						if (d.flag === "- - -") {
@@ -216,7 +216,7 @@ export class LandingPage {
 			// (TTTT) to do the PLAY legend - can't do this
 			// -- you need to pass ALL THE DATA to do the PLAY function
 			// assuming you program the PLAY inside of genMap
-			
+
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
@@ -241,6 +241,9 @@ export class LandingPage {
 			});
 			map.render(this.geometries);
 		}
+
+		// always render data table  with the latest data
+		this.renderDataTable(this.flattenedFilteredData);
 	}
 
 	renderChart() {
@@ -275,7 +278,7 @@ export class LandingPage {
 		this.chartSubTitle = "Subtopic: " + panelText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 		
-		// render data table too
+		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
 
 		// set background to white - THIS DOESNT WORK
@@ -295,7 +298,7 @@ export class LandingPage {
 
 		let selectedPanelData
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity-child":
 			case "birthweight":
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
@@ -414,7 +417,7 @@ export class LandingPage {
 
 		let allYearsData
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity-child":
 			case "birthweight":
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
@@ -448,7 +451,7 @@ export class LandingPage {
 		// (TTT) since this is driven from text - GET RID OF SWITCH???
 		// - wait for a few more datasets to be sure
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity-child":
 			case "birthweight":
 			case "medicaidU65":
 				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
@@ -797,7 +800,7 @@ export class LandingPage {
 
 		//debugger;
 		switch (dataTopic) {
-			case "obesity":
+			case "obesity-child":
 				this.dataFile = "content/json/HUS_OBESCH_2018.json";
 				this.chartTitle = "Obesity Among Children and Adolescents";
 				selectedDataCache = DataCache.ObesityData;
@@ -902,7 +905,7 @@ export class LandingPage {
 			}
 
 			switch (dataTopic) {
-			case "obesity":
+			case "obesity-child":
 				DataCache.ObesityData = this.allData;
 				break;
 			case "suicide":
@@ -974,7 +977,7 @@ export class LandingPage {
 		let index;
 		let singleYearsArray = [];
 		switch (this.dataTopic) {
-			case "obesity": // stack cases if you want to share code between data sets
+			case "obesity-child": // stack cases if you want to share code between data sets
 			case "injury":  // - can't use || in case switch statement
 			case "birthweight":
 				// NO DONT DO THIS HERE - reset unit_num or else it breaks
@@ -1099,7 +1102,7 @@ export class LandingPage {
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
-		if (this.dataTopic === "obesity") {
+		if (this.dataTopic === "obesity-child") {
 			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === parseInt(this.panelNum)));
 		} else {
 			allStubsArray = this.allData;
@@ -1268,17 +1271,19 @@ export class LandingPage {
 		//console.log("allyears OBESITY start:", allYearsArray);
 		$('#year-end-select').empty();
 		switch (this.dataTopic) {
-			case "obesity":
+			// Data sets with time period ranges like 2002-2005
+			case "obesity-child":
 			case "injury": 
+			case "birthweight":
 				this.startPeriod = start;
 				this.startYear = this.getYear(start);
 				allYearsArray.forEach((y) => {
 					if (this.getYear(y) > this.startYear) {
 						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
-						//singleYearsArray.push(this.getYear(y));
 					}
 				});
 				break;
+			// Data sets with single year selects
 			case "suicide":
 			case "medicaidU65":
 				this.startPeriod = start;
@@ -1286,14 +1291,8 @@ export class LandingPage {
 				allYearsArray.forEach((y) => {
 					if (parseInt(y) > this.startYear) {
 						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
-						//singleYearsArray.push(this.getYear(y));
 					}
 				});
-				break;
-			case "birthweight":
-				this.startPeriod = start;
-				this.startYear = start;
-				// do nothing with end period - not using end period
 				break;
 		}
 
@@ -1311,11 +1310,14 @@ export class LandingPage {
 	updateEndPeriod(end) {
 
 		switch (this.dataTopic) {
-			case "obesity":
-			case "injury": 
+			// Data sets with time period ranges like 2002-2005
+			case "obesity-child":
+			case "injury":
+			case "birthweight": 
 				this.endPeriod = end;
 				this.endYear = this.getYear(end);
 				break;
+			// Data sets with single year selects
 			case "suicide":
 			case "medicaidU65":
 				this.endPeriod = end;
@@ -1325,6 +1327,7 @@ export class LandingPage {
 		if (this.showMap) {
 			this.renderMap();
 		} else {
+			// what if they are on Table?
 			this.renderChart();
 		}
 	}
@@ -1444,7 +1447,7 @@ export class LandingPage {
 		console.log("#### toggle:", selDataPt)
 
 		switch (this.dataTopic) {
-			case "obesity":
+			case "obesity-child":
 				// has a "panel"
 				this.allData.forEach((d) => {
 					if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
@@ -1683,7 +1686,7 @@ export class LandingPage {
 			<div class="styled-select">
 			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
 				<optgroup style="font-size:12px;">
-				<option value="obesity" selected>Obesity among Children</option>
+				<option value="obesity-child" selected>Obesity among Children</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
 				<option value="birthweight">Low birthweight live births</option>
@@ -1721,7 +1724,7 @@ export class LandingPage {
 				<strong class="fa-stack-1x fa-stack-text fa-inverse">3</strong>
 			</span>
 			<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">View data by</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Characteristic</span>
+			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Character</span>
 			<br>&nbsp;<br>
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>

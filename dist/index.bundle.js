@@ -24078,8 +24078,7 @@ var GenChart = /*#__PURE__*/function () {
               dontDraw: d.dontDraw
             };
 
-            if (!d.draw) {
-              console.log("legend incoming data:", i, d.stub_label);
+            if (!d.draw) {//console.log("legend incoming data:", i, d.stub_label);
             }
           }); ////
           // need height first
@@ -24091,15 +24090,14 @@ var GenChart = /*#__PURE__*/function () {
           if (p.legendBottom) {
             // try increasing the width even though it is rotated?
             svg.attr("width", svgWidth + legendHeight + 100);
-            svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30);
-            console.log("genChart: svgH, svgW:", svgHeight, svgWidth); // try to center it
+            svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30); //console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
+            // try to center it
 
             legendTx = svgHeight / 2 - margin.left + 25; // move it down outside the bottom margin
 
             legendTy = margin.top + svgWidth;
             legendTx = svgWidth + 10;
-            legendTy = svgHeight / 3 * 2 + 25;
-            console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
+            legendTy = svgHeight / 3 * 2 + 25; //console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
           } else {
             legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
             legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
@@ -25792,8 +25790,13 @@ var MainEvents = {
       theTableTab.style.backgroundColor = "#ffffff";
       theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0';
       appState.ACTIVE_TAB.updateShowMap(0); // also need to reset the Characteristic back to default value
-
-      appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
+      // - 7/8/22 NO dont do it this way
+      // - if we blindly set to 0 the visible Characteristic could be set to 1 but draws
+      // chart based on set to 0
+      //appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
+      // also need to reset the Characteristic stubNameNum back to what is selected!!!
+      // - actually may not even need this
+      //appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT) 
       // if a data set does not have 0 on the stub_label_num then this will FAIL
 
       event.preventDefault();
@@ -25814,7 +25817,9 @@ var MainEvents = {
     }); // click Table then show Table
 
     $(document).on("click", "#icons-tab-3", function (event) {
-      event.stopPropagation();
+      event.stopPropagation(); // do this first but then code AFTER will fix it
+      //appState.ACTIVE_TAB.updateShowMap(0);
+
       var theMap = document.getElementById("map-tab");
       theMap.style.display = "none";
       theMap.classList.remove("show");
@@ -25836,8 +25841,9 @@ var MainEvents = {
       theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0';
       var theTableTab = document.getElementById("icons-tab-3");
       theTableTab.style.backgroundColor = "#b3d2ce";
-      theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-      appState.ACTIVE_TAB.updateShowMap(0);
+      theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; // dont do this here bc updateShowMap is defaulting to Chart
+      // appState.ACTIVE_TAB.updateShowMap(0);
+
       event.preventDefault();
     });
     $(document).off("click", "#popFactors-download-chart") // the category lines (remove)
@@ -39581,7 +39587,7 @@ var LandingPage = /*#__PURE__*/function () {
       };
     });
 
-    _defineProperty(this, "tabContent", "<!-- TOP SELECTORS --><div class=\"color-area-wrapper\">\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">1</strong>\n\t\t\t</span>\n\t\t\t<span style=\"padding-bottom:0px; font-family:Open Sans,sans-serif;color: black; font-weight:300; \">Select a topic</span><br>\n\t\t\t<span style=\"margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: black; font-weight:600;font-size:22px;\">Topic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<div class=\"styled-select\">\n\t\t\t<select name=\"data-topic-select\" id=\"data-topic-select\" form=\"select-view-options\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup style=\"font-size:12px;\">\n\t\t\t\t<option value=\"obesity\" selected>Obesity among Children</option>\n\t\t\t\t<option value=\"suicide\">Death Rates for Suicide</option>\n\t\t\t\t<option value=\"injury\">Initial injury-related visits to hospital emergency departments</option>\n\t\t\t\t<option value=\"birthweight\">Low birthweight live births</option>\n\t\t\t\t<option value=\"medicaidU65\">Medicaid coverage among persons under age 65</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">2</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color: #010101; font-weight:300; \">Refine to a</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:600;font-size:22px;\">Subtopic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"panel-num-select\" id=\"panel-num-select\" form=\"select-view-options\" class=\"styled-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup>\n\t\t\t\t<option value=\"1\" selected>2-19 years</option>\n\t\t\t\t<option value=\"2\">2-5 years</option>\n\t\t\t\t<option value=\"3\">6-11 years</option>\n\t\t\t\t<option value=\"4\">12-19 years</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">3</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">View data by</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;\">Characteristic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"stub-name-num-select\" id=\"stub-name-num-select\" form=\"select-view-options\"  class=\"custom-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<option value=\"0\" selected>Total</option>\n\t\t\t\t<option value=\"1\">Sex</option>\n\t\t\t\t<option value=\"2\">Age</option>\n\t\t\t\t<option value=\"3\"\">Race and Hispanic origin</option>\n        \t\t<option value=\"4\">Sex and race and Hispanic origin</option>\n\t\t\t\t<option value=\"5\">Percent of poverty level</option>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<!-- last section with no chevron -->\n\t<div class=\"inner-content-wrapper\">\n\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">4</strong>\n\t\t</span>\n\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">Choose from available</span><br>\n\t\t<span style=\"margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;\">Time\n\t\t\tPeriods</span>\n\t\t<div class=\"checkbox-style\">\n\t\t\t<input type=\"checkbox\" id=\"show-one-period-checkbox\" name=\"show-one-period-checkbox\">\n\t\t\t<label for=\"show-one-period-checkbox\">View single period</label>\n\t\t</div>\n\t\t<div style=\"display: flex;\">\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-start-label\">Start Period <br> </div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-start\" id=\"year-start-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\" selected>1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\">2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-end-label\">End Period</div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-end\" id=\"year-end-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\">1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\" selected>2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n\n<!-- #b3d2ce -->\n\n<br>\n\t<div tabindex=\"0\" class=\"chart-titles space-util\" style=\"text-align: center;\">\n\t\t<span id=\"chart-title\" class=\"chart-title\"></span>\n\t\t<br>\n\t\t<span tabindex=\"0\" id=\"chart-subtitle\" class=\"\"></span>\n\t</div>\n\n\t<!-- Tabs navs -->\n<ul class=\"nav nav-tabs justify-content-center\" id=\"ex-with-icons\" role=\"tablist\" style=\"margin-top: 15px;\">\n  <li class=\"nav-item center\" role=\"presentation\" id=\"tab-map\" style=\"visibility:hidden;width: 200px;  text-align: center;\">\n    <a class=\"nav-link active\" id=\"icons-tab-1\" data-mdb-toggle=\"tab\" href=\"#map-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-1\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;\"><i class=\"fas fa-map fa-fw me-2\"></i>Map</a>\n  </li>\n    <li class=\"nav-item center\" role=\"presentation\" id=\"tab-chart\" style=\"width: 200px;  text-align: center;\">\n    <a class=\"nav-link active\" id=\"icons-tab-2\" data-mdb-toggle=\"tab\" href=\"#chart-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-2\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;border-top:solid 5px #8ab9bb;\"><i class=\"fas fa-chart-line fa-fw me-2\"></i>Chart</a>\n  </li>\n  <li class=\"nav-item center\" role=\"presentation\"  id=\"tab-table\" style=\"width: 200px;  text-align: center;\">\n    <a class=\"nav-link\" id=\"icons-tab-3\" data-mdb-toggle=\"tab\" href=\"#table-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-3\" aria-selected=\"false\"  style=\"border-top:solid 1px #C0C0C0;\"><i class=\"fas fa-table fa-fw me-2\"></i>Table</a>\n  </li>\n</ul>\n<!-- Tabs navs -->\n\n<!-- Tabs content -->\n<div class=\"tab-content\" id=\"ex-with-icons-content\">\n  <div class=\"tab-pane fade\" id=\"map-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-1\">\n\t\t<div class=\"map-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t\t<div style=\"display:inline;float:left;\">\n\t\t\t\t<div style=\"margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;\">Adjust Unit<br>\n\t\t\t\t\t<select name=\"unit-num-select-map\" id=\"unit-num-select-map\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t\t<fieldset style=\"margin-left: 90px; margin-top: 12px;\">\n\t\t\t\t\t<div class=\"btnToggle\">\n\t\t\t\t\t\t<input type=\"radio\" name=\"classifyBy\" value=\"natural\" id=\"classNBreaks\" checked=\"checked\" />\n\t\t\t\t\t\t<label for=\"classNBreaks\">Natural Breaks</label>\n\t\t\t\t\t\t<input type=\"radio\" name=\"classifyBy\" value=\"quartiles\" id=\"classQuartiles\" />\n\t\t\t\t\t\t<label for=\"classQuartiles\">Quartiles</label>\n\t\t\t\t\t</div>\n\t\t\t\t</fieldset>\n\t\t\t</div>\n\t\t\t\t<div id=\"us-map-container\" class=\"general-map\" style=\"margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;\">\n\t\t\t\t\t<div id=\"us-map\" class=\"general-map\" style=\"margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;\"></div>\t\t\t\t\n\t\t\t\t\t<div id=\"us-map-message\" class=\"chart-title\" style=\"\"></div>\n\t\t\t\t\t<div id=\"us-map-legend\"></div>\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text-map\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end map wrapper -->\n  </div>\n  <div class=\"tab-pane fade show active\" id=\"chart-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-2\">\n\t\t<div class=\"chart-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t\t\t<div style=\"margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;\">Adjust Unit<br>\n\t\t\t\t\t<select name=\"unit-num-select-chart\" id=\"unit-num-select-chart\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"chart-container\" class=\"general-chart\" style=\"height:fit-content;align:left;\">\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text-chart\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end chart wrapper -->\n  </div>\n  <div class=\"tab-pane fade\" id=\"table-tab\" onClick=\"\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-3\">\n\t\t<div class=\"table-wrapper\" style=\"background-color:#b3d2ce;margin-top:0px;padding-top:1px;\">\n\t\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t\t<select name=\"unit-num-select-table\" id=\"unit-num-select-table\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t\t\t<div id=\"nchs-table-container\">\n\t\t\t\t\t<div id=\"table-title\" class=\"title\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n                    <table id=\"nchs-table\" class=\"expanded-data-table\"></table>\n                </div>\n\t\t\t\t<br>\n\t\t</div><!-- end chart wrapper -->\n\n  </div>\n\n</div>\n<!-- Tabs content -->\n\n\t\t\t\t\t<div class=\"dwnl-img-container margin-spacer\" data-html2canvas-ignore>\n\t\t\t\t\t\t<button tabindex=\"0\" id=\"dwn-chart-img\" class=\"theme-cyan ui btn\">Download Chart</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"data-table-container\" id=\"pageFooterTable\" style=\"margin-top: 10px;margin-bottom:15px;\">\n\t\t\t\t\t\t<div class=\"table-toggle closed\" id=\"footer-table-toggle\" tabindex=\"0\">\n\t\t\t\t\t\t\t<h4 class=\"table-title\">Footnotes</h4>\n\t\t\t\t\t\t\t<div class=\"table-toggle-icon\">\n\t\t\t\t\t\t\t\t<i id=\"footer-table-header-icon\" class=\"fas fa-plus\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"pageFooter\" class=\"data-table closed\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"data-table-container\" class=\"data-table closed\" tabindex=\"0\" aria-label=\"Data table\">\n\t\t\t\t\t\t\t<div class=\"table-info\">\n\t\t\t\t\t\t\t\t<div tabindex=\"0\" class=\"general_note\" style=\"margin-top: 10px;\" id=\"table-note\"></div>\n\t\t\t\t\t\t\t\t<button id=\"btnCompareTrendsTableExport\" class=\"btn data-download-btn\" tabindex=\"0\"\n\t\t\t\t\t\t\t\t\taria-label=\"Download Data for Data Table for Seven-day moving average of new cases\">\n\t\t\t\t\t\t\t\t\tDownload Data <i class='fas fa-download' aria-hidden=\"true\"></i>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div tabindex=\"0\" id=\"skipTableLink\" class=\"skipOptions\"><a href=\"#viewHistoricLink\">Skip Table</a> </div>\n\t\t\t\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n\t\t\t\t\t\t\t\t<table tabindex=\"0\" id=\"compare-trends-table\" class=\"expanded-data-table\"></table>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n    ");
+    _defineProperty(this, "tabContent", "<!-- TOP SELECTORS --><div class=\"color-area-wrapper\">\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">1</strong>\n\t\t\t</span>\n\t\t\t<span style=\"padding-bottom:0px; font-family:Open Sans,sans-serif;color: black; font-weight:300; \">Select a topic</span><br>\n\t\t\t<span style=\"margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: black; font-weight:600;font-size:22px;\">Topic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<div class=\"styled-select\">\n\t\t\t<select name=\"data-topic-select\" id=\"data-topic-select\" form=\"select-view-options\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup style=\"font-size:12px;\">\n\t\t\t\t<option value=\"obesity-child\" selected>Obesity among Children</option>\n\t\t\t\t<option value=\"suicide\">Death Rates for Suicide</option>\n\t\t\t\t<option value=\"injury\">Initial injury-related visits to hospital emergency departments</option>\n\t\t\t\t<option value=\"birthweight\">Low birthweight live births</option>\n\t\t\t\t<option value=\"medicaidU65\">Medicaid coverage among persons under age 65</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t\t</div>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">2</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color: #010101; font-weight:300; \">Refine to a</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:600;font-size:22px;\">Subtopic</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"panel-num-select\" id=\"panel-num-select\" form=\"select-view-options\" class=\"styled-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<optgroup>\n\t\t\t\t<option value=\"1\" selected>2-19 years</option>\n\t\t\t\t<option value=\"2\">2-5 years</option>\n\t\t\t\t<option value=\"3\">6-11 years</option>\n\t\t\t\t<option value=\"4\">12-19 years</option>\n\t\t\t\t</optgroup>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<div class=\"rectangle-white\">\n\t\t<div class=\"inner-content-wrapper\">\n\t\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">3</strong>\n\t\t\t</span>\n\t\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">View data by</span><br>\n\t\t\t<span style=\"margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;\">Character</span>\n\t\t\t<br>&nbsp;<br>\n\t\t\t<select name=\"stub-name-num-select\" id=\"stub-name-num-select\" form=\"select-view-options\"  class=\"custom-select\"  style=\"font-size:12px;height:2em;width:180px;\">\n\t\t\t\t<option value=\"0\" selected>Total</option>\n\t\t\t\t<option value=\"1\">Sex</option>\n\t\t\t\t<option value=\"2\">Age</option>\n\t\t\t\t<option value=\"3\"\">Race and Hispanic origin</option>\n        \t\t<option value=\"4\">Sex and race and Hispanic origin</option>\n\t\t\t\t<option value=\"5\">Percent of poverty level</option>\n\t\t\t</select>\n\t\t</div>\n\t\t<div class=\"chevron-white\"></div>\n\t</div>\n\t<!-- last section with no chevron -->\n\t<div class=\"inner-content-wrapper\">\n\t\t<span class=\"fa-stack fa-1x\" style=\"color: #008BB0; padding-top:10px; padding-bottom:10px;\">\n\t\t\t<i class=\"fa fa-circle fa-stack-2x\"></i>\n\t\t\t<strong class=\"fa-stack-1x fa-stack-text fa-inverse\">4</strong>\n\t\t</span>\n\t\t<span style=\"font-family:Open Sans,sans-serif;color:#010101; font-weight:300; \">Choose from available</span><br>\n\t\t<span style=\"margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;\">Time\n\t\t\tPeriods</span>\n\t\t<div class=\"checkbox-style\">\n\t\t\t<input type=\"checkbox\" id=\"show-one-period-checkbox\" name=\"show-one-period-checkbox\">\n\t\t\t<label for=\"show-one-period-checkbox\">View single period</label>\n\t\t</div>\n\t\t<div style=\"display: flex;\">\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-start-label\">Start Period <br> </div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-start\" id=\"year-start-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\" selected>1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\">2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div style=\"flex-direction: column;\">\n\t\t\t\t<div class=\"label-style\" id=\"year-end-label\">End Period</div>\n\t\t\t\t<div>\n\t\t\t\t\t<select name=\"year-end\" id=\"year-end-select\" form=\"select-view-options\" class=\"select-style\"  style=\"font-size:12px;height:2em;width:100px;\">\n\t\t\t\t\t\t<option value=\"1988-1994\">1988-1994</option>\n\t\t\t\t\t\t<option value=\"1999-2002\">1999-2002</option>\n\t\t\t\t\t\t<option value=\"2001-2004\">2001-2004</option>\n\t\t\t\t\t\t<option value=\"2003-2006\">2003-2006</option>\n\t\t\t\t\t\t<option value=\"2005-2008\">2005-2008</option>\n\t\t\t\t\t\t<option value=\"2007-2010\">2007-2010</option>\n\t\t\t\t\t\t<option value=\"2009-2012\">2009-2012</option>\n\t\t\t\t\t\t<option value=\"2011-2014\">2011-2014</option>\n\t\t\t\t\t\t<option value=\"2013-2016\" selected>2013-2016</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>\n\n<!-- #b3d2ce -->\n\n<br>\n\t<div tabindex=\"0\" class=\"chart-titles space-util\" style=\"text-align: center;\">\n\t\t<span id=\"chart-title\" class=\"chart-title\"></span>\n\t\t<br>\n\t\t<span tabindex=\"0\" id=\"chart-subtitle\" class=\"\"></span>\n\t</div>\n\n\t<!-- Tabs navs -->\n<ul class=\"nav nav-tabs justify-content-center\" id=\"ex-with-icons\" role=\"tablist\" style=\"margin-top: 15px;\">\n  <li class=\"nav-item center\" role=\"presentation\" id=\"tab-map\" style=\"visibility:hidden;width: 200px;  text-align: center;\">\n    <a class=\"nav-link active\" id=\"icons-tab-1\" data-mdb-toggle=\"tab\" href=\"#map-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-1\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;\"><i class=\"fas fa-map fa-fw me-2\"></i>Map</a>\n  </li>\n    <li class=\"nav-item center\" role=\"presentation\" id=\"tab-chart\" style=\"width: 200px;  text-align: center;\">\n    <a class=\"nav-link active\" id=\"icons-tab-2\" data-mdb-toggle=\"tab\" href=\"#chart-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-2\" aria-selected=\"true\"  style=\"background-color:#b3d2ce;border-top:solid 5px #8ab9bb;\"><i class=\"fas fa-chart-line fa-fw me-2\"></i>Chart</a>\n  </li>\n  <li class=\"nav-item center\" role=\"presentation\"  id=\"tab-table\" style=\"width: 200px;  text-align: center;\">\n    <a class=\"nav-link\" id=\"icons-tab-3\" data-mdb-toggle=\"tab\" href=\"#table-tab\" role=\"tab\"\n      aria-controls=\"ex-with-icons-tabs-3\" aria-selected=\"false\"  style=\"border-top:solid 1px #C0C0C0;\"><i class=\"fas fa-table fa-fw me-2\"></i>Table</a>\n  </li>\n</ul>\n<!-- Tabs navs -->\n\n<!-- Tabs content -->\n<div class=\"tab-content\" id=\"ex-with-icons-content\">\n  <div class=\"tab-pane fade\" id=\"map-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-1\">\n\t\t<div class=\"map-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t\t<div style=\"display:inline;float:left;\">\n\t\t\t\t<div style=\"margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;\">Adjust Unit<br>\n\t\t\t\t\t<select name=\"unit-num-select-map\" id=\"unit-num-select-map\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t\t<fieldset style=\"margin-left: 90px; margin-top: 12px;\">\n\t\t\t\t\t<div class=\"btnToggle\">\n\t\t\t\t\t\t<input type=\"radio\" name=\"classifyBy\" value=\"natural\" id=\"classNBreaks\" checked=\"checked\" />\n\t\t\t\t\t\t<label for=\"classNBreaks\">Natural Breaks</label>\n\t\t\t\t\t\t<input type=\"radio\" name=\"classifyBy\" value=\"quartiles\" id=\"classQuartiles\" />\n\t\t\t\t\t\t<label for=\"classQuartiles\">Quartiles</label>\n\t\t\t\t\t</div>\n\t\t\t\t</fieldset>\n\t\t\t</div>\n\t\t\t\t<div id=\"us-map-container\" class=\"general-map\" style=\"margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;\">\n\t\t\t\t\t<div id=\"us-map\" class=\"general-map\" style=\"margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;\"></div>\t\t\t\t\n\t\t\t\t\t<div id=\"us-map-message\" class=\"chart-title\" style=\"\"></div>\n\t\t\t\t\t<div id=\"us-map-legend\"></div>\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text-map\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end map wrapper -->\n  </div>\n  <div class=\"tab-pane fade show active\" id=\"chart-tab\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-2\">\n\t\t<div class=\"chart-wrapper\" style=\"height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;\"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->\n\t\t\t\t<div style=\"margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;\">Adjust Unit<br>\n\t\t\t\t\t<select name=\"unit-num-select-chart\" id=\"unit-num-select-chart\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t\t</select>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"chart-container\" class=\"general-chart\" style=\"height:fit-content;align:left;\">\n\t\t\t\t</div>\n\t\t\t\t<br>\n\t\t\t\t<div class=\"source-text\" id=\"source-text-chart\"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>\n\t\t</div><!-- end chart wrapper -->\n  </div>\n  <div class=\"tab-pane fade\" id=\"table-tab\" onClick=\"\" role=\"tabpanel\" aria-labelledby=\"ex-with-icons-tab-3\">\n\t\t<div class=\"table-wrapper\" style=\"background-color:#b3d2ce;margin-top:0px;padding-top:1px;\">\n\t\t\t<div style=\"margin-left:180px;width:400px;\">Adjust vertical axis (Unit)<br>\n\t\t\t\t<select name=\"unit-num-select-table\" id=\"unit-num-select-table\" form=\"select-view-options\" class=\"custom-select\">\n\t\t\t\t\t<option value=\"1\" selected>Percent of population, crude</option>\n\t\t\t\t</select>\n\t\t\t</div>\n\t\t\t\t<div id=\"nchs-table-container\">\n\t\t\t\t\t<div id=\"table-title\" class=\"title\"></div>\n\t\t\t\t</div>\n\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n                    <table id=\"nchs-table\" class=\"expanded-data-table\"></table>\n                </div>\n\t\t\t\t<br>\n\t\t</div><!-- end chart wrapper -->\n\n  </div>\n\n</div>\n<!-- Tabs content -->\n\n\t\t\t\t\t<div class=\"dwnl-img-container margin-spacer\" data-html2canvas-ignore>\n\t\t\t\t\t\t<button tabindex=\"0\" id=\"dwn-chart-img\" class=\"theme-cyan ui btn\">Download Chart</button>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"data-table-container\" id=\"pageFooterTable\" style=\"margin-top: 10px;margin-bottom:15px;\">\n\t\t\t\t\t\t<div class=\"table-toggle closed\" id=\"footer-table-toggle\" tabindex=\"0\">\n\t\t\t\t\t\t\t<h4 class=\"table-title\">Footnotes</h4>\n\t\t\t\t\t\t\t<div class=\"table-toggle-icon\">\n\t\t\t\t\t\t\t\t<i id=\"footer-table-header-icon\" class=\"fas fa-plus\"></i>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"pageFooter\" class=\"data-table closed\"></div>\n\t\t\t\t\t</div>\n\t\t\t\t\t\t<div id=\"data-table-container\" class=\"data-table closed\" tabindex=\"0\" aria-label=\"Data table\">\n\t\t\t\t\t\t\t<div class=\"table-info\">\n\t\t\t\t\t\t\t\t<div tabindex=\"0\" class=\"general_note\" style=\"margin-top: 10px;\" id=\"table-note\"></div>\n\t\t\t\t\t\t\t\t<button id=\"btnCompareTrendsTableExport\" class=\"btn data-download-btn\" tabindex=\"0\"\n\t\t\t\t\t\t\t\t\taria-label=\"Download Data for Data Table for Seven-day moving average of new cases\">\n\t\t\t\t\t\t\t\t\tDownload Data <i class='fas fa-download' aria-hidden=\"true\"></i>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t<div tabindex=\"0\" id=\"skipTableLink\" class=\"skipOptions\"><a href=\"#viewHistoricLink\">Skip Table</a> </div>\n\t\t\t\t\t\t\t<div id=\"topOfTable\" class=\"scrolling-table-container\">\n\t\t\t\t\t\t\t\t<table tabindex=\"0\" id=\"compare-trends-table\" class=\"expanded-data-table\"></table>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\n    ");
 
     Object(_utils_appState__WEBPACK_IMPORTED_MODULE_0__["resetAppStateVars"])();
     appState.CURRENT_TAB = "nchs-home";
@@ -39607,7 +39613,7 @@ var LandingPage = /*#__PURE__*/function () {
     this.flattenedFilteredData = null;
     this.vizId = "chart-container"; // select data items - set some defaults
 
-    this.dataTopic = "obesity"; // default
+    this.dataTopic = "obesity-child"; // default
 
     this.dataFile = "content/json/HUS_OBESCH_2018.json"; // default is Obesity
 
@@ -39784,7 +39790,7 @@ var LandingPage = /*#__PURE__*/function () {
         // create a year_pt col from time period
 
 
-        if (_this2.dataTopic === "obesity") {
+        if (_this2.dataTopic === "obesity-child") {
           _this2.allData = _this2.allData.filter(function (d) {
             if (d.flag === "- - -") {
               return d.estimate = null;
@@ -39896,7 +39902,10 @@ var LandingPage = /*#__PURE__*/function () {
           startYear: parseInt(this.startYear)
         });
         map.render(this.geometries);
-      }
+      } // always render data table  with the latest data
+
+
+      this.renderDataTable(this.flattenedFilteredData);
     }
   }, {
     key: "renderChart",
@@ -39932,7 +39941,7 @@ var LandingPage = /*#__PURE__*/function () {
       var panelText = $("#panel-num-select option:selected").text(); //this.getSelectorText("#data-topic-select");
 
       this.chartSubTitle = "Subtopic: " + panelText;
-      $("#chart-subtitle").html("<strong>".concat(this.chartSubTitle, "</strong>")); // render data table too
+      $("#chart-subtitle").html("<strong>".concat(this.chartSubTitle, "</strong>")); // always render data table  with the latest data
 
       this.renderDataTable(this.flattenedFilteredData); // set background to white - THIS DOESNT WORK
       //$("#chart-container-svg").style("background-color", '#FFFFFF');
@@ -39954,7 +39963,7 @@ var LandingPage = /*#__PURE__*/function () {
       var selectedPanelData;
 
       switch (this.dataTopic) {
-        case "obesity":
+        case "obesity-child":
         case "birthweight":
           selectedPanelData = this.allData.filter(function (d) {
             return parseInt(d.panel_num) === parseInt(_this4.panelNum) && parseInt(d.unit_num) === parseInt(_this4.unitNum) && parseInt(d.stub_name_num) === parseInt(_this4.stubNameNum) && parseInt(d.year_pt) >= parseInt(_this4.startYear) && parseInt(d.year_pt) <= parseInt(_this4.endYear);
@@ -40090,7 +40099,7 @@ var LandingPage = /*#__PURE__*/function () {
       var allYearsData;
 
       switch (this.dataTopic) {
-        case "obesity":
+        case "obesity-child":
         case "birthweight":
           allYearsData = this.allData.filter(function (d) {
             return parseInt(d.panel_num) === parseInt(_this5.panelNum) && parseInt(d.unit_num) === parseInt(_this5.unitNum) && parseInt(d.stub_name_num) === parseInt(_this5.stubNameNum);
@@ -40124,7 +40133,7 @@ var LandingPage = /*#__PURE__*/function () {
       // - wait for a few more datasets to be sure
 
       switch (this.dataTopic) {
-        case "obesity":
+        case "obesity-child":
         case "birthweight":
         case "medicaidU65":
           yAxisTitle = this.unitNumText; //"Percent of Population, crude (%)";
@@ -40313,7 +40322,7 @@ var LandingPage = /*#__PURE__*/function () {
       }
 
       switch (dataTopic) {
-        case "obesity":
+        case "obesity-child":
           this.dataFile = "content/json/HUS_OBESCH_2018.json";
           this.chartTitle = "Obesity Among Children and Adolescents";
           selectedDataCache = _utils_datacache__WEBPACK_IMPORTED_MODULE_2__["DataCache"].ObesityData; // set a valid unit num or else chart breaks
@@ -40426,7 +40435,7 @@ var LandingPage = /*#__PURE__*/function () {
         }
 
         switch (dataTopic) {
-          case "obesity":
+          case "obesity-child":
             _utils_datacache__WEBPACK_IMPORTED_MODULE_2__["DataCache"].ObesityData = _this7.allData;
             break;
 
@@ -40509,7 +40518,7 @@ var LandingPage = /*#__PURE__*/function () {
       var singleYearsArray = [];
 
       switch (this.dataTopic) {
-        case "obesity": // stack cases if you want to share code between data sets
+        case "obesity-child": // stack cases if you want to share code between data sets
 
         case "injury": // - can't use || in case switch statement
 
@@ -40633,7 +40642,7 @@ var LandingPage = /*#__PURE__*/function () {
       // try this BEFORE getting the unique options
       // filter by panel selection if applicable
 
-      if (this.dataTopic === "obesity") {
+      if (this.dataTopic === "obesity-child") {
         allStubsArray = this.allData.filter(function (item) {
           return parseInt(item.panel_num) === parseInt(_this9.panelNum);
         });
@@ -40804,16 +40813,19 @@ var LandingPage = /*#__PURE__*/function () {
       $('#year-end-select').empty();
 
       switch (this.dataTopic) {
-        case "obesity":
+        // Data sets with time period ranges like 2002-2005
+        case "obesity-child":
         case "injury":
+        case "birthweight":
           this.startPeriod = start;
           this.startYear = this.getYear(start);
           allYearsArray.forEach(function (y) {
             if (_this11.getYear(y) > _this11.startYear) {
-              $('#year-end-select').append("<option value=\"".concat(y, "\">").concat(y, "</option>")); //singleYearsArray.push(this.getYear(y));
+              $('#year-end-select').append("<option value=\"".concat(y, "\">").concat(y, "</option>"));
             }
           });
           break;
+        // Data sets with single year selects
 
         case "suicide":
         case "medicaidU65":
@@ -40821,15 +40833,9 @@ var LandingPage = /*#__PURE__*/function () {
           this.startYear = start;
           allYearsArray.forEach(function (y) {
             if (parseInt(y) > _this11.startYear) {
-              $('#year-end-select').append("<option value=\"".concat(y, "\">").concat(y, "</option>")); //singleYearsArray.push(this.getYear(y));
+              $('#year-end-select').append("<option value=\"".concat(y, "\">").concat(y, "</option>"));
             }
           });
-          break;
-
-        case "birthweight":
-          this.startPeriod = start;
-          this.startYear = start; // do nothing with end period - not using end period
-
           break;
       } // make the last end year selected
 
@@ -40846,11 +40852,14 @@ var LandingPage = /*#__PURE__*/function () {
     key: "updateEndPeriod",
     value: function updateEndPeriod(end) {
       switch (this.dataTopic) {
-        case "obesity":
+        // Data sets with time period ranges like 2002-2005
+        case "obesity-child":
         case "injury":
+        case "birthweight":
           this.endPeriod = end;
           this.endYear = this.getYear(end);
           break;
+        // Data sets with single year selects
 
         case "suicide":
         case "medicaidU65":
@@ -40862,6 +40871,7 @@ var LandingPage = /*#__PURE__*/function () {
       if (this.showMap) {
         this.renderMap();
       } else {
+        // what if they are on Table?
         this.renderChart();
       }
     }
@@ -41013,7 +41023,7 @@ var LandingPage = /*#__PURE__*/function () {
       console.log("#### toggle:", selDataPt);
 
       switch (this.dataTopic) {
-        case "obesity":
+        case "obesity-child":
           // has a "panel"
           this.allData.forEach(function (d) {
             if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(_this12.panelNum) && parseInt(d.unit_num) === parseInt(_this12.unitNum) && parseInt(d.stub_name_num) === parseInt(_this12.stubNameNum) && parseInt(d.year_pt) >= parseInt(_this12.startYear) && parseInt(d.year_pt) <= parseInt(_this12.endYear)) {
