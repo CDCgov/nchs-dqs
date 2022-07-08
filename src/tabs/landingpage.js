@@ -201,6 +201,7 @@ export class LandingPage {
 		if (this.stubNameNum === 0) {
 			// need to SHOW A MESSAGE
 			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			$("#us-map-legend").hide();
 			// hide the map in case it's not hidden
 /* 			let theMap = document.getElementById("map-tab");
 			theMap.style.display = "none";
@@ -210,7 +211,12 @@ export class LandingPage {
 			$('#us-map-message').html("");
 			// get rid of the big margins
 			$('#us-map-message').hide();
+			$("#us-map-legend").show();
 
+			// (TTTT) to do the PLAY legend - can't do this
+			// -- you need to pass ALL THE DATA to do the PLAY function
+			// assuming you program the PLAY inside of genMap
+			
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
@@ -231,6 +237,7 @@ export class LandingPage {
 				mapData: stateData,  // misCdata[3].Jurisdiction2,
 				vizId: mapVizId,
 				classifyType: this.classifyType,
+				startYear: parseInt(this.startYear),
 			});
 			map.render(this.geometries);
 		}
@@ -1239,6 +1246,7 @@ export class LandingPage {
 			// --- depends on what tab is selected????
 			$('#us-map-message').show();
 			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			$("#us-map-legend").hide();
 			// cant just call click = infinite loop
 			//$('#icons-tab-2').click(); // click event will render the chart
 			// only call chart render if map NOT selected
@@ -1375,6 +1383,7 @@ export class LandingPage {
 			$('#us-map-wrapper').show();
 			$('#us-map-container').show();
 			$('#us-map-message').show();
+			$("#us-map-legend").show();
 			this.renderMap();
 		} else {
 			// need to hide the map (TTTT)
@@ -1396,6 +1405,7 @@ export class LandingPage {
 			theTable.classList.remove("show");
 			theTable.classList.remove("active");
 			$('#us-map-wrapper').hide();
+			$("#us-map-legend").hide();
 			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");

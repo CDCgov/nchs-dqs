@@ -24378,18 +24378,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -24408,6 +24396,7 @@ var GenMap = /*#__PURE__*/function () {
     this.data = props.mapData;
     this.mapVizId = props.vizId;
     this.classifyType = parseInt(props.classifyType);
+    this.startYear = props.startYear; // time period start year selected
   }
 
   _createClass(GenMap, [{
@@ -24416,7 +24405,10 @@ var GenMap = /*#__PURE__*/function () {
       var _this = this;
 
       var mLegendData;
+      var mEstimateByStateID = {};
+      var mStateNameByStateID = {};
       var mActiveLegendItems = [];
+      var mActiveLegendItemColors = [];
       var mSuppressedFlagID = -2;
       var mNoDataFlagID = -1;
       var mInActiveFlagID = -3;
@@ -24453,32 +24445,7 @@ var GenMap = /*#__PURE__*/function () {
         };
       }
 
-      var genTooltip = new _general_genTooltip__WEBPACK_IMPORTED_MODULE_2__["GenTooltip"](getTooltipConstructor(this.mapVizId)); // The below commented out code was used to demonstrate how the US Map would render after moving
-      // to a new set of binning requirements that will be provided from DB group for CVI-3561
-      // It may be helpful to leave this in for future changes to Map bin categories
-      // this.data = this.data.map((d) => ({
-      // 	...d,
-      // 	Total_Cases_Range:
-      // 		d.Total_Cases_Range === "1-24 cases" || d.Total_Cases_Range === "25-49 cases"
-      // 			? "1-49 cases"
-      // 			: d.Total_Cases_Range === "50-99 cases"
-      // 			? "50-99 cases"
-      // 			: d.Total_Cases_Range === "100-149 cases" || d.Total_Cases_Range === "150-199 cases"
-      // 			? "100-199 cases"
-      // 			: d.Total_Cases_Range === "200-249 cases" || d.Total_Cases_Range === "250-299 cases"
-      // 			? "200-299 cases"
-      // 			: d.Total_Cases_Range === "300+ cases"
-      // 			? "300-399 cases"
-      // 			: d.Total_Cases_Range === "400+ cases"
-      // 			? "400+ cases"
-      // 			: "No case reported",
-      // }));
-      // this.data = this.data.map((d) => ({
-      // 	...d,
-      // 	Total_Cases_Range: d.rep_juris === "LA" || d.rep_juris === "AZ" ? "400+ cases" : d.Total_Cases_Range,
-      // }));
-
-      var copiedData = _toConsumableArray(this.data);
+      var genTooltip = new _general_genTooltip__WEBPACK_IMPORTED_MODULE_2__["GenTooltip"](getTooltipConstructor(this.mapVizId)); //const copiedData = [...this.data];
 
       console.log("###genMAP incoming geometries:", geometries);
       console.log("###genMAP incoming data:", this.data); // remove all records without an estimate
@@ -24556,11 +24523,31 @@ var GenMap = /*#__PURE__*/function () {
         genTooltip.mouseout(_lib_d3_min__WEBPACK_IMPORTED_MODULE_1__["select"](this));
       }
 
-      var bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
+      var bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"]; // same as above but remove WHITE
+
+      mActiveLegendItemColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
 
       function getColor(bin) {
-        //console.log("color bin:", bin);
-        return bgColors[bin];
+        var index;
+        var binColor = bgColors[bin]; // this IS based on position of the bin to the color
+        // Check if the legend bin is inactive...
+        // -- if it is, then return WHITE
+        //console.log("active colors list:", mActiveLegendItemColors);
+        //console.log("check this bincolor:", binColor);
+
+        index = mActiveLegendItemColors.indexOf(binColor); //console.log("bincolor index check:", index);
+        // Add or Remove that color to/from the Active list of colors
+        // - note the ORDER of the colors is NOT related to the bin number
+        // - this just tracks whether that color is ACTIVE or not
+
+        if (index > -1) {
+          // COLOR FOUND
+          //console.log("RETURNING bincolor:", binColor);
+          return binColor;
+        } else {
+          // COLOR NOT FOUND - so NOT ACTIVE
+          return "#FFFFFF";
+        }
       } // (TT) this let's you use white text on darker backgrounds
 
 
@@ -24730,8 +24717,7 @@ var GenMap = /*#__PURE__*/function () {
       var territoryGroup = svg.append("g").attr("id", "territoryGroup").attr("transform", "translate(".concat(width * 0.5 - territoryTranslateLeft, ", ").concat(mapHeight + territoriesHeight, ")")).attr("width", width).attr("height", territoriesHeight);
       territoryGroup.selectAll("rect").data(filteredTerritories).enter().append("rect").attr("x", function (d, i) {
         return territoryRectWidth * i + territorySpaceBetween;
-      }).attr("width", territoryRectWidth * 0.8).attr("height", territoryRectHeight) //.style("fill", "#e4f2e1")
-      .style("fill", function (d) {
+      }).attr("width", territoryRectWidth * 0.8).attr("height", territoryRectHeight).style("fill", function (d) {
         return getColor(d.class);
       }) //.style("fill", (d) => getColor(d.properties.estimate));
       .attr("rx", 5 * overallScale).attr("ry", 5 * overallScale).attr("stroke-width", 0.7).attr("stroke", "#777");
@@ -24747,7 +24733,51 @@ var GenMap = /*#__PURE__*/function () {
       _lib_d3_min__WEBPACK_IMPORTED_MODULE_1__["selectAll"]("#states path, #territoryGroup rect").on("mouseover", mouseover).on("mousemove", mousemove).on("mouseout", mouseout);
       genTooltip.render();
       mLegendData = ClassifiedDataObj.legend;
+      mActiveLegendItems = getDefaultActiveLegendItems();
       loadMapLegend();
+      addEventListeners(); // detect clicks
+      // call this in click event handler when legend is being clicked on and off
+
+      function updateMap() {
+        var t = _lib_d3_min__WEBPACK_IMPORTED_MODULE_1__["transition"]().duration(250); //debugger;
+        // update the colors for STATES
+
+        _lib_d3_min__WEBPACK_IMPORTED_MODULE_1__["selectAll"]("#states path")
+        /* 				.attr("id", "states")
+        				.selectAll("path")
+        				.data(states.features)
+        				.enter() */
+        .style("fill", function (d) {
+          //console.log("updateMap d=", d);
+          return getColor(d.properties.class);
+        });
+        /* 				.style("stroke", "#ADADAD")
+        				.style("stroke-width", "0.5")
+        				.transition(t)
+        				.style("fill-opacity", 1); */
+        // update the colors for TERRITORIES - separate bc the territory data format is DIFFERENT
+
+        _lib_d3_min__WEBPACK_IMPORTED_MODULE_1__["selectAll"]("#territoryGroup rect").style("fill", function (d) {
+          //console.log("updateMap d=", d);
+          return getColor(d.class);
+        });
+      } // this just generates a LIST  of ALL ITEMS out of the mlegendData array
+      // - it does not do any filtering yet
+      // - this just starts off the active legend list
+
+
+      function getDefaultActiveLegendItems() {
+        var activeLegendItems;
+        activeLegendItems = [];
+        activeLegendItems.push(String(mNoDataFlagID)); // No Data = 0th item always
+        //activeLegendItems.push(String(mSuppressedFlagID)); // Suppressed
+
+        for (var i = 0; i < mLegendData.length; i += 1) {
+          activeLegendItems.push(mLegendData[i].min + " - " + mLegendData[i].max);
+        }
+
+        return activeLegendItems;
+      }
 
       function isNoDataOrSuppressedAndActive(activeLegendItem, val) {
         if ((activeLegendItem === String(mNoDataFlagID) || activeLegendItem === String(mSuppressedFlagID)) && String(val) === activeLegendItem) {
@@ -24779,40 +24809,107 @@ var GenMap = /*#__PURE__*/function () {
         return false;
       }
 
+      function updateData() {
+        var val;
+        mEstimateByStateID = {};
+        mColorByStateID = {};
+        mCurrentYearData.Data.forEach(function (d) {
+          if (d.IsSuppressed) {
+            val = mSuppressedFlagID;
+          } else if (d.IsNoData) {
+            val = mNoDataFlagID;
+          } else {
+            val = d.Value;
+          }
+
+          if (isValueInActiveLegend(val)) {
+            mEstimateByStateID[+d.GeoID] = val;
+            mColorByStateID[+d.GeoID] = d.Color_HexVal;
+          } else {
+            mEstimateByStateID[+d.GeoID] = mInActiveFlagID;
+            mColorByStateID[+d.GeoID] = mInActiveColor;
+          }
+        });
+      }
+
+      function convertRGB(rgb) {
+        // This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
+        var separator = rgb.indexOf(",") > -1 ? "," : " "; // This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString 
+
+        rgb = rgb.substr(4).split(")")[0].split(separator); // Here we will convert the decimal values to hexadecimal using toString(16)
+
+        var r = (+rgb[0]).toString(16),
+            g = (+rgb[1]).toString(16),
+            b = (+rgb[2]).toString(16);
+        if (r.length == 1) r = "0" + r;
+        if (g.length == 1) g = "0" + g;
+        if (b.length == 1) b = "0" + b; // The return value is a concatenation of "#" plus the rgb values which will give you your hex
+
+        return "#" + r + g + b;
+      }
+
       function legendClickHandler(evt) {
-        // 12Apr2021  var legendItemLabel;
         var index;
         var itemLabel;
-        var $chkBxObj; // 12Apr2021 DIAB-13
+        var $chkBxObj; // will call click event twice if you dont call this
+
+        evt.stopPropagation(); // get bg color of the one clicked
+
+        var theClickedColor = convertRGB(evt.target.parentNode.style.backgroundColor);
+        index = mActiveLegendItemColors.indexOf(theClickedColor); // Add or Remove that color to/from the Active list of colors
+        // - note the ORDER of the colors is NOT related to the bin number
+        // - this just tracks whether that color is ACTIVE or not
+
+        if (index > -1) {
+          // COLOR FOUND
+          // remove it from the list
+          mActiveLegendItemColors.splice(index, 1);
+        } else {
+          // ADD COLOR BACK
+          // it's not there, so add the item to the active list
+          mActiveLegendItemColors.push(theClickedColor);
+        }
+
+        console.log("Active colors AFTER click:", mActiveLegendItemColors); //debugger;
 
         if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase()) {
           itemLabel = $(evt.target).val();
-          $chkBxObj = $(evt.target); // 24Feb2022 } else if (evt.target.className === "dataBox") {
+          $chkBxObj = $(evt.target);
         } else if ($(evt.target).hasClass("da-maplegend-box")) {
           itemLabel = $(evt.target).find("input").val();
           $chkBxObj = $(evt.target).find("input");
         }
 
-        index = mActiveLegendItems.indexOf(itemLabel);
+        index = mActiveLegendItems.indexOf(itemLabel); //console.log("legend Item CLICKED:",index, itemLabel, evt);
+        //console.log("Active Legend items BEFORE:", mActiveLegendItems);
 
         if (index > -1) {
+          // ITEM FOUND
+          // remove it from the list
           mActiveLegendItems.splice(index, 1);
           $chkBxObj.prop("checked", false);
         } else {
-          // 12Apr2021 DIAB-13  mActiveLegendItems.push(legendItemLabel);
+          // RE-ENABLE
+          // it's not there, so add the item to the active list
           mActiveLegendItems.push(itemLabel);
           $chkBxObj.prop("checked", true);
-        } // 12Apr2021 setData();
+        } //console.log("Active Legend items AFTER:", mActiveLegendItems);
+        //debugger;
+        // tested and dont need this
+        //evt.preventDefault();
+        //updateData(); // 12Apr2021 DIAB-13
+        //renderMap();
 
 
-        updateData(); // 12Apr2021 DIAB-13
-
-        renderMap();
+        updateMap();
       }
 
       function addEventListeners() {
         //removeEventListeners();
-        $(document).on("click", "#us-map-legend", legendClickHandler);
+        $(document).off("click", "#us-map-legend");
+        $(document).on("click", "#us-map-legend", legendClickHandler); // TO DO: Add back in listener to see if they resize browser
+        // and if they do then resize map all over again
+
         /* 			window.addEventListener("resize", createMap);
         			publicAPI["on" + mConfig.ChangeEventTypesList.Viz1ContainerResizedEvent] =
         			function () {
@@ -24847,7 +24944,7 @@ var GenMap = /*#__PURE__*/function () {
           DisplayLabel: "No Data",
           ItemValue: mNoDataFlagID.toString(),
           // 12Apr2021 DIAB-13
-          IsChecked: 1 // mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
+          IsChecked: 1 // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
 
         };
         legendItems.push(legendItemObj);
@@ -24896,8 +24993,7 @@ var GenMap = /*#__PURE__*/function () {
 
           legendGeneratedHTML = "<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
           legendItems.forEach(function (leg) {
-            var isCheckedStr;
-            var seeLeg = leg;
+            var isCheckedStr; //let seeLeg = leg;
 
             if (leg.IsChecked === 1) {
               isCheckedStr = "checked";
@@ -39760,7 +39856,8 @@ var LandingPage = /*#__PURE__*/function () {
 
       if (this.stubNameNum === 0) {
         // need to SHOW A MESSAGE
-        $('#us-map-message').html("Please select a Characteristic that supports US Map data."); // hide the map in case it's not hidden
+        $('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+        $("#us-map-legend").hide(); // hide the map in case it's not hidden
 
         /* 			let theMap = document.getElementById("map-tab");
         			theMap.style.display = "none";
@@ -39769,7 +39866,11 @@ var LandingPage = /*#__PURE__*/function () {
       } else {
         $('#us-map-message').html(""); // get rid of the big margins
 
-        $('#us-map-message').hide(); // Get filtered data
+        $('#us-map-message').hide();
+        $("#us-map-legend").show(); // (TTTT) to do the PLAY legend - can't do this
+        // -- you need to pass ALL THE DATA to do the PLAY function
+        // assuming you program the PLAY inside of genMap
+        // Get filtered data
 
         var stateData = this.getFlattenedFilteredData(); // but need to narrow it to the selected time period
 
@@ -39791,7 +39892,8 @@ var LandingPage = /*#__PURE__*/function () {
           mapData: stateData,
           // misCdata[3].Jurisdiction2,
           vizId: mapVizId,
-          classifyType: this.classifyType
+          classifyType: this.classifyType,
+          startYear: parseInt(this.startYear)
         });
         map.render(this.geometries);
       }
@@ -40674,7 +40776,8 @@ var LandingPage = /*#__PURE__*/function () {
         // need to hide map and show the chart? 
         // --- depends on what tab is selected????
         $('#us-map-message').show();
-        $('#us-map-message').html("Please select a Characteristic that supports US Map data."); // cant just call click = infinite loop
+        $('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+        $("#us-map-legend").hide(); // cant just call click = infinite loop
         //$('#icons-tab-2').click(); // click event will render the chart
         // only call chart render if map NOT selected
         // - map could be selected but data does not support map
@@ -40819,6 +40922,7 @@ var LandingPage = /*#__PURE__*/function () {
         $('#us-map-wrapper').show();
         $('#us-map-container').show();
         $('#us-map-message').show();
+        $("#us-map-legend").show();
         this.renderMap();
       } else {
         // need to hide the map (TTTT)
@@ -40854,6 +40958,7 @@ var LandingPage = /*#__PURE__*/function () {
         _theTable.classList.remove("active");
 
         $('#us-map-wrapper').hide();
+        $("#us-map-legend").hide();
         $('#us-map-message').html("Please select a Characteristic that supports US Map data."); // flip the colors
 
         var _theMapTab = document.getElementById("icons-tab-1");
