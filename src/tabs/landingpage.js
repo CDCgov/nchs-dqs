@@ -146,11 +146,11 @@ export class LandingPage {
 			//debugger;
 			
 			// create a year_pt col from time period
-			if (this.dataTopic === "obesity-child") {
+			if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
 				this.allData = this.allData
 					.filter(function (d) {
 						if (d.flag === "- - -") {
-							return d.estimate = null;
+							return d.estimate = null;  // estimate missing so fill in with null???
 						}  else { return d; }
 					})
 					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
@@ -299,6 +299,7 @@ export class LandingPage {
 		let selectedPanelData
 		switch (this.dataTopic) {
 			case "obesity-child":
+			case "obesity-adult":
 			case "birthweight":
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
@@ -418,6 +419,7 @@ export class LandingPage {
 		let allYearsData
 		switch (this.dataTopic) {
 			case "obesity-child":
+			case "obesity-adult":
 			case "birthweight":
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
@@ -452,6 +454,7 @@ export class LandingPage {
 		// - wait for a few more datasets to be sure
 		switch (this.dataTopic) {
 			case "obesity-child":
+			case "obesity-adult":
 			case "birthweight":
 			case "medicaidU65":
 				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
@@ -815,6 +818,21 @@ export class LandingPage {
 				this.updateShowMap(0);
 				//$('#icons-tab-2').click();
 				break;
+			case "obesity-adult":
+				this.dataFile = "content/json/ObesityAdults.json";
+				this.chartTitle = "Obesity Among Adults";
+				selectedDataCache = DataCache.ObesityAdultData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				//$('#icons-tab-2').click();
+				break;
 			case "suicide":
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
@@ -907,6 +925,9 @@ export class LandingPage {
 			switch (dataTopic) {
 			case "obesity-child":
 				DataCache.ObesityData = this.allData;
+					break;
+			case "obesity-adult":
+				DataCache.ObesityAdultData = this.allData;
 				break;
 			case "suicide":
 				DataCache.SuicideData = this.allData;
@@ -978,6 +999,7 @@ export class LandingPage {
 		let singleYearsArray = [];
 		switch (this.dataTopic) {
 			case "obesity-child": // stack cases if you want to share code between data sets
+			case "obesity-adult":
 			case "injury":  // - can't use || in case switch statement
 			case "birthweight":
 				// NO DONT DO THIS HERE - reset unit_num or else it breaks
@@ -1102,7 +1124,7 @@ export class LandingPage {
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
-		if (this.dataTopic === "obesity-child") {
+		if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
 			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === parseInt(this.panelNum)));
 		} else {
 			allStubsArray = this.allData;
@@ -1273,6 +1295,7 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
 			case "obesity-child":
+			case "obesity-adult":
 			case "injury": 
 			case "birthweight":
 				this.startPeriod = start;
@@ -1312,6 +1335,7 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
 			case "obesity-child":
+			case "obesity-adult":
 			case "injury":
 			case "birthweight": 
 				this.endPeriod = end;
@@ -1448,6 +1472,7 @@ export class LandingPage {
 
 		switch (this.dataTopic) {
 			case "obesity-child":
+			case "obesity-adult":
 				// has a "panel"
 				this.allData.forEach((d) => {
 					if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
@@ -1687,6 +1712,7 @@ export class LandingPage {
 			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
 				<optgroup style="font-size:12px;">
 				<option value="obesity-child" selected>Obesity among Children</option>
+				<option value="obesity-adult">Obesity among Adults</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
 				<option value="birthweight">Low birthweight live births</option>

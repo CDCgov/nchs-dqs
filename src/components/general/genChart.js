@@ -779,7 +779,7 @@ export class GenChart {
 											.append("ellipse") // add always visible "point" (TT)
 											// change to a function and set based on the "flag"
 											.style("fill", function (d) {
-												if (d.flag !== undefined) {
+												if (d.flag === "*") {
 													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
 													return "white";
 												} else {
