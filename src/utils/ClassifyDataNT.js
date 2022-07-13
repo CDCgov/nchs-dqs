@@ -401,6 +401,8 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
         function createEILegend(classArray, minval) {
             let legendArray = [];
 
+            // (TTT) We dont have any suppressed data right now
+            // - disabling the push of the suppressed record
             if (suppressedDataObjArray.length > 0)
                 legendArray.push({ 'c': 0, 'min': null, 'max': null });
 

@@ -301,11 +301,7 @@ export class LandingPage {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
-				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
-				);
-				break;
-			case "birthweight":
+			case "infant-mortality":
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
@@ -421,6 +417,7 @@ export class LandingPage {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
+			case "infant-mortality":
 				allYearsData = this.allData.filter(
 					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
@@ -456,6 +453,7 @@ export class LandingPage {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
+			case "infant-mortality":
 			case "medicaidU65":
 				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
 				//xAxisTitle = "Time Period";
@@ -796,12 +794,10 @@ export class LandingPage {
 				//debugger;
 				return theData;
 			}
-
 		}
-/* 		const getSelectedData = async (dataFile) =>
-			Utils.getJsonFile(dataFile); */
 
 		//debugger;
+		let theChartTab = document.getElementById("icons-tab-2");
 		switch (dataTopic) {
 			case "obesity-child":
 				this.dataFile = "content/json/HUS_OBESCH_2018.json";
@@ -879,7 +875,26 @@ export class LandingPage {
 				// set chart tab to white
 				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
 				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				let theChartTab = document.getElementById("icons-tab-2");
+				theChartTab.style.backgroundColor = "#b3d2ce";
+				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+				this.updateShowMap(0);
+				break;
+			case "infant-mortality":	
+				this.dataFile = "content/json/InfantMortality.json";
+				this.chartTitle = "Infant Mortality";
+				selectedDataCache = DataCache.InfantMortalityData;
+				// set a valid unit num or else chart breaks
+				this.unitNum = 1;
+				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+				//$('#icons-tab-1').click();
+				$('#tab-map').css("visibility", "visible");
+				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+				// hide the chart tab
+				//$('#tab-chart').css("visibility", "hidden");
+				// set chart tab to white
+				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 				theChartTab.style.backgroundColor = "#b3d2ce";
 				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
 				this.updateShowMap(0);
@@ -923,29 +938,32 @@ export class LandingPage {
 			}
 
 			switch (dataTopic) {
-			case "obesity-child":
-				DataCache.ObesityData = this.allData;
+				case "obesity-child":
+					DataCache.ObesityData = this.allData;
+						break;
+				case "obesity-adult":
+					DataCache.ObesityAdultData = this.allData;
 					break;
-			case "obesity-adult":
-				DataCache.ObesityAdultData = this.allData;
-				break;
-			case "suicide":
-				DataCache.SuicideData = this.allData;
-				break;
-			case "injury":
-				DataCache.InjuryData = this.allData;
-				break;	
-			case "birthweight":
-				DataCache.BirthweightData = this.allData;
-				break;		
-			case "medicaidU65":
-				DataCache.MedicaidU65Data = this.allData;
-				break;
+				case "suicide":
+					DataCache.SuicideData = this.allData;
+					break;
+				case "injury":
+					DataCache.InjuryData = this.allData;
+					break;	
+				case "birthweight":
+					DataCache.BirthweightData = this.allData;
+					break;		
+				case "infant-mortality":
+					DataCache.InfantMortalityData = this.allData;
+					break;		
+				case "medicaidU65":
+					DataCache.MedicaidU65Data = this.allData;
+					break;
 			}
 			//debugger;
 			// create a year_pt col from time period
 			this.allData = this.allData
-				.filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
+				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
@@ -1002,6 +1020,7 @@ export class LandingPage {
 			case "obesity-adult":
 			case "injury":  // - can't use || in case switch statement
 			case "birthweight":
+			case "infant-mortality":
 				// NO DONT DO THIS HERE - reset unit_num or else it breaks
 				//this.unitNum = 1;
 				
@@ -1298,6 +1317,7 @@ export class LandingPage {
 			case "obesity-adult":
 			case "injury": 
 			case "birthweight":
+			case "infant-mortality":
 				this.startPeriod = start;
 				this.startYear = this.getYear(start);
 				allYearsArray.forEach((y) => {
@@ -1338,6 +1358,7 @@ export class LandingPage {
 			case "obesity-adult":
 			case "injury":
 			case "birthweight": 
+			case "infant-mortality":
 				this.endPeriod = end;
 				this.endYear = this.getYear(end);
 				break;
@@ -1715,6 +1736,7 @@ export class LandingPage {
 				<option value="obesity-adult">Obesity among Adults</option>
 				<option value="suicide">Death Rates for Suicide</option>
 				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
+				<option value="infant-mortality">Infant Mortality</option>
 				<option value="birthweight">Low birthweight live births</option>
 				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 				</optgroup>
@@ -1750,7 +1772,7 @@ export class LandingPage {
 				<strong class="fa-stack-1x fa-stack-text fa-inverse">3</strong>
 			</span>
 			<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">View data by</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Character</span>
+			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Characteristic</span>
 			<br>&nbsp;<br>
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>

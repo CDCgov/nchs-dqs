@@ -17,10 +17,9 @@ export const MainEvents = {
 		$("#panel-num-select").change((evt) => {
 			let panelNum = evt.target.value;
 		    appState.ACTIVE_TAB.updatePanelNum(panelNum);
-				//this.setDownloadAriaLabel();
-			  //.updatePanelNum(panelNum);
-			console.log("parent:", evt.target.parentNode);
-			console.log("appstate:",appState)
+
+			//console.log("parent:", evt.target.parentNode);
+			//console.log("appstate:",appState)
 			//debugger;
 		});
 		$("#stub-name-num-select").change((evt) => {
