@@ -258,17 +258,17 @@ export class GenMap {
 				estimateMatch = null;
 			}
 
-			if (theFlag === "*") {
+/* 			if (theFlag === "*") {
 				// duplicate the geometry and add cross hatching
 				let geomHatch = g;
 				geomHatch.flag = "**"; // set special code so getColor returns crosshatch
 				geometries.push({
 						...geomHatch,
-						estimate: estimateMatch,
+						estimate: null,
 						class: null,
 						flag: geomHatch.flag,
 				});
-			}
+			} */
 			
 			if (classBin[0] !== undefined) {
 				if (classBin[0].hasOwnProperty("class")) {
