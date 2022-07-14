@@ -177,6 +177,7 @@ export class GenMap {
 			let binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
 			let flag = d.properties.flag;
 			let estimate = d.properties.estimate;
+			let crosshatch = d.properties.crosshatch;
 
 			//debugger;
 
@@ -192,19 +193,17 @@ export class GenMap {
 			if (flag === "- - -") {
 				// ignore bin set to light gray
 				return noDataColorHexVal;
-			} else if (flag === "*" && estimate === null) {
-				//console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS);
+			} else if ((flag === "*" && estimate === null) || crosshatch) {
+				console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS, crosshatch);
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
-			} else if (flag === "*" && estimate !== null) {
+			} else if ((flag === "*" && estimate !== null) && (index > -1)) {
 				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
+				// - first original geometry has the bincolor based on estimate
+				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
 				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.properties.STATE_FIPS,binColor);
 				return binColor;
-			} else if (flag === "**" && estimate !== null) {
-				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
-				//console.log("getColor state,flag**,est-NOTnull: returning crosshatch", d.properties.STATE_FIPS);
-				return "url(#crossHatch)";
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
@@ -236,22 +235,17 @@ export class GenMap {
 			if (flag === "- - -") {
 				// ignore bin set to light gray
 				return noDataColorHexVal;
-			} else if (flag === "*" && estimate === null) {
+			} else if ((flag === "*" && estimate === null) || (d.crosshatch)) {
 				//console.log("getColor state,flag*,est-null: returning cross hatch", d.STATE_FIPS);
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
-			} else if (flag === "*" && estimate !== null) {
+			} else if ((flag === "*" && estimate !== null) && (index > -1)) {
 				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
 				// - this is the 1st primary geometry with "*" that sets the background color FIRST
+				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
 				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.STATE_FIPS,binColor);
 				return binColor;
-			} else if (flag === "**" && estimate !== null) {
-				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
-				// - this is the 2nd fake geometry to overlay the crosshatch on top of the color background
-				// - that is the only way to do it; you cannot set a color with the crosshatch fill
-				//console.log("getColor state,flag**,est-NOTnull: returning crosshatch", d.STATE_FIPS);
-				return "url(#crossHatch)";
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
@@ -358,6 +352,8 @@ export class GenMap {
 						class: parseInt(classBin[0].class),
 						active: 1,  // default initial to all checked
 						flag: theFlag,
+						//bgcolor: getColor(parseInt(classBin[0].class), theFlag), // STORE THE COLOR so that legend clicks retain color
+						crosshatch: 0, 
 					};
 				} else {
 					g.properties = {
@@ -366,6 +362,7 @@ export class GenMap {
 						class: null,
 						active: 1,  // default initial to all checked
 						flag: theFlag,
+						crosshatch: 0, 
 					};
 					console.log("### classBin has no class!", classBin[0]);
 				}
@@ -376,6 +373,7 @@ export class GenMap {
 					class: null,
 					active: 1,  // default initial to all checked
 					flag: theFlag,
+					crosshatch: 0, 
 				};
 			}
 						
@@ -383,16 +381,18 @@ export class GenMap {
 			// -- idea was to duplicate the geometry and add another layer for the color
 			// -- problem is I think that has to come FIRST and this is being drawn last
 			if (theFlag === "*" && estimateMatch !== null) {
-				// if you just do copyG = g then THIS WILL NOT WORK.  It sets both geometries to "**"
+				// if you just do copyG = g then THIS WILL NOT WORK.  Changes set both geometries bc it is a pointer
 				let copyG = JSON.parse(JSON.stringify(g)); /// this makes a deep clone without pointing to g
 				copyG.properties = {
 					...copyG.properties,
 					estimate: estimateMatch,
 					class: parseInt(classBin[0].class),
 					active: 1,
-					flag: "**", // set special code so getColor returns crosshatch
+					flag: "*",
+					crosshatch: 1, // set special code so getColor returns crosshatch
+								// do not store a bgcolor here - it will be crosshatching anyway
 				};
-				// now add the copied object to the list LAST
+				// now add the copied object to the list LAST so crosshatch drawn after underlying bgcolor
 				geometries.push({
 					arcs: g.arcs,
 					type: g.type,
@@ -404,8 +404,6 @@ export class GenMap {
 		
 		});
 
-
-			
 		console.log("###genMAP geometries w estimate:", geometries);
 		
 		// what territories are we hiding????  (TTTT)
@@ -426,7 +424,7 @@ export class GenMap {
 
 		const usMap = svg.append("g").attr("width", width).attr("height", mapHeight);
 
-		console.log("states data:", states);
+		console.log("all states data:", states);
 
 		usMap
 			.append("g")
@@ -447,9 +445,6 @@ export class GenMap {
 					return;  
 				}
 			});
-			//.style("fill", (d) => getColor(d.properties.class,d.properties.flag));
-		
-		// NOW set the flag ="**" back to single star for the rollover
 
 		
 		const territories = [
@@ -603,15 +598,16 @@ export class GenMap {
 			.attr("ry", 5 * overallScale)
 			.attr("stroke-width", 0.7)
 			.attr("stroke", "#777")
-			.style("fill", (d) => getColorFromD(d))
-			.attr("d.flag", function (d) {
+			.style("fill", (d) => getColorFromD(d));
+				// dont need this anymore bc added the crosshatch flag
+/* 			.attr("d.flag", function (d) {
 				if (d.flag === "**") {
 					//console.log("d flag is:", d.properties.flag);
 					// reset it
 					d.flag = "*"; // just reset the "**" back to "*" so that the rollover works
 					return;  
-				}
-			});
+				} 
+			});*/
 		
 		territoryGroup
 			.selectAll("text")
@@ -650,15 +646,18 @@ export class GenMap {
 			// update the colors for STATES
 			d3.selectAll("#states path")
 				.style("fill", function (d) {
-					//console.log("updateMap d=", d);
-					return getColor(d.properties.class,d.properties.flag);
+					let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d) //.properties.class,d.properties.flag)
+					if (d.properties.STATE_FIPS === 30) {
+						console.log("updateMap STATE color for d=", d, zColor); // Montana
+					}
+					return getColorFromDProps(d) // .properties.class,d.properties.flag);
 				});
 
 			// update the colors for TERRITORIES - separate bc the territory data format is DIFFERENT
 			d3.selectAll("#territoryGroup rect")
 				.style("fill", function (d) {
-					console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
-					return getColor(d.class,d.flag); // pass in both to get this right
+					//console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
+					return getColorFromD(d); 
 				});
 		}
 
@@ -709,30 +708,6 @@ export class GenMap {
 			return false;
 		}
 
-		function updateData() {
-			var val;
-			mEstimateByStateID = {};
-			mColorByStateID = {};
-
-			mCurrentYearData.Data.forEach(function (d) {
-			if (d.IsSuppressed) {
-				val = mSuppressedFlagID;
-			} else if (d.IsNoData) {
-				val = mNoDataFlagID;
-			} else {
-				val = d.Value;
-			}
-
-			if (isValueInActiveLegend(val)) {
-				mEstimateByStateID[+d.GeoID] = val;
-				mColorByStateID[+d.GeoID] = d.Color_HexVal;
-			} else {
-				mEstimateByStateID[+d.GeoID] = mInActiveFlagID;
-				mColorByStateID[+d.GeoID] = mInActiveColor;
-			}
-			});
-		}
-
 		function convertRGB(rgb) {
 			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
 			var separator = rgb.indexOf(",") > -1 ? "," : " ";
@@ -756,6 +731,7 @@ export class GenMap {
 			// The return value is a concatenation of "#" plus the rgb values which will give you your hex
 			return "#" + r + g + b;
 		}
+
 		function legendClickHandler(evt) {
 			let index;
 			let itemLabel;
@@ -830,7 +806,9 @@ export class GenMap {
 				createMap();
 			}; */
 		}
-		// original from Diabetes Atlas app 6/30/22
+
+
+		// create and load the map legend
 		function loadMapLegend() {
 			var i;
 			var legendTemplateConfig;
@@ -862,6 +840,7 @@ export class GenMap {
 
 			// No Data Unreliable - THEY ASKED TO DISABLE UNRELIABLE FROM THE LEGEND
 			// - instead we just have cross hatching in the state or territory if flag = "*"
+			// (TT) - leaving this here in case they ask us to re-enable this
 /* 			legendItemObj = {
 				ColorStyle:
 				"color:black !important; background-color:" + unreliableHexVal,
@@ -910,29 +889,12 @@ export class GenMap {
 				//console.log("loadLegend item:", i, legendItemObj);
 			}
 
-
-
-/* 			// Suppressed Data
-			suppressedDataColorHexVal = "Gray";  // mConfig.DataParameters.getSuppressedDataColorHexVal();
-			legendItemObj = {
-				ColorStyle:
-				"color:black !important; background-color:" +
-				suppressedDataColorHexVal,
-				DisplayLabel: "Suppressed",
-				ItemValue: mSuppressedFlagID.toString(), // 12Apr2021 DIAB-13
-				IsChecked: mActiveLegendItems.indexOf(String(mSuppressedFlagID)) > -1
-			};
-			legendItems.push(legendItemObj); */
-
 			legendTemplateConfig = {
 				LegendDivID: "us-map-legend",
 				LegendItems: legendItems
 			};
 
-			// Generate the HTML for the legend
-			//legendCompiledTemplateHTML = Handlebars.compile(legendTemplateHTML);
-			//	legendGeneratedHTML = legendCompiledTemplateHTML(legendTemplateConfig);
-				
+			// Generate the HTML for the legend				
 				legendGeneratedHTML = "<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
 				legendItems.forEach((leg,i) => {
 					let isCheckedStr;
@@ -959,18 +921,7 @@ export class GenMap {
 				legendGeneratedHTML += "</div>";
 				
 				// now add the legend to the map div
-				// - could use this method to pass in the parent id
-/* 				const $MapContainer = $("#" + mConfig.ParentID); // 25Feb2022
-				$MapContainer.append(legendGeneratedHTML); */
-				
-				// now add the legend to the map div
 				$("#us-map-legend").html(legendGeneratedHTML);
-
-				// now grab the Unreliable legend item and add crosshatching
-				// - NO we don't need to crosshatch this box anymore; just darker gray
-				//$("#legend-box-1").attr("style", "background-color:url(#crossHatch) !important;");
-
-
 			}
 		}
 	}
