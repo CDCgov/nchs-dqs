@@ -34,7 +34,7 @@ export class GenMap {
 		
 		const MapSvgDefs =
 			`<defs>
-					<pattern id="forwardHash" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+					<pattern id="crossHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
 						<rect width="4" height="8" transform="translate(0,0)" fill="#bbb"></rect>
 					</pattern>
 				</defs>`;
@@ -154,24 +154,116 @@ export class GenMap {
 				// ignore bin set to light gray
 				return noDataColorHexVal;
 			} else if (flag === "*") {
-				return "url(#forwardHash)";
+				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
 			} else if (flag === "**") {
-				// Set to cross hatch
-				return "url(#forwardHash)";
+				// Set to cross hatch AND color
+				return "url(#crossHatch)";
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
 				return binColor;
 			} else {
 				// COLOR NOT FOUND - so NOT ACTIVE
-				//return "url(#forwardHash)";  // <-- need ANOTHER case where null data gets the cross hatch?
+				//return "url(#crossHatch)";  // <-- need ANOTHER case where null data gets the cross hatch?
 				return "#FFFFFF";
 			}
 		}
 
-		// (TT) this let's you use white text on darker backgrounds
+		function getColorFromDProps(d) {
+			let index;
+			
+			let binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
+			let flag = d.properties.flag;
+			let estimate = d.properties.estimate;
+
+			//debugger;
+
+			// Check if the legend bin is inactive...
+			// -- if it is, then return WHITE
+			//console.log("active colors list:", mActiveLegendItemColors);
+			//console.log("check this bincolor:", binColor);
+			index = mActiveLegendItemColors.indexOf(binColor);
+			//console.log("bincolor index check:", index);
+			// Add or Remove that color to/from the Active list of colors
+			// - note the ORDER of the colors is NOT related to the bin number
+			// - this just tracks whether that color is ACTIVE or not
+			if (flag === "- - -") {
+				// ignore bin set to light gray
+				return noDataColorHexVal;
+			} else if (flag === "*" && estimate === null) {
+				//console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS);
+				return "url(#crossHatch)";
+				// ignore bin set to dark gray
+				//return unreliableHexVal;
+			} else if (flag === "*" && estimate !== null) {
+				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
+				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.properties.STATE_FIPS,binColor);
+				return binColor;
+			} else if (flag === "**" && estimate !== null) {
+				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
+				//console.log("getColor state,flag**,est-NOTnull: returning crosshatch", d.properties.STATE_FIPS);
+				return "url(#crossHatch)";
+			} else if (index > -1) {
+				// COLOR FOUND
+				//console.log("RETURNING bincolor:", binColor);
+				return binColor;
+			} else {
+				// COLOR NOT FOUND - so NOT ACTIVE
+				//return "url(#crossHatch)";  // <-- need ANOTHER case where null data gets the cross hatch?
+				return "#FFFFFF";
+			}
+		}
+
+		// the territories dont have Properties off the d object - so just duplicated function and removed the properties
+		// - yes could have passed an additional flag and swapped between the two but this is easier for debugging
+		function getColorFromD(d) {
+			let index;
+			
+			let binColor = bgColors[d.class]; // this IS based on position of the bin to the color
+			let flag = d.flag;
+			let estimate = d.estimate;
+
+			//debugger;
+
+			// Check if the legend bin is inactive...
+			// -- if it is, then return WHITE
+			index = mActiveLegendItemColors.indexOf(binColor);
+			// Add or Remove that color to/from the Active list of colors
+			// - note the ORDER of the colors is NOT related to the bin number
+			// - this just tracks whether that color is ACTIVE or not
+			if (flag === "- - -") {
+				// ignore bin set to light gray
+				return noDataColorHexVal;
+			} else if (flag === "*" && estimate === null) {
+				//console.log("getColor state,flag*,est-null: returning cross hatch", d.STATE_FIPS);
+				return "url(#crossHatch)";
+				// ignore bin set to dark gray
+				//return unreliableHexVal;
+			} else if (flag === "*" && estimate !== null) {
+				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
+				// - this is the 1st primary geometry with "*" that sets the background color FIRST
+				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.STATE_FIPS,binColor);
+				return binColor;
+			} else if (flag === "**" && estimate !== null) {
+				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
+				// - this is the 2nd fake geometry to overlay the crosshatch on top of the color background
+				// - that is the only way to do it; you cannot set a color with the crosshatch fill
+				//console.log("getColor state,flag**,est-NOTnull: returning crosshatch", d.STATE_FIPS);
+				return "url(#crossHatch)";
+			} else if (index > -1) {
+				// COLOR FOUND
+				//console.log("RETURNING bincolor:", binColor);
+				return binColor;
+			} else {
+				// COLOR NOT FOUND - so NOT ACTIVE
+				return "#FFFFFF";
+			}
+		}
+
+
+		// (TT) this let's you use white text on darker backgrounds - some left as black text
 		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 		function getFontColor(bin) {
 			//console.log("font color bin:", bin);
@@ -198,19 +290,19 @@ export class GenMap {
 			.attr("display", "inline-block");
 		
 		svg.append("defs").append("pattern")
-			.attr('id', 'forwardHash')
+			.attr('id', 'crossHatch')
 			.attr("width", 8)
 			.attr("height", 8)
 			.attr('patternUnits', "userSpaceOnUse")
 			.attr('patternTransform', "rotate(45)")
 			.append('rect')
-			.attr("width", 4)
+			.attr("width", 2) // sets the thickness of the crosshatching
 			.attr("height", 8)
 			.attr('fill', '#bbb')
 			.attr("transform", "translate(0,0)");
 
 
-		// join the data of territories with the incoming data
+		// join the data of STATES with the incoming data topic data
 		geometries.forEach((g) => {
 			//let estimateRange = this.data.filter((d) => d.stub_label_num === g.properties.STATE_FIPS)[0]?.estimate;
 			let estimateMatch = this.data
@@ -258,18 +350,6 @@ export class GenMap {
 				estimateMatch = null;
 			}
 
-			if (theFlag === "*") {
-				// duplicate the geometry and add cross hatching
-				let geomHatch = g;
-				geomHatch.flag = "**"; // set special code so getColor returns crosshatch
-				geometries.push({
-						...geomHatch,
-						estimate: estimateMatch,
-						class: null,
-						flag: geomHatch.flag,
-				});
-			}
-			
 			if (classBin[0] !== undefined) {
 				if (classBin[0].hasOwnProperty("class")) {
 					g.properties = {
@@ -298,8 +378,34 @@ export class GenMap {
 					flag: theFlag,
 				};
 			}
+						
+			// this was a nice try but unfortunately kills the crosshatching
+			// -- idea was to duplicate the geometry and add another layer for the color
+			// -- problem is I think that has to come FIRST and this is being drawn last
+			if (theFlag === "*" && estimateMatch !== null) {
+				// if you just do copyG = g then THIS WILL NOT WORK.  It sets both geometries to "**"
+				let copyG = JSON.parse(JSON.stringify(g)); /// this makes a deep clone without pointing to g
+				copyG.properties = {
+					...copyG.properties,
+					estimate: estimateMatch,
+					class: parseInt(classBin[0].class),
+					active: 1,
+					flag: "**", // set special code so getColor returns crosshatch
+				};
+				// now add the copied object to the list LAST
+				geometries.push({
+					arcs: g.arcs,
+					type: g.type,
+					properties: copyG.properties,
+				});
+			}
+			/////////  THE ABOVE PROBABLY DOES NOT WORK WHEN YOU CHANGE CHARACTERISTICS!!!
+			/////////  NEED TO ADD SAME CODE TO updateMap !!!!!!!!!!!
+		
 		});
 
+
+			
 		console.log("###genMAP geometries w estimate:", geometries);
 		
 		// what territories are we hiding????  (TTTT)
@@ -332,8 +438,20 @@ export class GenMap {
 			.attr("d", path)
 			.style("stroke", "#000")
 			.style("stroke-width", 0.4) // was 0.3
-			.style("fill", (d) => getColor(d.properties.class,d.properties.flag));
+			.style("fill", (d) => getColorFromDProps(d))
+			.attr("d.properties.flag", function (d) {
+				if (d.properties.flag === "**") {
+					//console.log("d flag is:", d.properties.flag);
+					// reset it
+					d.properties.flag = "*"; // just reset the "**" back to "*" so that the rollover works
+					return;  
+				}
+			});
+			//.style("fill", (d) => getColor(d.properties.class,d.properties.flag));
+		
+		// NOW set the flag ="**" back to single star for the rollover
 
+		
 		const territories = [
 			{
 				STATE_NAME: "American Samoa", desiredAbbr: "AS", abbr: "AS",
@@ -481,15 +599,20 @@ export class GenMap {
 			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween)
 			.attr("width", territoryRectWidth * 0.8)
 			.attr("height", territoryRectHeight)
-			.style("fill", function (d) {
-				console.log("Territories FILL getcolor for d:", d);
-				return getColor(d.class,d.flag);
-			})
 			.attr("rx", 5 * overallScale)
 			.attr("ry", 5 * overallScale)
 			.attr("stroke-width", 0.7)
-			.attr("stroke", "#777");
-
+			.attr("stroke", "#777")
+			.style("fill", (d) => getColorFromD(d))
+			.attr("d.flag", function (d) {
+				if (d.flag === "**") {
+					//console.log("d flag is:", d.properties.flag);
+					// reset it
+					d.flag = "*"; // just reset the "**" back to "*" so that the rollover works
+					return;  
+				}
+			});
+		
 		territoryGroup
 			.selectAll("text")
 			.data(filteredTerritories)
@@ -762,12 +885,6 @@ export class GenMap {
 					nullFlag = true;
 					continue; 
 					// then it is "Unreliable"
-
-					displayLabel = "Unreliable";
-					legendItemVal = "Unreliable";
-					// how to set crosshatch??
-					fontColor = "#FFFFFF"
-					colorStyle = "color:" + fontColor + " !important;background-color:" + "url(#forwardHash)";
 				} else {
 					if (nullFlag) {
 						bgColor = getColor(i);
@@ -790,7 +907,7 @@ export class GenMap {
 					//IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
 				};
 				legendItems.push(legendItemObj);
-				console.log("loadLegend item:", i, legendItemObj);
+				//console.log("loadLegend item:", i, legendItemObj);
 			}
 
 
@@ -851,7 +968,7 @@ export class GenMap {
 
 				// now grab the Unreliable legend item and add crosshatching
 				// - NO we don't need to crosshatch this box anymore; just darker gray
-				//$("#legend-box-1").attr("style", "background-color:url(#forwardHash) !important;");
+				//$("#legend-box-1").attr("style", "background-color:url(#crossHatch) !important;");
 
 
 			}
