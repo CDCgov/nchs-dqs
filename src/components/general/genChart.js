@@ -218,6 +218,9 @@ export class GenChart {
 		// setup scales
 		let xScale;
 
+		// (TTT) THIS SECTION NEED AN OVERHAUL FOR 1950 - 1960 - 1970 to show bigger gaps 
+		// than year to year data 1981, 1982, 1983 etc.
+		// - why is no "extent" calculated
 		if (p.firefoxReversed === true) {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
