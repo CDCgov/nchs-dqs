@@ -21,10 +21,10 @@ export class GenMap {
 		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
 		const mInActiveFlagID = -3;
-		let mColorByStateID = {};
 		let mInActiveColor = "#FFFFFF";
 		const noDataColorHexVal = "#dee2e6";
-		const unreliableHexVal = "#9b9ea1";
+		//const unreliableHexVal = "#9b9ea1"; // they decided for now not to use this
+												// (TT) I'm not going to delete it though in case we need it back later.
 
 		//const svgId = this.mapVizId;
 		const svgId = `${this.mapVizId}-svg`;
@@ -157,9 +157,9 @@ export class GenMap {
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
-			} else if (flag === "**") {
-				// Set to cross hatch AND color
-				return "url(#crossHatch)";
+			} else if (flag === "none") {
+				// Set to no data color
+				return noDataColorHexVal;
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
@@ -194,7 +194,7 @@ export class GenMap {
 				// ignore bin set to light gray
 				return noDataColorHexVal;
 			} else if ((flag === "*" && estimate === null) || crosshatch) {
-				console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS, crosshatch);
+				//console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS, crosshatch);
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
@@ -204,6 +204,9 @@ export class GenMap {
 				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
 				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.properties.STATE_FIPS,binColor);
 				return binColor;
+			} else if (flag === "none" && estimate === null) {
+				// no data record found
+				return noDataColorHexVal;
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
@@ -246,6 +249,9 @@ export class GenMap {
 				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
 				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.STATE_FIPS,binColor);
 				return binColor;
+			} else if (flag === "none" && estimate === null) {
+				// no data record found
+				return noDataColorHexVal;
 			} else if (index > -1) {
 				// COLOR FOUND
 				//console.log("RETURNING bincolor:", binColor);
@@ -524,9 +530,8 @@ export class GenMap {
 			if (theFlag.length > 0) {
 				theFlag = theFlag[0].flag;
 			} else {
-				theFlag = "";
+				theFlag = "none";
 			}
-
 
 			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch);
 
