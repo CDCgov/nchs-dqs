@@ -798,6 +798,8 @@ export class LandingPage {
 
 		//debugger;
 		let theChartTab = document.getElementById("icons-tab-2");
+
+		// switch to new data source
 		switch (dataTopic) {
 			case "obesity-child":
 				this.dataFile = "content/json/HUS_OBESCH_2018.json";
@@ -805,14 +807,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 			case "obesity-adult":
 				this.dataFile = "content/json/ObesityAdults.json";
@@ -820,29 +814,14 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityAdultData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 			case "suicide":
+				//debugger;
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click(); // dont do this here - causes infinite loop
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -850,14 +829,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;			
 			case "birthweight":	
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
@@ -865,19 +836,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.BirthweightData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
 				break;
 			case "infant-mortality":	
 				this.dataFile = "content/json/InfantMortality.json";
@@ -885,19 +843,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.InfantMortalityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
 				break;
 			case "medicaidU65":
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
@@ -906,14 +851,6 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 		}
 		// if we switch Topic then start with Total every time
@@ -966,6 +903,54 @@ export class LandingPage {
 				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
+
+			//debugger;
+
+			// have to put interface changes in separate switch statements
+			// - it WAS in switch statement at top but...
+			// if you do that you get weird chart "flashes" between changing data sets
+			switch (dataTopic) {
+
+			// cases with LINE CHART only and no map data
+			case "obesity-child":
+			case "obesity-adult":
+			case "suicide":
+			case "injury":
+			case "medicaidU65":
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+					break;	
+				
+			// cases with US Map data option
+			case "birthweight":	
+			case "infant-mortality":
+				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+				//$('#icons-tab-1').click();
+				$('#tab-map').css("visibility", "visible");
+				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+				// hide the chart tab
+				//$('#tab-chart').css("visibility", "hidden");
+				// set chart tab to white
+				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+				theChartTab.style.backgroundColor = "#b3d2ce";
+				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+				this.updateShowMap(0);
+				break;
+
+		}
+	
+			//disable single year if it is set
+			// force "year" to reset and not have single year clicked
+			if (document.getElementById('show-one-period-checkbox').checked) {
+				$("#show-one-period-checkbox").click();
+			}
 
 			// need data in place before filling year selects
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
