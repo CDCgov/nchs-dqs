@@ -924,7 +924,7 @@ export class LandingPage {
 				// hide the map tab
 				$('#tab-map').css("visibility", "hidden");
 				this.updateShowMap(0);
-					break;	
+				break;	
 				
 			// cases with US Map data option
 			case "birthweight":	
