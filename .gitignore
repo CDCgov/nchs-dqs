@@ -1,1 +1,13 @@
 node_modules
+dist/*
+!dist/TemplatePackage
+!dist/content
+!dist/images
+!dist/lib
+!dist/webfonts
+!dist/embeds
+.jsbeautifyrc
+.vscode
+dist/css/index.css
+dist/css/index.css.map
+!dist/favicon.ico
