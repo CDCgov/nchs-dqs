@@ -991,26 +991,7 @@ ul#stlyeplaceHolder {
 	overflow: auto;
 }
 
-/*  Micrograph code */
-#chart-container {
-	margin-left: 0px;
-	width:95%;
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-ms-flex-wrap: wrap;
-	flex-wrap: wrap;
-	-webkit-box-orient: horizontal;
-	-webkit-box-direction: normal;
-	-ms-flex-direction: row;
-	flex-direction: row;
-	-webkit-box-pack: center;
-	-ms-flex-pack: center;
-	justify-content: center;
-	/* outline: 2px dotted; */
-	font-weight: bold;
-	font-size: 0.999em;
-}
+
 
 
 #ed-trends-all-states-chart {
