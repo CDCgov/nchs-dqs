@@ -8,10 +8,11 @@ export const MainEvents = {
 		$("#data-topic-select").change((evt) => {
 			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
+			// REMOVED THIS FROM HERE BC IT CAUSES A FLASH OF BAD DATA LINE CHART
 			// force "year" to reset and not have single year clicked
-			if (document.getElementById('show-one-period-checkbox').checked) {
-				$("#show-one-period-checkbox").click();
-			}
+			//if (document.getElementById('show-one-period-checkbox').checked) {
+				// $("#show-one-period-checkbox").click();
+			//}
 			console.log("New data topic:", dataTopic);
 		});
 		$("#panel-num-select").change((evt) => {
