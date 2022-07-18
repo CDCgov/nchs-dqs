@@ -102,16 +102,28 @@ export class GenChart {
 			el.text('');
 			//this.dy = this.dy + offset;
 			for (var i = 0; i < words.length; i++) {
-				var tspan = el.append('tspan').text(words[i]);
+				var str;
+				var result;
+				var tspan;
+				if (words[i].length < 24) {
+					tspan = el.append('tspan').text(words[i]);
+				} else {
+					str = words[i];
+					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
+					tspan = tspan.append('tspan').text(result[0]);
+					tspan.attr('x', 0).attr('dy', '11');
+					tspan = tspan.append('tspan').text(result[1]);
+				}
+
 				if (i > 0)
 					// the dy value is the "space between label lines" - try to calc so it adjusts some
-					tspan.attr('x', 0).attr('dy', axisLabelFontSize / 2 + 5); // was 15
+					tspan.attr('x', 0).attr('dy', axisLabelFontSize / 2 + 6); // was 15
 			}
 			// based on number of lines, adjust height
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 27);
+				d3.select(this).attr("dy", 23);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
