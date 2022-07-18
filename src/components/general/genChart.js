@@ -302,7 +302,7 @@ export class GenChart {
   			.attr("height", '100%') // percent height
 			.attr('style', 'width: 100%; padding-bottom: 92%; height: 1px; overflow: visible; display:inline; margin: auto;')
 			.attr('viewbox', '0 0 100 100')
-			.attr('preserveAspectRatio', 'xMidYMid meet')
+			.attr('preserveAspectRatio', 'xMinYMin meet')
 			//.attr('preserveAspectRatio', 'xMidYMid meet')
 
 

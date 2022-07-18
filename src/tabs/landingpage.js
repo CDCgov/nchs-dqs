@@ -562,6 +562,7 @@ export class LandingPage {
 	    };
 
 		} else {
+			// DRAW A LINE CHART
 			useBars = false;
 					props = {
 			data,
@@ -669,11 +670,10 @@ export class LandingPage {
 				title: "Age Group: ",
 				datumType: "string",
 			},
-			// re-enable this when we go to sql server
-/* 			flag: {
+ 			flag: {
 				title: "Flag:",
 				datumType: "string",
-			}, */
+			}, 
 			"": { title: "", datumType: "empty" },
 		};
 
@@ -973,23 +973,6 @@ export class LandingPage {
 
 
 	}
-
-/* 	loadUSMapData() {
-		Utils.getJsonFile("content/json/State_Territory_FluView1.json")
-			.then((topo) => {
-				DataCache.USTopo = JSON.parse(topo);
-				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-				this.geometries = geometries;
-				return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
-			})
-			.then((legenddata) => {
-				DataCache.LegendData = JSON.parse(legenddata);
-				return;
-			})
-			.catch(function (err) {
-				console.error(`Initial data load failure!! Error: ${err.stack}`);
-			});
-	} */
 
 	setAllSelectDropdowns () {
 		let allYearsArray;
@@ -1462,7 +1445,7 @@ export class LandingPage {
 				this.classifyType = 1; // standard
 				break;
 			case "equal":
-				this.classifyType = 3;
+				this.classifyType = 3; // not using right now
 				break;
 			default:
 				this.classifyType = 2; // natural
