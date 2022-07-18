@@ -173,6 +173,8 @@ export class GenChart {
 		if (p.chartRotate === true) {
 			// increase bottom margin - which ends up being left side where Characteristics are displayed
 			margin.bottom = margin.bottom + 90;
+			//margin.left = 90;
+			// messing with margin.left here pushed the barchart legend up onto the barchart :-(
 		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -188,9 +190,9 @@ export class GenChart {
 			svgHeight = svgHeight * 1.4;
 			chartHeight = chartHeight * 1.4;
 			// reduce width some
-			svgWidth = svgWidth * 0.6;
-			chartWidth = chartWidth * 0.6;
-		}
+			svgWidth = svgWidth * 0.8;
+			chartWidth = chartWidth * 0.8;
+		} 
 
 		// get chart x and y centers
 		const halfXMargins = xMargin / 2;
@@ -297,16 +299,24 @@ export class GenChart {
 			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
 		// apply the svg to the container element
-		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+		const svg = viz.append("svg")   //.attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+			.attr("id", svgId)
+			.attr("width", '100%') // percent width
+  			.attr("height", '100%') // percent height
+			.attr('style', 'width: 100%; padding-bottom: 92%; height: 1px; overflow: visible; display:inline; margin: auto;')
+			.attr('viewbox', '0 0 100 100')
+			.attr('preserveAspectRatio', 'xMinYMin meet')
+			//.attr('preserveAspectRatio', 'xMidYMid meet')
+
+
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
 		// - this could also be enabled or disabled from a PROP 
 		svg
 			.append("g")
-			.append("rect").attr("id", "whitebox")
+			.append("rect").attr("id", "whitebox")  // give it a white box background
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
 			.attr("width", svgWidth)
-
 		// CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component
 		if (!p.data.length) {
 			if (p.usesBars) {
@@ -1097,12 +1107,13 @@ export class GenChart {
 		// (TT) this is where we rotate the entire bar chart
 		if (p.usesBars === true && p.chartRotate === true) {
 			// rotate the entire chart
+			let moveCenter = svgWidth / 3; // this helps center bar chart (TT)
 			d3.selectAll(`#${svgId}`)
 				.attr(
 					"transform",
-					`rotate(${p.chartRotationPercent})`
-				);
-
+					`rotate(${p.chartRotationPercent}) translate(70 ${moveCenter})`
+			);
+			
 			// now add the LEGEND! - have to do this last after Bar Chart drawn
 			if (p.usesLegend === true) {
 				// set up the data first

@@ -562,6 +562,7 @@ export class LandingPage {
 			};
 
 		} else {
+			// DRAW A LINE CHART
 			useBars = false;
 			props = {
 				data,
@@ -669,11 +670,10 @@ export class LandingPage {
 				title: "Age Group: ",
 				datumType: "string",
 			},
-			// re-enable this when we go to sql server
-			/* 			flag: {
-							title: "Flag:",
-							datumType: "string",
-						}, */
+ 			flag: {
+				title: "Flag:",
+				datumType: "string",
+			}, 
 			"": { title: "", datumType: "empty" },
 		};
 
@@ -798,6 +798,8 @@ export class LandingPage {
 
 		//debugger;
 		let theChartTab = document.getElementById("icons-tab-2");
+
+		// switch to new data source
 		switch (dataTopic) {
 			case "obesity-child":
 				this.dataFile = "content/json/ObesityChildren.json";
@@ -805,14 +807,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 			case "obesity-adult":
 				this.dataFile = "content/json/ObesityAdults.json";
@@ -820,29 +814,14 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityAdultData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 			case "suicide":
+				//debugger;
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click(); // dont do this here - causes infinite loop
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -850,34 +829,13 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
-				break;
-			case "birthweight":
+				break;			
+			case "birthweight":	
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
 				break;
 			case "infant-mortality":
 				this.dataFile = "content/json/InfantMortality.json";
@@ -885,19 +843,6 @@ export class LandingPage {
 				selectedDataCache = DataCache.InfantMortalityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
 				break;
 			case "medicaidU65":
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
@@ -906,14 +851,6 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				//$('#icons-tab-2').click();
 				break;
 		}
 		// if we switch Topic then start with Total every time
@@ -967,6 +904,54 @@ export class LandingPage {
 				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
+			//debugger;
+
+			// have to put interface changes in separate switch statements
+			// - it WAS in switch statement at top but...
+			// if you do that you get weird chart "flashes" between changing data sets
+			switch (dataTopic) {
+
+			// cases with LINE CHART only and no map data
+			case "obesity-child":
+			case "obesity-adult":
+			case "suicide":
+			case "injury":
+			case "medicaidU65":
+				// show the chart tab
+				$('#tab-chart').css("visibility", "visible");
+				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+				// hide the map tab
+				$('#tab-map').css("visibility", "hidden");
+				this.updateShowMap(0);
+				break;	
+				
+			// cases with US Map data option
+			case "birthweight":	
+			case "infant-mortality":
+				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+				//$('#icons-tab-1').click();
+				$('#tab-map').css("visibility", "visible");
+				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+				// hide the chart tab
+				//$('#tab-chart').css("visibility", "hidden");
+				// set chart tab to white
+				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+				theChartTab.style.backgroundColor = "#b3d2ce";
+				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+				this.updateShowMap(0);
+				break;
+
+		}
+	
+			//disable single year if it is set
+			// force "year" to reset and not have single year clicked
+			if (document.getElementById('show-one-period-checkbox').checked) {
+				$("#show-one-period-checkbox").click();
+			}
+
 			// need data in place before filling year selects
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
@@ -989,24 +974,7 @@ export class LandingPage {
 
 	}
 
-	/* 	loadUSMapData() {
-			Utils.getJsonFile("content/json/State_Territory_FluView1.json")
-				.then((topo) => {
-					DataCache.USTopo = JSON.parse(topo);
-					const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-					this.geometries = geometries;
-					return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
-				})
-				.then((legenddata) => {
-					DataCache.LegendData = JSON.parse(legenddata);
-					return;
-				})
-				.catch(function (err) {
-					console.error(`Initial data load failure!! Error: ${err.stack}`);
-				});
-		} */
-
-	setAllSelectDropdowns() {
+	setAllSelectDropdowns () {
 		let allYearsArray;
 		// always filter the data again
 		//debugger;
@@ -1477,7 +1445,7 @@ export class LandingPage {
 				this.classifyType = 1; // standard
 				break;
 			case "equal":
-				this.classifyType = 3;
+				this.classifyType = 3; // not using right now
 				break;
 			default:
 				this.classifyType = 2; // natural
@@ -1890,13 +1858,13 @@ export class LandingPage {
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
-		<div class="chart-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="chart-wrapper" style=" height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 				</div>
-				<div id="chart-container" class="general-chart" style="height:fit-content;align:left;">
+				<div id="chart-container" class="general-chart" style="text-align:center;">
 				</div>
 				<br>
 				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
