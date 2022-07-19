@@ -123,12 +123,23 @@ export class GenChart {
 				var tspan;
 				if (words[i].length < 24) {
 					tspan = el.append('tspan').text(words[i]);
-					tspan.attr('x', 0).attr('dy', '10');
+					if (words.length < 2) {
+						tspan.attr('x', 0).attr('dy', '32');
+					}
+					if (words.length == 2) {
+						tspan.attr('x', 0).attr('dy', '30');
+					}
+					if (words.length == 3) {
+						tspan.attr('x', 0).attr('dy', '21');
+					}
+					if (words.length == 4) {
+						tspan.attr('x', 0).attr('dy', '12');
+					}
 				} else {
 					str = words[i];
 					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
 					tspan = tspan.append('tspan').text(result[0]);
-					tspan.attr('x', 0).attr('dy', '10');
+					tspan.attr('x', 0).attr('dy', '11');
 					tspan = tspan.append('tspan').text(result[1]);
 				}
 
@@ -140,7 +151,7 @@ export class GenChart {
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 23);
+				d3.select(this).attr("dy", 27);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
@@ -221,7 +232,7 @@ export class GenChart {
 			// reduce width some
 			svgWidth = svgWidth * 0.8;
 			chartWidth = chartWidth * 0.8;
-		} 
+		}
 
 		// get chart x and y centers
 		const halfXMargins = xMargin / 2;
@@ -331,11 +342,11 @@ export class GenChart {
 		const svg = viz.append("svg")   //.attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
 			.attr("id", svgId)
 			.attr("width", '100%') // percent width
-  			.attr("height", '100%') // percent height
+			.attr("height", '100%') // percent height
 			.attr('style', 'width: 100%; padding-bottom: 92%; height: 1px; overflow: visible; display:inline; margin: auto;')
 			.attr('viewbox', '0 0 100 100')
 			.attr('preserveAspectRatio', 'xMinYMin meet')
-			//.attr('preserveAspectRatio', 'xMidYMid meet')
+		//.attr('preserveAspectRatio', 'xMidYMid meet')
 
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
@@ -1137,8 +1148,8 @@ export class GenChart {
 				.attr(
 					"transform",
 					`rotate(${p.chartRotationPercent}) translate(70 ${moveCenter})`
-			);
-			
+				);
+
 			// now add the LEGEND! - have to do this last after Bar Chart drawn
 			if (p.usesLegend === true) {
 				// set up the data first
