@@ -41,7 +41,7 @@ export class LandingPage {
 		this.startPeriod = "1988-1994";
 		this.startYear = "1988"; // first year of the first period
 		this.endPeriod = "2013-2016";
-		this.endYear = "2013" // first year of the last period
+		this.endYear = "2013"; // first year of the last period
 		this.footNotes = "";
 		this.footnoteMap = {};
 		this.unitNum = 1; // default 1 obesity
@@ -49,7 +49,7 @@ export class LandingPage {
 		this.showBarChart = 0;
 		this.showMap = 0;
 		this.geometries = {};
-		this.classifyType = 2;  // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
+		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 	}
 
 	renderTab() {
@@ -66,7 +66,6 @@ export class LandingPage {
 		this.addClickListeners();
 	}
 
-
 	renderAfterDataReady() {
 		// set default yscale:
 		if (!this.yScaleType) {
@@ -81,9 +80,7 @@ export class LandingPage {
 		this.renderChart();
 	}
 
-
 	getInitialData() {
-
 		async function getSelectedData() {
 			return DataCache.ObesityData ?? Utils.getJsonFile("content/json/ObesityChildren.json");
 		}
@@ -97,53 +94,69 @@ export class LandingPage {
 		}
 
 		// getUSMapData - if we do it here we just load the map date ONE TIME
-		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()]).then((data) => {
-			//const [destructuredData] = data;
-			[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
-			DataCache.USTopo = JSON.parse(DataCache.USTopo);
-			const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-			this.geometries = geometries;
+		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()])
+			.then((data) => {
+				//const [destructuredData] = data;
+				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
+				DataCache.USTopo = JSON.parse(DataCache.USTopo);
+				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
+				this.geometries = geometries;
 
-			this.allData = JSON.parse(data[0]);
-			DataCache.ObesityData = this.allData;
-			this.footNotes = JSON.parse(data[1]);
-			DataCache.Footnotes = this.footNotes;
+				this.allData = JSON.parse(data[0]);
+				DataCache.ObesityData = this.allData;
+				this.footNotes = JSON.parse(data[1]);
+				DataCache.Footnotes = this.footNotes;
 
-			// build footnote map - but this needs to be done on EVERY data change
-			this.footnoteMap = {};
-			let i = null;
-			for (i = 0; this.footNotes.length > i; i += 1) {
-				this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
-			}
+				// build footnote map - but this needs to be done on EVERY data change
+				this.footnoteMap = {};
+				let i = null;
+				for (i = 0; this.footNotes.length > i; i += 1) {
+					this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
+				}
 
-			//debugger;
+				//debugger;
 
-			// create a year_pt col from time period
-			if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
-				this.allData = this.allData
-					.filter(function (d) {
-						if (d.flag === "- - -") {
-							return d.estimate = null;  // estimate missing so fill in with null???
-						} else { return d; }
-					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
-				this.renderAfterDataReady();
-			} else {
-				this.allData = this.allData
-					.filter(function (d) {
-						if (d.flag === "- - -") {
-							d.estimate = null;
-							return d;
-						} else { return d; }
-					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
-				this.renderAfterDataReady();
-			}
-
-		}).catch(function (err) {
-			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
-		});
-
+				// create a year_pt col from time period
+				if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
+					this.allData = this.allData
+						.filter(function (d) {
+							if (d.flag === "- - -") {
+								return (d.estimate = null); // estimate missing so fill in with null???
+							} else {
+								return d;
+							}
+						})
+						.map((d) => ({
+							...d,
+							estimate: parseFloat(d.estimate),
+							year_pt: this.getYear(d.year),
+							dontDraw: false,
+							assignedLegendColor: "#FFFFFF",
+						}));
+					this.renderAfterDataReady();
+				} else {
+					this.allData = this.allData
+						.filter(function (d) {
+							if (d.flag === "- - -") {
+								d.estimate = null;
+								return d;
+							} else {
+								return d;
+							}
+						})
+						.map((d) => ({
+							...d,
+							estimate: parseFloat(d.estimate),
+							year_pt: d.year,
+							dontDraw: false,
+							assignedLegendColor: "#FFFFFF",
+						}));
+					this.renderAfterDataReady();
+				}
+			})
+			.catch(function (err) {
+				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
+			});
 	}
 
 	getYear(period) {
@@ -152,23 +165,22 @@ export class LandingPage {
 	}
 
 	getSelectorText(sel) {
-		return (sel.options[sel.selectedIndex].text);
+		return sel.options[sel.selectedIndex].text;
 	}
 
 	renderMap() {
 		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
-		$('#us-map-container').show();
+		$("#us-map-container").show();
 
 		// If TOTAL is selected we CANNOT DRAW THE MAP, so show a message
 		if (this.stubNameNum === 0) {
 			// need to SHOW A MESSAGE
-			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
-
 		} else {
-			$('#us-map-message').html("");
+			$("#us-map-message").html("");
 			// get rid of the big margins
-			$('#us-map-message').hide();
+			$("#us-map-message").hide();
 			$("#us-map-legend").show();
 
 			// (TTTT) to do the PLAY legend - can't do this
@@ -178,14 +190,12 @@ export class LandingPage {
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
-			stateData = stateData.filter(
-				(d) => parseInt(d.year_pt) === parseInt(this.startYear)
-			);
+			stateData = stateData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 			this.flattenedFilteredData = stateData;
 
 			const mapVizId = "us-map";
 			let map = new GenMap({
-				mapData: stateData,  // misCdata[3].Jurisdiction2,
+				mapData: stateData, // misCdata[3].Jurisdiction2,
 				vizId: mapVizId,
 				classifyType: this.classifyType,
 				startYear: parseInt(this.startYear),
@@ -198,7 +208,6 @@ export class LandingPage {
 	}
 
 	renderChart() {
-
 		//debugger;
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
@@ -239,14 +248,19 @@ export class LandingPage {
 		this.panelNum = $("#panel-num-select option:selected").val();
 		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
 
-		let selectedPanelData
+		let selectedPanelData;
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
 			case "infant-mortality":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>
+						parseInt(d.panel_num) === parseInt(this.panelNum) &&
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
 			case "suicide":
@@ -259,7 +273,11 @@ export class LandingPage {
 								} */
 				//console.log("suicide data unit num:", this.unitNum);
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				//debugger;
 				break;
@@ -279,7 +297,11 @@ export class LandingPage {
 				}
 
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				// backup
 				/* 				selectedPanelData = this.allData.filter(
@@ -289,7 +311,11 @@ export class LandingPage {
 				break;
 			case "medicaidU65":
 				selectedPanelData = this.allData.filter(
-					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
+					(d) =>
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
 				break;
 		}
@@ -313,9 +339,7 @@ export class LandingPage {
 
 		if (this.showBarChart) {
 			// filter to just the start year
-			selectedPanelData = selectedPanelData.filter(
-				(d) => parseInt(d.year_pt) === parseInt(this.startYear)
-			);
+			selectedPanelData = selectedPanelData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 		} else {
 			// DONT DO THIS HERE - DO ONLY ON LEGEND NOT THE LINE
 			// now sort by stub_label_num
@@ -330,9 +354,19 @@ export class LandingPage {
 		}
 
 		//debugger;
-		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys();
+		let allFootnoteIdsArray = d3
+			.map(selectedPanelData, function (d) {
+				return d.footnote_id_list;
+			})
+			.keys();
 		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
 		this.updateFootnotes(allFootnoteIdsArray);
+
+		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
+			return [...selectedPanelData].map((d) => ({
+				...d,
+				date: new Date(`${d.year}-01-01T00:00:00`),
+			}));
 
 		return [...selectedPanelData];
 	}
@@ -344,14 +378,17 @@ export class LandingPage {
 		// Make sure panel num is correct
 		this.panelNum = $("#panel-num-select option:selected").val();
 
-		let allYearsData
+		let allYearsData;
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
 			case "infant-mortality":
 				allYearsData = this.allData.filter(
-					(d) => parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
+					(d) =>
+						parseInt(d.panel_num) === parseInt(this.panelNum) &&
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
 				break;
 			case "suicide":
@@ -359,7 +396,9 @@ export class LandingPage {
 			case "medicaidU65":
 				// does not use the panel_num
 				allYearsData = this.allData.filter(
-					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
+					(d) =>
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
 				//debugger;
 				break;
@@ -381,13 +420,13 @@ export class LandingPage {
 			case "birthweight":
 			case "infant-mortality":
 			case "medicaidU65":
-				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
+				yAxisTitle = this.unitNumText; //"Percent of Population, crude (%)";
 				break;
 			case "suicide":
-				yAxisTitle = this.unitNumText;  //"Deaths per 100,000 resident population, crude";
+				yAxisTitle = this.unitNumText; //"Deaths per 100,000 resident population, crude";
 				break;
 			case "injury":
-				yAxisTitle = this.unitNumText;  //"Initial injury-related visits in thousands, crude";
+				yAxisTitle = this.unitNumText; //"Initial injury-related visits in thousands, crude";
 				break;
 		}
 		// X Axis Title is the "Characteristic" selected
@@ -400,16 +439,16 @@ export class LandingPage {
 		const vizId = "chart-container";
 		let props;
 		// figure out legend placement
-		let legendCoordPercents = [0.40, 0.58];
+		let legendCoordPercents = [0.4, 0.58];
 		switch (this.stubNameNum) {
 			case 0:
 				legendCoordPercents = [0.38, 0.75];
 				break;
 			case 1:
-				legendCoordPercents = [0.40, 0.70];
+				legendCoordPercents = [0.4, 0.7];
 				break;
 			case 2:
-				legendCoordPercents = [0.40, 0.70];
+				legendCoordPercents = [0.4, 0.7];
 				break;
 			case 3:
 				legendCoordPercents = [0.25, 0.65];
@@ -421,7 +460,7 @@ export class LandingPage {
 				legendCoordPercents = [0.38, 0.66];
 				break;
 			default:
-				legendCoordPercents = [0.40, 0.58];
+				legendCoordPercents = [0.4, 0.58];
 				break;
 		}
 		// if one single year then use bar chart
@@ -483,15 +522,18 @@ export class LandingPage {
 				vizId,
 				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
 			};
-
 		} else {
+			const scaleTimeIndicators = ["suicide", "Medicaid"];
+			const needsScaleTime = scaleTimeIndicators.some((ind) => data[0].indicator.includes(ind));
+
+			// ********************* update data
 			// DRAW A LINE CHART
 			useBars = false;
 			props = {
 				data,
 				chartProperties: {
 					yLeft1: chartValueProperty,
-					xAxis: "year",
+					xAxis: needsScaleTime ? "date" : "year",
 					yAxis: "estimate",
 				},
 				usesLegend: true,
@@ -503,8 +545,9 @@ export class LandingPage {
 				usesLeftAxis: true,
 				usesLeftAxisTitle: true,
 				usesBottomAxis: true,
-				usesBottomAxisTitle: false,  // they dont want a title there
+				usesBottomAxisTitle: false, // they dont want a title there
 				usesDateAsXAxis: true,
+				needsScaleTime,
 				yLeftLabelScale: 3,
 				legendCoordinatePercents: legendCoordPercents,
 				leftAxisTitle: yAxisTitle,
@@ -532,9 +575,7 @@ export class LandingPage {
 				vizId,
 				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
 			};
-
 		}
-
 
 		return props;
 	};
@@ -593,10 +634,10 @@ export class LandingPage {
 				title: "Age Group: ",
 				datumType: "string",
 			},
- 			flag: {
+			flag: {
 				title: "Flag: ",
 				datumType: "string",
-			}, 
+			},
 			"": { title: "", datumType: "empty" },
 		};
 
@@ -611,7 +652,6 @@ export class LandingPage {
 			vizId,
 		};
 	};
-
 
 	// THIS IS WHERE WE CAN SET WHAT TO VISUALIZE
 	// -- compare trends ties viewtype, metric and measure to CORRECT DATA
@@ -668,9 +708,11 @@ export class LandingPage {
 
 			// get ONLY the source codes list
 			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC"));  // match(/SC/));
-			sourceList.forEach(f =>
-				sourceText += "<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>"
+			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
+			sourceList.forEach(
+				(f) =>
+					(sourceText +=
+						"<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -679,8 +721,8 @@ export class LandingPage {
 			//console.log("footnote ids: ", footnotesList);
 			// foreach footnote ID, look it up in the tabnotes and ADD it to text
 			allFootnotesText = "";
-			footnotesList.forEach(f =>
-				allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
+			footnotesList.forEach(
+				(f) => (allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>")
 			);
 		}
 		// update source text
@@ -691,12 +733,11 @@ export class LandingPage {
 		// now update the footnotes on the page
 		$("#pageFooter").html(allFootnotesText);
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
-
 	}
 
 	getFootnoteText(f) {
 		const footnote = this.searchJSONArray(DataCache.Footnotes.fn_text, {
-			fn_id
+			fn_id,
 		});
 
 		if (footnotes.length > 0) return footnote;
@@ -752,8 +793,8 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				break;			
-			case "birthweight":	
+				break;
+			case "birthweight":
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
@@ -788,116 +829,118 @@ export class LandingPage {
 		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR DATA TO LOAD
 		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
 		console.log("ATTEMPTING dataFile Promise:", this.dataFile);
-		Promise.all([getSelectedData(this.dataFile, selectedDataCache)]).then((data) => {
-			console.log("FULFILLED dataFile Promise:", this.dataFile);
-			//debugger;
-			if (selectedDataCache !== undefined) {
-				this.allData = data[0];
-			} else {
-				this.allData = JSON.parse(data[0]);
-			}
+		Promise.all([getSelectedData(this.dataFile, selectedDataCache)])
+			.then((data) => {
+				console.log("FULFILLED dataFile Promise:", this.dataFile);
+				//debugger;
+				if (selectedDataCache !== undefined) {
+					this.allData = data[0];
+				} else {
+					this.allData = JSON.parse(data[0]);
+				}
 
-			switch (dataTopic) {
-				case "obesity-child":
-					DataCache.ObesityData = this.allData;
-					break;
-				case "obesity-adult":
-					DataCache.ObesityAdultData = this.allData;
-					break;
-				case "suicide":
-					DataCache.SuicideData = this.allData;
-					break;
-				case "injury":
-					DataCache.InjuryData = this.allData;
-					break;
-				case "birthweight":
-					DataCache.BirthweightData = this.allData;
-					break;
-				case "infant-mortality":
-					DataCache.InfantMortalityData = this.allData;
-					break;
-				case "medicaidU65":
-					DataCache.MedicaidU65Data = this.allData;
-					break;
-			}
-			//debugger;
-			// create a year_pt col from time period
-			this.allData = this.allData
-				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
-			//this.renderAfterDataReady();
+				switch (dataTopic) {
+					case "obesity-child":
+						DataCache.ObesityData = this.allData;
+						break;
+					case "obesity-adult":
+						DataCache.ObesityAdultData = this.allData;
+						break;
+					case "suicide":
+						DataCache.SuicideData = this.allData;
+						break;
+					case "injury":
+						DataCache.InjuryData = this.allData;
+						break;
+					case "birthweight":
+						DataCache.BirthweightData = this.allData;
+						break;
+					case "infant-mortality":
+						DataCache.InfantMortalityData = this.allData;
+						break;
+					case "medicaidU65":
+						DataCache.MedicaidU65Data = this.allData;
+						break;
+				}
+				//debugger;
+				// create a year_pt col from time period
+				this.allData = this.allData
+					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
+					.map((d) => ({
+						...d,
+						estimate: parseFloat(d.estimate),
+						year_pt: this.getYear(d.year),
+						dontDraw: false,
+						assignedLegendColor: "#FFFFFF",
+					}));
+				//this.renderAfterDataReady();
 
-			//debugger;
+				//debugger;
 
-			// have to put interface changes in separate switch statements
-			// - it WAS in switch statement at top but...
-			// if you do that you get weird chart "flashes" between changing data sets
-			switch (dataTopic) {
+				// have to put interface changes in separate switch statements
+				// - it WAS in switch statement at top but...
+				// if you do that you get weird chart "flashes" between changing data sets
+				switch (dataTopic) {
+					// cases with LINE CHART only and no map data
+					case "obesity-child":
+					case "obesity-adult":
+					case "suicide":
+					case "injury":
+					case "medicaidU65":
+						// show the chart tab
+						$("#tab-chart").css("visibility", "visible");
+						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
+						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
+						// hide the map tab
+						$("#tab-map").css("visibility", "hidden");
+						this.updateShowMap(0);
+						break;
 
-			// cases with LINE CHART only and no map data
-			case "obesity-child":
-			case "obesity-adult":
-			case "suicide":
-			case "injury":
-			case "medicaidU65":
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				break;	
-				
-			// cases with US Map data option
-			case "birthweight":	
-			case "infant-mortality":
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
-				break;
+					// cases with US Map data option
+					case "birthweight":
+					case "infant-mortality":
+						// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+						//$('#icons-tab-1').click();
+						$("#tab-map").css("visibility", "visible");
+						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
+						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
+						// hide the chart tab
+						//$('#tab-chart').css("visibility", "hidden");
+						// set chart tab to white
+						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+						theChartTab.style.backgroundColor = "#b3d2ce";
+						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
+						this.updateShowMap(0);
+						break;
+				}
 
-		}
-	
-			//disable single year if it is set
-			// force "year" to reset and not have single year clicked
-			if (document.getElementById('show-one-period-checkbox').checked) {
-				$("#show-one-period-checkbox").click();
-			}
+				//disable single year if it is set
+				// force "year" to reset and not have single year clicked
+				if (document.getElementById("show-one-period-checkbox").checked) {
+					$("#show-one-period-checkbox").click();
+				}
 
-			// need data in place before filling year selects
-			this.flattenedFilteredData = this.getFlattenedFilteredData();
+				// need data in place before filling year selects
+				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-			this.setAllSelectDropdowns();
+				this.setAllSelectDropdowns();
 
-			// set the Adjust vertical axis via unit_num in data
-			this.setVerticalUnitAxisSelect();
+				// set the Adjust vertical axis via unit_num in data
+				this.setVerticalUnitAxisSelect();
 
-			// now filter data again to pick up unit num
-			this.flattenedFilteredData = this.getFlattenedFilteredData();
+				// now filter data again to pick up unit num
+				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-			// now re-render the chart based on updated selection
-			this.renderChart();
-
-		}).catch(function (err) {
-			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
-		});
-
-
-
+				// now re-render the chart based on updated selection
+				this.renderChart();
+			})
+			.catch(function (err) {
+				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
+			});
 	}
 
-	setAllSelectDropdowns () {
+	setAllSelectDropdowns() {
 		let allYearsArray;
 		// always filter the data again
 		//debugger;
@@ -909,7 +952,7 @@ export class LandingPage {
 		switch (this.dataTopic) {
 			case "obesity-child": // stack cases if you want to share code between data sets
 			case "obesity-adult":
-			case "injury":  // - can't use || in case switch statement
+			case "injury": // - can't use || in case switch statement
 			case "birthweight":
 			case "infant-mortality":
 				// NO DONT DO THIS HERE - reset unit_num or else it breaks
@@ -929,20 +972,24 @@ export class LandingPage {
 
 				// Get the start year options
 				yearsData = this.getFilteredYearData();
-				allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
+				allYearsArray = d3
+					.map(yearsData, function (d) {
+						return d.year;
+					})
+					.keys();
 				console.log("allyears OBESITY start:", allYearsArray);
-				$('#year-start-select').empty();
-				$('#year-end-select').empty();
+				$("#year-start-select").empty();
+				$("#year-end-select").empty();
 				allYearsArray.forEach((y) => {
-					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
-					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
 					singleYearsArray.push(this.getYear(y));
 				});
 				// make the last end year selected
 				$("#year-end-select option:last").attr("selected", "selected");
 				// fix labels
-				$('#year-start-label').text("Start Period");
-				$('#year-end-label').text("End Period");
+				$("#year-start-label").text("Start Period");
+				$("#year-end-label").text("End Period");
 
 				// now set the start and end years otherwise flattenedfiltereddata is WRONG
 				this.startYear = singleYearsArray[0];
@@ -958,30 +1005,31 @@ export class LandingPage {
 			case "suicide":
 			case "medicaidU65":
 				// subtopic
-				$('#panel-num-select')
-					.empty()
-					.append('<option selected="selected" value="NA">Not Applicable</option>')
-					;
+				$("#panel-num-select").empty().append('<option selected="selected" value="NA">Not Applicable</option>');
 				// set stub names
 				this.setStubNameSelect();
 
 				// Get the start year options
 				yearsData = this.getFilteredYearData();
-				allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
+				allYearsArray = d3
+					.map(yearsData, function (d) {
+						return d.year;
+					})
+					.keys();
 				console.log("allyears SUICIDE start:", allYearsArray);
-				$('#year-start-select').empty();
-				$('#year-end-select').empty();
+				$("#year-start-select").empty();
+				$("#year-end-select").empty();
 
 				// have to build an array of "only the first year"
 				allYearsArray.forEach((y) => {
-					$('#year-start-select').append(`<option value="${y}">${y}</option>`);
-					$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
 				});
 				// make the last end year selected
 				$("#year-end-select option:last").attr("selected", "selected");
 				// fix labels
-				$('#year-start-label').text("Start Year");
-				$('#year-end-label').text("End Year");
+				$("#year-start-label").text("Start Year");
+				$("#year-end-label").text("End Year");
 
 				// now set the start and end years otherwise flattenedfiltereddata is WRONG
 				this.startYear = allYearsArray[0];
@@ -996,32 +1044,27 @@ export class LandingPage {
 				this.setVerticalUnitAxisSelect();
 				break;
 		}
-
 	}
 
 	// Subtopic
 	setPanelSelect() {
-
 		//console.log("flattenedData before:", this.flattenedFilteredData);
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
-		let allPanelsArray = [
-			...new Map(this.allData.map((item) => [item["panel"], item])).values(),
-		];
+		let allPanelsArray = [...new Map(this.allData.map((item) => [item["panel"], item])).values()];
 		// now sort them in id order
 		allPanelsArray.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
 		console.log("allPanelsArray", allPanelsArray);
-		$('#panel-num-select').empty();
+		$("#panel-num-select").empty();
 
 		allPanelsArray.forEach((y) => {
-			$('#panel-num-select').append(`<option value="${y.panel_num}">${y.panel}</option>`);
+			$("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
 		});
 	}
 
 	setStubNameSelect() {
-
 		let allStubsArray;
 
 		if (this.flattenedFilteredData) {
@@ -1035,40 +1078,39 @@ export class LandingPage {
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
 		if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
-			allStubsArray = this.allData.filter(item => (parseInt(item.panel_num) === parseInt(this.panelNum)));
+			allStubsArray = this.allData.filter((item) => parseInt(item.panel_num) === parseInt(this.panelNum));
 		} else {
 			allStubsArray = this.allData;
 		}
 
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
-		allStubsArray = [
-			...new Map(allStubsArray.map((item) => [item["stub_name"], item])).values(),
-		];
+		allStubsArray = [...new Map(allStubsArray.map((item) => [item["stub_name"], item])).values()];
 
 		// now sort them in id order
 		allStubsArray.sort((a, b) => {
 			return a.stub_name_num - b.stub_name_num;
 		});
 		console.log("allStubsArray", allStubsArray);
-		$('#stub-name-num-select').empty();
+		$("#stub-name-num-select").empty();
 
-		// reload the stubs but if new list has match for current selection 
+		// reload the stubs but if new list has match for current selection
 		// then - keep current selected
 		let foundUnit = false;
 		console.log("### current stubnamenum before rebuilding dropdown:", this.stubNameNum);
 		allStubsArray.forEach((y, i) => {
 			console.log("i , stubnamename", i, y.stub_name_num);
 			if (this.stubNameNum === parseInt(y.stub_name_num)) {
-				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`);
+				$("#stub-name-num-select").append(
+					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
+				);
 				foundUnit = true;
 			} else {
-				$('#stub-name-num-select').append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+				$("#stub-name-num-select").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 			}
 		});
 		// NO DONT DO THIS - set first item to "selected"
 		//$('#stub-name-num-select option:first-child').attr("selected", "selected");
-
 
 		if (foundUnit === false) {
 			// now update the stubname num to the first on the list
@@ -1084,51 +1126,45 @@ export class LandingPage {
 	}
 
 	setVerticalUnitAxisSelect() {
-
 		console.log("UNIT flattenedData before:", this.flattenedFilteredData);
 		// filter out by characteristic / stub_name bc some stub_names do not have both UNIT options
 		// only show the ones related to selected CHaracteristic
 		let theSelectedStubNum = this.stubNameNum;
 
-		allUnitsArray = this.allData.filter(item => (parseInt(item.stub_name_num) === parseInt(this.stubNameNum)));
-
+		allUnitsArray = this.allData.filter((item) => parseInt(item.stub_name_num) === parseInt(this.stubNameNum));
 
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
-		let allUnitsArray = [
-			...new Map(allUnitsArray.map((item) => [item["unit"], item])).values(),
-		];
+		let allUnitsArray = [...new Map(allUnitsArray.map((item) => [item["unit"], item])).values()];
 
 		// now sort them in id order
 		allUnitsArray.sort((a, b) => {
 			return a.unit_num - b.unit_num;
 		});
 		console.log("allUnitsArray", allUnitsArray);
-		$('#unit-num-select-map').empty();
-		$('#unit-num-select-chart').empty();
+		$("#unit-num-select-map").empty();
+		$("#unit-num-select-chart").empty();
 		// on the table tab
-		$('#unit-num-select-table').empty();
-
-
+		$("#unit-num-select-table").empty();
 
 		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
 			//debugger;
 			if (this.unitNum === parseInt(y.unit_num)) {
-				$('#unit-num-select-map').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
-				$('#unit-num-select-chart').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				$("#unit-num-select-map").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				$("#unit-num-select-chart").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
-				$('#unit-num-select-table').append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
+				$("#unit-num-select-table").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				this.unitNumText = y.unit;
 				foundUnit = true;
 			} else {
-				$('#unit-num-select-map').append(`<option value="${y.unit_num}">${y.unit}</option>`);
-				$('#unit-num-select-chart').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				$("#unit-num-select-map").append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				$("#unit-num-select-chart").append(`<option value="${y.unit_num}">${y.unit}</option>`);
 				//this.unitNum = parseInt(y.unit_num); // bc maybe there is no 1 and have to set to a valid value
 				// on table tab
-				$('#unit-num-select-table').append(`<option value="${y.unit_num}">${y.unit}</option>`);
+				$("#unit-num-select-table").append(`<option value="${y.unit_num}">${y.unit}</option>`);
 			}
 		});
 		if (foundUnit === false) {
@@ -1143,8 +1179,8 @@ export class LandingPage {
 	updatePanelNum(panelNum) {
 		this.panelNum = parseInt(panelNum);
 		//this.setCategoriesSelect();
-		console.log("new panel num: ", this.panelNum)
-		// update stubname select dropdown 
+		console.log("new panel num: ", this.panelNum);
+		// update stubname select dropdown
 		// Get the start year options
 
 		// set stub names
@@ -1156,14 +1192,13 @@ export class LandingPage {
 		} else {
 			this.renderChart();
 		}
-
 	}
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
 		//debugger;
 		//this.setCategoriesSelect();
-		console.log("new stub name num: ", this.stubNameNum)
+		console.log("new stub name num: ", this.stubNameNum);
 
 		// have to update UNIT bc some stubs dont have both units
 		this.setVerticalUnitAxisSelect();
@@ -1177,10 +1212,10 @@ export class LandingPage {
 		if (this.showMap) {
 			this.renderMap();
 		} else {
-			// need to hide map and show the chart? 
+			// need to hide map and show the chart?
 			// --- depends on what tab is selected????
-			$('#us-map-message').show();
-			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			$("#us-map-message").show();
+			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
 			// cant just call click = infinite loop
 			//$('#icons-tab-2').click(); // click event will render the chart
@@ -1199,9 +1234,13 @@ export class LandingPage {
 		// - then REMOVE any that are <= START YEAR
 		// Get the start year options
 		let yearsData = this.getFilteredYearData();
-		let allYearsArray = d3.map(yearsData, function (d) { return d.year; }).keys();
+		let allYearsArray = d3
+			.map(yearsData, function (d) {
+				return d.year;
+			})
+			.keys();
 		//console.log("allyears OBESITY start:", allYearsArray);
-		$('#year-end-select').empty();
+		$("#year-end-select").empty();
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
 			case "obesity-child":
@@ -1213,7 +1252,7 @@ export class LandingPage {
 				this.startYear = this.getYear(start);
 				allYearsArray.forEach((y) => {
 					if (this.getYear(y) > this.startYear) {
-						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+						$("#year-end-select").append(`<option value="${y}">${y}</option>`);
 					}
 				});
 				break;
@@ -1224,12 +1263,11 @@ export class LandingPage {
 				this.startYear = start;
 				allYearsArray.forEach((y) => {
 					if (parseInt(y) > this.startYear) {
-						$('#year-end-select').append(`<option value="${y}">${y}</option>`);
+						$("#year-end-select").append(`<option value="${y}">${y}</option>`);
 					}
 				});
 				break;
 		}
-
 
 		// make the last end year selected
 		$("#year-end-select option:last").attr("selected", "selected");
@@ -1242,7 +1280,6 @@ export class LandingPage {
 	}
 
 	updateEndPeriod(end) {
-
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
 			case "obesity-child":
@@ -1269,11 +1306,10 @@ export class LandingPage {
 	}
 
 	updateUnitNum(unitNum) {
-
 		this.unitNum = parseInt(unitNum);
 
 		// have to update the "text" to draw on the chart
-		this.unitNumText = $("#unit-num-select-chart option:selected").text();   //(TTT)
+		this.unitNumText = $("#unit-num-select-chart option:selected").text(); //(TTT)
 		console.log("unitNum text=", this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
@@ -1312,16 +1348,16 @@ export class LandingPage {
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");
 			theMapTab.style.backgroundColor = "#b3d2ce";
-			theMapTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+			theMapTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#ffffff";
-			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0';
+			theChartTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
-			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0';
-			$('#us-map-wrapper').show();
-			$('#us-map-container').show();
-			$('#us-map-message').show();
+			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
+			$("#us-map-wrapper").show();
+			$("#us-map-container").show();
+			$("#us-map-message").show();
 			$("#us-map-legend").show();
 			this.renderMap();
 		} else {
@@ -1329,8 +1365,8 @@ export class LandingPage {
 			if (theMapWrapper) {
 				theMapWrapper.style.display = "none";
 			}
-			$('#us-map').empty();
-			$('#us-map-container').html = "<div id='us-map-message' class='chart-title'></div>";
+			$("#us-map").empty();
+			$("#us-map-container").html = "<div id='us-map-message' class='chart-title'></div>";
 			let theMap = document.getElementById("map-tab");
 			theMap.style.display = "none";
 			theMap.classList.remove("show");
@@ -1343,19 +1379,19 @@ export class LandingPage {
 			theTable.style.display = "none";
 			theTable.classList.remove("show");
 			theTable.classList.remove("active");
-			$('#us-map-wrapper').hide();
+			$("#us-map-wrapper").hide();
 			$("#us-map-legend").hide();
-			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
+			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");
 			theMapTab.style.backgroundColor = "#ffffff";
-			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0';
+			theMapTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#b3d2ce";
-			theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+			theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
-			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0';
+			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
 		}
 	}
 
@@ -1370,8 +1406,8 @@ export class LandingPage {
 			case "equal":
 				this.classifyType = 3; // not using right now
 				break;
-			default:
-				this.classifyType = 2; // natural
+			default: // natural
+				this.classifyType = 2;
 				break;
 		}
 		this.renderMap();
@@ -1380,14 +1416,21 @@ export class LandingPage {
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
 		const selDataPt = value.replace(/_/g, " ");
-		console.log("#### toggle:", selDataPt)
+		console.log("#### toggle:", selDataPt);
 
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
 				// has a "panel"
 				this.allData.forEach((d) => {
-					if (d.stub_label === selDataPt && parseInt(d.panel_num) === parseInt(this.panelNum) && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
+					if (
+						d.stub_label === selDataPt &&
+						parseInt(d.panel_num) === parseInt(this.panelNum) &&
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
+					) {
 						d.dontDraw = !d.dontDraw; // toggle it
 						console.log("toggle has panel dontDraw=", d.dontDraw);
 					}
@@ -1398,7 +1441,13 @@ export class LandingPage {
 			case "medicaidU65":
 				// does not have any panelNum
 				this.allData.forEach((d, i) => {
-					if (d.stub_label === selDataPt && parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)) {
+					if (
+						d.stub_label === selDataPt &&
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
+						parseInt(d.year_pt) >= parseInt(this.startYear) &&
+						parseInt(d.year_pt) <= parseInt(this.endYear)
+					) {
 						d.dontDraw = !d.dontDraw; // toggle it
 						console.log("toggle no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw);
 					}
@@ -1505,7 +1554,18 @@ export class LandingPage {
 			headers: cols,
 		};
 		// Now delete a couple cols for visual table
-		keys = keys.filter(item => (item !== 'indicator') && (item !== 'footnote_id_list') && (item !== 'unit') && !item.match("_num") && !item.match("year_pt") && !item.match("subLine") && !item.match("dontDraw") && !item.match("assignedLegendColor"));
+		keys = keys.filter(
+			(item) =>
+				item !== "indicator" &&
+				item !== "footnote_id_list" &&
+				item !== "unit" &&
+				!item.match("_num") &&
+				!item.match("year_pt") &&
+				!item.match("subLine") &&
+				!item.match("dontDraw") &&
+				!item.match("assignedLegendColor") &&
+				item.indicator !== "data"
+		);
 		const cols = keys;
 		//debugger;
 
@@ -1529,10 +1589,18 @@ export class LandingPage {
 			.attr("tabindex", "0")
 			.attr("id", (column, i) => `${keys[i]}-th`)
 			.text(function (column) {
-				if (column === "panel") { column = "Subtopic" };
-				if (column === "stub_name") { column = "Characteristic" };
-				if (column === "stub_label") { column = "Group" };
-				if (column === "se") { column = "Standard Error" };
+				if (column === "panel") {
+					column = "Subtopic";
+				}
+				if (column === "stub_name") {
+					column = "Characteristic";
+				}
+				if (column === "stub_label") {
+					column = "Group";
+				}
+				if (column === "se") {
+					column = "Standard Error";
+				}
 				return column.charAt(0).toUpperCase() + column.slice(1);
 				//return this.capString(column);
 			})
@@ -1788,7 +1856,7 @@ export class LandingPage {
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 				</div>
-				<div id="chart-container" class="general-chart" style="text-align:center;">
+				<div id="chart-container" class="general-chart">
 				</div>
 				<br>
 				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
