@@ -117,7 +117,7 @@ export class GenChart {
 						tspan.attr('x', 0).attr('dy', '21');
 					}
 					if (words.length == 4) {
-						tspan.attr('x', 0).attr('dy', '11');
+						tspan.attr('x', 0).attr('dy', '8');
 					}
 				} else {
 					str = words[i];
@@ -135,7 +135,7 @@ export class GenChart {
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 24);
+				d3.select(this).attr("dy", 23);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
