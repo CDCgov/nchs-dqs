@@ -114,16 +114,16 @@ export class GenChart {
 						tspan.attr('x', 0).attr('dy', '30');
 					}
 					if (words.length == 3) {
-						tspan.attr('x', 0).attr('dy', '23');
+						tspan.attr('x', 0).attr('dy', '21');
 					}
 					if (words.length == 4) {
-						tspan.attr('x', 0).attr('dy', '13');
+						tspan.attr('x', 0).attr('dy', '11');
 					}
 				} else {
 					str = words[i];
 					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
 					tspan = tspan.append('tspan').text(result[0]);
-					tspan.attr('x', 0).attr('dy', '7');
+					tspan.attr('x', 0).attr('dy', '11');
 					tspan = tspan.append('tspan').text(result[1]);
 				}
 
