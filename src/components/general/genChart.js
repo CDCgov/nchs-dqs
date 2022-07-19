@@ -108,7 +108,7 @@ export class GenChart {
 				if (words[i].length < 24) {
 					tspan = el.append('tspan').text(words[i]);
 					if (words.length < 2) {
-						tspan.attr('x', 0).attr('dy', '36');
+						tspan.attr('x', 0).attr('dy', '32');
 					}
 					if (words.length == 2) {
 						tspan.attr('x', 0).attr('dy', '30');
