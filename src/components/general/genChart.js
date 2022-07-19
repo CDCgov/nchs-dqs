@@ -107,7 +107,7 @@ export class GenChart {
 				var tspan;
 				if (words[i].length < 24) {
 					tspan = el.append('tspan').text(words[i]);
-					tspan.attr('x', 0).attr('dy', '32');
+					tspan.attr('x', 0).attr('dy', '36');
 				} else {
 					str = words[i];
 					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
