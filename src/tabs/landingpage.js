@@ -52,17 +52,8 @@ export class LandingPage {
 		this.classifyType = 2;  // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 	}
 
-	// capString(str) {
-	// 	return str.charAt(0).toUpperCase() + str.slice(1);
-	// }
-
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
-
-		/* 		const countyViewInput = document.getElementById("county-view-input");
-				$(document).on("click", (e) => {
-					if (e.target !== countyViewInput) closeSearchArea();
-				}); */
 
 		this.getInitialData(); // for starters OBESITY DATA
 
@@ -85,15 +76,7 @@ export class LandingPage {
 
 		console.log("Panel Num", this.panelNum);
 
-		//updateTitle(this.charttype, this.numbertype, this.neworcumulative);
 		$(".dimmer").attr("class", "ui inverted dimmer");
-
-		//debugger;
-
-		//(TTT 06-27-2022 might need this but it just started erroring on thes)
-		//this.setStubNameSelect();
-
-		//this.setVerticalUnitAxisSelect();
 
 		this.renderChart();
 	}
@@ -112,16 +95,6 @@ export class LandingPage {
 		async function getUSMapData() {
 			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
 		}
-		/* 			.then((topo) => {
-						DataCache.USTopo = JSON.parse(topo);
-						const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-						this.geometries = geometries;
-						return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
-					})
-					.then((legenddata) => {
-						DataCache.LegendData = JSON.parse(legenddata);
-						return;
-					}) */
 
 		// getUSMapData - if we do it here we just load the map date ONE TIME
 		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()]).then((data) => {
@@ -163,7 +136,6 @@ export class LandingPage {
 							return d;
 						} else { return d; }
 					})
-					//.filter((d) => d.flag !== "- - -") // remove undefined data
 					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			}
@@ -179,16 +151,6 @@ export class LandingPage {
 		return parseInt(yearsArray[0]);
 	}
 
-	/* 	updateComparisonChart(loadingState) {
-			if (!loadingState) {
-				// only update if not a false update function during initial page load
-				renderComparisonChart();
-				document
-					.getElementById("dwn-chart-img")
-					.setAttribute("aria-label", `Download Chart ${$("#main-title").html()}`);
-			}
-		} */
-
 	getSelectorText(sel) {
 		return (sel.options[sel.selectedIndex].text);
 	}
@@ -202,11 +164,7 @@ export class LandingPage {
 			// need to SHOW A MESSAGE
 			$('#us-map-message').html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
-			// hide the map in case it's not hidden
-			/* 			let theMap = document.getElementById("map-tab");
-						theMap.style.display = "none";
-						theMap.classList.remove("show");
-						theMap.classList.remove("active"); */
+
 		} else {
 			$('#us-map-message').html("");
 			// get rid of the big margins
@@ -224,14 +182,7 @@ export class LandingPage {
 				(d) => parseInt(d.year_pt) === parseInt(this.startYear)
 			);
 			this.flattenedFilteredData = stateData;
-			// filter out Total data
-			/* let stateData = this.allData
-				.filter(function (d) {
-					if (d.stub_name !== "Total") {
-						return d;
-					}
-				}); */
-			//debugger;
+
 			const mapVizId = "us-map";
 			let map = new GenMap({
 				mapData: stateData,  // misCdata[3].Jurisdiction2,
@@ -248,7 +199,6 @@ export class LandingPage {
 
 	renderChart() {
 
-		// $("#metric_callout_box").html(config.calloutText.get(this.casesOrDeaths + this.newOrCumulative));
 		//debugger;
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
@@ -280,13 +230,6 @@ export class LandingPage {
 
 		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
-
-		// set background to white - THIS DOESNT WORK
-		//$("#chart-container-svg").style("background-color", '#FFFFFF');
-
-		// example of removing lines from the graph
-		/* 		const removedCategories = this.savedNamedCategories.filter((s) => !this.currentNamedCategories.includes(s));
-				removedCategories.forEach((r) => $(`.${r}`).hide()); */
 	}
 
 	getFlattenedFilteredData() {
@@ -334,9 +277,7 @@ export class LandingPage {
 					// set to a valid value
 					this.unitNum = 2;
 				}
-				// This is returning NO DATA
-				console.log("INJURY unit,stub_name_num:", this.unitNum, this.stubNameNum);
-				console.log("INJURY start_yr,end_yr:", this.startYear, this.endYear);
+
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
@@ -392,14 +333,6 @@ export class LandingPage {
 		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys();
 		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
 		this.updateFootnotes(allFootnoteIdsArray);
-		//debugger;
-		/* 		const noLocationNamedData = [...classifiedData, ...allCountiesData];
-				if (this.currentLocation === "United States")
-					return noLocationNamedData.map((d) => ({
-						...d,
-						date: new Date(`${d.date}T00:00:00`),
-						subLine: functions.getCategoryName2(d.Category, classification),
-					})); */
 
 		return [...selectedPanelData];
 	}
@@ -410,7 +343,6 @@ export class LandingPage {
 		//debugger;
 		// Make sure panel num is correct
 		this.panelNum = $("#panel-num-select option:selected").val();
-		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
 
 		let allYearsData
 		switch (this.dataTopic) {
@@ -438,12 +370,6 @@ export class LandingPage {
 	getChartBaseProps() {
 		const chartValueProperty = "estimate";
 
-		/* this.newOrCumulative !== "total"
-				? `${this.newOrCumulative}_day_avg_new_${this.casesOrDeaths}_per_100k`
-				: `total_${this.casesOrDeaths}_per_100k`; */
-
-		//const newTotalText = this.newOrCumulative === "seven" ? "7-day" : "14-day";
-
 		let yAxisTitle;
 		let xAxisTitle;
 
@@ -456,15 +382,12 @@ export class LandingPage {
 			case "infant-mortality":
 			case "medicaidU65":
 				yAxisTitle = this.unitNumText;  //"Percent of Population, crude (%)";
-				//xAxisTitle = "Time Period";
 				break;
 			case "suicide":
 				yAxisTitle = this.unitNumText;  //"Deaths per 100,000 resident population, crude";
-				//xAxisTitle = "Time Period";
 				break;
 			case "injury":
 				yAxisTitle = this.unitNumText;  //"Initial injury-related visits in thousands, crude";
-				//xAxisTitle = "Time Period";
 				break;
 		}
 		// X Axis Title is the "Characteristic" selected
@@ -671,14 +594,14 @@ export class LandingPage {
 				datumType: "string",
 			},
  			flag: {
-				title: "Flag:",
+				title: "Flag: ",
 				datumType: "string",
 			}, 
 			"": { title: "", datumType: "empty" },
 		};
 
 		const headerProps = ["stub_name", "stub_label"];
-		const bodyProps = ["panel", "unit", chartValueProperty, "year", "age"];
+		const bodyProps = ["panel", "unit", chartValueProperty, "year", "age", "flag"];
 
 		return {
 			propertyLookup,
@@ -1707,6 +1630,7 @@ export class LandingPage {
 				<option value="infant-mortality">Infant Mortality</option>
 				<option value="birthweight">Low birthweight live births</option>
 				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
+
 				</optgroup>
 			</select>
 			</div>

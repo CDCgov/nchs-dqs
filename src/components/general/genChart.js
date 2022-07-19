@@ -42,7 +42,7 @@ export class GenChart {
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
 		// (1) backup ORIGINAL p.data that has ALL DATA in it
-		const allIncomingData = p.data // this has to be used for the LEGENDS
+		let allIncomingData = p.data // this has to be used for the LEGENDS
 		// (2) Limit the draw data to max of 10 lines or bars
 		let barCount = 0;
 		const maxBarCount = 10; /// this could be a PROP PASSED INTO genChart (TT)
@@ -71,6 +71,22 @@ export class GenChart {
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
 
+		// FOr reliability, convert any NaN values to null.
+		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
+		//allIncomingData = allIncomingData.filter((d) => (d.estimate !== null) && (!isNaN(d.estimate)));
+		
+		p.data = p.data.filter(function (d) {
+			if (isNaN(d.estimate)) {
+				return d.estimate = null;  // estimate missing so fill in with null???
+			} else { return d; }
+		});
+		allIncomingData = allIncomingData.filter(function (d) {
+			if (isNaN(d.estimate)) {
+				return d.estimate = null;  // estimate missing so fill in with null???
+			} else { return d; }
+		});
+			
+			
 		// NOW filter down to only bars/lines to be drawn
 		const drawData = p.data;
 		///////////////////////////////////////////////////////////////////////////////
@@ -494,13 +510,13 @@ export class GenChart {
 
 				// limit legend to 10 max
 				fullNestedData.forEach((d, i) => {
-					if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
+					//if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
 					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
 						lineCount++; // increment barCount
 					} else {
 						// then either dontDraw already true or needs to be set to true 
 						// bc line count is exceeded
-						// --- might need to iterate over ALL values and set ALL to true
+						// --- iterate over ALL values and set ALL to true
 						//console.log("nested dontDraw SET TRUE on data d,i", d, i);
 						d.values[0].dontDraw = true;
 					}
@@ -510,8 +526,11 @@ export class GenChart {
 					//debugger;
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
-						//console.log("nested nd,i", nd, i);
-						lines[i] = d3.line();
+
+						lines[i] = d3.line()
+							.defined(function (d) {
+                				return d.estimate !== null;
+            				});
 						const lineGroup = svg
 							.append("g")
 							.attr("class", nd.key.replace(/[\W_]+/g, ""))
@@ -526,10 +545,6 @@ export class GenChart {
 							.append("path")
 							.attr("fill", "none")
 							.attr("stroke", multiLineColors(i))
-							/* 							.attr("stroke", (nd) => {
-															// save the color used
-															return multiLineColors[i];
-														}) */
 							.attr("stroke-width", 2);
 					}
 				});
@@ -724,7 +739,6 @@ export class GenChart {
 				if (p.usesBars) {
 					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
 					p.numberOfEquallySpacedDates = drawData.length + 1;
-					//console.log("numberOfEquallySpacedDates set to:", p.numberOfEquallySpacedDates);
 				}
 				const allDateTicksButLast = xScale
 					.domain()
@@ -774,13 +788,15 @@ export class GenChart {
 				if (p.usesMultiLineLeftAxis) {
 					nestedData.forEach((nd, i) => {
 						// only draw those whose first data point is dontDraw = false
-						if (nd.values[0].dontDraw === false) {
-							console.log("nd values:", nd);
+						if ((nd.values[0].dontDraw === false)) { // DOESNT HELP && nd.values[i].estimate !== null
+							
+							//console.log("nd values 1:",i, nd);
+							//console.log("nd estimate 1:",i, nd.values[i].estimate);
 
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
-
+								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+							
 							lineGroupPaths[i].attr("d", lines[i](nd.values));
 							lineGroups[i]
 								.selectAll("ellipse")
@@ -790,12 +806,6 @@ export class GenChart {
 										enter
 											.append("ellipse") // adding hover over ellipses
 											.style("fill", multiLineColors(i))
-											/* 											.style("fill", (d, i) => {
-																							// save the color used
-																							d.assignedLegendColor = multiLineColors[i];
-																							console.log("color assigned to i,d,multilinecolor:", d.assignedLegendColor,d,multiLineColors[i]);
-																							return multiLineColors[i];
-																						}) */
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
@@ -803,6 +813,8 @@ export class GenChart {
 											.style("opacity", 0);
 										enter
 											.append("ellipse") // add always visible "point" (TT)
+											// filter out the nulls at last possible moment (TT)
+											.filter(function(d) { return d.estimate })
 											// change to a function and set based on the "flag"
 											.style("fill", function (d) {
 												if (d.flag === "*") {
@@ -1140,6 +1152,8 @@ export class GenChart {
 				allIncomingData.sort((a, b) => {
 					return a.stub_label_num - b.stub_label_num;
 				});
+
+				// (TT) Reliability they want all Null and NaN entries REMOVED
 
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE 
 				allIncomingData.forEach((d, i) => {
