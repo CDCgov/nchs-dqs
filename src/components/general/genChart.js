@@ -107,12 +107,23 @@ export class GenChart {
 				var tspan;
 				if (words[i].length < 24) {
 					tspan = el.append('tspan').text(words[i]);
-					tspan.attr('x', 0).attr('dy', '36');
+					if (words.length < 2) {
+						tspan.attr('x', 0).attr('dy', '36');
+					}
+					if (words.length == 2) {
+						tspan.attr('x', 0).attr('dy', '30');
+					}
+					if (words.length == 3) {
+						tspan.attr('x', 0).attr('dy', '23');
+					}
+					if (words.length == 4) {
+						tspan.attr('x', 0).attr('dy', '13');
+					}
 				} else {
 					str = words[i];
 					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
 					tspan = tspan.append('tspan').text(result[0]);
-					tspan.attr('x', 0).attr('dy', '11');
+					tspan.attr('x', 0).attr('dy', '7');
 					tspan = tspan.append('tspan').text(result[1]);
 				}
 
@@ -124,7 +135,7 @@ export class GenChart {
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 27);
+				d3.select(this).attr("dy", 24);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
