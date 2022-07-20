@@ -100,7 +100,8 @@ export const getProps = (props) => {
 		firefoxReversed: props.firefoxReversed || false, // this prop is used when firefox reverses the order of the bars compared to chrome
 		noDataMessage: props.noDataMessage || "There is no data for your selections. Please change your options.", // message to be displayed in place of chart when no data array is passed into genChart (CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component)
 		chartRotate: props.chartRotate, // true/false on ewhether to rotate the entire chart
-		chartRotationPercent: props.chartRotationPercent,
+		chartRotationPercent: props.chartRotationPercent, // (TT) this is used to rotate bar chart
+		enableCI: props.enableCI || 0, // (TT) enable confidence intervals
 	};
 };
 

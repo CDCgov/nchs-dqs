@@ -74,6 +74,19 @@ export const MainEvents = {
 			}
 		});
 
+		$("#enable-CI-checkbox").on('change',(evt) => {
+			let isChecked = evt.target.checked; 
+			if (isChecked) {
+				//console.log("Enable CI Checkbox is checked..");
+				// set to enable bar chart
+				appState.ACTIVE_TAB.updateEnableCI(1);
+			} else {
+				//console.log("Enable CI Checkbox is NOT checked..");
+				// set to enable line chart
+				appState.ACTIVE_TAB.updateEnableCI(0);
+			}
+		});
+
 		$(document).on("click", ".chart-container-svg-legendItem", (event) => {
 			event.stopPropagation();
 			// get the unique id of the legend item

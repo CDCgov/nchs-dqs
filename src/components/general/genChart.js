@@ -28,8 +28,8 @@ export class GenChart {
 	}
 
 	render() {
-
 		const p = this.props;
+		
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -541,22 +541,26 @@ export class GenChart {
 						lines[i] = d3.line()
 							.defined(function (d) {
                 				return d.estimate !== null;
-            				});
+							});
+						
 						const lineGroup = svg
 							.append("g")
 							.attr("class", nd.key.replace(/[\W_]+/g, ""))
-							.attr("transform", `translate(${margin.left}, ${margin.top})`);
-
+							.attr("transform", `translate(${margin.left}, ${margin.top})`)
+	
 						lineGroups[i] = lineGroup;
 
 						nd.values[0].assignedLegendColor = multiLineColors(i);
 						//console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
-
+						
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
 							.attr("fill", "none")
 							.attr("stroke", multiLineColors(i))
-							.attr("stroke-width", 2);
+							.attr("stroke-width", 2)
+							
+
+						
 					}
 				});
 			}
@@ -808,6 +812,57 @@ export class GenChart {
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 							
+							//debugger;
+							// #### TEST SEPARATING THIS OUT - Show confidence interval #####
+							if (p.enableCI) {
+								lineGroups[i]
+									.append("path")
+									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
+									.attr("fill", multiLineColors(i))
+									.attr("stroke", "none")
+									.style("opacity", 0.6)
+									.attr("d", d3.area()
+										.x(function (d) { console.log("x d:", xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
+										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.lci)); return yScaleLeft(d.lci) })
+										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.uci)); return yScaleLeft(d.uci) })
+									);
+							}
+							
+/* 							lineGroups[i]
+							.selectAll("svg#area")
+							.data(nd.values, (d) => d[p.chartProperties.xAxis])
+							.join(
+								(enter) => {
+									enter
+										.append("path")		
+											.filter(function(d) { return d.estimate })
+											.attr("fill", multiLineColors(i))
+											.attr("stroke", "none")
+											.style("opacity", 0.9) // (TTT)
+											.attr("d", d3.area()
+												.x(function (d) { xScale(d[p.chartProperties.xAxis] + offset); })
+												.y0(function (d) { return yScaleLeft(d.lci); })
+												.y1(function (d) { return yScaleLeft(d.uci); })
+												)	
+								},
+								(update) => {
+									update
+										.append("path")		
+											.filter(function(d) { console.log("d.estimate:", d); return d.estimate })
+											.attr("fill", multiLineColors(i))
+											.attr("stroke", "none")
+											.style("opacity", 0.9) // (TTT)
+											.attr("d", d3.area()
+												.x(function (d) { console.log("d.year:", d.year_pt); return x(d.year_pt) })
+												.y0(function(d) { console.log("d.lci:", d.uci); return y(d.lci) })
+												.y1(function(d) { return y(d.uci) })
+												)	
+								},
+								(exit) => {
+									exit.remove();
+								}
+							); */
+
 							lineGroupPaths[i].attr("d", lines[i](nd.values));
 							lineGroups[i]
 								.selectAll("ellipse")
@@ -815,13 +870,25 @@ export class GenChart {
 								.join(
 									(enter) => {
 										enter
+											.append("path")		
+											.filter(function(d) { return d.estimate })
+											.attr("fill", multiLineColors(i))
+											.attr("stroke", "none")
+											.style("opacity", 0.9) // (TTT)
+											.attr("d", d3.area()
+												.x(function (d) { console.log("d.year:", d.year); return xScale(d[p.chartProperties.xAxis]) + offset })
+												.y0(function(d) { console.log("d.lci:", d.uci); return yScaleLeft(d.uci) })
+												.y1(function(d) { return yScaleLeft(d.lci) })
+												)	
+										enter
 											.append("ellipse") // adding hover over ellipses
+											.filter(function(d) { return d.estimate })
 											.style("fill", multiLineColors(i))
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
 											.attr("ry", d3.max([5, d3.min([offset, 15])]))
-											.style("opacity", 0);
+											.style("opacity", 0); // this makes it invisible
 										enter
 											.append("ellipse") // add always visible "point" (TT)
 											// filter out the nulls at last possible moment (TT)
@@ -830,10 +897,10 @@ export class GenChart {
 											.style("fill", function (d) {
 												if (d.flag === "*") {
 													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
-													return "white";
+													return "white"; // creates circle that appears "empty" for "*" flag
 												} else {
 													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
-													return multiLineColors(i);
+													return multiLineColors(i); // fills in the dot with line color
 												}
 											})
 											.style("stroke", function (d) {

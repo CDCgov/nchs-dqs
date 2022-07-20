@@ -50,6 +50,7 @@ export class LandingPage {
 		this.showMap = 0;
 		this.geometries = {};
 		this.classifyType = 2;  // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
+		this.enableCI = 0; // 1 = Enable Confidence Intervals for datasets that have them
 	}
 
 	renderTab() {
@@ -126,7 +127,7 @@ export class LandingPage {
 							return d.estimate = null;  // estimate missing so fill in with null???
 						} else { return d; }
 					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1 }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
@@ -136,7 +137,7 @@ export class LandingPage {
 							return d;
 						} else { return d; }
 					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1}));
 				this.renderAfterDataReady();
 			}
 
@@ -396,7 +397,7 @@ export class LandingPage {
 	}
 
 	getAllChartProps = (data, chartBaseProps) => {
-		const { chartValueProperty, yAxisTitle, xAxisTitle } = chartBaseProps;
+		const { chartValueProperty, yAxisTitle, xAxisTitle} = chartBaseProps;
 		const vizId = "chart-container";
 		let props;
 		// figure out legend placement
@@ -426,6 +427,7 @@ export class LandingPage {
 		}
 		// if one single year then use bar chart
 		let useBars;
+
 		//debugger;
 		if (this.showBarChart) {
 			//yAxisTitle = this.unitNumText;
@@ -438,6 +440,7 @@ export class LandingPage {
 					yAxis: "estimate",
 					bars: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -494,6 +497,7 @@ export class LandingPage {
 					xAxis: "year",
 					yAxis: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -730,6 +734,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox since "suicide" has no se data
+				this.enableCI = 1;
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
 				this.dataFile = "content/json/ObesityAdults.json";
@@ -737,6 +744,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityAdultData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox
+				this.enableCI = 1;
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "suicide":
 				//debugger;
@@ -745,6 +755,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				this.enableCI = 0;
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -752,6 +765,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
+				// hide 95% CI checkbox since "suicide" has no se data
+				this.enableCI = 0;
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;			
 			case "birthweight":	
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
@@ -759,6 +775,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.BirthweightData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				this.enableCI = 0;
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
 				this.dataFile = "content/json/InfantMortality.json";
@@ -766,6 +785,9 @@ export class LandingPage {
 				selectedDataCache = DataCache.InfantMortalityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				this.enableCI = 0;
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65":
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
@@ -774,6 +796,9 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox
+				this.enableCI = 1;
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 		}
 		// if we switch Topic then start with Total every time
@@ -824,7 +849,7 @@ export class LandingPage {
 			// create a year_pt col from time period
 			this.allData = this.allData
 				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF",  lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1}));
 			//this.renderAfterDataReady();
 
 			//debugger;
@@ -1292,6 +1317,11 @@ export class LandingPage {
 		this.renderChart();
 	}
 
+	updateEnableCI(value) {
+		this.enableCI = value;
+		this.renderChart();
+	}
+
 	updateShowMap(value) {
 		//debugger;
 		this.showMap = value;
@@ -1669,7 +1699,6 @@ export class LandingPage {
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>
 				<option value="1">Sex</option>
-				<option value="2">Age</option>
 				<option value="3"">Race and Hispanic origin</option>
         		<option value="4">Sex and race and Hispanic origin</option>
 				<option value="5">Percent of poverty level</option>
@@ -1787,6 +1816,11 @@ export class LandingPage {
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
+
+					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="align:left;">
+						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox">
+						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
+					</div>
 				</div>
 				<div id="chart-container" class="general-chart" style="text-align:center;">
 				</div>
