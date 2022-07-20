@@ -1564,7 +1564,7 @@ export class LandingPage {
 				!item.match("subLine") &&
 				!item.match("dontDraw") &&
 				!item.match("assignedLegendColor") &&
-				item.indicator !== "data"
+				item !== "date"
 		);
 		const cols = keys;
 		//debugger;
