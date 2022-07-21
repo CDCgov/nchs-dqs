@@ -354,19 +354,17 @@ export class LandingPage {
 		}
 
 		//debugger;
-		let allFootnoteIdsArray = d3
-			.map(selectedPanelData, function (d) {
-				return d.footnote_id_list;
-			})
-			.keys();
-		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
-		this.updateFootnotes(allFootnoteIdsArray);
-
-		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
-			return [...selectedPanelData].map((d) => ({
-				...d,
-				date: new Date(`${d.year}-01-01T00:00:00`),
-			}));
+		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys();
+		console.log("**********************footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
+		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
+		//debugger;
+		/* 		const noLocationNamedData = [...classifiedData, ...allCountiesData];
+				if (this.currentLocation === "United States")
+					return noLocationNamedData.map((d) => ({
+						...d,
+						date: new Date(`${d.date}T00:00:00`),
+						subLine: functions.getCategoryName2(d.Category, classification),
+					})); */
 
 		return [...selectedPanelData];
 	}
@@ -635,7 +633,7 @@ export class LandingPage {
 				datumType: "string",
 			},
 			flag: {
-				title: "Flag: ",
+				title: "Flag:",
 				datumType: "string",
 			},
 			"": { title: "", datumType: "empty" },
@@ -695,14 +693,35 @@ export class LandingPage {
 		return "deathRateCumulativeSubmission";
 	}
 
-	updateFootnotes(footnotesIdArray) {
+	updateFootnotes(footnotesIdArray, dataTopic) {
 		let footnotesList;
 		let sourceList;
 		let allFootnotesText = "";
 		let sourceText = "";
 		//debugger;
 		// in some cases this gets called with no footnotes.
-		if (footnotesIdArray[0]) {
+
+		if (dataTopic == "obesity-child" && footnotesIdArray[1]) {
+			// this includes every item in the footnotes
+			footnotesList = footnotesIdArray[1].split(",");
+
+			// get ONLY the source codes list
+			sourceList = footnotesList;
+			sourceList = sourceList.filter((d) => d.toString().startsWith("SC"));  // match(/SC/));
+			sourceList.forEach(f =>
+				sourceText += "<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>"
+			);
+
+			// now remove the SC notes from footnotesList
+			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
+
+			//console.log("footnote ids: ", footnotesList);
+			// foreach footnote ID, look it up in the tabnotes and ADD it to text
+			allFootnotesText = "";
+			footnotesList.forEach(f =>
+				allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
+			);
+		} else if (footnotesIdArray[0]) {
 			// this includes every item in the footnotes
 			footnotesList = footnotesIdArray[0].split(",");
 
@@ -711,8 +730,8 @@ export class LandingPage {
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
 			sourceList.forEach(
 				(f) =>
-					(sourceText +=
-						"<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+				(sourceText +=
+					"<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -896,28 +915,44 @@ export class LandingPage {
 						this.updateShowMap(0);
 						break;
 
+					// cases with LINE CHART only and no map data
+					case "obesity-child":
+					case "obesity-adult":
+					case "suicide":
+					case "injury":
+					case "medicaidU65":
+						// show the chart tab
+						$('#tab-chart').css("visibility", "visible");
+						$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+						$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+						// hide the map tab
+						$('#tab-map').css("visibility", "hidden");
+						this.updateShowMap(0);
+						break;
+
 					// cases with US Map data option
 					case "birthweight":
 					case "infant-mortality":
 						// show the map tab BUT DO NOT MAKE IT THE DEFAULT
 						//$('#icons-tab-1').click();
-						$("#tab-map").css("visibility", "visible");
-						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
-						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
+						$('#tab-map').css("visibility", "visible");
+						$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+						$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
 						// hide the chart tab
 						//$('#tab-chart').css("visibility", "hidden");
 						// set chart tab to white
 						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
 						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 						theChartTab.style.backgroundColor = "#b3d2ce";
-						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
+						theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
 						this.updateShowMap(0);
 						break;
+
 				}
 
 				//disable single year if it is set
 				// force "year" to reset and not have single year clicked
-				if (document.getElementById("show-one-period-checkbox").checked) {
+				if (document.getElementById('show-one-period-checkbox').checked) {
 					$("#show-one-period-checkbox").click();
 				}
 
