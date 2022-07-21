@@ -21,6 +21,7 @@ import { genFormat } from "../../utils/genFormat";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
+import { data } from "jquery";
 
 export class GenChart {
 	constructor(providedProps) {
@@ -210,10 +211,8 @@ export class GenChart {
 		};
 
 		if (p.chartRotate === true) {
-			// increase bottom margin - which ends up being left side where Characteristics are displayed
-			margin.bottom = margin.bottom + 90;
-			//margin.left = 90;
-			// messing with margin.left here pushed the barchart legend up onto the barchart :-(
+			margin.bottom *= 3;
+			margin.top *= 1.5;
 		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -222,16 +221,6 @@ export class GenChart {
 		let svgHeight = svgWidth * svgHeightRatio;
 		let chartWidth = svgWidth - xMargin;
 		let chartHeight = svgHeight - yMargin;
-		// change dimensions some for rotated bar chart (TT)
-		// - these ratios could be converted to props and passed in TODO
-		if (p.chartRotate === true) {
-			// increase height some
-			svgHeight = svgHeight * 1.4;
-			chartHeight = chartHeight * 1.4;
-			// reduce width some
-			svgWidth = svgWidth * 0.8;
-			chartWidth = chartWidth * 0.8;
-		}
 
 		// get chart x and y centers
 		const halfXMargins = xMargin / 2;
@@ -242,7 +231,15 @@ export class GenChart {
 		const halfHeight = svgHeight / 2;
 		const chartCenterY = halfHeight + margin.top - halfYMargins;
 
-		// apply chart title
+		if (p.chartRotate) {
+			const barWidth = 60;
+			chartHeight = chartWidth - xMargin;
+			svgHeight = svgWidth;
+			chartWidth = p.data.length * barWidth + 0.3 * barWidth;
+			svgWidth = xMargin + chartWidth;
+		}
+
+		//  apply chart title
 		if (p.usesChartTitle) {
 			const title = viz
 				.append("div")
@@ -265,11 +262,9 @@ export class GenChart {
 		if (p.firefoxReversed === true) {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
-			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 1.7
-			//xScale = d3.scaleTime().range([0, chartWidth]);
 			xScale = p.needsScaleTime
 				? d3.scaleTime().range([0, chartWidth])
-				: d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(1.7);
+				: d3.scaleBand().range([0, chartWidth]).paddingInner(0.15).paddingOuter(0.15);
 		}
 
 		let yScaleExtent = [0];
@@ -337,20 +332,6 @@ export class GenChart {
 			.ticks(p.rightTickCount)
 			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
-		// apply the svg to the container element
-		// const svg = viz
-		// 	.append("svg") //.attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
-		// 	.attr("id", svgId)
-		// 	.attr("width", "100%") // percent width
-		// 	.attr("height", "100%") // percent height
-		// 	.attr(
-		// 		"style",
-		// 		"width: 100%; padding-bottom: 92%; height: 1px; overflow: visible; display:inline; margin: auto;"
-		// 	);
-		// // .attr("viewbox", "0 0 100 100")
-		// // .attr("preserveAspectRatio", "xMinYMin meet");
-		// //.attr('preserveAspectRatio', 'xMidYMid meet')
-
 		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
@@ -359,10 +340,9 @@ export class GenChart {
 			.append("rect")
 			.attr("id", "whitebox") // give it a white box background
 			.attr("fill", "#FFFFFF")
-			.attr("height", 800)
-			// .attr("height", svgHeight)
+			.attr("height", svgHeight)
 			.attr("width", svgWidth);
-		// CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component
+
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -438,7 +418,7 @@ export class GenChart {
 			}
 
 			// left yAxis
-			if (p.usesLeftAxisTitle) {
+			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
@@ -1154,13 +1134,15 @@ export class GenChart {
 		}
 
 		// (TT) this is where we rotate the entire bar chart
+		let currPos;
 		if (p.usesBars === true && p.chartRotate === true) {
 			// rotate the entire chart
-			let moveCenter = svgWidth / 3; // this helps center bar chart (TT)
-			d3.selectAll(`#${svgId}`).attr(
-				"transform",
-				`rotate(${p.chartRotationPercent}) translate(70 ${moveCenter})`
-			);
+			// const whiteboxTop = $("#whitebox")[0].getBoundingClientRect().top;
+			// debugger;
+			// let moveCenter = (whiteboxDims.width - whiteboxDims.height) / 2; // this helps center bar chart (TT)
+			// let moveCenter = (svgWidth - svgHeight + margin.bottom) / 2; // this helps center bar chart (TT)
+			currPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			d3.select(`#${svgId}`).attr("transform", `rotate(${p.chartRotationPercent})`);
 
 			// now add the LEGEND! - have to do this last after Bar Chart drawn
 			if (p.usesLegend === true) {
@@ -1526,6 +1508,12 @@ export class GenChart {
 				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
 			}
 		}
+
+		const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
+		if (p.chartRotate) {
+			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, 0)`);
+			$("#chart-container").css("height", newPos.height - 80);
+		} else $("#chart-container").css("height", newPos.height);
 
 		return {
 			data: p.data,
