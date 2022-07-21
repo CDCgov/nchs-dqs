@@ -232,10 +232,10 @@ export class GenChart {
 		const chartCenterY = halfHeight + margin.top - halfYMargins;
 
 		if (p.chartRotate) {
-			const barWidth = 50;
+			const barWidth = 60;
 			chartHeight = chartWidth - xMargin;
 			svgHeight = svgWidth;
-			chartWidth = p.data.length * barWidth + 0.2 * barWidth;
+			chartWidth = p.data.length * barWidth + 0.3 * barWidth;
 			svgWidth = xMargin + chartWidth;
 		}
 
@@ -264,7 +264,7 @@ export class GenChart {
 		} else {
 			xScale = p.needsScaleTime
 				? d3.scaleTime().range([0, chartWidth])
-				: d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(0.1);
+				: d3.scaleBand().range([0, chartWidth]).paddingInner(0.15).paddingOuter(0.15);
 		}
 
 		let yScaleExtent = [0];
@@ -418,7 +418,7 @@ export class GenChart {
 			}
 
 			// left yAxis
-			if (p.usesLeftAxisTitle) {
+			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
@@ -1510,15 +1510,11 @@ export class GenChart {
 		}
 
 		const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
-		console.log(currPos, newPos);
-		// debugger;
-		if (p.chartRotate)
+		if (p.chartRotate) {
 			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, 0)`);
-		// d3.select(`#${svgId}`).attr(
-		// 	"transform",
-		// 	`rotate(90), translate(${currPos.top - newPos.top}, ${-currPos.left})`
-		// );
-		// `rotate(90), translate(${currPos.top - newPos.top}, ${-newPos.left})`
+			$("#chart-container").css("height", newPos.height - 80);
+		} else $("#chart-container").css("height", newPos.height);
+
 		return {
 			data: p.data,
 			vizId: p.vizId,

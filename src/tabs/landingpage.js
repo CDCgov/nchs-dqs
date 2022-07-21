@@ -1824,7 +1824,7 @@ export class LandingPage {
 <!-- Tabs content -->
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
-		<div class="map-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="map-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 			<div style="display:inline;float:left;">
 				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
 					<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
@@ -1840,8 +1840,8 @@ export class LandingPage {
 					</div>
 				</fieldset>
 			</div>
-				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;">
-					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;"></div>				
+				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;">
+					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;"></div>				
 					<div id="us-map-message" class="chart-title" style=""></div>
 					<div id="us-map-legend"></div>
 				</div>
@@ -1850,7 +1850,7 @@ export class LandingPage {
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
-		<div class="chart-wrapper" style=" height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
