@@ -1133,9 +1133,14 @@ export class GenChart {
 			genTooltip.render();
 		}
 
+		let currPos;
 		if (p.usesBars === true && p.chartRotate === true) {
+			// rotate the chart prior to adding legend items for proper location setting
+			currPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
+
 			// Add the legend. Have to do this last after Bar Chart drawn
-			// The rotation comes at the very end of the file
+
 			if (p.usesLegend === true) {
 				// set up the data first
 				//console.log("p.data:", p.data);
@@ -1506,11 +1511,8 @@ export class GenChart {
 			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the
 			// original height, pre-rotation. Due to css positioning of the svg, when the rotated height becomes greater than
 			// the width after adding legend items, rotation changes the position of the svg off of desired center.
-			// To move it back, we first get the desired location, then rotate, find out where it is after rotation,
-			// and finally move it back(required re-rotating WITH translation at the same time).
-
-			const currPos = $(`#${svgId}`)[0].getBoundingClientRect();
-			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
+			// To move it back, we first get the desired location then rotate (done above), find out where it is after rotation,
+			// (done here) and finally move it back(required re-rotating WITH translation at the same time).
 
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
 			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
