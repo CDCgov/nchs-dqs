@@ -1525,7 +1525,7 @@ export class GenChart {
 			// finally adjust the green container height for the content of the new svg height
 			$("#chart-container").css("height", newPos.height - 80);
 		} else {
-			$("#chart-container").css("height", newPos.height);
+			$("#chart-container").css("height", $(`#${svgId}`)[0].getBoundingClientRect().height);
 		}
 
 		return {
