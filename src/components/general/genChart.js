@@ -204,7 +204,7 @@ export class GenChart {
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: axisSize, // gives room for tick label when no chart title
+			top: axisSize + 40, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
@@ -667,7 +667,8 @@ export class GenChart {
 									.attr("height", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("x", (d) => xScale(d[p.chartProperties.xAxis]))
 									.attr("fill", "black")
-									.attr("opacity", "0");
+									.attr("opacity", "0")
+
 							},
 							(update) => {
 								update
@@ -677,7 +678,8 @@ export class GenChart {
 							(exit) => {
 								exit.remove();
 							}
-						);
+					);
+
 				}
 
 				if (p.usesBars) {
@@ -730,8 +732,70 @@ export class GenChart {
 							(exit) => {
 								exit.remove();
 							}
-						);
+					);
+					
+					//debugger;
+										
+					// MEOWWWW - CI WHISKERS FOR BAR CHART
+					if (p.enableCI) {
+						
+						let cidata = drawData;  // we can refactor this
+						// did this so I could log the data
+						console.log("cidata", cidata);
+						
+						cidata.forEach((d, i) => {
+							const CIBarId = "CIBar" + i;
+							const CIBarItem = svg
+								.append("line")
+								.datum(d)
+								.attr("class", `${svgId}-CIBarItem`)
+								.attr("id", CIBarId)
+								.filter(function (d) { console.log("cidata2 i, lci, est, uci:", i, d.estimate_lci, d.estimate, d.estimate_uci, ); return d.estimate_uci; })
+								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM THESE CI WHISKERS ARE CORRECT
+								.attr("x1", function (d) { console.log("x1=", xScale(d[p.chartProperties.xAxis])); return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() })			
+								.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
+								.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth())
+								.attr("y2", function (d) { console.log("cProp.bars=",d[p.chartProperties.bars]); console.log("y2=",yScaleLeft(d[p.chartProperties.bars])); return  yScaleLeft(d.estimate_uci) + margin.top }) //yScaleLeft(i + 1))
+								.attr("stroke", "black")
+								.attr("stroke-width", 3)
+
+							
+							//console.log("# x:", CIBarItem.attr("x1"));
+						
+							console.log("cidata d:",d);
+							
+/* 							CIBarItem
+								.append("line")
+								.filter(function (d) { console.log("cidata2 d:", d); return d.estimate_uci; })
+								.attr("x1", (d) => xScale(d.estimate))
+								.attr("y1", function (d) { return yScaleLeft(d[p.chartProperties.bars]) })
+								.attr("x2", (d) => xScale(d.estimate))
+								.attr("y2", function (d) { return yScaleLeft(d.estimate_uci) }) //yScaleLeft(i + 1))
+								.attr("stroke", "red")
+								.attr("stroke-width", 4) */
+				
+
+						});
+					
+					}
 				}
+
+						
+						/*
+							.attr("x1", (d) => xScale(d[p.chartProperties.xAxis]))
+							.attr("y1", function (d) { return yScaleLeft(d[p.chartProperties.bars]) })
+							.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]))
+							.attr("y2", function (d) { return yScaleLeft(d.estimate_uci) })
+
+						.attr("x1", (d) => xScale(d[p.chartProperties.xAxis]))
+							.attr("y1", yScaleLeft(d.estimate_lci))
+							.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]))
+							.attr("y2", yScaleLeft(d.estimate_uci)) 
+							
+															.attr(
+									"transform",
+									`rotate(-${p.chartRotationPercent})`
+								);*/
 
 				if (p.usesStackedBars) {
 					stackedBars
@@ -813,55 +877,21 @@ export class GenChart {
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 							
 							//debugger;
-							// #### TEST SEPARATING THIS OUT - Show confidence interval #####
+							// #### Show confidence interval #####
+							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE 
 							if (p.enableCI) {
 								lineGroups[i]
 									.append("path")
 									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
 									.attr("fill", multiLineColors(i))
 									.attr("stroke", "none")
-									.style("opacity", 0.6)
+									.style("opacity", 0.4)
 									.attr("d", d3.area()
 										.x(function (d) { console.log("x d:", xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
-										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.lci)); return yScaleLeft(d.lci) })
-										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.uci)); return yScaleLeft(d.uci) })
+										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.estimate_lci)); return yScaleLeft(d.estimate_lci) })
+										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.estimate_uci)); return yScaleLeft(d.estimate_uci) })
 									);
 							}
-							
-/* 							lineGroups[i]
-							.selectAll("svg#area")
-							.data(nd.values, (d) => d[p.chartProperties.xAxis])
-							.join(
-								(enter) => {
-									enter
-										.append("path")		
-											.filter(function(d) { return d.estimate })
-											.attr("fill", multiLineColors(i))
-											.attr("stroke", "none")
-											.style("opacity", 0.9) // (TTT)
-											.attr("d", d3.area()
-												.x(function (d) { xScale(d[p.chartProperties.xAxis] + offset); })
-												.y0(function (d) { return yScaleLeft(d.lci); })
-												.y1(function (d) { return yScaleLeft(d.uci); })
-												)	
-								},
-								(update) => {
-									update
-										.append("path")		
-											.filter(function(d) { console.log("d.estimate:", d); return d.estimate })
-											.attr("fill", multiLineColors(i))
-											.attr("stroke", "none")
-											.style("opacity", 0.9) // (TTT)
-											.attr("d", d3.area()
-												.x(function (d) { console.log("d.year:", d.year_pt); return x(d.year_pt) })
-												.y0(function(d) { console.log("d.lci:", d.uci); return y(d.lci) })
-												.y1(function(d) { return y(d.uci) })
-												)	
-								},
-								(exit) => {
-									exit.remove();
-								}
-							); */
 
 							lineGroupPaths[i].attr("d", lines[i](nd.values));
 							lineGroups[i]
@@ -869,17 +899,6 @@ export class GenChart {
 								.data(nd.values, (d) => d[p.chartProperties.xAxis])
 								.join(
 									(enter) => {
-										enter
-											.append("path")		
-											.filter(function(d) { return d.estimate })
-											.attr("fill", multiLineColors(i))
-											.attr("stroke", "none")
-											.style("opacity", 0.9) // (TTT)
-											.attr("d", d3.area()
-												.x(function (d) { console.log("d.year:", d.year); return xScale(d[p.chartProperties.xAxis]) + offset })
-												.y0(function(d) { console.log("d.lci:", d.uci); return yScaleLeft(d.uci) })
-												.y1(function(d) { return yScaleLeft(d.lci) })
-												)	
 										enter
 											.append("ellipse") // adding hover over ellipses
 											.filter(function(d) { return d.estimate })

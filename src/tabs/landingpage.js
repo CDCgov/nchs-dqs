@@ -127,7 +127,7 @@ export class LandingPage {
 							return d.estimate = null;  // estimate missing so fill in with null???
 						} else { return d; }
 					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1 }));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			} else {
 				this.allData = this.allData
@@ -137,7 +137,7 @@ export class LandingPage {
 							return d;
 						} else { return d; }
 					})
-					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1}));
+					.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: d.year, dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 				this.renderAfterDataReady();
 			}
 
@@ -849,7 +849,7 @@ export class LandingPage {
 			// create a year_pt col from time period
 			this.allData = this.allData
 				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF",  lci: parseFloat(d.estimate) - 1, uci: parseFloat(d.estimate) + 1}));
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF",  }));
 			//this.renderAfterDataReady();
 
 			//debugger;
