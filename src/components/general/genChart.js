@@ -1503,17 +1503,18 @@ export class GenChart {
 		$(document).on("click", (e) => console.log("x: ,", e.clientX, "  y: ,", e.clientY));
 
 		if (p.chartRotate) {
-			// Rotation occurs around the center of the svg.
-			// Due to css positioning of the svg, when the height/width are modified, to make room for the legend items,
-			// the position of the svg changes on the page ** if svg width becomes wider than the container ** away from
-			// its desired location. To move it back, we first get the desired location, then rotate, find out where it
-			// is after rotation, and finally move it back (re-rotating with translation at the same time).
+			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the
+			// original height, pre-rotation. Due to css positioning of the svg, when the rotated height becomes greater than
+			// the width after adding legend items, rotation changes the position of the svg off of desired center.
+			// To move it back, we first get the desired location, then rotate, find out where it is after rotation,
+			// and finally move it back(required re-rotating WITH translation at the same time).
 
 			const currPos = $(`#${svgId}`)[0].getBoundingClientRect();
 			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
 
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
-			const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
+			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
+			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
 
 			d3.select(`#${svgId}`).attr(
 				"transform",
@@ -1521,6 +1522,7 @@ export class GenChart {
 				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
 			);
 
+			// finally adjust the green container height for the content of the new svg height
 			$("#chart-container").css("height", newPos.height - 80);
 		} else {
 			$("#chart-container").css("height", newPos.height);
