@@ -856,13 +856,13 @@ export class GenChart {
 								lineGroups[i]
 									.append("path")
 									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
-									.attr("fill", "red") //multiLineColors(i))
+									.attr("fill", multiLineColors(i))
 									.attr("stroke", "none")
 									.style("opacity", 0.4)
 									.attr("d", d3.area()
 										.x(function (d) { console.log("x d,i,x:",d,i, xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
-										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.estimate_lci)); return yScaleLeft(d.estimate_lci) })
-										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.estimate_uci)); return yScaleLeft(d.estimate_uci) })
+										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.estimate_lci)); return yScaleLeft(d.estimate_lci); })
+										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.estimate_uci)); return yScaleLeft(d.estimate_uci); })
 									);
 							}
 

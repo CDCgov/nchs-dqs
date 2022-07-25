@@ -292,7 +292,6 @@ export class LandingPage {
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
-				
 				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
 				if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
@@ -302,10 +301,11 @@ export class LandingPage {
 					// disable it
 					$("#enable-CI-checkbox").prop("disabled", true);
 					$("#enable-CI-checkbox").prop("checked", false);
-				}
+				}	
+
 				break;
 		}
-
+		
 		// DONT ADD CODE LIKE THIS...
 		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
 		// remove any remaining data where estimate is blank or null
@@ -613,11 +613,19 @@ export class LandingPage {
 				title: "Flag: ",
 				datumType: "string",
 			}, 
+			estimate_lci: {
+				title: "95% confidence LCI: ",
+				datumType: "string",
+			}, 
+			estimate_uci: {
+				title: "95% confidence UCI: ",
+				datumType: "string",
+			}, 	
 			"": { title: "", datumType: "empty" },
 		};
 
 		const headerProps = ["stub_name", "stub_label"];
-		const bodyProps = ["panel", "unit", chartValueProperty, "year", "age", "flag"];
+		const bodyProps = ["panel", "unit", chartValueProperty,"estimate_uci","estimate_lci","year", "age", "flag"];
 
 		return {
 			propertyLookup,
@@ -861,7 +869,7 @@ export class LandingPage {
 			// create a year_pt col from time period
 			this.allData = this.allData
 				// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
-				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF",  }));
+				.map((d) => ({ ...d, estimate: parseFloat(d.estimate), year_pt: this.getYear(d.year), dontDraw: false, assignedLegendColor: "#FFFFFF", }));
 			//this.renderAfterDataReady();
 
 			//debugger;
@@ -871,40 +879,40 @@ export class LandingPage {
 			// if you do that you get weird chart "flashes" between changing data sets
 			switch (dataTopic) {
 
-			// cases with LINE CHART only and no map data
-			case "obesity-child":
-			case "obesity-adult":
-			case "suicide":
-			case "injury":
-			case "medicaidU65":
-				// show the chart tab
-				$('#tab-chart').css("visibility", "visible");
-				$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-				$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
-				// hide the map tab
-				$('#tab-map').css("visibility", "hidden");
-				this.updateShowMap(0);
-				break;	
+				// cases with LINE CHART only and no map data
+				case "obesity-child":
+				case "obesity-adult":
+				case "suicide":
+				case "injury":
+				case "medicaidU65":
+					// show the chart tab
+					$('#tab-chart').css("visibility", "visible");
+					$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+					$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+					// hide the map tab
+					$('#tab-map').css("visibility", "hidden");
+					this.updateShowMap(0);
+					break;
 				
-			// cases with US Map data option
-			case "birthweight":	
-			case "infant-mortality":
-				// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-				//$('#icons-tab-1').click();
-				$('#tab-map').css("visibility", "visible");
-				$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-				$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
-				// hide the chart tab
-				//$('#tab-chart').css("visibility", "hidden");
-				// set chart tab to white
-				//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-				//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-				theChartTab.style.backgroundColor = "#b3d2ce";
-				theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
-				this.updateShowMap(0);
-				break;
+				// cases with US Map data option
+				case "birthweight":
+				case "infant-mortality":
+					// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+					//$('#icons-tab-1').click();
+					$('#tab-map').css("visibility", "visible");
+					$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+					$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+					// hide the chart tab
+					//$('#tab-chart').css("visibility", "hidden");
+					// set chart tab to white
+					//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+					//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+					theChartTab.style.backgroundColor = "#b3d2ce";
+					theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+					this.updateShowMap(0);
+					break;
 
-		}
+			}
 	
 			//disable single year if it is set
 			// force "year" to reset and not have single year clicked
@@ -920,8 +928,23 @@ export class LandingPage {
 			// set the Adjust vertical axis via unit_num in data
 			this.setVerticalUnitAxisSelect();
 
+			//debugger;
+			
 			// now filter data again to pick up unit num
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
+
+			// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+			// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+			if (this.flattenedFilteredData[0] !== undefined) {
+				if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+					// enable the CI checkbox
+					$("#enable-CI-checkbox").prop("disabled", false);
+				} else {
+					// disable it
+					$("#enable-CI-checkbox").prop("disabled", true);
+					$("#enable-CI-checkbox").prop("checked", false);
+				}
+			}
 
 			// now re-render the chart based on updated selection
 			this.renderChart();
@@ -1317,6 +1340,17 @@ export class LandingPage {
 		// - call set stub names
 		this.setStubNameSelect();
 
+		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+			// enable the CI checkbox
+			$("#enable-CI-checkbox").prop("disabled", false);
+		} else {
+			// disable it
+			$("#enable-CI-checkbox").prop("disabled", true);
+			$("#enable-CI-checkbox").prop("checked", false);
+		}
+		
 		if (this.showMap) {
 			this.renderMap();
 		} else {
