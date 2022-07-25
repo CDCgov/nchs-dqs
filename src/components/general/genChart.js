@@ -1417,7 +1417,7 @@ export class GenChart {
 						.attr("id", "legendText")
 						.attr("class", "visible")
 						.attr("x", 617)
-						.attr("y", 674)
+						.attr("y", 668)
 						.attr("dy", "12px")
 						.text("Select up to 10 groups");
 
@@ -1451,6 +1451,9 @@ export class GenChart {
 							break;
 						case 40:
 							legendTx = svgWidth / 2 - margin.left - 170;
+							break;
+						case 46:
+							legendTx = svgWidth / 2 - margin.left - 180;
 							break;
 						default:
 							legendTx = svgWidth / 2 - margin.left - 32;
