@@ -116,7 +116,6 @@ export class GenChart {
 			var el = d3.select(this);
 			var words = d.split(':'); // split labels on : colon
 			el.text('');
-			//this.dy = this.dy + offset;
 			for (var i = 0; i < words.length; i++) {
 				var str;
 				var result;
@@ -289,10 +288,11 @@ export class GenChart {
 						d3.max(p.data, (d) =>
 							d3.max([
 								p.leftDomainMin,
-								d[p.chartProperties.yLeft1],
-								d[p.chartProperties.yLeft2],
-								d[p.chartProperties.yLeft3],
-								d[p.chartProperties.bars],
+								d[p.chartProperties.yLeft1] * 1.10, // (TT) Extra 10% so bars dont go all the way to top
+								d[p.chartProperties.yLeft2] * 1.10,
+								d[p.chartProperties.yLeft3] * 1.10,
+								d[p.chartProperties.bars] * 1.10,
+								d.estimate_uci * 1.10, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 							])
 						) * p.leftDomainOverageScale,
 					]
@@ -700,14 +700,17 @@ export class GenChart {
 										if (
 											p.finalDataPointsDaysCount &&
 											d[p.chartProperties.xAxis] >= endRangeSpecialSectionStartDate
-										)
-											return edgeCaseBarColor;
+										) return edgeCaseBarColor;
 										return barColor;
 									})
 									.attr("height", (d) => chartHeight - yScaleLeft(d[p.chartProperties.bars]))
-									.attr("x", (d) => xScale(d[p.chartProperties.xAxis]))
+									.attr("x", (d, i) => {
+										//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
+										return xScale(d[p.chartProperties.xAxis]);
+									})
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("opacity", 0.85);
+								
 							},
 							(update) => {
 								update
@@ -736,14 +739,16 @@ export class GenChart {
 					
 					//debugger;
 										
-					// MEOWWWW - CI WHISKERS FOR BAR CHART
+					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
 					if (p.enableCI) {
 						
-						let cidata = drawData;  // we can refactor this
 						// did this so I could log the data
-						console.log("cidata", cidata);
+						//console.log("cidata,xbandwidth", drawData, xScale.bandwidth());
 						
-						cidata.forEach((d, i) => {
+						drawData.forEach((d, i) => {
+							// (TT) note bc of the rotated chart:
+							// - x in the below code is up and down as you see chart
+							// - y is left and right as you look at chart
 							const CIBarId = "CIBar" + i;
 							const CIBarItem = svg
 								.append("line")
@@ -751,51 +756,19 @@ export class GenChart {
 								.attr("class", `${svgId}-CIBarItem`)
 								.attr("id", CIBarId)
 								.filter(function (d) { console.log("cidata2 i, lci, est, uci:", i, d.estimate_lci, d.estimate, d.estimate_uci, ); return d.estimate_uci; })
-								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM THESE CI WHISKERS ARE CORRECT
-								.attr("x1", function (d) { console.log("x1=", xScale(d[p.chartProperties.xAxis])); return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() })			
-								.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
-								.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth())
-								.attr("y2", function (d) { console.log("cProp.bars=",d[p.chartProperties.bars]); console.log("y2=",yScaleLeft(d[p.chartProperties.bars])); return  yScaleLeft(d.estimate_uci) + margin.top }) //yScaleLeft(i + 1))
-								.attr("stroke", "black")
+								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM FROM TESTING THESE CI WHISKERS ARE CORRECT
+								.attr("x1", function (d) { return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth()/2 + margin.left })  //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() ); 		 	
+								.attr("y1", function (d) { return  yScaleLeft(d.estimate_lci)  + margin.top; })
+								//.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
+								.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth()/2 + margin.left)
+								//.attr("y2", function (d) { return  yScaleLeft(d.estimate_uci) + margin.top; })
+								.attr("y2", function (d) { console.log("cProp.bars=",d[p.chartProperties.bars]); console.log("y2=",yScaleLeft(d[p.chartProperties.bars])); return  yScaleLeft(d.estimate_uci)  + margin.top }) 								.attr("stroke", "black")
 								.attr("stroke-width", 3)
-
-							
-							//console.log("# x:", CIBarItem.attr("x1"));
-						
-							console.log("cidata d:",d);
-							
-/* 							CIBarItem
-								.append("line")
-								.filter(function (d) { console.log("cidata2 d:", d); return d.estimate_uci; })
-								.attr("x1", (d) => xScale(d.estimate))
-								.attr("y1", function (d) { return yScaleLeft(d[p.chartProperties.bars]) })
-								.attr("x2", (d) => xScale(d.estimate))
-								.attr("y2", function (d) { return yScaleLeft(d.estimate_uci) }) //yScaleLeft(i + 1))
-								.attr("stroke", "red")
-								.attr("stroke-width", 4) */
-				
-
 						});
 					
 					}
 				}
 
-						
-						/*
-							.attr("x1", (d) => xScale(d[p.chartProperties.xAxis]))
-							.attr("y1", function (d) { return yScaleLeft(d[p.chartProperties.bars]) })
-							.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]))
-							.attr("y2", function (d) { return yScaleLeft(d.estimate_uci) })
-
-						.attr("x1", (d) => xScale(d[p.chartProperties.xAxis]))
-							.attr("y1", yScaleLeft(d.estimate_lci))
-							.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]))
-							.attr("y2", yScaleLeft(d.estimate_uci)) 
-							
-															.attr(
-									"transform",
-									`rotate(-${p.chartRotationPercent})`
-								);*/
 
 				if (p.usesStackedBars) {
 					stackedBars
@@ -883,11 +856,11 @@ export class GenChart {
 								lineGroups[i]
 									.append("path")
 									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
-									.attr("fill", multiLineColors(i))
+									.attr("fill", "red") //multiLineColors(i))
 									.attr("stroke", "none")
 									.style("opacity", 0.4)
 									.attr("d", d3.area()
-										.x(function (d) { console.log("x d:", xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
+										.x(function (d) { console.log("x d,i,x:",d,i, xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
 										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.estimate_lci)); return yScaleLeft(d.estimate_lci) })
 										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.estimate_uci)); return yScaleLeft(d.estimate_uci) })
 									);
@@ -1412,19 +1385,6 @@ export class GenChart {
 						);
 				} // end if legendData.length > 0
 
-				// enlarge chart container - NOT WORKING FOR SOME REASON
-				/* 				const chartContainer = document.querySelectorAll(`.chart-container`);
-								chartContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75);
-								const tabContainer = document.querySelectorAll(`.ex-with-icons-content`);
-								tabContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75); */
-
-				///
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1466,18 +1426,6 @@ export class GenChart {
 						};
 					});
 					legendData.reverse();
-					// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
-					// - also even if I got this working it CAN"T GO HERE
-					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
-					/* 				} else if (p.usesBars) { 
-										p.data.forEach((d, i) => {
-											legendData[i] = {
-												stroke: p.barColors[i],
-												dashArrayScale: p.left1DashArrayScale,
-												text: d.key,
-											};
-										});
-										legendData.reverse(); */
 				} else {
 					if (p.usesLeftLine1) {
 						legendData.push({
@@ -1583,7 +1531,7 @@ export class GenChart {
 						.attr('font-size', axisLabelFontSize * 1.1)
 						.attr("x", 45)
 						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (dtemp) { // TRICKY: you can do a function on any variable but then use 
+						.text(function (curD2) { // TRICKY: you can do a function on any variable but then use 
 							// curD to get the value of dontDraw
 							// if you use d or curD in both places it does not work!
 							//console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
@@ -1610,13 +1558,6 @@ export class GenChart {
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
 
-				// (TT) the code below never worked bc it only moved the outer legend wrapper not
-				// try to move container
-				// try to center it
-				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
-				// move it down outside the bottom margin
-				//legendTy = legendContainer.attr("y") + legendHeight;
-				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
 			}
 		}
 

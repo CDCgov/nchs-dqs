@@ -292,9 +292,21 @@ export class LandingPage {
 				selectedPanelData = this.allData.filter(
 					(d) => parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				
+				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+				if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
+					// enable the CI checkbox
+					$("#enable-CI-checkbox").prop("disabled", false);
+				} else {
+					// disable it
+					$("#enable-CI-checkbox").prop("disabled", true);
+					$("#enable-CI-checkbox").prop("checked", false);
+				}
 				break;
 		}
 
+		// DONT ADD CODE LIKE THIS...
 		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
 		// remove any remaining data where estimate is blank or null
 		//selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
@@ -735,7 +747,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// show 95% CI checkbox since "suicide" has no se data
-				this.enableCI = 1;
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
@@ -745,7 +756,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// show 95% CI checkbox
-				this.enableCI = 1;
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "suicide":
@@ -756,7 +766,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// hide 95% CI checkbox since "suicide" has no se data
-				this.enableCI = 0;
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
@@ -766,7 +775,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
 				// hide 95% CI checkbox since "suicide" has no se data
-				this.enableCI = 0;
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;			
 			case "birthweight":	
@@ -776,7 +784,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// hide 95% CI checkbox since "suicide" has no se data
-				this.enableCI = 0;
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
@@ -786,7 +793,6 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// hide 95% CI checkbox since "suicide" has no se data
-				this.enableCI = 0;
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65":
@@ -797,10 +803,16 @@ export class LandingPage {
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// show 95% CI checkbox
-				this.enableCI = 1;
 				$("#enable-CI-checkbox-wrapper").show();
+				// default unit num does not support CI
+				$("#enable-CI-checkbox").prop("disabled", true); // start unchecked
 				break;
 		}
+		// always start new topic with Enable CI disabled
+		this.enableCI = 0; // but keep it disabled
+		$("#enable-CI-checkbox").prop("checked", false); // start unchecked
+
+		
 		// if we switch Topic then start with Total every time
 		this.stubNameNum = 0;
 
