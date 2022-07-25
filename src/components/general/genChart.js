@@ -1415,7 +1415,7 @@ export class GenChart {
 
 					svg.append("text")
 						.attr("id", "legendText")
-						.attr("class", "visible")
+						//.attr("class", "visible")
 						.attr("x", 617)
 						.attr("y", 688)
 						//.attr("dy", "12px")
