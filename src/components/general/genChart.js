@@ -1417,7 +1417,7 @@ export class GenChart {
 						.attr("id", "legendText")
 						.attr("class", "visible")
 						.attr("x", 617)
-						.attr("y", 678)
+						.attr("y", 674)
 						.attr("dy", "12px")
 						.text("Select up to 10 groups");
 
