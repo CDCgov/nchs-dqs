@@ -1418,7 +1418,7 @@ export class GenChart {
 						//.attr("class", "visible")
 						.attr("x", 632)
 						.attr("y", 696)
-						//.attr("dy", "12px")
+						.attr("dy", "0.32em")
 						.style("fill", "black")
 						.style("font-size", "17px")
 						.text("Select up to 10 groups");
