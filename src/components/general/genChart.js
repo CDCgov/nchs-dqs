@@ -1417,9 +1417,12 @@ export class GenChart {
 						.attr("id", "legendText")
 						.attr("class", "visible")
 						.attr("x", 617)
-						.attr("y", 668)
+						.attr("y", 671)
 						.attr("dy", "12px")
+						.style("fill", "black")
+						.style("font-size", "14px")
 						.text("Select up to 10 groups");
+
 
 					console.log("******************legendData[0] text length: " + legendData[0].text.length);
 					console.log("*****************legendData.length: " + legendData.length);
