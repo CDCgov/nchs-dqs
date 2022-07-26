@@ -7,6 +7,7 @@ import * as config from "../components/landingPage/config";
 import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
+import * as hashTab from "../utils/hashTab";
 
 export class LandingPage {
 	constructor() {
@@ -67,6 +68,25 @@ export class LandingPage {
 	}
 
 	renderAfterDataReady() {
+		const selections = hashTab.getSelections();
+
+		if (selections) {
+			this.dataTopic = selections.topic;
+			this.panelNum = parseInt(selections.subTopic);
+			this.stubNameNum = parseInt(selections.characteristic);
+			this.updateDataTopic(this.dataTopic, true);
+
+			if (selections.viewSinglePeriod) {
+				$("#year-end-label").hide();
+				$("#year-end-select").hide();
+				this.updateShowBarChart(1);
+			} else {
+				$("#year-end-label").show();
+				$("#year-end-select").show();
+				this.updateShowBarChart(0);
+			}
+		}
+
 		// set default yscale:
 		if (!this.yScaleType) {
 			this.yScaleType = "linear";
@@ -208,7 +228,7 @@ export class LandingPage {
 	}
 
 	renderChart() {
-		//debugger;
+		// debugger;
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 		console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
@@ -239,6 +259,7 @@ export class LandingPage {
 
 		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
+		hashTab.writeHashToUrl();
 	}
 
 	getFlattenedFilteredData() {
@@ -354,7 +375,11 @@ export class LandingPage {
 		}
 
 		//debugger;
-		let allFootnoteIdsArray = d3.map(selectedPanelData, function (d) { return d.footnote_id_list; }).keys();
+		let allFootnoteIdsArray = d3
+			.map(selectedPanelData, function (d) {
+				return d.footnote_id_list;
+			})
+			.keys();
 		console.log("**********************footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 		//debugger;
@@ -365,6 +390,13 @@ export class LandingPage {
 						date: new Date(`${d.date}T00:00:00`),
 						subLine: functions.getCategoryName2(d.Category, classification),
 					})); */
+
+		// "date" property is necessary for correctly positioning data point for these charts
+		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
+			return [...selectedPanelData].map((d) => ({
+				...d,
+				date: new Date(`${d.year}-01-01T00:00:00`),
+			}));
 
 		return [...selectedPanelData];
 	}
@@ -707,9 +739,9 @@ export class LandingPage {
 
 			// get ONLY the source codes list
 			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC"));  // match(/SC/));
-			sourceList.forEach(f =>
-				sourceText += "<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>"
+			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
+			sourceList.forEach(
+				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -718,8 +750,8 @@ export class LandingPage {
 			//console.log("footnote ids: ", footnotesList);
 			// foreach footnote ID, look it up in the tabnotes and ADD it to text
 			allFootnotesText = "";
-			footnotesList.forEach(f =>
-				allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>"
+			footnotesList.forEach(
+				(f) => (allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>")
 			);
 		} else if (footnotesIdArray[0]) {
 			// this includes every item in the footnotes
@@ -729,9 +761,7 @@ export class LandingPage {
 			sourceList = footnotesList;
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
 			sourceList.forEach(
-				(f) =>
-				(sourceText +=
-					"<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -763,7 +793,7 @@ export class LandingPage {
 		return `<p>There was an error pulling footnote` + fn_id + `. Try refreshing your browser to see them.</p>`;
 	}
 
-	updateDataTopic(dataTopic) {
+	updateDataTopic(dataTopic, fromHash = false) {
 		this.dataTopic = dataTopic; // string
 		let selectedDataCache;
 		//debugger;
@@ -837,7 +867,7 @@ export class LandingPage {
 				break;
 		}
 		// if we switch Topic then start with Total every time
-		this.stubNameNum = 0;
+		if (!fromHash) this.stubNameNum = 0;
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
@@ -922,11 +952,11 @@ export class LandingPage {
 					case "injury":
 					case "medicaidU65":
 						// show the chart tab
-						$('#tab-chart').css("visibility", "visible");
-						$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
-						$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+						$("#tab-chart").css("visibility", "visible");
+						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
+						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
 						// hide the map tab
-						$('#tab-map').css("visibility", "hidden");
+						$("#tab-map").css("visibility", "hidden");
 						this.updateShowMap(0);
 						break;
 
@@ -935,24 +965,24 @@ export class LandingPage {
 					case "infant-mortality":
 						// show the map tab BUT DO NOT MAKE IT THE DEFAULT
 						//$('#icons-tab-1').click();
-						$('#tab-map').css("visibility", "visible");
-						$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
-						$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+						$("#tab-map").css("visibility", "visible");
+						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
+						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
 						// hide the chart tab
 						//$('#tab-chart').css("visibility", "hidden");
 						// set chart tab to white
 						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
 						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 						theChartTab.style.backgroundColor = "#b3d2ce";
-						theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 						this.updateShowMap(0);
 						break;
-
 				}
 
 				//disable single year if it is set
 				// force "year" to reset and not have single year clicked
-				if (document.getElementById('show-one-period-checkbox').checked) {
+				// if (document.getElementById("show-one-period-checkbox").checked && !fromHash) {
+				if (document.getElementById("show-one-period-checkbox").checked) {
 					$("#show-one-period-checkbox").click();
 				}
 
@@ -1094,8 +1124,11 @@ export class LandingPage {
 		console.log("allPanelsArray", allPanelsArray);
 		$("#panel-num-select").empty();
 
-		allPanelsArray.forEach((y) => {
-			$("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
+		allPanelsArray.forEach((y, i) => {
+			if (this.panelNum == i)
+				// allow string int comparison
+				$("#panel-num-select").append(`<option value="${y.panel_num}" selected>${y.panel}</option>`);
+			else $("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
 		});
 	}
 
@@ -1364,7 +1397,7 @@ export class LandingPage {
 	}
 
 	updateShowMap(value) {
-		//debugger;
+		// debugger;
 		this.showMap = value;
 		let theMapWrapper = document.getElementById("map-wrapper");
 		if (this.showMap) {
@@ -1842,7 +1875,7 @@ export class LandingPage {
 	<!-- Tabs navs -->
 <ul class="nav nav-tabs justify-content-center" id="ex-with-icons" role="tablist" style="margin-top: 15px;">
   <li class="nav-item center" role="presentation" id="tab-map" style="visibility:hidden;width: 200px;  text-align: center;">
-    <a class="nav-link active" id="icons-tab-1" data-mdb-toggle="tab" href="#map-tab" role="tab"
+    <a class="nav-link" id="icons-tab-1" data-mdb-toggle="tab" href="#map-tab" role="tab"
       aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-map fa-fw me-2"></i>Map</a>
   </li>
     <li class="nav-item center" role="presentation" id="tab-chart" style="width: 200px;  text-align: center;">

@@ -117,14 +117,12 @@ export const tabContent = `
 export const vizConfig = {
 	caseObesity: {
 		title: "Obesity in Children and Adolescents",
-		subtitle:
-			"Total Cases",
+		subtitle: "Total Cases",
 		ySelect: "estimate",
 		tooltipLabel: "New Cases per 100K",
 		yLabel: "Cases",
 		subnav: "newcasesper100ksubmission",
-		calloutBox:
-			"This is the callout box data explanation",
+		calloutBox: "This is the callout box data explanation",
 	},
 	deathRawCumulativeSubmission: {
 		title: "Cumulative deaths attributed to Covid-19, reported to CDC, in",
@@ -165,7 +163,6 @@ const getGenTooltipConstructor = (props) => {
 };
 
 export const getGenChartConfig = (props) => {
-
 	return {
 		data: props.data,
 		vizId: props.vizId,
@@ -189,4 +186,281 @@ export const getGenChartConfig = (props) => {
 		formatXAxis: "shortDate",
 		formatYAxisLeft: "magnitude",
 	};
+};
+
+export const hashLookup = {
+	"data-topic-select": [
+		{
+			hash: "obesity-children",
+			value: "obesity-child",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "sex",
+					value: "1",
+				},
+				{
+					hash: "race-and-hispanic-origin",
+					value: "3",
+				},
+				{
+					hash: "sex-and-race-and-hispanic-origin",
+					value: "4",
+				},
+				{
+					hash: "percent-of-poverty-level",
+					value: "5",
+				},
+			],
+		},
+		{
+			hash: "obesity-adults",
+			value: "obesity-adult",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "sex",
+					value: "1",
+				},
+				{
+					hash: "race-and-hispanic-origin",
+					value: "3",
+				},
+				{
+					hash: "sex-and-race-and-hispanic-origin",
+					value: "4",
+				},
+				{
+					hash: "percent-of-poverty-level",
+					value: "5",
+				},
+				{
+					hash: "sex-and-age",
+					value: "6",
+				},
+			],
+		},
+		{
+			hash: "suicide-mortality",
+			value: "suicide",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "age",
+					value: "1",
+				},
+				{
+					hash: "sex",
+					value: "2",
+				},
+				{
+					hash: "sex-and-age",
+					value: "3",
+				},
+				{
+					hash: "sex-and-race",
+					value: "4",
+				},
+				{
+					hash: "sex-age-and-race",
+					value: "5",
+				},
+				{
+					hash: "sex-and-race-and-hispanic-origin",
+					value: "6",
+				},
+				{
+					hash: "sex-age-and-race-and-hispanic-origin",
+					value: "7",
+				},
+			],
+		},
+		{
+			hash: "injury-ed-visits",
+			value: "injury",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "1",
+				},
+				{
+					hash: "intent-and-mechanism-of-injury",
+					value: "2",
+				},
+				{
+					hash: "sex",
+					value: "3",
+				},
+				{
+					hash: "sex-intent-and-mechanism-of-injury",
+					value: "4",
+				},
+				{
+					hash: "sex-and-age",
+					value: "5",
+				},
+				{
+					hash: "sex-age-intent-and-mechanism-of-injury",
+					value: "6",
+				},
+			],
+		},
+		{
+			hash: "infant-mortality",
+			value: "infant-mortality",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "state-or-territory",
+					value: "1",
+				},
+			],
+		},
+		{
+			hash: "low-birthweight",
+			value: "birthweight",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "state-or-territory",
+					value: "1",
+				},
+			],
+		},
+		{
+			hash: "medicaid-coverage-under-65",
+			value: "medicaidU65",
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "age",
+					value: "1",
+				},
+				{
+					hash: "sex",
+					value: "2",
+				},
+				{
+					hash: "sex-and-marital-status",
+					value: "3",
+				},
+				{
+					hash: "race",
+					value: "4",
+				},
+				{
+					hash: "hispanic-origin-and-race",
+					value: "5",
+				},
+				{
+					hash: "age-and-percent-of-poverty-level",
+					value: "6",
+				},
+				{
+					hash: "level-of-difficulty",
+					value: "7",
+				},
+				{
+					hash: "geographic-region",
+					value: "8",
+				},
+				{
+					hash: "location-of-residence",
+					value: "9",
+				},
+			],
+		},
+	],
+	"panel-num-select": [
+		{
+			hash: "NA",
+			value: "NA",
+		},
+		{
+			hash: "NA",
+			value: "0",
+		},
+		{
+			hash: "BMI-from-18.5-to-24.9",
+			value: "1",
+		},
+		{
+			hash: "BMI-greater-than-or-equal-to-25.0",
+			value: "2",
+		},
+		{
+			hash: "BMI-greater-than-or-equal-to-30.0",
+			value: "3",
+		},
+		{
+			hash: "BMI-from-30.0-to-34.9",
+			value: "4",
+		},
+		{
+			hash: "BMI-from-35.0-to-39.9",
+			value: "5",
+		},
+		{
+			hash: "BMI-greater-than-or-equal-to-40.0",
+			value: "6",
+		},
+		{
+			hash: "2-19",
+			value: "1",
+		},
+		{
+			hash: "2-5",
+			value: "2",
+		},
+		{
+			hash: "6-11",
+			value: "3",
+		},
+		{
+			hash: "12-19",
+			value: "4",
+		},
+		{
+			hash: "All-races",
+			value: "1",
+		},
+		{
+			hash: "Not-Hispanic-or-Latina_White",
+			value: "2",
+		},
+		{
+			hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+			value: "3",
+		},
+		{
+			hash: "Hispanic-or-Latina_All-races",
+			value: "4",
+		},
+		{
+			hash: "American-Indian-or-Alaska-Native",
+			value: "5",
+		},
+		{
+			hash: "Asian-or-Pacific-Islander",
+			value: "6",
+		},
+	],
 };

@@ -6,33 +6,37 @@ import { MainEvents } from "./eventhandlers/mainevents";
 import { DataCache } from "./utils/datacache";
 import { Utils } from "./utils/utils";
 import { TabEvents } from "./eventhandlers/tabevents";
+import { allowedURL } from "./utils/whitelist";
 import { Analytics } from "./eventhandlers/analytics";
-import { storeHash } from "./utils/hashTab";
 
 //import { obesityMap } from "./components/obesity/map";
 //import { obesityTemplate } from "./components/obesity/template";
 
 // self executing function
 (function () {
-
 	// page initialization code
 	// the DOM will be available
 	setupAppStateVars();
 	setDeviceIndicator();
+
 	TabEvents.registerEvents(); // THIS IS WHAT CREATES FIRST MAIN PAGE
-	let hash = location.hash ? location.hash : "#nchs-home";
+
+	let hash;
+	if (window.location.hash) {
+		hash = window.location.hash;
+	} else {
+		window.location.hash = "nchs-home";
+		hash = "#nchs-home";
+	}
+
 	renderChartArea();
-	
-	//storeHash();
 
 	function renderChartArea() {
-
 		// render landing area
 		TabEvents.tabHTMLHandler(hash);
 		// add any click events inside here
 		MainEvents.registerEvents();
 	}
-
 
 	function setFooterDate() {
 		const date = moment().format("YYYY, MMMM DD");
@@ -50,16 +54,11 @@ import { storeHash } from "./utils/hashTab";
 
 		let oldMainTab = appState.PREV_TAB;
 		let newMainTab;
-		let skipLinks = [
-			"titleSection",
-			"pageFooter",
-			"viewHistoricLink",
-			"topOfTable",
-			"bottomOfTable",
-		];
+		let skipLinks = ["titleSection", "pageFooter", "viewHistoricLink", "topOfTable", "bottomOfTable"];
 
 		// Below, "allowedURL.includes(location.hash.slice(1).split("?")[0]"
 		// allows parameters to be applied without bloating the whitelist. this is for hash url navigation
+
 		let isAllowed = !!(
 			location.hash &&
 			(allowedURL.includes(location.hash.slice(1)) || allowedURL.includes(location.hash.slice(1).split("?")[0]))
@@ -96,7 +95,6 @@ import { storeHash } from "./utils/hashTab";
 
 	$(document).ready(function () {
 		$(".cdc-logo > a").attr("href", "https://www.cdc.gov");
-
 	});
 
 	// turn off focus on mouseup, enterup or spaceup.
@@ -113,4 +111,3 @@ import { storeHash } from "./utils/hashTab";
 		}
 	});
 })();
-
