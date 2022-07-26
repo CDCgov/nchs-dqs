@@ -30,6 +30,7 @@ export const getProps = (props) => {
 		usesLegend: props.usesLegend || false, // e.g. Demographic Trends (pop-factors) and e.g. Health Care Personnel (a stacked bar with legend)
 		usesHoverBars: props.usesHoverBars || false, // the very faint bars that highlight, when hovered, over full y range. Enable tooltip to show anywhere in chart area
 		usesDateAsXAxis: props.usesDateAsXAxis || false, // this ensures there is enough margin right/left for the first and last dates to stay within chart visible area
+		needsScaleTime: props.needsScaleTime || false, // uneven time periods for data reporting need the xAxis scaled with scaleTime() instead of default of scaleBand()
 		usesMultiLineLeftAxis: props.usesMultiLineLeftAxis || false, // multiple lines centered on a key within a data set, each displaying the same json property for that key
 		usesTwoLineXAxisLabels: props.usesTwoLineXAxisLabels || false, // doubles the calculated margin-bottom; handle algorithm of how to split the label with genChart returned values; e.g. MIS-C "Patients by Race & Ethnicity" chart
 		usesDateCallout: props.usesDateCallout || false, // adds a dashed line and label to give info about a specific date in a date range chart
@@ -130,6 +131,7 @@ export const getProps = (props) => {
 // usesLegend: true,
 // usesHoverBars: true,
 // usesDateAsXAxis: true,
+// needsScaleTime: true,
 // usesMultiLineLeftAxis: true,
 // usesTwoLineXAxisLabels: true,
 // usesDateCallout: true,
