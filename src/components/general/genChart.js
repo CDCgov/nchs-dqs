@@ -281,17 +281,17 @@ export class GenChart {
 				p.leftDomain
 					? p.leftDomain
 					: [
-						yScaleExtent[0],
-						d3.max(p.data, (d) =>
-							d3.max([
-								p.leftDomainMin,
-								d[p.chartProperties.yLeft1],
-								d[p.chartProperties.yLeft2],
-								d[p.chartProperties.yLeft3],
-								d[p.chartProperties.bars],
-							])
-						) * p.leftDomainOverageScale,
-					]
+							yScaleExtent[0],
+							d3.max(p.data, (d) =>
+								d3.max([
+									p.leftDomainMin,
+									d[p.chartProperties.yLeft1],
+									d[p.chartProperties.yLeft2],
+									d[p.chartProperties.yLeft3],
+									d[p.chartProperties.bars],
+								])
+							) * p.leftDomainOverageScale,
+					  ]
 			)
 			.range([chartHeight, 0]);
 
@@ -301,10 +301,10 @@ export class GenChart {
 				p.rightDomain
 					? p.rightDomain
 					: [
-						0,
-						d3.max(p.data, (d) => d3.max([p.rightDomainMin, d[p.chartProperties.yRight]])) *
-						p.leftDomainOverageScale,
-					]
+							0,
+							d3.max(p.data, (d) => d3.max([p.rightDomainMin, d[p.chartProperties.yRight]])) *
+								p.leftDomainOverageScale,
+					  ]
 			)
 			.range([chartHeight, 0]);
 
@@ -1066,7 +1066,8 @@ export class GenChart {
 						.attr("text-anchor", "end")
 						.attr(
 							"transform",
-							`translate(${p.xLabelRotatedXAdjust * overallScale}, ${p.xLabelRotatedYAdjust * overallScale
+							`translate(${p.xLabelRotatedXAdjust * overallScale}, ${
+								p.xLabelRotatedYAdjust * overallScale
 							}) rotate(${p.bottomAxisRotation})`
 						);
 
@@ -1132,18 +1133,14 @@ export class GenChart {
 			genTooltip.render();
 		}
 
-		// (TT) this is where we rotate the entire bar chart
 		let currPos;
 		if (p.usesBars === true && p.chartRotate === true) {
-			// rotate the entire chart
-			// const whiteboxTop = $("#whitebox")[0].getBoundingClientRect().top;
-			// debugger;
-			// let moveCenter = (whiteboxDims.width - whiteboxDims.height) / 2; // this helps center bar chart (TT)
-			// let moveCenter = (svgWidth - svgHeight + margin.bottom) / 2; // this helps center bar chart (TT)
+			// rotate the chart prior to adding legend items for proper location setting
 			currPos = $(`#${svgId}`)[0].getBoundingClientRect();
-			d3.select(`#${svgId}`).attr("transform", `rotate(${p.chartRotationPercent})`);
+			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
 
-			// now add the LEGEND! - have to do this last after Bar Chart drawn
+			// Add the legend. Have to do this last after Bar Chart drawn
+
 			if (p.usesLegend === true) {
 				// set up the data first
 				//console.log("p.data:", p.data);
@@ -1413,54 +1410,8 @@ export class GenChart {
 					svg.attr("height", svgHeight + legendHeight + 30);
 					svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
-					svg.append("text")
-						.attr("id", "legendText")
-						//.attr("class", "visible")
-						.attr("x", 632)
-						.attr("y", 696)
-						.attr("dy", "0.32em")
-						.style("fill", "black")
-						.style("font-size", "17px")
-						.text("Select up to 10 groups");
-
-
-					console.log("******************legendData[0] text length: " + legendData[0].text.length);
-					console.log("*****************legendData.length: " + legendData.length);
 					// try to center it
-					switch (legendData[0].text.length) {
-						case 4:
-							legendTx = svgWidth / 2 - margin.left - 14;
-							break;
-						case 9:
-							legendTx = svgWidth / 2 - margin.left - 17;
-							break;
-						case 10:
-							legendTx = svgWidth / 2 - margin.left - 26;
-							break;
-						case 11:
-							legendTx = svgWidth / 2 - margin.left - 26;
-							break;
-						case 13:
-							legendTx = svgWidth / 2 - margin.left - 34;
-							break;
-						case 14:
-							legendTx = svgWidth / 2 - margin.left - 37;
-							break;
-						case 17:
-							legendTx = svgWidth / 2 - margin.left - 48;
-							break;
-						case 34:
-							legendTx = svgWidth / 2 - margin.left - 152;
-							break;
-						case 40:
-							legendTx = svgWidth / 2 - margin.left - 170;
-							break;
-						case 46:
-							legendTx = svgWidth / 2 - margin.left - 180;
-							break;
-						default:
-							legendTx = svgWidth / 2 - margin.left - 32;
-					}
+					legendTx = svgWidth / 2 - margin.left + 25;
 					// move it down outside the bottom margin
 					legendTy = margin.top + svgHeight;
 					// now move the legend below the axis
@@ -1479,11 +1430,6 @@ export class GenChart {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-
-				//Sorting accending order
-				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
-				legendData = legendSorted;
-
 				// TTT
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
@@ -1559,11 +1505,30 @@ export class GenChart {
 			}
 		}
 
-		const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
+		$(document).on("click", (e) => console.log("x: ,", e.clientX, "  y: ,", e.clientY));
+
 		if (p.chartRotate) {
-			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, 0)`);
+			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the
+			// original height, pre-rotation. Due to css positioning of the svg, when the rotated height becomes greater than
+			// the width after adding legend items, rotation changes the position of the svg off of desired center.
+			// To move it back, we first get the desired location then rotate (done above), find out where it is after rotation,
+			// (done here) and finally move it back(required re-rotating WITH translation at the same time).
+
+			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
+			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
+
+			d3.select(`#${svgId}`).attr(
+				"transform",
+				`rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`
+				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
+			);
+
+			// finally adjust the green container height for the content of the new svg height
 			$("#chart-container").css("height", newPos.height - 80);
-		} else $("#chart-container").css("height", newPos.height);
+		} else {
+			$("#chart-container").css("height", $(`#${svgId}`)[0].getBoundingClientRect().height);
+		}
 
 		return {
 			data: p.data,
