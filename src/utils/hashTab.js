@@ -6,7 +6,6 @@ const characteristicId = "stub-name-num-select";
 const showOnePeriodCheckboxId = "show-one-period-checkbox";
 
 export const writeHashToUrl = () => {
-	debugger;
 	const topic = $(`#${topicId} :selected`)[0].value;
 	const subTopic = $(`#${subTopicId} :selected`)[0].value;
 	const characteristic = $(`#${characteristicId} :selected`)[0].value;
