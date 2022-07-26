@@ -36,15 +36,13 @@
 }
 
 .general-chart {
-	margin: 70px;
+	margin: 70px 4rem 0 4rem;
 	text-align: center;
-	height:fit-content;
 }
 
 .general-map {
 	margin: 70px 0;
 	text-align: center;
-	height: fit-content;
 }
 
 div#slider-viz-div,
@@ -98,7 +96,8 @@ path.sliderHandles:active {
 	margin-bottom: 7px;
 }
 
-.genericDataContainer, #pageFooterTable {
+.genericDataContainer,
+#pageFooterTable {
 	display: none;
 	margin-top: 10px;
 }
@@ -143,4 +142,3 @@ path.sliderHandles:active {
 	text-decoration: none;
 	cursor: pointer;
 }
-
