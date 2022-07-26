@@ -6,6 +6,7 @@ const characteristicId = "stub-name-num-select";
 const showOnePeriodCheckboxId = "show-one-period-checkbox";
 
 export const writeHashToUrl = () => {
+	debugger;
 	const topic = $(`#${topicId} :selected`)[0].value;
 	const subTopic = $(`#${subTopicId} :selected`)[0].value;
 	const characteristic = $(`#${characteristicId} :selected`)[0].value;
@@ -28,7 +29,9 @@ export const getSelections = () => {
 	const { hash } = window.location;
 	if (hash) {
 		let selections = hash.split("_");
-		if (selections.length > 1) selections = selections[1].split("/");
+		if (selections.length <= 1) return null;
+
+		selections = selections[1].split("/");
 		const topic = hashLookup[topicId].find((l) => l.hash === selections[0]).value;
 		const subTopic = hashLookup[subTopicId].find((l) => l.hash === selections[1]).value;
 		const characteristic = hashLookup[topicId]
@@ -37,8 +40,6 @@ export const getSelections = () => {
 		const viewSinglePeriod = selections[3] !== "0";
 
 		$(`#${topicId}`).val(topic);
-		$(`#${subTopicId}`).val(subTopic);
-		$(`#${characteristicId}`).val(characteristic);
 		$(`#${characteristicId}`).val(characteristic);
 		$(`#${showOnePeriodCheckboxId}`).prop("checked", viewSinglePeriod);
 
