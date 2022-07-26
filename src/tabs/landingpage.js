@@ -49,7 +49,8 @@ export class LandingPage {
 		this.showBarChart = 0;
 		this.showMap = 0;
 		this.geometries = {};
-		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
+		this.classifyType = 2;  // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
+		this.enableCI = 0; // 1 = Enable Confidence Intervals for datasets that have them
 	}
 
 	renderTab() {
@@ -317,9 +318,21 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+				if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
+					// enable the CI checkbox
+					$("#enable-CI-checkbox").prop("disabled", false);
+				} else {
+					// disable it
+					$("#enable-CI-checkbox").prop("disabled", true);
+					$("#enable-CI-checkbox").prop("checked", false);
+				}	
+
 				break;
 		}
-
+		
+		// DONT ADD CODE LIKE THIS...
 		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
 		// remove any remaining data where estimate is blank or null
 		//selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
@@ -444,7 +457,7 @@ export class LandingPage {
 	}
 
 	getAllChartProps = (data, chartBaseProps) => {
-		const { chartValueProperty, yAxisTitle, xAxisTitle } = chartBaseProps;
+		const { chartValueProperty, yAxisTitle, xAxisTitle} = chartBaseProps;
 		const vizId = "chart-container";
 		let props;
 		// figure out legend placement
@@ -474,6 +487,7 @@ export class LandingPage {
 		}
 		// if one single year then use bar chart
 		let useBars;
+
 		//debugger;
 		if (this.showBarChart) {
 			//yAxisTitle = this.unitNumText;
@@ -486,6 +500,7 @@ export class LandingPage {
 					yAxis: "estimate",
 					bars: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -545,6 +560,7 @@ export class LandingPage {
 					xAxis: needsScaleTime ? "date" : "year",
 					yAxis: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -646,12 +662,20 @@ export class LandingPage {
 			flag: {
 				title: "Flag:",
 				datumType: "string",
-			},
+			}, 
+			estimate_lci: {
+				title: "95% confidence LCI: ",
+				datumType: "string",
+			}, 
+			estimate_uci: {
+				title: "95% confidence UCI: ",
+				datumType: "string",
+			}, 	
 			"": { title: "", datumType: "empty" },
 		};
 
 		const headerProps = ["stub_name", "stub_label"];
-		const bodyProps = ["panel", "unit", chartValueProperty, "year", "age", "flag"];
+		const bodyProps = ["panel", "unit", chartValueProperty,"estimate_uci","estimate_lci","year", "age", "flag"];
 
 		return {
 			propertyLookup,
@@ -799,6 +823,8 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
 				this.dataFile = "content/json/ObesityAdults.json";
@@ -806,6 +832,8 @@ export class LandingPage {
 				selectedDataCache = DataCache.ObesityAdultData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "suicide":
 				//debugger;
@@ -814,6 +842,8 @@ export class LandingPage {
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
@@ -821,13 +851,17 @@ export class LandingPage {
 				selectedDataCache = DataCache.InjuryData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				break;
-			case "birthweight":
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
+				break;			
+			case "birthweight":	
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
 				this.dataFile = "content/json/InfantMortality.json";
@@ -835,6 +869,8 @@ export class LandingPage {
 				selectedDataCache = DataCache.InfantMortalityData;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65":
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
@@ -843,8 +879,17 @@ export class LandingPage {
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox
+				$("#enable-CI-checkbox-wrapper").show();
+				// default unit num does not support CI
+				$("#enable-CI-checkbox").prop("disabled", true); // start unchecked
 				break;
 		}
+		// always start new topic with Enable CI disabled
+		this.enableCI = 0; // but keep it disabled
+		$("#enable-CI-checkbox").prop("checked", false); // start unchecked
+
+		
 		// if we switch Topic then start with Total every time
 		this.stubNameNum = 0;
 
@@ -924,39 +969,46 @@ export class LandingPage {
 						this.updateShowMap(0);
 						break;
 
-					// cases with LINE CHART only and no map data
-					case "obesity-child":
-					case "obesity-adult":
-					case "suicide":
-					case "injury":
-					case "medicaidU65":
-						// show the chart tab
-						$("#tab-chart").css("visibility", "visible");
-						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
-						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
-						// hide the map tab
-						$("#tab-map").css("visibility", "hidden");
-						this.updateShowMap(0);
-						break;
+				// cases with LINE CHART only and no map data
+				case "obesity-child":
+				case "obesity-adult":
+				case "suicide":
+				case "injury":
+				case "medicaidU65":
+					// show the chart tab
+					$('#tab-chart').css("visibility", "visible");
+					$('#icons-tab-2').css('background-color', '#b3d2ce'); // didnt work
+					$('#icons-tab-2').css('border-top', 'solid 5px #8ab9bb');
+					// hide the map tab
+					$('#tab-map').css("visibility", "hidden");
+					this.updateShowMap(0);
+					break;
+				
+				// cases with US Map data option
+				case "birthweight":
+				case "infant-mortality":
+					// show the map tab BUT DO NOT MAKE IT THE DEFAULT
+					//$('#icons-tab-1').click();
+					$('#tab-map').css("visibility", "visible");
+					$('#icons-tab-1').css('background-color', '#ffffff'); // didnt work
+					$('#icons-tab-1').css('border-top', 'solid 1px #C0C0C0');
+					// hide the chart tab
+					//$('#tab-chart').css("visibility", "hidden");
+					// set chart tab to white
+					//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
+					//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
+					theChartTab.style.backgroundColor = "#b3d2ce";
+					theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb';
+					this.updateShowMap(0);
+					break;
 
-					// cases with US Map data option
-					case "birthweight":
-					case "infant-mortality":
-						// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-						//$('#icons-tab-1').click();
-						$("#tab-map").css("visibility", "visible");
-						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
-						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
-						// hide the chart tab
-						//$('#tab-chart').css("visibility", "hidden");
-						// set chart tab to white
-						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
-						theChartTab.style.backgroundColor = "#b3d2ce";
-						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
-						this.updateShowMap(0);
-						break;
-				}
+			}
+	
+			//disable single year if it is set
+			// force "year" to reset and not have single year clicked
+			if (document.getElementById('show-one-period-checkbox').checked) {
+				$("#show-one-period-checkbox").click();
+			}
 
 				//disable single year if it is set
 				// force "year" to reset and not have single year clicked
@@ -967,20 +1019,34 @@ export class LandingPage {
 				// need data in place before filling year selects
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-				this.setAllSelectDropdowns();
+			// set the Adjust vertical axis via unit_num in data
+			this.setVerticalUnitAxisSelect();
 
-				// set the Adjust vertical axis via unit_num in data
-				this.setVerticalUnitAxisSelect();
+			//debugger;
+			
+			// now filter data again to pick up unit num
+			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-				// now filter data again to pick up unit num
-				this.flattenedFilteredData = this.getFlattenedFilteredData();
+			// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+			// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+			if (this.flattenedFilteredData[0] !== undefined) {
+				if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+					// enable the CI checkbox
+					$("#enable-CI-checkbox").prop("disabled", false);
+				} else {
+					// disable it
+					$("#enable-CI-checkbox").prop("disabled", true);
+					$("#enable-CI-checkbox").prop("checked", false);
+				}
+			}
 
-				// now re-render the chart based on updated selection
-				this.renderChart();
-			})
-			.catch(function (err) {
-				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
-			});
+			// now re-render the chart based on updated selection
+			this.renderChart();
+
+		}).catch(function (err) {
+			console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
+		});
+
 	}
 
 	setAllSelectDropdowns() {
@@ -1359,6 +1425,17 @@ export class LandingPage {
 		// - call set stub names
 		this.setStubNameSelect();
 
+		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+			// enable the CI checkbox
+			$("#enable-CI-checkbox").prop("disabled", false);
+		} else {
+			// disable it
+			$("#enable-CI-checkbox").prop("disabled", true);
+			$("#enable-CI-checkbox").prop("checked", false);
+		}
+		
 		if (this.showMap) {
 			this.renderMap();
 		} else {
@@ -1368,6 +1445,11 @@ export class LandingPage {
 
 	updateShowBarChart(value) {
 		this.showBarChart = value;
+		this.renderChart();
+	}
+
+	updateEnableCI(value) {
+		this.enableCI = value;
 		this.renderChart();
 	}
 
@@ -1780,7 +1862,6 @@ export class LandingPage {
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>
 				<option value="1">Sex</option>
-				<option value="2">Age</option>
 				<option value="3"">Race and Hispanic origin</option>
         		<option value="4">Sex and race and Hispanic origin</option>
 				<option value="5">Percent of poverty level</option>
@@ -1898,6 +1979,11 @@ export class LandingPage {
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
+
+					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="align:left;">
+						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox">
+						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
+					</div>
 				</div>
 				<div id="chart-container" class="general-chart">
 				</div>
