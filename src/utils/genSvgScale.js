@@ -1,6 +1,5 @@
 export const getGenSvgScale = (vizId) => {
 	//console.log("getGenSvgScale vizId:", vizId);
-
 	const fullSvgWidth = parseInt(d3.select(`#${vizId}`).style("width"), 10);
 	// could not get the above line to work so tried the one below
 	// but problem was that the map div was not rendered yet PRIOR to me calling renderMap
@@ -28,9 +27,5 @@ export const getGenSvgScale = (vizId) => {
 	if (fullSvgWidth <= 650 && fullSvgWidth > 300) svgHeightRatio = 0.75;
 	else if (fullSvgWidth <= 300) svgHeightRatio = 1;
 
-	// Lincoln 2022-07-18 this genSvgScale really only applies to CDC CDT page so for now just setting these
-	// scales to 1
-	overallScale = 1;
-	svgScale = 1;
 	return { fullSvgWidth, overallScale, svgHeightRatio, svgScale };
 };

@@ -47,9 +47,6 @@ const dayYearDate = (d) => {
 
 	return dateFormat(d);
 };
-
-const year = (d) => timeFormat("%Y")(typeof d === "string" ? new Date(d).setHours(0, 0, 0, 0) : d);
-
 // 12.345 or "12.345" to "12.3%"
 const percent1 = (d) => format(".1%")(Number(d) / 100);
 
@@ -134,8 +131,6 @@ export const genFormat = (datum, datumType) => {
 			return perc2fromDec(datum);
 		case "dayYearDate":
 			return dayYearDate(datum);
-		case "year":
-			return year(datum);
 		case "magnitude":
 			return magnitude(datum);
 		case "magnitudeOneSF":
