@@ -11,13 +11,13 @@ export const MainEvents = {
 			// REMOVED THIS FROM HERE BC IT CAUSES A FLASH OF BAD DATA LINE CHART
 			// force "year" to reset and not have single year clicked
 			//if (document.getElementById('show-one-period-checkbox').checked) {
-				// $("#show-one-period-checkbox").click();
+			// $("#show-one-period-checkbox").click();
 			//}
-			console.log("New data topic:", dataTopic);
+			// console.log("New data topic:", dataTopic);
 		});
 		$("#panel-num-select").change((evt) => {
 			let panelNum = evt.target.value;
-		    appState.ACTIVE_TAB.updatePanelNum(panelNum);
+			appState.ACTIVE_TAB.updatePanelNum(panelNum);
 
 			//console.log("parent:", evt.target.parentNode);
 			//console.log("appstate:",appState)
@@ -56,7 +56,7 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);
 		});
-		$("#show-one-period-checkbox").on('change',(evt) => {
+		$("#show-one-period-checkbox").on("change", (evt) => {
 			let isChecked = evt.target.checked; // if you dont do this then stubNum is string
 			if (isChecked) {
 				//console.log("Checkbox is checked..");
@@ -65,8 +65,8 @@ export const MainEvents = {
 				$("#year-end-select").hide();
 				// set to enable bar chart
 				appState.ACTIVE_TAB.updateShowBarChart(1);
-  			} else {
-    			// show the ending period select dropdown
+			} else {
+				// show the ending period select dropdown
 				$("#year-end-label").show();
 				$("#year-end-select").show();
 				// set to enable line chart
@@ -74,8 +74,8 @@ export const MainEvents = {
 			}
 		});
 
-		$("#enable-CI-checkbox").on('change',(evt) => {
-			let isChecked = evt.target.checked; 
+		$("#enable-CI-checkbox").on("change", (evt) => {
+			let isChecked = evt.target.checked;
 			if (isChecked) {
 				//console.log("Enable CI Checkbox is checked..");
 				// set to enable bar chart
@@ -91,11 +91,11 @@ export const MainEvents = {
 			event.stopPropagation();
 			// get the unique id of the legend item
 			let legItem = event.target.parentNode.parentNode.id;
-			console.log("legendItem clicked: event.target,item",event.target, legItem);
+			console.log("legendItem clicked: event.target,item", event.target, legItem);
 			appState.ACTIVE_TAB.toggleLegendItem(legItem);
 			event.preventDefault();
 		});
-		
+
 		// click Map then show Map
 		$(document).on("click", "#icons-tab-1", (event) => {
 			event.stopPropagation();
@@ -118,20 +118,20 @@ export const MainEvents = {
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");
 			theMapTab.style.backgroundColor = "#b3d2ce";
-			theMapTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			theMapTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#ffffff";
-			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theChartTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
-			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			// also need to reset the Characteristic stubNameNum back to what is selected!!!
-			appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT) 
+			appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT)
 			// NOW show the map
 			appState.ACTIVE_TAB.updateShowMap(1);
-			// FOR NOW FORCE SINGLE TIME PERIOD AS ONLY OPTION 
+			// FOR NOW FORCE SINGLE TIME PERIOD AS ONLY OPTION
 			// - must check if it is already checked though
-			if (!document.getElementById('show-one-period-checkbox').checked) {
+			if (!document.getElementById("show-one-period-checkbox").checked) {
 				$("#show-one-period-checkbox").click();
 			}
 			event.preventDefault();
@@ -157,13 +157,13 @@ export const MainEvents = {
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");
 			theMapTab.style.backgroundColor = "#ffffff";
-			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theMapTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#b3d2ce";
-			theChartTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#ffffff";
-			theTableTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			appState.ACTIVE_TAB.updateShowMap(0);
 			// also need to reset the Characteristic back to default value
 			// - 7/8/22 NO dont do it this way
@@ -172,12 +172,12 @@ export const MainEvents = {
 			//appState.ACTIVE_TAB.updateStubNameNum(0); // (TT) this assumes Total is always 0 on the list!!
 			// also need to reset the Characteristic stubNameNum back to what is selected!!!
 			// - actually may not even need this
-			//appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT) 
-		
+			//appState.ACTIVE_TAB.updateStubNameNum(parseInt($("#stub-name-num-select").val())); // (TT)
+
 			// if a data set does not have 0 on the stub_label_num then this will FAIL
 			event.preventDefault();
 		});
-		
+
 		$(document).on("click", "#classNBreaks", (event) => {
 			//event.stopPropagation();
 			// get the unique walue
@@ -186,7 +186,7 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
 			//event.preventDefault(); // kills the toggle
 		});
-				
+
 		$(document).on("click", "#classQuartiles", (event) => {
 			//event.stopPropagation();
 			// get the unique value
@@ -195,7 +195,7 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
 			//event.preventDefault(); // kills the toggle
 		});
-			
+
 		// click Table then show Table
 		$(document).on("click", "#icons-tab-3", (event) => {
 			event.stopPropagation();
@@ -216,13 +216,13 @@ export const MainEvents = {
 			// flip the colors
 			let theMapTab = document.getElementById("icons-tab-1");
 			theMapTab.style.backgroundColor = "#ffffff";
-			theMapTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theMapTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theChartTab = document.getElementById("icons-tab-2");
 			theChartTab.style.backgroundColor = "#ffffff";
-			theChartTab.style.cssText += 'border-top: solid 1px #C0C0C0'; 
+			theChartTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#b3d2ce";
-			theTableTab.style.cssText += 'border-top: solid 5px #8ab9bb'; 
+			theTableTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			// dont do this here bc updateShowMap is defaulting to Chart
 			// appState.ACTIVE_TAB.updateShowMap(0);
 			event.preventDefault();

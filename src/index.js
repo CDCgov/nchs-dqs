@@ -1,38 +1,31 @@
-import * as config from "./config";
 import "./sass/styles.scss";
-import { setupAppStateVars, setDeviceIndicator } from "./utils/appState";
+import { setupAppStateVars } from "./utils/appState";
 //import { PageEvents } from "./eventhandlers/pageevents";
-import { MainEvents } from "./eventhandlers/mainevents";
-import { DataCache } from "./utils/datacache";
-import { Utils } from "./utils/utils";
+// import { DataCache } from "./utils/datacache";
+// import { Utils } from "./utils/utils";
 import { TabEvents } from "./eventhandlers/tabevents";
-import { Analytics } from "./eventhandlers/analytics";
-import { storeHash } from "./utils/hashTab";
+import { allowedURL } from "./utils/whitelist";
+// import { Analytics } from "./eventhandlers/analytics";
 
 //import { obesityMap } from "./components/obesity/map";
 //import { obesityTemplate } from "./components/obesity/template";
 
 // self executing function
 (function () {
-
 	// page initialization code
 	// the DOM will be available
 	setupAppStateVars();
-	setDeviceIndicator();
 	TabEvents.registerEvents(); // THIS IS WHAT CREATES FIRST MAIN PAGE
-	let hash = location.hash ? location.hash : "#nchs-home";
-	renderChartArea();
-	
-	//storeHash();
 
-	function renderChartArea() {
-
-		// render landing area
-		TabEvents.tabHTMLHandler(hash);
-		// add any click events inside here
-		MainEvents.registerEvents();
+	let hash;
+	if (window.location.hash) {
+		hash = window.location.hash;
+	} else {
+		window.location.hash = "nchs-home";
+		hash = "#nchs-home";
 	}
 
+	TabEvents.tabHTMLHandler(hash); // render nchs-home page
 
 	function setFooterDate() {
 		const date = moment().format("YYYY, MMMM DD");
@@ -50,16 +43,11 @@ import { storeHash } from "./utils/hashTab";
 
 		let oldMainTab = appState.PREV_TAB;
 		let newMainTab;
-		let skipLinks = [
-			"titleSection",
-			"pageFooter",
-			"viewHistoricLink",
-			"topOfTable",
-			"bottomOfTable",
-		];
+		let skipLinks = ["titleSection", "pageFooter", "viewHistoricLink", "topOfTable", "bottomOfTable"];
 
 		// Below, "allowedURL.includes(location.hash.slice(1).split("?")[0]"
 		// allows parameters to be applied without bloating the whitelist. this is for hash url navigation
+
 		let isAllowed = !!(
 			location.hash &&
 			(allowedURL.includes(location.hash.slice(1)) || allowedURL.includes(location.hash.slice(1).split("?")[0]))
@@ -73,7 +61,7 @@ import { storeHash } from "./utils/hashTab";
 			return;
 		}
 		let hash = location.hash && isAllowed ? location.hash : "#nchs-home";
-		console.log("index: hash = " + hash);
+		// console.log("index: hash = " + hash);
 		//let navItems = document.querySelectorAll("#navButtons *");
 
 		/* check to see if we're actually changing page on a hash change before using HTMLHandler
@@ -96,7 +84,6 @@ import { storeHash } from "./utils/hashTab";
 
 	$(document).ready(function () {
 		$(".cdc-logo > a").attr("href", "https://www.cdc.gov");
-
 	});
 
 	// turn off focus on mouseup, enterup or spaceup.
@@ -113,4 +100,3 @@ import { storeHash } from "./utils/hashTab";
 		}
 	});
 })();
-

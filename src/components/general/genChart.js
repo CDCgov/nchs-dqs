@@ -30,7 +30,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
-		
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -205,7 +205,7 @@ export class GenChart {
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: axisSize + 40, // gives room for tick label when no chart title
+			top: axisSize, // + 40, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
@@ -282,18 +282,18 @@ export class GenChart {
 				p.leftDomain
 					? p.leftDomain
 					: [
-						yScaleExtent[0],
-						d3.max(p.data, (d) =>
-							d3.max([
-								p.leftDomainMin,
-								d[p.chartProperties.yLeft1] * 1.10, // (TT) Extra 10% so bars dont go all the way to top
-								d[p.chartProperties.yLeft2] * 1.10,
-								d[p.chartProperties.yLeft3] * 1.10,
-								d[p.chartProperties.bars] * 1.10,
-								d.estimate_uci * 1.10, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
-							])
-						) * p.leftDomainOverageScale,
-					]
+							yScaleExtent[0],
+							d3.max(p.data, (d) =>
+								d3.max([
+									p.leftDomainMin,
+									d[p.chartProperties.yLeft1],
+									d[p.chartProperties.yLeft2],
+									d[p.chartProperties.yLeft3],
+									d[p.chartProperties.bars],
+									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+								])
+							) * p.leftDomainOverageScale,
+					  ]
 			)
 			.range([chartHeight, 0]);
 
@@ -498,7 +498,6 @@ export class GenChart {
 			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
-				//debugger;
 				// need the legend Nests from ALL incoming data
 				fullNestedData = d3
 					.nest()
@@ -520,7 +519,6 @@ export class GenChart {
 				});
 
 				fullNestedData.forEach((nd, i) => {
-					//debugger;
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
 						lines[i] = d3.line().defined(function (d) {
@@ -529,21 +527,18 @@ export class GenChart {
 						const lineGroup = svg
 							.append("g")
 							.attr("class", nd.key.replace(/[\W_]+/g, ""))
-							.attr("transform", `translate(${margin.left}, ${margin.top})`)
-	
+							.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
 						lineGroups[i] = lineGroup;
 
 						nd.values[0].assignedLegendColor = multiLineColors(i);
 						//console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
-						
+
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
 							.attr("fill", "none")
 							.attr("stroke", multiLineColors(i))
-							.attr("stroke-width", 2)
-							
-
-						
+							.attr("stroke-width", 2);
 					}
 				});
 			}
@@ -582,8 +577,6 @@ export class GenChart {
 				.attr("fill", "none")
 				.attr("stroke", rightLineColor)
 				.attr("stroke-width", 4);
-
-			//debugger;
 
 			const endRangeSpecialSectionStartDate = p.usesMultiLineLeftAxis
 				? fullNestedData[0].values.slice(-p.finalDataPointsDaysCount)[0].date
@@ -655,8 +648,7 @@ export class GenChart {
 									.attr("height", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("x", (d) => xScale(d[p.chartProperties.xAxis]))
 									.attr("fill", "black")
-									.attr("opacity", "0")
-
+									.attr("opacity", "0");
 							},
 							(update) => {
 								update
@@ -666,8 +658,7 @@ export class GenChart {
 							(exit) => {
 								exit.remove();
 							}
-					);
-
+						);
 				}
 
 				if (p.usesBars) {
@@ -688,17 +679,15 @@ export class GenChart {
 										if (
 											p.finalDataPointsDaysCount &&
 											d[p.chartProperties.xAxis] >= endRangeSpecialSectionStartDate
-										) return edgeCaseBarColor;
+										)
+											return edgeCaseBarColor;
 										return barColor;
 									})
 									.attr("height", (d) => chartHeight - yScaleLeft(d[p.chartProperties.bars]))
-									.attr("x", (d, i) => {
-										//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
-										return xScale(d[p.chartProperties.xAxis]);
-									})
+									//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
+									.attr("x", (d, i) => xScale(d[p.chartProperties.xAxis]))
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("opacity", 0.85);
-								
 							},
 							(update) => {
 								update
@@ -723,16 +712,13 @@ export class GenChart {
 							(exit) => {
 								exit.remove();
 							}
-					);
-					
-					//debugger;
-										
+						);
+
 					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
 					if (p.enableCI) {
-						
 						// did this so I could log the data
 						//console.log("cidata,xbandwidth", drawData, xScale.bandwidth());
-						
+
 						drawData.forEach((d, i) => {
 							// (TT) note bc of the rotated chart:
 							// - x in the below code is up and down as you see chart
@@ -743,20 +729,39 @@ export class GenChart {
 								.datum(d)
 								.attr("class", `${svgId}-CIBarItem`)
 								.attr("id", CIBarId)
-								.filter(function (d) { console.log("cidata2 i, lci, est, uci:", i, d.estimate_lci, d.estimate, d.estimate_uci, ); return d.estimate_uci; })
+								.filter(function (d) {
+									// console.log(
+									// 	"cidata2 i, lci, est, uci:",
+									// 	i,
+									// 	d.estimate_lci,
+									// 	d.estimate,
+									// 	d.estimate_uci
+									// );
+									return d.estimate_uci;
+								})
 								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM FROM TESTING THESE CI WHISKERS ARE CORRECT
-								.attr("x1", function (d) { return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth()/2 + margin.left })  //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() ); 		 	
-								.attr("y1", function (d) { return  yScaleLeft(d.estimate_lci)  + margin.top; })
+								.attr("x1", function (d) {
+									return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left;
+								}) //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() );
+								.attr("y1", function (d) {
+									return yScaleLeft(d.estimate_lci) + margin.top;
+								})
 								//.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
-								.attr("x2", (d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth()/2 + margin.left)
+								.attr(
+									"x2",
+									(d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left
+								)
 								//.attr("y2", function (d) { return  yScaleLeft(d.estimate_uci) + margin.top; })
-								.attr("y2", function (d) { console.log("cProp.bars=",d[p.chartProperties.bars]); console.log("y2=",yScaleLeft(d[p.chartProperties.bars])); return  yScaleLeft(d.estimate_uci)  + margin.top }) 								.attr("stroke", "black")
-								.attr("stroke-width", 3)
+								.attr("y2", function (d) {
+									// console.log("cProp.bars=", d[p.chartProperties.bars]);
+									// console.log("y2=", yScaleLeft(d[p.chartProperties.bars]));
+									return yScaleLeft(d.estimate_uci) + margin.top;
+								})
+								.attr("stroke", "black")
+								.attr("stroke-width", 3);
 						});
-					
 					}
 				}
-
 
 				if (p.usesStackedBars) {
 					stackedBars
@@ -837,11 +842,10 @@ export class GenChart {
 
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-							
-							//debugger;
+								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
+
 							// #### Show confidence interval #####
-							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE 
+							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
 							if (p.enableCI) {
 								lineGroups[i]
 									.append("path")
@@ -849,10 +853,27 @@ export class GenChart {
 									.attr("fill", multiLineColors(i))
 									.attr("stroke", "none")
 									.style("opacity", 0.4)
-									.attr("d", d3.area()
-										.x(function (d) { console.log("x d,i,x:",d,i, xScale(d[p.chartProperties.xAxis]) + offset); return xScale(d[p.chartProperties.xAxis]) + offset })
-										.y0(function (d) { console.log("y0 d:", yScaleLeft(d.estimate_lci)); return yScaleLeft(d.estimate_lci); })
-										.y1(function (d) { console.log("y1 d:", yScaleLeft(d.estimate_uci)); return yScaleLeft(d.estimate_uci); })
+									.attr(
+										"d",
+										d3
+											.area()
+											.x(function (d) {
+												// console.log(
+												// 	"x d,i,x:",
+												// 	d,
+												// 	i,
+												// 	xScale(d[p.chartProperties.xAxis]) + offset
+												// );
+												return xScale(d[p.chartProperties.xAxis]) + offset;
+											})
+											.y0(function (d) {
+												// console.log("y0 d:", yScaleLeft(d.estimate_lci));
+												return yScaleLeft(d.estimate_lci);
+											})
+											.y1(function (d) {
+												// console.log("y1 d:", yScaleLeft(d.estimate_uci));
+												return yScaleLeft(d.estimate_uci);
+											})
 									);
 							}
 
@@ -864,7 +885,9 @@ export class GenChart {
 									(enter) => {
 										enter
 											.append("ellipse") // adding hover over ellipses
-											.filter(function(d) { return d.estimate })
+											.filter(function (d) {
+												return d.estimate;
+											})
 											.style("fill", multiLineColors(i))
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
@@ -1359,11 +1382,9 @@ export class GenChart {
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
 				} // end if legendData.length > 0
-
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
-			//debugger;
 			if (p.usesLegend) {
 				// FOR ASSIGNED LEGEND COLOR TO WORK, LEGEND HAS TO BE DRAWN
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
@@ -1502,7 +1523,8 @@ export class GenChart {
 						.attr("font-size", axisLabelFontSize * 1.1)
 						.attr("x", 45)
 						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (curD2) { // TRICKY: you can do a function on any variable but then use 
+						.text(function (curD2) {
+							// TRICKY: you can do a function on any variable but then use
 							// curD to get the value of dontDraw
 							// if you use d or curD in both places it does not work!
 							//console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
@@ -1512,7 +1534,6 @@ export class GenChart {
 								return "\uf14a"; // check square unicode
 							}
 						});
-					//debugger;
 
 					legendItem
 						.append("g")
@@ -1528,11 +1549,8 @@ export class GenChart {
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
-
 			}
 		}
-
-		$(document).on("click", (e) => console.log("x: ,", e.clientX, "  y: ,", e.clientY));
 
 		if (p.chartRotate) {
 			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the

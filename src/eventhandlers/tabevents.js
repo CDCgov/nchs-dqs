@@ -1,14 +1,12 @@
 ﻿import { Utils } from "../utils/utils";
-import { resetAppStateVars, setDeviceIndicator } from "../utils/appState";
 import { Analytics } from "./analytics";
 import { LandingPage } from "../tabs/landingpage";
 import { PageEvents } from "./pageevents";
-import { applyHash, applySelects } from "../utils/hashTab";
 //import { alert } from "../components/alerts";
 
 export const TabEvents = {
 	registerEvents() {
-/* 		const navButtons = [...document.querySelectorAll(".boxbtn")];
+		/* 		const navButtons = [...document.querySelectorAll(".boxbtn")];
 		// state report profile is now external but is nested and in order to keep its styling it is filtered out.
 		let externalLinksList = ["state-profile-report", "community-profile-report"];
 		let excludedNavButtons = navButtons.filter((btn) => !externalLinksList.includes(btn.id));
@@ -23,7 +21,7 @@ export const TabEvents = {
 		PageEvents.addButtonsClickListers(externalLinksBtns);
 		PageEvents.addButtonsClickListers(individualPrntButton);
 		PageEvents.addMobileHamburgerCollapse(); */
-		PageEvents.tableToggle(); 
+		PageEvents.tableToggle();
 	},
 	tabHTMLHandler(hash) {
 		// common page elements
@@ -44,7 +42,7 @@ export const TabEvents = {
 
 		//alert();
 
-		if (hash) appState.CURRENT_TAB = mainTab;
+		appState.CURRENT_TAB = mainTab;
 
 		//Updatecrosslinks(mainTab);
 		appState.NAV_ITEM = mainTab;
@@ -71,6 +69,5 @@ export const TabEvents = {
 		//Analytics.triggerOmniturePageView();
 		//PageEvents.setNavBar();
 		document.title = `NCHS: ${appState.PAGE_NAME}`;
-		applyHash();
 	},
 };
