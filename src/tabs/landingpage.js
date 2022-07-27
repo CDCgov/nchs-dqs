@@ -1,18 +1,14 @@
-import { resetAppStateVars } from "../utils/appState";
 import { Utils } from "../utils/utils";
 import { DataCache } from "../utils/datacache";
-import * as config from "../components/landingPage/config";
-//import { MainCard } from "../components/landingPage/mainCard";
-//import { SubCard } from "../components/landingPage/subCard";
-import { PageEvents } from "../eventhandlers/pageevents";
+// import * as config from "../components/landingPage/config";
+// import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
+import { MainEvents } from "../eventhandlers/mainevents";
 
 export class LandingPage {
 	constructor() {
-		resetAppStateVars();
-		appState.CURRENT_TAB = "nchs-home";
 		this.allData = null;
 		this.currentData = null;
 		this.currentLocation = null;
@@ -56,16 +52,8 @@ export class LandingPage {
 
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
-
 		this.getInitialData(); // for starters OBESITY DATA
-
-		/* 		document.addEventListener("DOMContentLoaded", evt => {
-			if (evt.target.readyState === "complete") {
-				this.addClickListeners();
-			}
-		}); */
-
-		this.addClickListeners();
+		MainEvents.registerEvents(); // add any click events inside here
 	}
 
 	renderAfterDataReady() {
@@ -654,7 +642,7 @@ export class LandingPage {
 				datumType: "string",
 			},
 			flag: {
-				title: "Flag:",
+				title: "Flag: ",
 				datumType: "string",
 			},
 			estimate_lci: {
@@ -1556,21 +1544,6 @@ export class LandingPage {
 		this.renderChart();
 	}
 
-	addClickListeners() {
-		/* 		// this is a weird eslint rule. class methods must use this for assigments unless static.
-				const buttons = document.querySelectorAll(".landing-card-main");
-				PageEvents.addButtonsClickListers(buttons);
-				this.buttons = document.querySelectorAll(".daily-update-card");
-				PageEvents.addButtonsClickListers(this.buttons);
-				// these are not buttons, but hrefs but this will get the scroll effect we need
-				// -- the .landing-link listeners need to be here AND in update-list code
-				// -- if you remove these 2 lines below then the non-update-list landing-links don't work (TT)
-				this.buttons = document.querySelectorAll(".landing-link");
-				PageEvents.addButtonsClickListers(this.buttons);
-				this.communityButtons = document.querySelectorAll(".community-links");
-				PageEvents.addButtonsClickListers(this.communityButtons); */
-	}
-
 	/* getTableInfo(state) {
 		let tableTitle = config.leftAxisLookup.get(this.selection.leftAxis).tableTitle;
 
@@ -1940,7 +1913,7 @@ export class LandingPage {
 					<div id="us-map-legend"></div>
 				</div>
 				<br>
-				<div class="source-text" id="source-text-map"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+				<div class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
@@ -1949,7 +1922,7 @@ export class LandingPage {
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
-
+					
 					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline-block">
 						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox">
 						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>

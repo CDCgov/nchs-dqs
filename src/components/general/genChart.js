@@ -498,7 +498,6 @@ export class GenChart {
 			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
-				//debugger;
 				// need the legend Nests from ALL incoming data
 				fullNestedData = d3
 					.nest()
@@ -520,7 +519,6 @@ export class GenChart {
 				});
 
 				fullNestedData.forEach((nd, i) => {
-					//debugger;
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
 						lines[i] = d3.line().defined(function (d) {
@@ -579,8 +577,6 @@ export class GenChart {
 				.attr("fill", "none")
 				.attr("stroke", rightLineColor)
 				.attr("stroke-width", 4);
-
-			//debugger;
 
 			const endRangeSpecialSectionStartDate = p.usesMultiLineLeftAxis
 				? fullNestedData[0].values.slice(-p.finalDataPointsDaysCount)[0].date
@@ -718,8 +714,6 @@ export class GenChart {
 							}
 						);
 
-					//debugger;
-
 					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
 					if (p.enableCI) {
 						// did this so I could log the data
@@ -850,7 +844,6 @@ export class GenChart {
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
-							//debugger;
 							// #### Show confidence interval #####
 							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
 							if (p.enableCI) {
@@ -1392,7 +1385,6 @@ export class GenChart {
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
-			//debugger;
 			if (p.usesLegend) {
 				// FOR ASSIGNED LEGEND COLOR TO WORK, LEGEND HAS TO BE DRAWN
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
@@ -1542,7 +1534,6 @@ export class GenChart {
 								return "\uf14a"; // check square unicode
 							}
 						});
-					//debugger;
 
 					legendItem
 						.append("g")
@@ -1569,7 +1560,6 @@ export class GenChart {
 			// (done here) and finally move it back(required re-rotating WITH translation at the same time).
 
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
-			// debugger;
 			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
 			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
 

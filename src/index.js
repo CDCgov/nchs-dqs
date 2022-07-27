@@ -1,13 +1,11 @@
-import * as config from "./config";
 import "./sass/styles.scss";
-import { setupAppStateVars, setDeviceIndicator } from "./utils/appState";
+import { setupAppStateVars } from "./utils/appState";
 //import { PageEvents } from "./eventhandlers/pageevents";
-import { MainEvents } from "./eventhandlers/mainevents";
-import { DataCache } from "./utils/datacache";
-import { Utils } from "./utils/utils";
+// import { DataCache } from "./utils/datacache";
+// import { Utils } from "./utils/utils";
 import { TabEvents } from "./eventhandlers/tabevents";
 import { allowedURL } from "./utils/whitelist";
-import { Analytics } from "./eventhandlers/analytics";
+// import { Analytics } from "./eventhandlers/analytics";
 
 //import { obesityMap } from "./components/obesity/map";
 //import { obesityTemplate } from "./components/obesity/template";
@@ -17,8 +15,6 @@ import { Analytics } from "./eventhandlers/analytics";
 	// page initialization code
 	// the DOM will be available
 	setupAppStateVars();
-	setDeviceIndicator();
-
 	TabEvents.registerEvents(); // THIS IS WHAT CREATES FIRST MAIN PAGE
 
 	let hash;
@@ -29,14 +25,7 @@ import { Analytics } from "./eventhandlers/analytics";
 		hash = "#nchs-home";
 	}
 
-	renderChartArea();
-
-	function renderChartArea() {
-		// render landing area
-		TabEvents.tabHTMLHandler(hash);
-		// add any click events inside here
-		MainEvents.registerEvents();
-	}
+	TabEvents.tabHTMLHandler(hash); // render nchs-home page
 
 	function setFooterDate() {
 		const date = moment().format("YYYY, MMMM DD");
