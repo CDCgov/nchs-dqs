@@ -185,6 +185,7 @@ export const getGenChartConfig = (props) => {
 		multiLineColors: ["#88419d", "#57b452", "#0570b0", "#cc4c02", "#690207", "#e1ed3e", "#7c7e82"],
 		formatXAxis: "shortDate",
 		formatYAxisLeft: "magnitude",
+		leftDomainOverageScale: 1.1,
 	};
 };
 
@@ -215,6 +216,24 @@ export const hashLookup = {
 					value: "5",
 				},
 			],
+			"panel-num-select": [
+				{
+					hash: "2-19",
+					value: "1",
+				},
+				{
+					hash: "2-5",
+					value: "2",
+				},
+				{
+					hash: "6-11",
+					value: "3",
+				},
+				{
+					hash: "12-19",
+					value: "4",
+				},
+			],
 		},
 		{
 			hash: "obesity-adults",
@@ -242,6 +261,32 @@ export const hashLookup = {
 				},
 				{
 					hash: "sex-and-age",
+					value: "6",
+				},
+			],
+			"panel-num-select": [
+				{
+					hash: "BMI-from-18.5-to-24.9",
+					value: "1",
+				},
+				{
+					hash: "BMI-greater-than-or-equal-to-25.0",
+					value: "2",
+				},
+				{
+					hash: "BMI-greater-than-or-equal-to-30.0",
+					value: "3",
+				},
+				{
+					hash: "BMI-from-30.0-to-34.9",
+					value: "4",
+				},
+				{
+					hash: "BMI-from-35.0-to-39.9",
+					value: "5",
+				},
+				{
+					hash: "BMI-greater-than-or-equal-to-40.0",
 					value: "6",
 				},
 			],
@@ -283,6 +328,12 @@ export const hashLookup = {
 					value: "7",
 				},
 			],
+			"panel-num-select": [
+				{
+					hash: "NA",
+					value: "NA",
+				},
+			],
 		},
 		{
 			hash: "injury-ed-visits",
@@ -313,6 +364,12 @@ export const hashLookup = {
 					value: "6",
 				},
 			],
+			"panel-num-select": [
+				{
+					hash: "NA",
+					value: "0",
+				},
+			],
 		},
 		{
 			hash: "infant-mortality",
@@ -327,6 +384,32 @@ export const hashLookup = {
 					value: "1",
 				},
 			],
+			"panel-num-select": [
+				{
+					hash: "All-races",
+					value: "1",
+				},
+				{
+					hash: "Not-Hispanic-or-Latina_White",
+					value: "2",
+				},
+				{
+					hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+					value: "3",
+				},
+				{
+					hash: "Hispanic-or-Latina_All-races",
+					value: "4",
+				},
+				{
+					hash: "American-Indian-or-Alaska-Native",
+					value: "5",
+				},
+				{
+					hash: "Asian-or-Pacific-Islander",
+					value: "6",
+				},
+			],
 		},
 		{
 			hash: "low-birthweight",
@@ -339,6 +422,32 @@ export const hashLookup = {
 				{
 					hash: "state-or-territory",
 					value: "1",
+				},
+			],
+			"panel-num-select": [
+				{
+					hash: "All-races",
+					value: "1",
+				},
+				{
+					hash: "Not-Hispanic-or-Latina_White",
+					value: "2",
+				},
+				{
+					hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+					value: "3",
+				},
+				{
+					hash: "Hispanic-or-Latina_All-races",
+					value: "4",
+				},
+				{
+					hash: "American-Indian-or-Alaska-Native",
+					value: "5",
+				},
+				{
+					hash: "Asian-or-Pacific-Islander",
+					value: "6",
 				},
 			],
 		},
@@ -387,80 +496,12 @@ export const hashLookup = {
 					value: "9",
 				},
 			],
-		},
-	],
-	"panel-num-select": [
-		{
-			hash: "NA",
-			value: "NA",
-		},
-		{
-			hash: "NA",
-			value: "0",
-		},
-		{
-			hash: "BMI-from-18.5-to-24.9",
-			value: "1",
-		},
-		{
-			hash: "BMI-greater-than-or-equal-to-25.0",
-			value: "2",
-		},
-		{
-			hash: "BMI-greater-than-or-equal-to-30.0",
-			value: "3",
-		},
-		{
-			hash: "BMI-from-30.0-to-34.9",
-			value: "4",
-		},
-		{
-			hash: "BMI-from-35.0-to-39.9",
-			value: "5",
-		},
-		{
-			hash: "BMI-greater-than-or-equal-to-40.0",
-			value: "6",
-		},
-		{
-			hash: "2-19",
-			value: "1",
-		},
-		{
-			hash: "2-5",
-			value: "2",
-		},
-		{
-			hash: "6-11",
-			value: "3",
-		},
-		{
-			hash: "12-19",
-			value: "4",
-		},
-		{
-			hash: "All-races",
-			value: "1",
-		},
-		{
-			hash: "Not-Hispanic-or-Latina_White",
-			value: "2",
-		},
-		{
-			hash: "Not-Hispanic-or-Latina_Black-or-African-American",
-			value: "3",
-		},
-		{
-			hash: "Hispanic-or-Latina_All-races",
-			value: "4",
-		},
-		{
-			hash: "American-Indian-or-Alaska-Native",
-			value: "5",
-		},
-		{
-			hash: "Asian-or-Pacific-Islander",
-			value: "6",
+			"panel-num-select": [
+				{
+					hash: "NA",
+					value: "NA",
+				},
+			],
 		},
 	],
 };

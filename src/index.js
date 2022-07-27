@@ -72,7 +72,7 @@ import { Analytics } from "./eventhandlers/analytics";
 			return;
 		}
 		let hash = location.hash && isAllowed ? location.hash : "#nchs-home";
-		console.log("index: hash = " + hash);
+		// console.log("index: hash = " + hash);
 		//let navItems = document.querySelectorAll("#navButtons *");
 
 		/* check to see if we're actually changing page on a hash change before using HTMLHandler

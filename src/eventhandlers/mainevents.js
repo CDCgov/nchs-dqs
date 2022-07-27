@@ -13,7 +13,7 @@ export const MainEvents = {
 			//if (document.getElementById('show-one-period-checkbox').checked) {
 			// $("#show-one-period-checkbox").click();
 			//}
-			console.log("New data topic:", dataTopic);
+			// console.log("New data topic:", dataTopic);
 		});
 		$("#panel-num-select").change((evt) => {
 			let panelNum = evt.target.value;
@@ -71,6 +71,19 @@ export const MainEvents = {
 				$("#year-end-select").show();
 				// set to enable line chart
 				appState.ACTIVE_TAB.updateShowBarChart(0);
+			}
+		});
+
+		$("#enable-CI-checkbox").on("change", (evt) => {
+			let isChecked = evt.target.checked;
+			if (isChecked) {
+				//console.log("Enable CI Checkbox is checked..");
+				// set to enable bar chart
+				appState.ACTIVE_TAB.updateEnableCI(1);
+			} else {
+				//console.log("Enable CI Checkbox is NOT checked..");
+				// set to enable line chart
+				appState.ACTIVE_TAB.updateEnableCI(0);
 			}
 		});
 

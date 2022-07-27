@@ -30,6 +30,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -204,7 +205,7 @@ export class GenChart {
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: axisSize, // gives room for tick label when no chart title
+			top: axisSize, // + 40, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
@@ -289,6 +290,7 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
+									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
@@ -686,7 +688,8 @@ export class GenChart {
 										return barColor;
 									})
 									.attr("height", (d) => chartHeight - yScaleLeft(d[p.chartProperties.bars]))
-									.attr("x", (d) => xScale(d[p.chartProperties.xAxis]))
+									//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
+									.attr("x", (d, i) => xScale(d[p.chartProperties.xAxis]))
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("opacity", 0.85);
 							},
@@ -714,6 +717,56 @@ export class GenChart {
 								exit.remove();
 							}
 						);
+
+					//debugger;
+
+					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
+					if (p.enableCI) {
+						// did this so I could log the data
+						//console.log("cidata,xbandwidth", drawData, xScale.bandwidth());
+
+						drawData.forEach((d, i) => {
+							// (TT) note bc of the rotated chart:
+							// - x in the below code is up and down as you see chart
+							// - y is left and right as you look at chart
+							const CIBarId = "CIBar" + i;
+							const CIBarItem = svg
+								.append("line")
+								.datum(d)
+								.attr("class", `${svgId}-CIBarItem`)
+								.attr("id", CIBarId)
+								.filter(function (d) {
+									// console.log(
+									// 	"cidata2 i, lci, est, uci:",
+									// 	i,
+									// 	d.estimate_lci,
+									// 	d.estimate,
+									// 	d.estimate_uci
+									// );
+									return d.estimate_uci;
+								})
+								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM FROM TESTING THESE CI WHISKERS ARE CORRECT
+								.attr("x1", function (d) {
+									return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left;
+								}) //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() );
+								.attr("y1", function (d) {
+									return yScaleLeft(d.estimate_lci) + margin.top;
+								})
+								//.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
+								.attr(
+									"x2",
+									(d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left
+								)
+								//.attr("y2", function (d) { return  yScaleLeft(d.estimate_uci) + margin.top; })
+								.attr("y2", function (d) {
+									// console.log("cProp.bars=", d[p.chartProperties.bars]);
+									// console.log("y2=", yScaleLeft(d[p.chartProperties.bars]));
+									return yScaleLeft(d.estimate_uci) + margin.top;
+								})
+								.attr("stroke", "black")
+								.attr("stroke-width", 3);
+						});
+					}
 				}
 
 				if (p.usesStackedBars) {
@@ -797,6 +850,40 @@ export class GenChart {
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
+							//debugger;
+							// #### Show confidence interval #####
+							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
+							if (p.enableCI) {
+								lineGroups[i]
+									.append("path")
+									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
+									.attr("fill", multiLineColors(i))
+									.attr("stroke", "none")
+									.style("opacity", 0.4)
+									.attr(
+										"d",
+										d3
+											.area()
+											.x(function (d) {
+												// console.log(
+												// 	"x d,i,x:",
+												// 	d,
+												// 	i,
+												// 	xScale(d[p.chartProperties.xAxis]) + offset
+												// );
+												return xScale(d[p.chartProperties.xAxis]) + offset;
+											})
+											.y0(function (d) {
+												// console.log("y0 d:", yScaleLeft(d.estimate_lci));
+												return yScaleLeft(d.estimate_lci);
+											})
+											.y1(function (d) {
+												// console.log("y1 d:", yScaleLeft(d.estimate_uci));
+												return yScaleLeft(d.estimate_uci);
+											})
+									);
+							}
+
 							lineGroupPaths[i].attr("d", lines[i](nd.values));
 							lineGroups[i]
 								.selectAll("ellipse")
@@ -805,12 +892,15 @@ export class GenChart {
 									(enter) => {
 										enter
 											.append("ellipse") // adding hover over ellipses
+											.filter(function (d) {
+												return d.estimate;
+											})
 											.style("fill", multiLineColors(i))
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
 											.attr("ry", d3.max([5, d3.min([offset, 15])]))
-											.style("opacity", 0);
+											.style("opacity", 0); // this makes it invisible
 										enter
 											.append("ellipse") // add always visible "point" (TT)
 											// filter out the nulls at last possible moment (TT)
@@ -821,10 +911,10 @@ export class GenChart {
 											.style("fill", function (d) {
 												if (d.flag === "*") {
 													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
-													return "white";
+													return "white"; // creates circle that appears "empty" for "*" flag
 												} else {
 													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
-													return multiLineColors(i);
+													return multiLineColors(i); // fills in the dot with line color
 												}
 											})
 											.style("stroke", function (d) {
@@ -1133,18 +1223,14 @@ export class GenChart {
 			genTooltip.render();
 		}
 
-		// (TT) this is where we rotate the entire bar chart
 		let currPos;
 		if (p.usesBars === true && p.chartRotate === true) {
-			// rotate the entire chart
-			// const whiteboxTop = $("#whitebox")[0].getBoundingClientRect().top;
-			// debugger;
-			// let moveCenter = (whiteboxDims.width - whiteboxDims.height) / 2; // this helps center bar chart (TT)
-			// let moveCenter = (svgWidth - svgHeight + margin.bottom) / 2; // this helps center bar chart (TT)
+			// rotate the chart prior to adding legend items for proper location setting
 			currPos = $(`#${svgId}`)[0].getBoundingClientRect();
-			d3.select(`#${svgId}`).attr("transform", `rotate(${p.chartRotationPercent})`);
+			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
 
-			// now add the LEGEND! - have to do this last after Bar Chart drawn
+			// Add the legend. Have to do this last after Bar Chart drawn
+
 			if (p.usesLegend === true) {
 				// set up the data first
 				//console.log("p.data:", p.data);
@@ -1303,20 +1389,6 @@ export class GenChart {
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
 				} // end if legendData.length > 0
-
-				// enlarge chart container - NOT WORKING FOR SOME REASON
-				/* 				const chartContainer = document.querySelectorAll(`.chart-container`);
-								chartContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75);
-								const tabContainer = document.querySelectorAll(`.ex-with-icons-content`);
-								tabContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75); */
-
-				///
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1357,18 +1429,6 @@ export class GenChart {
 						};
 					});
 					legendData.reverse();
-					// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
-					// - also even if I got this working it CAN"T GO HERE
-					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
-					/* 				} else if (p.usesBars) { 
-										p.data.forEach((d, i) => {
-											legendData[i] = {
-												stroke: p.barColors[i],
-												dashArrayScale: p.left1DashArrayScale,
-												text: d.key,
-											};
-										});
-										legendData.reverse(); */
 				} else {
 					if (p.usesLeftLine1) {
 						legendData.push({
@@ -1471,7 +1531,7 @@ export class GenChart {
 						.attr("font-size", axisLabelFontSize * 1.1)
 						.attr("x", 45)
 						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (dtemp) {
+						.text(function (curD2) {
 							// TRICKY: you can do a function on any variable but then use
 							// curD to get the value of dontDraw
 							// if you use d or curD in both places it does not work!
@@ -1498,22 +1558,32 @@ export class GenChart {
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
-
-				// (TT) the code below never worked bc it only moved the outer legend wrapper not
-				// try to move container
-				// try to center it
-				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
-				// move it down outside the bottom margin
-				//legendTy = legendContainer.attr("y") + legendHeight;
-				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
 			}
 		}
 
-		const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
 		if (p.chartRotate) {
-			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, 0)`);
+			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the
+			// original height, pre-rotation. Due to css positioning of the svg, when the rotated height becomes greater than
+			// the width after adding legend items, rotation changes the position of the svg off of desired center.
+			// To move it back, we first get the desired location then rotate (done above), find out where it is after rotation,
+			// (done here) and finally move it back(required re-rotating WITH translation at the same time).
+
+			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			// debugger;
+			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
+			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
+
+			d3.select(`#${svgId}`).attr(
+				"transform",
+				`rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`
+				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
+			);
+
+			// finally adjust the green container height for the content of the new svg height
 			$("#chart-container").css("height", newPos.height - 80);
-		} else $("#chart-container").css("height", newPos.height);
+		} else {
+			$("#chart-container").css("height", $(`#${svgId}`)[0].getBoundingClientRect().height);
+		}
 
 		return {
 			data: p.data,
