@@ -1923,7 +1923,7 @@ export class LandingPage {
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 					
-					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline-block">
+					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline">
 						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox">
 						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
 					</div>
