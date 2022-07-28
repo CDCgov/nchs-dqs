@@ -1909,6 +1909,7 @@ export class LandingPage {
 				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;">
 					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;"></div>				
 					<div id="us-map-message" class="chart-title" style=""></div>
+					<div id="us-map-time-slider">placeholder</div>
 					<div id="us-map-legend"></div>
 				</div>
 				<br>

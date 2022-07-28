@@ -32,6 +32,14 @@ export const MainEvents = {
 			let yrStart = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStartPeriod(yrStart);
 			console.log("New Start Period:", yrStart);
+			const allYears = document.getElementById("year-start-select").options;
+			let next = 0;
+			const length = allYears.length - 1;
+			setInterval(() => {
+				if (next === length) next = 0;
+				appState.ACTIVE_TAB.updateStartPeriod(allYears[next].value);
+				next++;
+			}, 2000);
 		});
 		$("#year-end-select").change((evt) => {
 			let yrEnd = evt.target.value; // if you dont do this then stubNum is string

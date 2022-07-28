@@ -6,12 +6,15 @@ import { ClassifyData } from "../../utils/ClassifyDataNT";
 
 export class GenMap {
 	constructor(props) {
+		debugger;
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
 		this.classifyType = parseInt(props.classifyType);
 		this.startYear = props.startYear; // time period start year selected
 	}
-	
+
+	renderTimeSeriesAxisSelector() {}
+
 	render(geometries) {
 		let mLegendData;
 		let mEstimateByStateID = {};
@@ -24,22 +27,20 @@ export class GenMap {
 		let mInActiveColor = "#FFFFFF";
 		const noDataColorHexVal = "#dee2e6";
 		//const unreliableHexVal = "#9b9ea1"; // they decided for now not to use this
-												// (TT) I'm not going to delete it though in case we need it back later.
+		// (TT) I'm not going to delete it though in case we need it back later.
 
 		//const svgId = this.mapVizId;
 		const svgId = `${this.mapVizId}-svg`;
-		
+
 		// Need to clear out the last map that was generated
 		$(`#${this.mapVizId}`).empty();
-		
-		const MapSvgDefs =
-			`<defs>
+
+		const MapSvgDefs = `<defs>
 					<pattern id="crossHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
 						<rect width="4" height="8" transform="translate(0,0)" fill="#bbb"></rect>
 					</pattern>
 				</defs>`;
 
-		
 		function getTooltipConstructor(vizId) {
 			const propertyLookup = {
 				STATE_NAME: { title: "STATE: ", datumType: "string" },
@@ -49,7 +50,7 @@ export class GenMap {
 			};
 
 			const headerProps = ["STATE_NAME", ""];
-			const bodyProps = ["estimate","flag"];
+			const bodyProps = ["estimate", "flag"];
 			return { propertyLookup, headerProps, bodyProps, svgId, vizId };
 		}
 		const genTooltip = new GenTooltip(getTooltipConstructor(this.mapVizId));
@@ -68,7 +69,7 @@ export class GenMap {
 								return d;
 							}
 						}); */
-		
+
 		// CLASSIFY THE DATA
 		//   METHODS  \\
 		// STANDARD BREAKS  = 1 -> pass 4 to do 4 quartiles
@@ -96,9 +97,8 @@ export class GenMap {
 				console.log("%c%s\t%o", "background-color:LightGreen;", "Equal Interval", ClassifiedDataObj);
 				console.log(JSON.stringify(ClassifiedDataObj.legend));
 				break;
-
 		}
-		
+
 		this.data = ClassifiedDataObj.classifiedData;
 		// the data now has a "Class" assigned to it
 		//debugger;
@@ -137,10 +137,10 @@ export class GenMap {
 		const bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
 		// same as above but remove WHITE
 		mActiveLegendItemColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
-		function getColor(bin,flag) {
+		function getColor(bin, flag) {
 			let index;
 			let binColor = bgColors[bin]; // this IS based on position of the bin to the color
-			
+
 			// Check if the legend bin is inactive...
 			// -- if it is, then return WHITE
 			//console.log("active colors list:", mActiveLegendItemColors);
@@ -173,7 +173,7 @@ export class GenMap {
 
 		function getColorFromDProps(d) {
 			let index;
-			
+
 			let binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
 			let flag = d.properties.flag;
 			let estimate = d.properties.estimate;
@@ -198,7 +198,7 @@ export class GenMap {
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
-			} else if ((flag === "*" && estimate !== null) && (index > -1)) {
+			} else if (flag === "*" && estimate !== null && index > -1) {
 				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
 				// - first original geometry has the bincolor based on estimate
 				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
@@ -222,7 +222,7 @@ export class GenMap {
 		// - yes could have passed an additional flag and swapped between the two but this is easier for debugging
 		function getColorFromD(d) {
 			let index;
-			
+
 			let binColor = bgColors[d.class]; // this IS based on position of the bin to the color
 			let flag = d.flag;
 			let estimate = d.estimate;
@@ -238,12 +238,12 @@ export class GenMap {
 			if (flag === "- - -") {
 				// ignore bin set to light gray
 				return noDataColorHexVal;
-			} else if ((flag === "*" && estimate === null) || (d.crosshatch)) {
+			} else if ((flag === "*" && estimate === null) || d.crosshatch) {
 				//console.log("getColor state,flag*,est-null: returning cross hatch", d.STATE_FIPS);
 				return "url(#crossHatch)";
 				// ignore bin set to dark gray
 				//return unreliableHexVal;
-			} else if ((flag === "*" && estimate !== null) && (index > -1)) {
+			} else if (flag === "*" && estimate !== null && index > -1) {
 				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
 				// - this is the 1st primary geometry with "*" that sets the background color FIRST
 				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
@@ -262,14 +262,13 @@ export class GenMap {
 			}
 		}
 
-
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
 		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 		function getFontColor(bin) {
 			//console.log("font color bin:", bin);
 			return fontColors[bin];
 		}
-		
+
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 50 * overallScale;
 
@@ -288,59 +287,56 @@ export class GenMap {
 			.attr("width", width)
 			.attr("id", svgId)
 			.attr("display", "inline-block");
-		
-		svg.append("defs").append("pattern")
-			.attr('id', 'crossHatch')
+
+		svg.append("defs")
+			.append("pattern")
+			.attr("id", "crossHatch")
 			.attr("width", 8)
 			.attr("height", 8)
-			.attr('patternUnits', "userSpaceOnUse")
-			.attr('patternTransform', "rotate(45)")
-			.append('rect')
+			.attr("patternUnits", "userSpaceOnUse")
+			.attr("patternTransform", "rotate(45)")
+			.append("rect")
 			.attr("width", 2) // sets the thickness of the crosshatching
 			.attr("height", 8)
-			.attr('fill', '#bbb')
+			.attr("fill", "#bbb")
 			.attr("transform", "translate(0,0)");
-
 
 		// join the data of STATES with the incoming data topic data
 		geometries.forEach((g) => {
 			//let estimateRange = this.data.filter((d) => d.stub_label_num === g.properties.STATE_FIPS)[0]?.estimate;
-			let estimateMatch = this.data
-				.filter(function (d) {
-					// for debugging specific states only - can set the territory code to investigate
-					if (parseInt(d.stub_label_num) === 72 && parseInt(g.properties.STATE_FIPS) === 72) {
-						console.log("STATES: d , d.bin, d.flag, g", d, d.class, d.flag, g);
-					}
-					//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-					if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-						return d.estimate ? d.estimate : null;
-					}
-				});
-			
-			let classBin = this.data
-				.filter(function (d) {
-					//console.log("d , d.bin:", d, d.class);
-					if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-						return d.class ? d.class : null;
-					}
-				});
+			let estimateMatch = this.data.filter(function (d) {
+				// for debugging specific states only - can set the territory code to investigate
+				if (parseInt(d.stub_label_num) === 72 && parseInt(g.properties.STATE_FIPS) === 72) {
+					console.log("STATES: d , d.bin, d.flag, g", d, d.class, d.flag, g);
+				}
+				//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+					return d.estimate ? d.estimate : null;
+				}
+			});
 
-			let theFlag = this.data
-				.filter(function (d) {
-					if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
-						return d.flag ? d.flag : null;
-					}
-				});
+			let classBin = this.data.filter(function (d) {
+				//console.log("d , d.bin:", d, d.class);
+				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+					return d.class ? d.class : null;
+				}
+			});
+
+			let theFlag = this.data.filter(function (d) {
+				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+					return d.flag ? d.flag : null;
+				}
+			});
 			if (theFlag.length > 0) {
 				theFlag = theFlag[0].flag;
 			} else {
 				theFlag = "none";
 			}
 
-			console.log("STATES FLAG:",g.properties.STATE_FIPS,theFlag)
+			console.log("STATES FLAG:", g.properties.STATE_FIPS, theFlag);
 
 			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch, " classBin:",classBin[0].class);
 
@@ -356,19 +352,19 @@ export class GenMap {
 						...g.properties,
 						estimate: parseFloat(estimateMatch),
 						class: parseInt(classBin[0].class),
-						active: 1,  // default initial to all checked
+						active: 1, // default initial to all checked
 						flag: theFlag,
 						//bgcolor: getColor(parseInt(classBin[0].class), theFlag), // STORE THE COLOR so that legend clicks retain color
-						crosshatch: 0, 
+						crosshatch: 0,
 					};
 				} else {
 					g.properties = {
 						...g.properties,
 						estimate: parseFloat(estimateMatch),
 						class: null,
-						active: 1,  // default initial to all checked
+						active: 1, // default initial to all checked
 						flag: theFlag,
-						crosshatch: 0, 
+						crosshatch: 0,
 					};
 					console.log("### classBin has no class!", classBin[0]);
 				}
@@ -377,12 +373,12 @@ export class GenMap {
 					...g.properties,
 					estimate: null,
 					class: null,
-					active: 1,  // default initial to all checked
+					active: 1, // default initial to all checked
 					flag: theFlag,
-					crosshatch: 0, 
+					crosshatch: 0,
 				};
 			}
-						
+
 			// this was a nice try but unfortunately kills the crosshatching
 			// -- idea was to duplicate the geometry and add another layer for the color
 			// -- problem is I think that has to come FIRST and this is being drawn last
@@ -396,7 +392,7 @@ export class GenMap {
 					active: 1,
 					flag: "*",
 					crosshatch: 1, // set special code so getColor returns crosshatch
-								// do not store a bgcolor here - it will be crosshatching anyway
+					// do not store a bgcolor here - it will be crosshatching anyway
 				};
 				// now add the copied object to the list LAST so crosshatch drawn after underlying bgcolor
 				geometries.push({
@@ -407,11 +403,10 @@ export class GenMap {
 			}
 			/////////  THE ABOVE PROBABLY DOES NOT WORK WHEN YOU CHANGE CHARACTERISTICS!!!
 			/////////  NEED TO ADD SAME CODE TO updateMap !!!!!!!!!!!
-		
 		});
 
 		console.log("###genMAP geometries w estimate:", geometries);
-		
+
 		// what territories are we hiding????  (TTTT)
 		const hiddenStates = [57, 66, 78];
 		const filteredStates = geometries.filter((d) => hiddenStates.indexOf(d.properties.STATE_FIPS) === -1);
@@ -448,14 +443,15 @@ export class GenMap {
 					//console.log("d flag is:", d.properties.flag);
 					// reset it
 					d.properties.flag = "*"; // just reset the "**" back to "*" so that the rollover works
-					return;  
+					return;
 				}
 			});
 
-		
 		const territories = [
 			{
-				STATE_NAME: "American Samoa", desiredAbbr: "AS", abbr: "AS",
+				STATE_NAME: "American Samoa",
+				desiredAbbr: "AS",
+				abbr: "AS",
 				STATE_FIPS: "60",
 			},
 			/* 			{   Puerto Rico is in the States data for some reason bc it's an island
@@ -467,7 +463,9 @@ export class GenMap {
 							STATE_FIPS: "72", 
 						}, */
 			{
-				STATE_NAME: "Guam", desiredAbbr: "GU", abbr: "GU",
+				STATE_NAME: "Guam",
+				desiredAbbr: "GU",
+				abbr: "GU",
 				STATE_FIPS: "66",
 			},
 			{
@@ -487,7 +485,9 @@ export class GenMap {
 							STATE_FIPS: "78",
 						}, */
 			{
-				STATE_NAME: "Virgin Islands", desiredAbbr: "VI", abbr: "VI",
+				STATE_NAME: "Virgin Islands",
+				desiredAbbr: "VI",
+				abbr: "VI",
 				STATE_FIPS: "78",
 			},
 		];
@@ -496,37 +496,34 @@ export class GenMap {
 			//debugger;
 			//console.log("TERR t:", t);
 
-			let estimateMatch = this.data
-				.filter(function (d) {
-					//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-					if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-						return d.estimate ? d.estimate : null;
-					}
-				});
+			let estimateMatch = this.data.filter(function (d) {
+				//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+					return d.estimate ? d.estimate : null;
+				}
+			});
 
-			let classBin = this.data
-				.filter(function (d) {
-					// for debugging specific territories only - can set the territory code to investigate
-					if (parseInt(t.STATE_FIPS) === 60) {
-						//console.log("TERRITORIES: d , d.bin, t", d, d.class, t);
-					}
-					////////////////////////////////////////////
+			let classBin = this.data.filter(function (d) {
+				// for debugging specific territories only - can set the territory code to investigate
+				if (parseInt(t.STATE_FIPS) === 60) {
+					//console.log("TERRITORIES: d , d.bin, t", d, d.class, t);
+				}
+				////////////////////////////////////////////
 
-					// this code is needed for the app, not for debugging
-					if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
-						return d.class ? d.class : null;
-					}
-				});
-			
-			let theFlag = this.data
-				.filter(function (d) {
-					if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-						//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
-						return d.flag ? d.flag : null;
-					}
-				});
+				// this code is needed for the app, not for debugging
+				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+					return d.class ? d.class : null;
+				}
+			});
+
+			let theFlag = this.data.filter(function (d) {
+				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
+					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+					return d.flag ? d.flag : null;
+				}
+			});
 			if (theFlag.length > 0) {
 				theFlag = theFlag[0].flag;
 			} else {
@@ -541,7 +538,6 @@ export class GenMap {
 				estimateMatch = "No case reported.";
 			}
 
-			
 			if (classBin[0] !== undefined) {
 				if (classBin[0].hasOwnProperty("class")) {
 					//console.log("### TERRITORY classBin has REAL class!", classBin[0].class);
@@ -570,7 +566,6 @@ export class GenMap {
 			}
 
 			// NEED THE FLAG in the territories because data and class can be null, but there are 2 flags "- - -" and "*"
-
 		});
 
 		console.log("filtered Territories:", filteredTerritories);
@@ -604,8 +599,8 @@ export class GenMap {
 			.attr("stroke-width", 0.7)
 			.attr("stroke", "#777")
 			.style("fill", (d) => getColorFromD(d));
-				// dont need this anymore bc added the crosshatch flag
-/* 			.attr("d.flag", function (d) {
+		// dont need this anymore bc added the crosshatch flag
+		/* 			.attr("d.flag", function (d) {
 				if (d.flag === "**") {
 					//console.log("d flag is:", d.properties.flag);
 					// reset it
@@ -613,7 +608,7 @@ export class GenMap {
 					return;  
 				} 
 			});*/
-		
+
 		territoryGroup
 			.selectAll("text")
 			.data(filteredTerritories)
@@ -649,65 +644,62 @@ export class GenMap {
 
 			//debugger;
 			// update the colors for STATES
-			d3.selectAll("#states path")
-				.style("fill", function (d) {
-					let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d) //.properties.class,d.properties.flag)
-					if (d.properties.STATE_FIPS === 30) {
-						console.log("updateMap STATE color for d=", d, zColor); // Montana
-					}
-					return getColorFromDProps(d) // .properties.class,d.properties.flag);
-				});
+			d3.selectAll("#states path").style("fill", function (d) {
+				let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d); //.properties.class,d.properties.flag)
+				if (d.properties.STATE_FIPS === 30) {
+					console.log("updateMap STATE color for d=", d, zColor); // Montana
+				}
+				return getColorFromDProps(d); // .properties.class,d.properties.flag);
+			});
 
 			// update the colors for TERRITORIES - separate bc the territory data format is DIFFERENT
-			d3.selectAll("#territoryGroup rect")
-				.style("fill", function (d) {
-					//console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
-					return getColorFromD(d); 
-				});
+			d3.selectAll("#territoryGroup rect").style("fill", function (d) {
+				//console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
+				return getColorFromD(d);
+			});
 		}
 
 		// this just generates a LIST  of ALL ITEMS out of the mlegendData array
 		// - it does not do any filtering yet
 		// - this just starts off the active legend list
-		  function getDefaultActiveLegendItems() {
+		function getDefaultActiveLegendItems() {
 			var activeLegendItems;
 			activeLegendItems = [];
 			activeLegendItems.push(String(mNoDataFlagID)); // No Data = 0th item always
 			//activeLegendItems.push(String(mSuppressedFlagID)); // Suppressed
 
 			for (let i = 0; i < mLegendData.length; i += 1) {
-			activeLegendItems.push(mLegendData[i].min + " - " + mLegendData[i].max);
+				activeLegendItems.push(mLegendData[i].min + " - " + mLegendData[i].max);
 			}
 
 			return activeLegendItems;
-		  }
-		
+		}
+
 		function isNoDataOrSuppressedAndActive(activeLegendItem, val) {
 			if (
-			(activeLegendItem === String(mNoDataFlagID) ||
-				activeLegendItem === String(mSuppressedFlagID)) &&
-			String(val) === activeLegendItem
+				(activeLegendItem === String(mNoDataFlagID) || activeLegendItem === String(mSuppressedFlagID)) &&
+				String(val) === activeLegendItem
 			) {
-			return true;
+				return true;
 			}
 			return false;
 		}
-		
+
 		function isValueInActiveLegend(val) {
 			var minVal;
 			var maxVal;
 			var splitVal;
 
 			for (let i = 0; i < mActiveLegendItems.length; i += 1) {
-			if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
-				return true;
-			}
-			splitVal = mActiveLegendItems[i].split("-");
-			minVal = +splitVal[0];
-			maxVal = +splitVal[1];
-			if (+val >= minVal && +val <= maxVal) {
-				return true;
-			}
+				if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
+					return true;
+				}
+				splitVal = mActiveLegendItems[i].split("-");
+				minVal = +splitVal[0];
+				maxVal = +splitVal[1];
+				if (+val >= minVal && +val <= maxVal) {
+					return true;
+				}
 			}
 
 			return false;
@@ -717,8 +709,7 @@ export class GenMap {
 			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
 			var separator = rgb.indexOf(",") > -1 ? "," : " ";
 
-
-			// This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString 
+			// This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString
 			rgb = rgb.substr(4).split(")")[0].split(separator);
 
 			// Here we will convert the decimal values to hexadecimal using toString(16)
@@ -726,12 +717,9 @@ export class GenMap {
 				g = (+rgb[1]).toString(16),
 				b = (+rgb[2]).toString(16);
 
-			if (r.length == 1)
-				r = "0" + r;
-			if (g.length == 1)
-				g = "0" + g;
-			if (b.length == 1)
-				b = "0" + b;
+			if (r.length == 1) r = "0" + r;
+			if (g.length == 1) g = "0" + g;
+			if (b.length == 1) b = "0" + b;
 
 			// The return value is a concatenation of "#" plus the rgb values which will give you your hex
 			return "#" + r + g + b;
@@ -763,8 +751,7 @@ export class GenMap {
 			console.log("Active colors AFTER click:", mActiveLegendItemColors);
 			//debugger;
 
-			if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase())
-			{
+			if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase()) {
 				itemLabel = $(evt.target).val();
 				$chkBxObj = $(evt.target);
 			} else if ($(evt.target).hasClass("da-maplegend-box")) {
@@ -787,17 +774,16 @@ export class GenMap {
 				$chkBxObj.prop("checked", true);
 			}
 			//console.log("Active Legend items AFTER:", mActiveLegendItems);
-			
+
 			//debugger;
 
 			// tested and dont need this
 			//evt.preventDefault();
-			
+
 			// just update the colors without redrawing the map
 			updateMap();
+		}
 
-			}
-		
 		function addEventListeners() {
 			//removeEventListeners();
 			$(document).off("click", "#us-map-legend");
@@ -805,13 +791,12 @@ export class GenMap {
 
 			// TO DO: Add back in listener to see if they resize browser
 			// and if they do then resize map all over again
-/* 			window.addEventListener("resize", createMap);
+			/* 			window.addEventListener("resize", createMap);
 			publicAPI["on" + mConfig.ChangeEventTypesList.Viz1ContainerResizedEvent] =
 			function () {
 				createMap();
 			}; */
 		}
-
 
 		// create and load the map legend
 		function loadMapLegend() {
@@ -835,18 +820,17 @@ export class GenMap {
 
 			// No Data Box is First
 			legendItemObj = {
-				ColorStyle:
-				"color:black !important; background-color:" + noDataColorHexVal,
+				ColorStyle: "color:black !important; background-color:" + noDataColorHexVal,
 				DisplayLabel: "No Data",
 				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
-				IsChecked: 1,  // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
+				IsChecked: 1, // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
 			};
 			legendItems.push(legendItemObj);
 
 			// No Data Unreliable - THEY ASKED TO DISABLE UNRELIABLE FROM THE LEGEND
 			// - instead we just have cross hatching in the state or territory if flag = "*"
 			// (TT) - leaving this here in case they ask us to re-enable this
-/* 			legendItemObj = {
+			/* 			legendItemObj = {
 				ColorStyle:
 				"color:black !important; background-color:" + unreliableHexVal,
 				DisplayLabel: "Unreliable",
@@ -858,50 +842,51 @@ export class GenMap {
 			let nullFlag = false;
 			if (mLegendData.length) {
 				for (i = 0; i < mLegendData.length; i += 1) {
-			
-				displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
-				legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
-				//colorHexVal = mLegendData[i].color_hexval;
+					displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
+					legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
+					//colorHexVal = mLegendData[i].color_hexval;
 
-				if (displayLabel.match("null")) {
-					// then skip adding that as a legend item
-					// bc we hardcoded that item above
-					nullFlag = true;
-					continue; 
-					// then it is "Unreliable"
-				} else {
-					if (nullFlag) {
-						bgColor = getColor(i);
-						fontColor = getFontColor(i);
+					if (displayLabel.match("null")) {
+						// then skip adding that as a legend item
+						// bc we hardcoded that item above
+						nullFlag = true;
+						continue;
+						// then it is "Unreliable"
 					} else {
-						bgColor = getColor(i + 1);
-						fontColor = getFontColor(i + 1);						
+						if (nullFlag) {
+							bgColor = getColor(i);
+							fontColor = getFontColor(i);
+						} else {
+							bgColor = getColor(i + 1);
+							fontColor = getFontColor(i + 1);
+						}
+						colorStyle = "color:" + fontColor + " !important;background-color:" + bgColor;
 					}
-					colorStyle = "color:" + fontColor + " !important;background-color:" + bgColor;
+
+					isActive = mLegendData[i].active;
+
+					// form object and save it to the list
+					legendItemObj = {
+						ColorStyle: colorStyle,
+						DisplayLabel: displayLabel,
+						ItemValue: legendItemVal,
+						IsChecked: isActive,
+						//IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
+					};
+					legendItems.push(legendItemObj);
+					//console.log("loadLegend item:", i, legendItemObj);
 				}
 
-				isActive = mLegendData[i].active;
-				
-				// form object and save it to the list
-				legendItemObj = {
-					ColorStyle: colorStyle,
-					DisplayLabel: displayLabel,
-					ItemValue: legendItemVal,
-					IsChecked: isActive,
-					//IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
+				legendTemplateConfig = {
+					LegendDivID: "us-map-legend",
+					LegendItems: legendItems,
 				};
-				legendItems.push(legendItemObj);
-				//console.log("loadLegend item:", i, legendItemObj);
-			}
 
-			legendTemplateConfig = {
-				LegendDivID: "us-map-legend",
-				LegendItems: legendItems
-			};
+				// Generate the HTML for the legend
+				legendGeneratedHTML =
+					"<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
 
-			// Generate the HTML for the legend				
-				legendGeneratedHTML = "<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
-				legendItems.forEach((leg,i) => {
+				legendItems.forEach((leg, i) => {
 					let isCheckedStr;
 					//let seeLeg = leg;
 					if (leg.IsChecked === 1) {
@@ -924,7 +909,7 @@ export class GenMap {
 					}
 				});
 				legendGeneratedHTML += "</div>";
-				
+
 				// now add the legend to the map div
 				$("#us-map-legend").html(legendGeneratedHTML);
 			}
