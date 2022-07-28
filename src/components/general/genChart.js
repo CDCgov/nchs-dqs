@@ -348,7 +348,7 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
-									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+									parseFloat(d.estimate_uci), // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
