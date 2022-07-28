@@ -290,7 +290,7 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
-									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+									p.enableCI ? d.estimate_uci : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
@@ -1390,7 +1390,7 @@ export class GenChart {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
-				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
+				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
 						//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
