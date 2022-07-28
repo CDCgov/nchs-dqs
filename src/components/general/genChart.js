@@ -30,6 +30,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+		console.log("genChart props=", p);
 
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
@@ -66,9 +67,12 @@ export class GenChart {
 			// need to look at the "nested" data and use only MAX of 10 "nests"
 			// - see below by searching for fullNestedData
 		}
+
+		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
+		console.log("AFTER REMOVING DONTDRAW=", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -277,6 +281,25 @@ export class GenChart {
 			yLeft1TickValues = Utils.getPowerOf10ArrayWithinBounds(...yScaleExtent, 6);
 		}
 
+		console.log("Max scale leftDomainOverageScale=", p.leftDomainOverageScale);
+		console.log("Max scale p.data=", p.data);
+
+		let calcMax = d3.max(p.data, (d) =>
+			d3.max([
+				p.leftDomainMin,
+				d[p.chartProperties.yLeft1],
+				d[p.chartProperties.yLeft2],
+				d[p.chartProperties.yLeft3],
+				d[p.chartProperties.bars],
+				parseFloat(d["estimate_uci"]), // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+			])
+		);  // * p.leftDomainOverageScale;
+		console.log("Max scale calcMax=", calcMax);
+		
+		// THE PROBLEM: WE CALC MAX  HERE BUT THAT IS ON ALL DATA
+		// FOR LINE CHARTS!
+		// GO down below here when we set dontDraw on nested line data
+		// so that's a problem bc the scale is WAY OFF for SOME line charts
 		const yScaleLeft = yScaleType
 			.domain(
 				p.leftDomain
@@ -290,12 +313,14 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
-									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+									parseFloat(d["estimate_uci"]), // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
 			)
 			.range([chartHeight, 0]);
+		
+		console.log("Max scale yScaleLeft=", yScaleLeft);
 
 		const yScaleRight = d3
 			.scaleLinear()

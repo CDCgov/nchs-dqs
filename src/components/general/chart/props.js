@@ -1,4 +1,4 @@
-// A copy-past version of all chart props available is at the bottom of this file in
+// A copy-paste version of all chart props available is at the bottom of this file in
 // the /* ** COPY-PAST-CONFIG ** */ section, below
 
 export const getProps = (props) => {
