@@ -30,6 +30,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+		//console.log("genChart props=", p);
 
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
@@ -51,6 +52,7 @@ export class GenChart {
 		// - note cannot do exact same for lines bc there are data points not just one data per line
 		// whereas in the bar charts each bar is one data point so the below approach works
 		if (p.usesBars) {
+			//console.log("##DRAW BAR CHART###");
 			p.data.forEach((d, i) => {
 				if (d.dontDraw === false && barCount < maxBarCount) {
 					barCount++; // increment barCount
@@ -65,10 +67,23 @@ export class GenChart {
 			// - bc there are MANY points for each line not just one data point
 			// need to look at the "nested" data and use only MAX of 10 "nests"
 			// - see below by searching for fullNestedData
+
+			// 7/28/22 (TT) NOTE: I saw a line chart where the yScaleLeft was too big compared to the data
+			// I think it is due to line chart yScaleLeft scaling on all data vs. selected data
+			// - if that is the case we will need to narrow down the drawn data BEFORE
+			// creating yScaleLeft
+		
 		}
+
+		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
+
+		//debugger;
+
+		// if you need to look at incoming data
+		console.log("genChart p.data:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -114,11 +129,11 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		var insertLinebreaks = function (d) {
+		const insertLinebreaks = function (d) {
 			var el = d3.select(this);
 			var words = d.split(":"); // split labels on : colon
 			el.text("");
-			//this.dy = this.dy + offset;
+
 			for (var i = 0; i < words.length; i++) {
 				var str;
 				var result;
@@ -277,6 +292,32 @@ export class GenChart {
 			yLeft1TickValues = Utils.getPowerOf10ArrayWithinBounds(...yScaleExtent, 6);
 		}
 
+
+		// (TT) leave this COMMENTED OUT code here for now
+		// - saw a case where the calc Max was way high vs. the data
+		// and I think it is bc the .max statement below is on all p.data
+		// where as the line charts use fullNestedData
+		// so scale is too high compared to "selected" 10 lines data
+		// this section can help debug that if we see it again
+/* 		console.log("Max scale leftDomainOverageScale =", p.leftDomainOverageScale);
+		console.log("Max scale p.data=", p.data);
+		let calcMax = d3.max(p.data, (d) =>
+			d3.max([
+				p.leftDomainMin,
+				d[p.chartProperties.yLeft1],
+				d[p.chartProperties.yLeft2],
+				d[p.chartProperties.yLeft3],
+				d[p.chartProperties.bars],
+				parseFloat(d["estimate_uci"]), // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+			])
+		);  // * p.leftDomainOverageScale;
+		console.log("Max scale calcMax=", calcMax); */
+
+		
+		// THE PROBLEM: WE CALC MAX  HERE BUT THAT IS ON ALL DATA
+		// FOR LINE CHARTS!
+		// GO down below here when we set dontDraw on nested line data
+		// so that's a problem bc the scale is WAY OFF for SOME line charts
 		const yScaleLeft = yScaleType
 			.domain(
 				p.leftDomain
@@ -290,7 +331,7 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
-									d.estimate_uci, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+									p.enableCI ? parseFloat(d["estimate_uci"]) : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
@@ -363,6 +404,8 @@ export class GenChart {
 					.attr("x", chartCenterX)
 					.attr("y", chartCenterY);
 			}
+			// note if we have no data, genChart still tries to build the bar chart legend
+
 		} else {
 			// append the axes
 			// xAxis
@@ -835,10 +878,6 @@ export class GenChart {
 					nestedData.forEach((nd, i) => {
 						// only draw those whose first data point is dontDraw = false
 						if (nd.values[0].dontDraw === false) {
-							// DOESNT HELP && nd.values[i].estimate !== null
-
-							//console.log("nd values 1:",i, nd);
-							//console.log("nd estimate 1:",i, nd.values[i].estimate);
 
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
