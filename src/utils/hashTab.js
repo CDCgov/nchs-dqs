@@ -9,8 +9,8 @@ export const writeHashToUrl = () => {
 	const topic = $(`#${topicId} :selected`)[0].value;
 	const subTopic = $(`#${subTopicId} :selected`)[0].value;
 	const characteristic = $(`#${characteristicId} :selected`)[0].value;
-	const singlePeriod = $(`#${showOnePeriodCheckboxId}`)[0].checked ? "1" : "0";
-	const view = $("a.nav-link.active").text().toLocaleLowerCase();
+	const singlePeriod = $(`#${showOnePeriodCheckboxId}`)[0].checked ? "single-time-period" : "all-time-periods";
+	// const view = $("a.nav-link.active").text().toLocaleLowerCase();
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
@@ -20,11 +20,10 @@ export const writeHashToUrl = () => {
 		${hashLookup[topicId].find((l) => l.value === topic).hash}/
 		${hashLookup[topicId].find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash}/
 		${hashLookup[topicId].find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash}/
-		${singlePeriod}/
-		${view}
+		${singlePeriod}		
 	`;
 	} catch {
-		return null;
+		/* do nothing */
 	}
 };
 
@@ -42,7 +41,7 @@ export const getSelections = () => {
 		const characteristic = hashLookup[topicId]
 			.find((l) => l.hash === selections[0])
 			[characteristicId].find((c) => c.hash === selections[2]).value;
-		const viewSinglePeriod = selections[3] !== "0";
+		const viewSinglePeriod = selections[3] === "single-time-period";
 
 		$(`#${topicId}`).val(topic);
 		$(`#${characteristicId}`).val(characteristic);

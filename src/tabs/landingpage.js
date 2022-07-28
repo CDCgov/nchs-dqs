@@ -410,7 +410,6 @@ export class LandingPage {
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
 						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
-				break;
 		}
 		return [...allYearsData];
 	}
@@ -819,7 +818,7 @@ export class LandingPage {
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
 				// hide 95% CI checkbox since "suicide" has no se data
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
@@ -856,7 +855,7 @@ export class LandingPage {
 				selectedDataCache = DataCache.MedicaidU65Data;
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
 				// show 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").show();
 				// default unit num does not support CI

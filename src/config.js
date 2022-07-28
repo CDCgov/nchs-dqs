@@ -204,6 +204,10 @@ export const hashLookup = {
 					value: "1",
 				},
 				{
+					hash: "age",
+					value: "2",
+				},
+				{
 					hash: "race-and-hispanic-origin",
 					value: "3",
 				},
