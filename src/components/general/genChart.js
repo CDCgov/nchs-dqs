@@ -67,12 +67,10 @@ export class GenChart {
 			// - bc there are MANY points for each line not just one data point
 			// need to look at the "nested" data and use only MAX of 10 "nests"
 			// - see below by searching for fullNestedData
-
 			// 7/28/22 (TT) NOTE: I saw a line chart where the yScaleLeft was too big compared to the data
 			// I think it is due to line chart yScaleLeft scaling on all data vs. selected data
 			// - if that is the case we will need to narrow down the drawn data BEFORE
 			// creating yScaleLeft
-		
 		}
 
 		// FOR ALL CHARTS
@@ -292,14 +290,13 @@ export class GenChart {
 			yLeft1TickValues = Utils.getPowerOf10ArrayWithinBounds(...yScaleExtent, 6);
 		}
 
-
 		// (TT) leave this COMMENTED OUT code here for now
 		// - saw a case where the calc Max was way high vs. the data
 		// and I think it is bc the .max statement below is on all p.data
 		// where as the line charts use fullNestedData
 		// so scale is too high compared to "selected" 10 lines data
 		// this section can help debug that if we see it again
-/* 		console.log("Max scale leftDomainOverageScale =", p.leftDomainOverageScale);
+		/* 		console.log("Max scale leftDomainOverageScale =", p.leftDomainOverageScale);
 		console.log("Max scale p.data=", p.data);
 		let calcMax = d3.max(p.data, (d) =>
 			d3.max([
@@ -313,7 +310,6 @@ export class GenChart {
 		);  // * p.leftDomainOverageScale;
 		console.log("Max scale calcMax=", calcMax); */
 
-		
 		// THE PROBLEM: WE CALC MAX  HERE BUT THAT IS ON ALL DATA
 		// FOR LINE CHARTS!
 		// GO down below here when we set dontDraw on nested line data
@@ -405,7 +401,6 @@ export class GenChart {
 					.attr("y", chartCenterY);
 			}
 			// note if we have no data, genChart still tries to build the bar chart legend
-
 		} else {
 			// append the axes
 			// xAxis
@@ -878,7 +873,6 @@ export class GenChart {
 					nestedData.forEach((nd, i) => {
 						// only draw those whose first data point is dontDraw = false
 						if (nd.values[0].dontDraw === false) {
-
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
@@ -1429,7 +1423,7 @@ export class GenChart {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
-				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
+				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
 						//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
