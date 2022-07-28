@@ -26,7 +26,7 @@ export const MainEvents = {
 		$("#stub-name-num-select").change((evt) => {
 			let stubNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
-			console.log("New stubname num:", evt.target.value);
+			//console.log("New stubname num:", evt.target.value);
 		});
 		$("#year-start-select").change((evt) => {
 			let yrStart = evt.target.value; // if you dont do this then stubNum is string

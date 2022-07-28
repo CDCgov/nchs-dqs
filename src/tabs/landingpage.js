@@ -1269,7 +1269,7 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
-		// console.log("new stub name num: ", this.stubNameNum);
+		//console.log("new stub name num: ", this.stubNameNum);
 
 		// have to update UNIT bc some stubs dont have both units
 		this.setVerticalUnitAxisSelect();
