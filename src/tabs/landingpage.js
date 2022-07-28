@@ -407,6 +407,14 @@ export class LandingPage {
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
 						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
+				// on rare data sets unit num 1 does not work
+				// ... so try again without the unit num
+				if (!(allYearsData.length > 0)) {
+					allYearsData = this.allData.filter(
+						(d) =>
+							parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
+					);
+				}
 				break;
 		}
 		return [...allYearsData];
@@ -910,7 +918,8 @@ export class LandingPage {
 
 				// create a year_pt col from time period
 				this.allData = this.allData
-					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
+					// ONLY FOR US MAP - dont filter out "- - -"
+					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data
 					.map((d) => ({
 						...d,
 						estimate: parseFloat(d.estimate),
@@ -918,6 +927,15 @@ export class LandingPage {
 						dontDraw: false,
 						assignedLegendColor: "#FFFFFF",
 					}));
+				
+				// for line chart and bar chart, REMOVE the undefined data entirely
+				if (!this.showMap) {
+					// remove flag = "- - -" data
+					this.allData = this.allData
+						.filter((d) => d.flag !== "- - -") // remove undefined data
+
+				}
+
 				//this.renderAfterDataReady();
 
 				// have to put interface changes in separate switch statements
@@ -1271,6 +1289,10 @@ export class LandingPage {
 		this.stubNameNum = stubNameNum;
 		// console.log("new stub name num: ", this.stubNameNum);
 
+		// have to update START TIME PERIOD select bc some stubs for same data have different
+		// years that are valid data
+		this.resetTimePeriods();
+
 		// have to update UNIT bc some stubs dont have both units
 		this.setVerticalUnitAxisSelect();
 
@@ -1297,6 +1319,84 @@ export class LandingPage {
 			this.renderChart();
 			//}
 		}
+	}
+
+	resetTimePeriods() {
+		// when stubname Characteristic changes, we need to
+		// go back through the filtered year data and update
+		// the time period selects
+		// WHY?  Because some characteristics have no data -> flag = "- - -"
+		// and we need to filter those years out
+		//debugger;
+		
+		let max;
+		let index;
+		let singleYearsArray = [];
+		let yearsData = this.getFilteredYearData();
+		let allYearsArray = d3
+			.map(yearsData, function (d) {
+				return d.year;
+			})
+			.keys();
+		
+		$("#year-start-select").empty();
+		$("#year-end-select").empty();
+		switch (this.dataTopic) {
+			// Data sets with time period ranges like 2002-2005
+			case "obesity-child":
+			case "obesity-adult":
+			case "injury":
+			case "birthweight":
+			case "infant-mortality":
+				allYearsArray.forEach((y) => {
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
+					singleYearsArray.push(this.getYear(y));
+				});
+				// make the last end year selected
+				$("#year-end-select option:last").attr("selected", "selected");
+				// fix labels
+				$("#year-start-label").text("Start Period");
+				$("#year-end-label").text("End Period");
+
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = singleYearsArray[0];
+				this.startPeriod = $("#year-start-select option:selected").text(); // set this for the chart title
+				// max converts the strings to integers and gets the max
+				max = Math.max(...singleYearsArray);
+				// indexOf gets the index of the maximum value so we can set as the "End year"
+				index = singleYearsArray.indexOf(max);
+				this.endYear = singleYearsArray[index]; // now get that year
+				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
+				break;
+			
+			// Data sets with single year selects
+			case "suicide":
+			case "medicaidU65":
+
+
+				// have to build an array of "only the first year"
+				allYearsArray.forEach((y) => {
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
+				});
+				// make the last end year selected
+				$("#year-end-select option:last").attr("selected", "selected");
+				// fix labels
+				$("#year-start-label").text("Start Year");
+				$("#year-end-label").text("End Year");
+
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = allYearsArray[0];
+				this.startPeriod = this.startYear;
+				// max converts the strings to integers and gets the max
+				max = Math.max(...allYearsArray);
+				// indexOf however fails unless we convert max back to a string!
+				index = allYearsArray.indexOf(max.toString());
+				this.endYear = allYearsArray[index];
+				this.endPeriod = this.endYear;
+				break;
+		} // end switch
 	}
 
 	updateStartPeriod(start) {
@@ -1338,7 +1438,7 @@ export class LandingPage {
 					}
 				});
 				break;
-		}
+		} // end switch
 
 		// make the last end year selected
 		$("#year-end-select option:last").attr("selected", "selected");

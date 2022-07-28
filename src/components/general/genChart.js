@@ -115,40 +115,98 @@ export class GenChart {
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
 		var insertLinebreaks = function (d) {
-			var el = d3.select(this);
-			var words = d.split(":"); // split labels on : colon
+			let el = d3.select(this);
 			el.text("");
-			//this.dy = this.dy + offset;
-			for (var i = 0; i < words.length; i++) {
-				var str;
-				var result;
-				var tspan;
-				if (words[i].length < 24) {
-					tspan = el.append("tspan").text(words[i]);
-					if (words.length < 2) {
+			let words;
+			// some Characteristics are long but NO COLON just spaces
+			if (d.match(":")) {
+				words = d.split(":"); // split labels on : colon
+				//console.log("Colon split:", d, words);
+				for (var i = 0; i < words.length; i++) {
+					var str;
+					var result;
+					var tspan;
+					if (words[i].length < 24) {
+						tspan = el.append("tspan").text(words[i]);
+						tspan.attr("x", 0).attr("dy", "12"); // dy is space between lines
+/* 						if (words.length < 2) {
+							tspan.attr("x", 0).attr("dy", "32");
+						} 
+						if (words.length == 2) {
+							tspan.attr("x", 0).attr("dy", "30");
+						}
+						if (words.length == 3) {
+							tspan.attr("x", 0).attr("dy", "12"); // was 21
+						}
+						if (words.length == 4) {
+							tspan.attr("x", 0).attr("dy", "12");
+						} */
+					} else {
+						str = words[i];
+						result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
+						tspan = tspan.append("tspan").text(result[0]);
+						tspan.attr("x", 0).attr("dy", "11");
+						tspan = tspan.append("tspan").text(result[1]);
+					}
+
+				} // end for loop
+			} else {
+				// try spaces
+				words = d.split(" "); // split labels on spaces
+				//console.log("SPACE split d, words:", d, words);
+				// now accumulate strings up to a certain length
+				let tmpLine = "";
+				let lineMaxLen = 21;
+				let lineLen = 0;
+				let lines = [];
+				words.forEach((wd) => {
+					if ((lineLen + wd.length) < lineMaxLen) {
+						tmpLine += wd + " ";
+						lineLen += wd.length + 1;
+					} else {
+						lines.push(tmpLine);
+						console.log("Push line:", tmpLine);
+						tmpLine = wd + " "; // start with word that didnt fit
+						lineLen = wd.length + 1;
+					}
+				}); // end foreach
+				// always ends on one final string which needs to be pushed
+				lines.push(tmpLine);
+				if (lines.length === 1) {
+					// push a blank line for now bc couldnt get dy changes below to do anything
+					lines.push("      ");
+				}
+				for (var i = 0; i < lines.length; i++) {
+					var str;
+					var result;
+					var tspan;
+					if (lines[i].length < 25) {
+						tspan = el.append("tspan").text(lines[i]);
+					}
+					//console.log("BEFORE tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+					if (lines.length < 2) {
 						tspan.attr("x", 0).attr("dy", "32");
 					}
-					if (words.length == 2) {
+					if (lines.length == 2) {
 						tspan.attr("x", 0).attr("dy", "30");
 					}
-					if (words.length == 3) {
+					if (lines.length == 3) {
 						tspan.attr("x", 0).attr("dy", "21");
 					}
-					if (words.length == 4) {
+					if (lines.length == 4) {
 						tspan.attr("x", 0).attr("dy", "12");
 					}
-				} else {
-					str = words[i];
-					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
-					tspan = tspan.append("tspan").text(result[0]);
-					tspan.attr("x", 0).attr("dy", "11");
-					tspan = tspan.append("tspan").text(result[1]);
-				}
+					//console.log("AFTER tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+				} // end for loop
+			} // end else case
 
-				if (i > 0)
-					// the dy value is the "space between label lines" - try to calc so it adjusts some
-					tspan.attr("x", 0).attr("dy", axisLabelFontSize / 2 + 6); // was 15
+			// if this is here it only affects the last line
+			if (i > 0) {
+				// the dy value is the "space between label lines" - try to calc so it adjusts some
+				tspan.attr("x", 0).attr("dy", axisLabelFontSize / 2 + 6); // was 15
+				//tspan.attr("y", 0).attr("dy", 
 			}
+
 			// based on number of lines, adjust height
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
@@ -1149,8 +1207,8 @@ export class GenChart {
 						.attr("text-anchor", "end")
 						.attr(
 							"transform",
-							`translate(${p.xLabelRotatedXAdjust * overallScale}, ${
-								p.xLabelRotatedYAdjust * overallScale
+							`translate(${p.xLabelRotatedXAdjust * overallScale + 6}, ${
+								p.xLabelRotatedYAdjust * overallScale 
 							}) rotate(${p.bottomAxisRotation})`
 						);
 
