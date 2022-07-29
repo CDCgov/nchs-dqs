@@ -6,14 +6,158 @@ import { ClassifyData } from "../../utils/ClassifyDataNT";
 
 export class GenMap {
 	constructor(props) {
-		debugger;
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
 		this.classifyType = parseInt(props.classifyType);
 		this.startYear = props.startYear; // time period start year selected
+		this.allDates = props.allDates;
+		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
+		this.animating = props.animating;
 	}
 
-	renderTimeSeriesAxisSelector() {}
+	renderTimeSeriesAxisSelector() {
+		// debugger;
+		const svgId = "us-map-time-slider-svg";
+
+		// setup fontSizes
+
+		// create a non-displayed div to get size of one rem as decimal value
+		const viz = d3.select("#us-map-time-slider");
+		const remDiv = viz.append("div").attr("line-height", "1rem").attr("display", "none");
+		const rem = parseFloat(remDiv.style("line-height"), 10);
+
+		const { fullSvgWidth } = getGenSvgScale(this.mapVizId);
+		const axisLabelFontSize = 0.6 * rem;
+
+		// setup margins, widths, and heights
+		const margin = {
+			top: 0,
+			right: axisLabelFontSize,
+			bottom: 100,
+			left: 3 * axisLabelFontSize,
+		};
+
+		const xMargin = margin.left + margin.right;
+		const yMargin = margin.top + margin.bottom;
+
+		let mapWidthRatio = 0.5;
+		if (fullSvgWidth <= 1050) mapWidthRatio = 0.8;
+
+		const svgWidth = fullSvgWidth * mapWidthRatio;
+		const svgHeight = 110;
+
+		const chartWidth = svgWidth - xMargin;
+		const chartHeight = svgHeight - yMargin;
+
+		// setup scales
+		let xScale = d3
+			.scalePoint()
+			.range([0, chartWidth])
+			// .paddingInner(0.1)
+			// .paddingOuter(0.1)
+			.domain(this.allDates.map((d) => d));
+
+		// set up axes
+		const xAxis = d3.axisBottom(xScale).tickSize(5);
+		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+
+		svg.append("g")
+			.attr("class", "axis bottom")
+			.attr("transform", `translate(${margin.left}, ${margin.top + chartHeight})`)
+			.call(xAxis);
+
+		// axis marker overlay (so clicking near a marker triggers a stop on that time-period)
+		svg.append("g")
+			.selectAll("rect")
+			.data(this.allDates)
+			.enter()
+			.append("rect")
+			.attr("class", "mapAnimateAxisPoint")
+			.attr("height", 0.9 * axisLabelFontSize)
+			.attr("width", xScale.step())
+			.attr("x", (d) => xScale(d) + margin.left - 0.1 * axisLabelFontSize - xScale.step() / 2)
+			.attr("y", 0.2 * axisLabelFontSize)
+			.attr("fill", "transparent")
+			.attr("data-index", (d, i) => i);
+
+		// axis marker for which time-period is being displayed
+		svg.append("g")
+			.append("rect")
+			.attr("class", "mapAnimateAxisPoint")
+			.attr("height", 0.9 * axisLabelFontSize)
+			.attr("width", 0.2 * axisLabelFontSize)
+			.attr("x", xScale(this.allDates[this.currentTimePeriodIndex]) + margin.left - 0.1 * axisLabelFontSize)
+			.attr("y", 0.2 * axisLabelFontSize)
+			.attr("fill", "darkgrey");
+
+		// animate section
+		const animate = svg.append("g");
+
+		animate
+			.append("rect")
+			.attr("class", "mapPlayButton")
+			.attr("id", "mapPlayButtonContainer")
+			.attr("width", 2 * axisLabelFontSize)
+			.attr("height", 2 * axisLabelFontSize)
+			.attr("fill", "darkgrey")
+			.attr("rx", 0.2 * axisLabelFontSize)
+			.attr("ry", 0.2 * axisLabelFontSize)
+			.attr("transform", `translate(0, ${axisLabelFontSize})`)
+			.style("cursor", "pointer")
+			.style("display", this.animating ? "block" : "none");
+
+		// // inner rectangle to contain play button
+		animate
+			.append("rect")
+			.attr("class", "mapPlayButton")
+			.attr("width", 1.7 * axisLabelFontSize)
+			.attr("height", 1.7 * axisLabelFontSize)
+			.attr("fill", "#F2F2F2")
+			.attr("stroke", "black")
+			.attr("rx", 0.2 * axisLabelFontSize)
+			.attr("ry", 0.2 * axisLabelFontSize)
+			.attr("transform", `translate(${0.15 * axisLabelFontSize}, ${1.15 * axisLabelFontSize})`)
+			.style("cursor", "pointer");
+
+		// play icon (triangle)
+		animate
+			.append("path")
+			.attr("class", "mapPlayButton")
+			.attr("id", "animatePlayIcon")
+			.attr(
+				"d",
+				d3
+					.symbol()
+					.type(d3.symbolTriangle)
+					.size(3 * axisLabelFontSize)
+			)
+			.attr("fill", this.animating ? "none" : "black")
+			.attr("transform", `rotate(90), translate(${2 * axisLabelFontSize}, ${-axisLabelFontSize})`);
+
+		animate
+			.append("rect")
+			.attr("class", "animatePauseIcon")
+			.attr("x", 1.05 * axisLabelFontSize)
+			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("width", 0.15 * axisLabelFontSize)
+			.attr("height", 0.7 * axisLabelFontSize)
+			.attr("fill", this.animating ? "black" : "none");
+
+		animate
+			.append("rect")
+			.attr("class", "animatePauseIcon")
+			.attr("x", 0.8 * axisLabelFontSize)
+			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("width", 0.15 * axisLabelFontSize)
+			.attr("height", 0.7 * axisLabelFontSize)
+			.attr("fill", this.animating ? "black" : "none");
+
+		d3.selectAll(`#${svgId} .axis.bottom text`)
+			.attr("text-anchor", "end")
+			.attr("transform", `translate(${-0.85 * axisLabelFontSize}, ${0.5 * axisLabelFontSize}), rotate(-90)`);
+
+		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
+	}
 
 	render(geometries) {
 		let mLegendData;

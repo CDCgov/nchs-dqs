@@ -49,6 +49,8 @@ export class LandingPage {
 		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 		this.enableCI = 0; // 1 = Enable Confidence Intervals for datasets that have them
 		this.selections = null;
+		this.currentTimePeriodIndex = 0;
+		this.animating = false;
 	}
 
 	renderTab() {
@@ -187,11 +189,13 @@ export class LandingPage {
 			// need to SHOW A MESSAGE
 			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
+			$("#us-map-time-slider").hide();
 		} else {
 			$("#us-map-message").html("");
 			// get rid of the big margins
 			$("#us-map-message").hide();
 			$("#us-map-legend").show();
+			$("#us-map-time-slider").show();
 
 			// (TTTT) to do the PLAY legend - can't do this
 			// -- you need to pass ALL THE DATA to do the PLAY function
@@ -200,6 +204,7 @@ export class LandingPage {
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
+			const allDates = this.allData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
 			stateData = stateData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 			this.flattenedFilteredData = stateData;
 
@@ -209,8 +214,13 @@ export class LandingPage {
 				vizId: mapVizId,
 				classifyType: this.classifyType,
 				startYear: parseInt(this.startYear),
+				allDates,
+				currentTimePeriodIndex: this.currentTimePeriodIndex,
+				animating: this.animating,
 			});
 			map.render(this.geometries);
+			$("#us-map-time-slider").empty();
+			map.renderTimeSeriesAxisSelector();
 		}
 
 		// always render data table  with the latest data
@@ -1288,6 +1298,8 @@ export class LandingPage {
 			$("#us-map-message").show();
 			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
+			$("#us-map-time-slider").hide();
+
 			// cant just call click = infinite loop
 			//$('#icons-tab-2').click(); // click event will render the chart
 			// only call chart render if map NOT selected
@@ -1300,6 +1312,7 @@ export class LandingPage {
 	}
 
 	updateStartPeriod(start) {
+		$("#year-start-select").val(start);
 		// NOW update END period
 		// - get ALL END OPTION AGAIN
 		// - then REMOVE any that are <= START YEAR
@@ -1824,7 +1837,7 @@ export class LandingPage {
 			<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox">
 			<label for="show-one-period-checkbox">View single period</label>
 		</div>
-		<div style="display: flex;">
+		<div id="timePeriodContainer" style="display: flex;">
 			<div style="flex-direction: column;">
 				<div class="label-style" id="year-start-label">Start Period <br> </div>
 				<div>
@@ -1907,9 +1920,9 @@ export class LandingPage {
 				</fieldset>
 			</div>
 				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;">
-					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;"></div>				
-					<div id="us-map-message" class="chart-title" style=""></div>
-					<div id="us-map-time-slider">placeholder</div>
+					<div id="us-map" class="general-map"></div>				
+					<div id="us-map-message" class="chart-title"></div>
+					<div id="us-map-time-slider"></div>
 					<div id="us-map-legend"></div>
 				</div>
 				<br>
