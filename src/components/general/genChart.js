@@ -165,6 +165,8 @@ export class GenChart {
 				} // end for loop
 			} else {
 				// try spaces
+				// - to understand why this is here select Medicaid and then "Level of Difficulty"
+				// - very long text with no colon but lots of spaces
 				words = d.split(" "); // split labels on spaces
 				//console.log("SPACE split d, words:", d, words);
 				// now accumulate strings up to a certain length
