@@ -59,6 +59,8 @@ export class LandingPage {
 			this.dataTopic = this.selections.topic;
 		}
 
+		console.log("hash panel:", this.panelNum);
+
 		this.getInitialData(); // for starters OBESITY DATA
 		MainEvents.registerEvents(); // add any click events inside here
 	}
@@ -250,11 +252,17 @@ export class LandingPage {
 
 	getFlattenedFilteredData() {
 		let selectedPanelData;
+		//debugger;
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
 			case "infant-mortality":
+				// correct panel num = NA
+				if (this.panelNum === "NA") {
+					// set to valid value
+					this.panelNum = 1;
+				}
 				selectedPanelData = this.allData.filter(
 					(d) =>
 						parseInt(d.panel_num) === parseInt(this.panelNum) &&
@@ -808,6 +816,7 @@ export class LandingPage {
 				this.dataFile = "content/json/ObesityChildren.json";
 				this.chartTitle = "Obesity Among Children and Adolescents";
 				selectedDataCache = DataCache.ObesityData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// show 95% CI checkbox since "suicide" has no se data
@@ -817,12 +826,13 @@ export class LandingPage {
 				this.dataFile = "content/json/ObesityAdults.json";
 				this.chartTitle = "Obesity Among Adults";
 				selectedDataCache = DataCache.ObesityAdultData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// show 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
-			case "suicide":
+			case "suicide": // no panel
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
@@ -835,6 +845,7 @@ export class LandingPage {
 				this.dataFile = "content/json/InjuryEDVis.json";
 				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
 				selectedDataCache = DataCache.InjuryData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
 				// hide 95% CI checkbox since "suicide" has no se data
@@ -844,6 +855,7 @@ export class LandingPage {
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// hide 95% CI checkbox since "suicide" has no se data
@@ -853,16 +865,17 @@ export class LandingPage {
 				this.dataFile = "content/json/InfantMortality.json";
 				this.chartTitle = "Infant Mortality";
 				selectedDataCache = DataCache.InfantMortalityData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
 				// hide 95% CI checkbox since "suicide" has no se data
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
-			case "medicaidU65":
+			case "medicaidU65": // no panel
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
 				this.chartTitle = "Medicaid Coverage Among Persons Under Age 65";
 				selectedDataCache = DataCache.MedicaidU65Data;
-				this.panelNum = 0; // no panel
+				this.panelNum = "NA"; // no panel
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
 				// show 95% CI checkbox
@@ -1328,7 +1341,6 @@ export class LandingPage {
 		// the time period selects
 		// WHY?  Because some characteristics have no data -> flag = "- - -"
 		// and we need to filter those years out
-		//debugger;
 		
 		let max;
 		let index;

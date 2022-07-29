@@ -222,6 +222,10 @@ export const hashLookup = {
 			],
 			"panel-num-select": [
 				{
+					hash: "NA",
+					value: "1",
+				},
+				{
 					hash: "2-19",
 					value: "1",
 				},
