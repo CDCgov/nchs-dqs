@@ -234,6 +234,32 @@ export class GenChart {
 			}
 		};
 
+		// Find the position of a SVG DOM element
+function getPosition (element) {
+	let match;
+	let x, y;
+	// We have a transform, that might contain a translate(x,y)
+	let transform = element.attr('transform');
+	if (transform)
+		match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
+	
+	// We have translate(x,y)	
+	if (match?.length >= 2) {
+		x = parseFloat(match[1]);
+		y = parseFloat(match[2]);
+		
+			// We try to get x="" and y=""
+		} else {
+		x = element.attr('x');
+		y = element.attr('y');
+		}
+	// Set x and y to 0 if they are undefined or null
+	x = x ? x : 0;
+	y = y ? y : 0;
+	
+	return { x, y };
+	}
+	
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -1358,12 +1384,12 @@ export class GenChart {
 					//console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
 
 					// try to center it
-					legendTx = svgHeight / 2 - margin.left + 25;
+/* 					legendTx = svgHeight / 2 - margin.left + 25;
 					// move it down outside the bottom margin
 					legendTy = margin.top + svgWidth;
-
+*/
 					legendTx = svgWidth + 10;
-					legendTy = (svgHeight / 3) * 2 + 25;
+					legendTy = (svgHeight - margin.top - margin.bottom)/ 2 ; // * 2 + 25; 
 
 					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 				} else {
@@ -1474,7 +1500,14 @@ export class GenChart {
 					legendContainer
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
-				} // end if legendData.length > 0
+					
+					// now CENTER the legend container in middle of chart
+/* 					const xyval = legendContainer.attr('transform').split(/[\s,()]+/);
+					legendTx =  parseFloat(val[1]); // keep the x //svgWidth / 2 - margin.left;
+					legendTy =  parseFloat(val[2]) + (newWidth + 56);
+					legendContainer.attr("transform","translate(${legendTx},${legendTy})");
+ 				
+ */				} // end if legendData.length > 0
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1560,7 +1593,7 @@ export class GenChart {
 					svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
 					// try to center it
-					legendTx = svgWidth / 2 - margin.left + 25;
+					legendTx = (svgWidth - margin.left - margin.right) / 2 + 50;
 					// move it down outside the bottom margin
 					legendTy = margin.top + svgHeight;
 					// now move the legend below the axis
@@ -1579,7 +1612,12 @@ export class GenChart {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-				// TTT
+				
+				//Sorting accending order
+				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
+				legendData = legendSorted;
+
+				let legendItemsList = [];
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
@@ -1590,7 +1628,7 @@ export class GenChart {
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
 								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-						);
+						); 
 
 					//console.log("legendItem d,i:", d, i);
 
@@ -1635,13 +1673,87 @@ export class GenChart {
 						.attr("y", axisLabelFontSize * 0.5) // up and down
 						.text(d.text)
 						.attr("font-size", axisLabelFontSize);
+					
+					legendItemsList.push(legendItem);
 				});
 
+				console.log("legendItemslist", legendItemsList);
 				// get all legend items and find the longest then set the legend container size
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
+				// center the legend container
+				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+
+				// center each legend item
+				//let legPos = svg.selectAll($(`#${svgId}-legendItem`)).getBoundingClientRect();
+				//console.log("legPos", legPos);
+				//let legpaths = d3.selectAll(`g.${svgId}-legendItem`);
+				//console.log("legpaths", legpaths);
+				legendItemsList.forEach((lItem) => {
+					//console.log("lItem.rect", lItem.getBoundingClientRect());
+					//console.log("lItem.x", lItem.getBoundingClientRect().x);
+					//console.log("lItem transform", lItem.transform);
+					console.log("lItem x", lItem);
+					// try to move it
+					//lItem.getBoundingClientRect()
+					//.attr("transform","translate(150,150)");
+					//lItem.getBoundingClientRect().x = lItem.getBoundingClientRect().x - legendContainer.attr("width")/2;
+					//lItem.getBoundingClientRect().x = lItem.getBoundingClientRect().x - legendContainer.attr("width")/2;
+				});
+
+			console.log("legendContainer", d3.select(legendContainer));
+			const txtElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+				txtElementG.forEach((text) => {
+				console.log("text gBCR", text.getBoundingClientRect());
+				let territoryRect = text; //.previousSibling;
+				let rectX = territoryRect.getBoundingClientRect().left;
+				let rectY = territoryRect.getBoundingClientRect().top; // - territoryRect.getBoundingClientRect().y;
+					console.log("rectX", rectX);
+					console.log("rectY", rectY);
+					//d3.select(text).attr("x", rectX - legendContainer.attr("width") / 2);
+				let adjustX = rectX - legendContainer.attr("width") + 100;
+					let adjustY = rectY;  
+				d3.select(text).attr("transform", `translate(${adjustX},${adjustY})`);
+			});
+				
+/* 				function foo(d, i) {
+					console.log("d=", d);
+   				 var titleTransform = d.selection.node().transform.baseVal[0].matrix;
+    			//Change scale to 1.05 but keep the other transform values
+    			titleTransform.e = titleTransform.e - legendContainer.attr("width")/2
+    			//d3.select(this).attr("transform", titleTransform);
+				}
+				let titles = d3.selectAll(`.${svgId}-legendItem`).each(foo); */
+				
+/* 				console.log(" legend container x,y=", legendContainer.attr("x"), legendContainer.attr("y"));
+				d3.selectAll(`.${svgId}-legendItem`)					
+						.attr(
+						"transform",
+						`translate(${legendContainer.attr("x")}, 500)` //${legendContainer.attr("y")}
+									);  */
+				//.attr("x", legendContainer.attr("x"));
+/* 				let legendPos = $(`#${svgId}-chart-legend`)[0].getBoundingClientRect();
+				console.log("legendPos", legendPos); 
+				//let legendG = d3.selectAll(`${svgId}-chart-legend`);
+            	const x = legendPos.x;
+            	const y = legendPos.y;
+				console.log("get x,y", x, y); 
+
+				// now try to center it
+				legendTx = x ;
+				legendTy = y + 1;  //(newWidth/2 ); // + 56
+				console.log("Tx", legendTx);
+				console.log("Ty", legendTy);
+				//d3.select(`#${svgId}-chart-legend`).attr('y', legendTy);
+			d3.select(`#${svgId}-chart-legend`).attr(
+					"transform",
+					`translate(${legendTx},${legendTy})`
+				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
+				); */
+				
 			}
 		}
 
