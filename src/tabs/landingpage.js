@@ -48,31 +48,35 @@ export class LandingPage {
 		this.geometries = {};
 		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 		this.enableCI = 0; // 1 = Enable Confidence Intervals for datasets that have them
+		this.selections = null;
 	}
 
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
+
+		this.selections = hashTab.getSelections();
+		if (this.selections) {
+			this.dataTopic = this.selections.topic;
+		}
+
 		this.getInitialData(); // for starters OBESITY DATA
 		MainEvents.registerEvents(); // add any click events inside here
 	}
 
 	renderAfterDataReady() {
-		const selections = hashTab.getSelections();
-
-		if (selections) {
-			this.dataTopic = selections.topic;
-			this.panelNum = parseInt(selections.subTopic);
-			this.stubNameNum = parseInt(selections.characteristic);
+		if (this.selections) {
+			this.panelNum = parseInt(this.selections.subTopic, 10);
+			this.stubNameNum = parseInt(this.selections.characteristic, 10);
 			this.updateDataTopic(this.dataTopic, true);
 
-			if (selections.viewSinglePeriod) {
+			if (this.selections.viewSinglePeriod) {
 				$("#year-end-label").hide();
 				$("#year-end-select").hide();
-				this.updateShowBarChart(1);
+				this.showBarChart = true;
 			} else {
 				$("#year-end-label").show();
 				$("#year-end-select").show();
-				this.updateShowBarChart(0);
+				this.showBarChart = false;
 			}
 		}
 
@@ -85,7 +89,6 @@ export class LandingPage {
 		// console.log("Panel Num", this.panelNum);
 
 		$(".dimmer").attr("class", "ui inverted dimmer");
-
 		this.renderChart();
 	}
 
@@ -214,7 +217,7 @@ export class LandingPage {
 		this.renderDataTable(this.flattenedFilteredData);
 	}
 
-	renderChart() {
+	renderChart(fromHash = false) {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 		// console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
@@ -824,7 +827,7 @@ export class LandingPage {
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
 				// hide 95% CI checkbox since "suicide" has no se data
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
@@ -861,7 +864,7 @@ export class LandingPage {
 				selectedDataCache = DataCache.MedicaidU65Data;
 				this.panelNum = 0; // no panel
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
 				// show 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").show();
 				// default unit num does not support CI
@@ -873,7 +876,6 @@ export class LandingPage {
 		$("#enable-CI-checkbox").prop("checked", false); // start unchecked
 
 		// if we switch Topic then start with Total every time
-		// debugger;
 		if (!fromHash) this.stubNameNum = 0;
 
 		// set the chart title
@@ -1154,7 +1156,6 @@ export class LandingPage {
 		});
 
 		if (!fromHash) {
-			// debugger;
 			const firstVal = $("#panel-num-select option:first").val();
 			$("#panel-num-select").val(firstVal);
 		}
@@ -1287,7 +1288,7 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
-		// console.log("new stub name num: ", this.stubNameNum);
+		//console.log("new stub name num: ", this.stubNameNum);
 
 		// have to update START TIME PERIOD select bc some stubs for same data have different
 		// years that are valid data
@@ -1640,7 +1641,6 @@ export class LandingPage {
 				});
 				break;
 		}
-
 		this.renderChart();
 	}
 
