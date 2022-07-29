@@ -16,6 +16,8 @@ export const MainEvents = {
 
 		$("#data-topic-select").change((evt) => {
 			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
+
 			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
 			// REMOVED THIS FROM HERE BC IT CAUSES A FLASH OF BAD DATA LINE CHART
@@ -27,6 +29,7 @@ export const MainEvents = {
 		});
 		$("#panel-num-select").change((evt) => {
 			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
 			let panelNum = evt.target.value;
 			appState.ACTIVE_TAB.updatePanelNum(panelNum);
 
@@ -36,6 +39,8 @@ export const MainEvents = {
 		});
 		$("#stub-name-num-select").change((evt) => {
 			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
+
 			let stubNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
 			//console.log("New stubname num:", evt.target.value);
