@@ -1522,7 +1522,7 @@ function getPosition (element) {
 						}); 
 					});
 						
-				} // end if legendData.length > 0
+		} // end if legendData.length > 0
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1532,7 +1532,7 @@ function getPosition (element) {
 				// - therefore all legend drawing must be moved to the END
 				// of this code
 								
-				//Sorting accending order
+				//Sort ascending order
 				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
 				legendData = legendSorted;
 
@@ -1632,7 +1632,7 @@ function getPosition (element) {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-
+				
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
