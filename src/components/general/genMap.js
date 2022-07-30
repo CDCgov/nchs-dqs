@@ -73,12 +73,13 @@ export class GenMap {
 			.enter()
 			.append("rect")
 			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", 0.9 * axisLabelFontSize)
+			.attr("height", margin.bottom)
 			.attr("width", xScale.step())
 			.attr("x", (d) => xScale(d) + margin.left - 0.1 * axisLabelFontSize - xScale.step() / 2)
 			.attr("y", 0.2 * axisLabelFontSize)
 			.attr("fill", "transparent")
-			.attr("data-index", (d, i) => i);
+			.attr("data-index", (d, i) => i)
+			.attr("cursor", "pointer");
 
 		// axis marker for which time-period is being displayed
 		svg.append("g")
@@ -157,6 +158,10 @@ export class GenMap {
 			.attr("transform", `translate(${-0.85 * axisLabelFontSize}, ${0.5 * axisLabelFontSize}), rotate(-90)`);
 
 		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
+
+		d3.selectAll(`#${svgId} .axis text`)
+			.filter((d, i) => i === this.currentTimePeriodIndex)
+			.attr("font-weight", "bold");
 	}
 
 	render(geometries) {
