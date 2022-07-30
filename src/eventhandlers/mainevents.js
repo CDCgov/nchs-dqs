@@ -5,7 +5,19 @@ import { downLoadGenChart } from "../utils/downloadimg";
 
 export const MainEvents = {
 	registerEvents() {
+		let animationInterval;
+		const stopAnimation = () => {
+			clearInterval(animationInterval);
+			$("#animatePlayIcon").css("fill", "black");
+			$(".animatePauseIcon").css("fill", "none");
+			appState.ACTIVE_TAB.animating = false;
+			$("#mapPlayButtonContainer").hide();
+		};
+
 		$("#data-topic-select").change((evt) => {
+			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
+
 			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
 			// REMOVED THIS FROM HERE BC IT CAUSES A FLASH OF BAD DATA LINE CHART
@@ -16,6 +28,7 @@ export const MainEvents = {
 			// console.log("New data topic:", dataTopic);
 		});
 		$("#panel-num-select").change((evt) => {
+			stopAnimation();
 			let panelNum = evt.target.value;
 			appState.ACTIVE_TAB.updatePanelNum(panelNum);
 
@@ -24,15 +37,50 @@ export const MainEvents = {
 			//debugger;
 		});
 		$("#stub-name-num-select").change((evt) => {
+			stopAnimation();
 			let stubNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
 			//console.log("New stubname num:", evt.target.value);
 		});
+
+		$(document)
+			.off("click", ".mapPlayButton, .animatePauseIcon")
+			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
+				if (appState.ACTIVE_TAB.animating) {
+					stopAnimation();
+					return;
+				}
+				const allYears = document.getElementById("year-start-select").options;
+				let next = appState.ACTIVE_TAB.currentTimePeriodIndex;
+				const { length } = allYears;
+
+				const moveNext = () => {
+					next++;
+					if (next === length) next = 0;
+					appState.ACTIVE_TAB.currentTimePeriodIndex = next;
+					appState.ACTIVE_TAB.updateStartPeriod(allYears[next].value);
+				};
+				appState.ACTIVE_TAB.animating = true;
+				moveNext();
+				animationInterval = setInterval(() => moveNext(), 2000);
+			});
+
+		$(document)
+			.off("click", ".mapAnimateAxisPoint")
+			.on("click", ".mapAnimateAxisPoint", (e) => {
+				stopAnimation();
+				const indexClicked = $(e.target).data("index");
+				const allYears = document.getElementById("year-start-select").options;
+				appState.ACTIVE_TAB.currentTimePeriodIndex = indexClicked;
+				appState.ACTIVE_TAB.updateStartPeriod(allYears[indexClicked].value);
+			});
+
 		$("#year-start-select").change((evt) => {
 			let yrStart = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStartPeriod(yrStart);
 			console.log("New Start Period:", yrStart);
 		});
+
 		$("#year-end-select").change((evt) => {
 			let yrEnd = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
@@ -57,6 +105,7 @@ export const MainEvents = {
 			console.log("New Unit num:", unitNum);
 		});
 		$("#show-one-period-checkbox").on("change", (evt) => {
+			stopAnimation();
 			let isChecked = evt.target.checked; // if you dont do this then stubNum is string
 			if (isChecked) {
 				//console.log("Checkbox is checked..");
@@ -98,6 +147,7 @@ export const MainEvents = {
 
 		// click Map then show Map
 		$(document).on("click", "#icons-tab-1", (event) => {
+			$("#timePeriodContainer").css("display", "none");
 			event.stopPropagation();
 			// have to do this LAST not FIRST - appState.ACTIVE_TAB.updateShowMap(1);
 			// the map div must be visible in the Dom before you can render the map
@@ -137,8 +187,15 @@ export const MainEvents = {
 			event.preventDefault();
 		});
 
+		$(document).on("click", "#icons-tab-3", () => {
+			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
+		});
+
 		// click Chart then show Chart
 		$(document).on("click", "#icons-tab-2", (event) => {
+			stopAnimation();
+			$("#timePeriodContainer").css("display", "flex");
 			event.stopPropagation();
 			let theMap = document.getElementById("map-tab");
 			theMap.style.display = "none";
