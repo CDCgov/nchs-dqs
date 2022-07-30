@@ -1501,13 +1501,28 @@ function getPosition (element) {
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
 					
-					// now CENTER the legend container in middle of chart
-/* 					const xyval = legendContainer.attr('transform').split(/[\s,()]+/);
-					legendTx =  parseFloat(val[1]); // keep the x //svgWidth / 2 - margin.left;
-					legendTy =  parseFloat(val[2]) + (newWidth + 56);
-					legendContainer.attr("transform","translate(${legendTx},${legendTy})");
- 				
- */				} // end if legendData.length > 0
+					// Now center the legend container
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+
+					// Now get each legend Item Line and move those to the left
+					let adjustX;
+					let adjustY;
+					const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+					legendElementG.forEach((text) => {
+
+						d3.select(text).attr("transform", function (d) {
+							adjustX = text.transform.animVal[0].matrix.e; 
+							// since bar chart is rotated the move left is on the Y not the X
+							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width")/2;
+							//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+							//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+							let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+							//console.log("newTransform:", newTransform);
+							return newTransform; // this.getAttribute("transform") + 
+						}); 
+					});
+						
+				} // end if legendData.length > 0
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1516,6 +1531,11 @@ function getPosition (element) {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
+								
+				//Sorting accending order
+				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
+				legendData = legendSorted;
+
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
@@ -1612,12 +1632,7 @@ function getPosition (element) {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-				
-				//Sorting accending order
-				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
-				legendData = legendSorted;
 
-				let legendItemsList = [];
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
@@ -1674,85 +1689,34 @@ function getPosition (element) {
 						.text(d.text)
 						.attr("font-size", axisLabelFontSize);
 					
-					legendItemsList.push(legendItem);
 				});
 
-				console.log("legendItemslist", legendItemsList);
 				// get all legend items and find the longest then set the legend container size
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
 				//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
-				// center the legend container
+
+				// Now center the legend container
 				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
 
-				// center each legend item
-				//let legPos = svg.selectAll($(`#${svgId}-legendItem`)).getBoundingClientRect();
-				//console.log("legPos", legPos);
-				//let legpaths = d3.selectAll(`g.${svgId}-legendItem`);
-				//console.log("legpaths", legpaths);
-				legendItemsList.forEach((lItem) => {
-					//console.log("lItem.rect", lItem.getBoundingClientRect());
-					//console.log("lItem.x", lItem.getBoundingClientRect().x);
-					//console.log("lItem transform", lItem.transform);
-					console.log("lItem x", lItem);
-					// try to move it
-					//lItem.getBoundingClientRect()
-					//.attr("transform","translate(150,150)");
-					//lItem.getBoundingClientRect().x = lItem.getBoundingClientRect().x - legendContainer.attr("width")/2;
-					//lItem.getBoundingClientRect().x = lItem.getBoundingClientRect().x - legendContainer.attr("width")/2;
+				// Now get each legend Item Line and move those to the left
+				let adjustX;
+				let adjustY;
+				const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+				legendElementG.forEach((text) => {
+
+					d3.select(text).attr("transform", function (d) {
+						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width")/2;
+						adjustY = text.transform.animVal[0].matrix.f;
+						//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+						//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						//console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") + 
+					}); 
 				});
-
-			console.log("legendContainer", d3.select(legendContainer));
-			const txtElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
-				txtElementG.forEach((text) => {
-				console.log("text gBCR", text.getBoundingClientRect());
-				let territoryRect = text; //.previousSibling;
-				let rectX = territoryRect.getBoundingClientRect().left;
-				let rectY = territoryRect.getBoundingClientRect().top; // - territoryRect.getBoundingClientRect().y;
-					console.log("rectX", rectX);
-					console.log("rectY", rectY);
-					//d3.select(text).attr("x", rectX - legendContainer.attr("width") / 2);
-				let adjustX = rectX - legendContainer.attr("width") + 100;
-					let adjustY = rectY;  
-				d3.select(text).attr("transform", `translate(${adjustX},${adjustY})`);
-			});
-				
-/* 				function foo(d, i) {
-					console.log("d=", d);
-   				 var titleTransform = d.selection.node().transform.baseVal[0].matrix;
-    			//Change scale to 1.05 but keep the other transform values
-    			titleTransform.e = titleTransform.e - legendContainer.attr("width")/2
-    			//d3.select(this).attr("transform", titleTransform);
-				}
-				let titles = d3.selectAll(`.${svgId}-legendItem`).each(foo); */
-				
-/* 				console.log(" legend container x,y=", legendContainer.attr("x"), legendContainer.attr("y"));
-				d3.selectAll(`.${svgId}-legendItem`)					
-						.attr(
-						"transform",
-						`translate(${legendContainer.attr("x")}, 500)` //${legendContainer.attr("y")}
-									);  */
-				//.attr("x", legendContainer.attr("x"));
-/* 				let legendPos = $(`#${svgId}-chart-legend`)[0].getBoundingClientRect();
-				console.log("legendPos", legendPos); 
-				//let legendG = d3.selectAll(`${svgId}-chart-legend`);
-            	const x = legendPos.x;
-            	const y = legendPos.y;
-				console.log("get x,y", x, y); 
-
-				// now try to center it
-				legendTx = x ;
-				legendTy = y + 1;  //(newWidth/2 ); // + 56
-				console.log("Tx", legendTx);
-				console.log("Ty", legendTy);
-				//d3.select(`#${svgId}-chart-legend`).attr('y', legendTy);
-			d3.select(`#${svgId}-chart-legend`).attr(
-					"transform",
-					`translate(${legendTx},${legendTy})`
-				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
-				); */
 				
 			}
 		}
@@ -1766,12 +1730,10 @@ function getPosition (element) {
 
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
 			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
-			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
 
 			d3.select(`#${svgId}`).attr(
 				"transform",
 				`rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`
-				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
 			);
 
 			// finally adjust the green container height for the content of the new svg height
