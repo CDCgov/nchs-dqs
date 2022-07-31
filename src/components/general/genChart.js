@@ -1359,6 +1359,7 @@ function getPosition (element) {
 				// (TT) Reliability they want all Null and NaN entries REMOVED
 
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE
+				let numLegendItems = 0;
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
 						stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
@@ -1369,7 +1370,22 @@ function getPosition (element) {
 					if (!d.draw) {
 						//console.log("legend incoming data:", i, d.stub_label);
 					}
+					numLegendItems = i + 1;
 				});
+
+				// Are there more than 10 legend items
+				console.log("### BARS numLegendItems:", numLegendItems);
+
+/* 				svg.append("text")
+							.attr("id", "legendBarTxt")
+							//.attr("class", "visible")
+							.attr("x", labelTx)
+							.attr("y", labelTy)
+							.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups"); */
+				
 				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
@@ -1381,13 +1397,6 @@ function getPosition (element) {
 					svg.attr("width", svgWidth + legendHeight + 100);
 					svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30);
 
-					//console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
-
-					// try to center it
-/* 					legendTx = svgHeight / 2 - margin.left + 25;
-					// move it down outside the bottom margin
-					legendTy = margin.top + svgWidth;
-*/
 					legendTx = svgWidth + 10;
 					legendTy = (svgHeight - margin.top - margin.bottom)/ 2 ; // * 2 + 25; 
 
@@ -1398,6 +1407,25 @@ function getPosition (element) {
 				}
 
 				if (legendData[0].text.length > 0) {
+
+					// ***********************************************
+					// (TTT) MOVE TO AFTER THE LEGEND IS MADE
+					// THEN POSITION IT EXACTLY CENTER OF THE LEGEND
+					//************************************************** 
+					if (numLegendItems > 10) {
+						const selectTenText = svg
+							.append("g")
+							.attr("transform", `translate(${legendTx}, ${legendTy})`)
+							.append("text")
+							.attr("id", "selectTenTxt")
+							.attr("x", -80)  //legendTx - 120)
+							.attr("y", -16)  //legendTy - 250)
+							//.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups")
+							.attr("transform", `rotate(-${p.chartRotationPercent})`);
+					}
 					const legendContainer = svg
 						.append("g")
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -1537,6 +1565,7 @@ function getPosition (element) {
 				legendData = legendSorted;
 
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
+					let numLegendItems = 0;
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
 						//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
@@ -1546,7 +1575,10 @@ function getPosition (element) {
 							text: d.key,
 							dontDraw: d.values[0].dontDraw,
 						};
+						numLegendItems = i + 1;
 					});
+
+					console.log("## LINES numLegendItems:", numLegendItems);
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
