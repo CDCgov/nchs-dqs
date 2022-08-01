@@ -234,6 +234,32 @@ export class GenChart {
 			}
 		};
 
+		// Find the position of a SVG DOM element
+function getPosition (element) {
+	let match;
+	let x, y;
+	// We have a transform, that might contain a translate(x,y)
+	let transform = element.attr('transform');
+	if (transform)
+		match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
+	
+	// We have translate(x,y)	
+	if (match?.length >= 2) {
+		x = parseFloat(match[1]);
+		y = parseFloat(match[2]);
+		
+			// We try to get x="" and y=""
+		} else {
+		x = element.attr('x');
+		y = element.attr('y');
+		}
+	// Set x and y to 0 if they are undefined or null
+	x = x ? x : 0;
+	y = y ? y : 0;
+	
+	return { x, y };
+	}
+	
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -1344,6 +1370,20 @@ export class GenChart {
 						//console.log("legend incoming data:", i, d.stub_label);
 					}
 				});
+
+				// Are there more than 10 legend items
+				//console.log("### BARS numLegendItems:", numLegendItems);
+
+/* 				svg.append("text")
+							.attr("id", "legendBarTxt")
+							//.attr("class", "visible")
+							.attr("x", labelTx)
+							.attr("y", labelTy)
+							.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups"); */
+				
 				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
@@ -1355,15 +1395,8 @@ export class GenChart {
 					svg.attr("width", svgWidth + legendHeight + 100);
 					svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30);
 
-					//console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
-
-					// try to center it
-					legendTx = svgHeight / 2 - margin.left + 25;
-					// move it down outside the bottom margin
-					legendTy = margin.top + svgWidth;
-
 					legendTx = svgWidth + 10;
-					legendTy = (svgHeight / 3) * 2 + 25;
+					legendTy = (svgHeight - margin.top - margin.bottom)/ 2 ; // * 2 + 25; 
 
 					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 				} else {
@@ -1372,6 +1405,25 @@ export class GenChart {
 				}
 
 				if (legendData[0].text.length > 0) {
+
+					// ***********************************************
+					// (TTT) MOVE TO AFTER THE LEGEND IS MADE
+					// THEN POSITION IT EXACTLY CENTER OF THE LEGEND
+					//************************************************** 
+					if (legendData.length > 10) {
+						const selectTenText = svg
+							.append("g")
+							.attr("transform", `translate(${legendTx}, ${legendTy})`)
+							.append("text")
+							.attr("id", "selectTenTxt")
+							.attr("x", -80)  //legendTx - 120)
+							.attr("y", -16)  //legendTy - 250)
+							//.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups")
+							.attr("transform", `rotate(-${p.chartRotationPercent})`);
+					}
 					const legendContainer = svg
 						.append("g")
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -1474,7 +1526,29 @@ export class GenChart {
 					legendContainer
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
-				} // end if legendData.length > 0
+					
+					// Now center the legend container
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+
+					// Now get each legend Item Line and move those to the left
+					let adjustX;
+					let adjustY;
+					const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+					legendElementG.forEach((text) => {
+
+						d3.select(text).attr("transform", function (d) {
+							adjustX = text.transform.animVal[0].matrix.e; 
+							// since bar chart is rotated the move left is on the Y not the X
+							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width")/2;
+							//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+							//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+							let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+							//console.log("newTransform:", newTransform);
+							return newTransform; // this.getAttribute("transform") + 
+						}); 
+					});
+						
+		} // end if legendData.length > 0
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1483,6 +1557,11 @@ export class GenChart {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
+								
+				//Sort ascending order
+				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
+				legendData = legendSorted;
+
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
@@ -1494,6 +1573,8 @@ export class GenChart {
 							dontDraw: d.values[0].dontDraw,
 						};
 					});
+
+					//console.log("## LINES numLegendItems:", numLegendItems);
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
@@ -1560,7 +1641,7 @@ export class GenChart {
 					svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
 					// try to center it
-					legendTx = svgWidth / 2 - margin.left + 25;
+					legendTx = (svgWidth - margin.left - margin.right) / 2 + 50;
 					// move it down outside the bottom margin
 					legendTy = margin.top + svgHeight;
 					// now move the legend below the axis
@@ -1568,6 +1649,7 @@ export class GenChart {
 					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
 					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
 				}
+
 
 				const legendContainer = svg
 					.append("g")
@@ -1579,7 +1661,7 @@ export class GenChart {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-				// TTT
+				
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
@@ -1590,7 +1672,7 @@ export class GenChart {
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
 								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-						);
+						); 
 
 					//console.log("legendItem d,i:", d, i);
 
@@ -1635,13 +1717,69 @@ export class GenChart {
 						.attr("y", axisLabelFontSize * 0.5) // up and down
 						.text(d.text)
 						.attr("font-size", axisLabelFontSize);
+					
 				});
 
 				// get all legend items and find the longest then set the legend container size
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
+
+				// Now center the legend container
+				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+
+				// Now get each legend Item Line and move those to the left
+				let adjustX;
+				let adjustY;
+				const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+				legendElementG.forEach((text) => {
+
+					d3.select(text).attr("transform", function (d) {
+						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width")/2;
+						adjustY = text.transform.animVal[0].matrix.f;
+						//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+						//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						//console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") + 
+					}); 
+				});
+
+				if (legendData.length > 10) {
+					const selectTenText = svg
+						.append("g")
+						.attr("transform", `translate(${legendTx}, ${legendTy})`)
+						.append("text")
+						.attr("id", "selectTenTxt")
+						.attr("x", -80)  
+						.attr("y", -12) 
+						.style("fill", "black")
+						.style("font-size", "17px")
+						.text("Select up to 10 groups")
+					
+					// if setting the location above is not consistent,
+					// then calc width of the text and place half way across container
+					// minus half the width of the text
+/* 					const selTenTxt = document.querySelector(`#selectTenTxt`);
+					const selTenWidth = selTenTxt.getBoundingClientRect().width;
+					console.log("10width:", selTenWidth);
+					console.log("10 top:", selTenTxt.getBoundingClientRect().top);
+					console.log("10 left:", selTenTxt.getBoundingClientRect().left);
+					console.log("legendContainer x:", legendContainer.attr("x"));
+					
+					d3.select(selTenTxt).attr("transform", function (d) {
+						console.log("d and d.x", d);
+						adjustX = selTenTxt.getBoundingClientRect().left ;
+						adjustY = legendContainer.attr("y") - legendContainer.attr("width") / 2;
+						adjustY = selTenTxt.getBoundingClientRect().top;
+						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") + 
+					});  */
+				}
+				
 			}
 		}
 
@@ -1654,12 +1792,10 @@ export class GenChart {
 
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
 			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
-			// const yAdjust = newPos.height > $(".chart-wrapper").width() ? newPos.left - currPos.left : 0;
 
 			d3.select(`#${svgId}`).attr(
 				"transform",
 				`rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`
-				// `rotate(90), translate(${currPos.top - newPos.top}, ${newPos.left - currPos.left})`
 			);
 
 			// finally adjust the green container height for the content of the new svg height
