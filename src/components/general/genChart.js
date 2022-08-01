@@ -1650,19 +1650,7 @@ function getPosition (element) {
 					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
 				}
 
-				if (legendData.length > 10) {
-					const selectTenText = svg
-						.append("g")
-						.attr("transform", `translate(${legendTx}, ${legendTy})`)
-						.append("text")
-						.attr("id", "selectTenTxt")
-						.attr("x", -80)  //legendTx - 120)
-						.attr("y", -16)  //legendTy - 250)
-						//.attr("dy", "0.32em")
-						.style("fill", "black")
-						.style("font-size", "17px")
-						.text("Select up to 10 groups")
-				}
+
 				const legendContainer = svg
 					.append("g")
 					.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -1758,6 +1746,39 @@ function getPosition (element) {
 						return newTransform; // this.getAttribute("transform") + 
 					}); 
 				});
+
+				if (legendData.length > 10) {
+					const selectTenText = svg
+						.append("g")
+						.attr("transform", `translate(${legendTx}, ${legendTy})`)
+						.append("text")
+						.attr("id", "selectTenTxt")
+						.attr("x", -80)  
+						.attr("y", -12) 
+						.style("fill", "black")
+						.style("font-size", "17px")
+						.text("Select up to 10 groups")
+					
+					// if setting the location above is not consistent,
+					// then calc width of the text and place half way across container
+					// minus half the width of the text
+/* 					const selTenTxt = document.querySelector(`#selectTenTxt`);
+					const selTenWidth = selTenTxt.getBoundingClientRect().width;
+					console.log("10width:", selTenWidth);
+					console.log("10 top:", selTenTxt.getBoundingClientRect().top);
+					console.log("10 left:", selTenTxt.getBoundingClientRect().left);
+					console.log("legendContainer x:", legendContainer.attr("x"));
+					
+					d3.select(selTenTxt).attr("transform", function (d) {
+						console.log("d and d.x", d);
+						adjustX = selTenTxt.getBoundingClientRect().left ;
+						adjustY = legendContainer.attr("y") - legendContainer.attr("width") / 2;
+						adjustY = selTenTxt.getBoundingClientRect().top;
+						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") + 
+					});  */
+				}
 				
 			}
 		}
