@@ -418,6 +418,7 @@ export class LandingPage {
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
 						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
+
 				break;
 			case "suicide":
 			case "injury":
@@ -431,10 +432,7 @@ export class LandingPage {
 				// on rare data sets unit num 1 does not work
 				// ... so try again without the unit num
 				if (!(allYearsData.length > 0)) {
-					allYearsData = this.allData.filter(
-						(d) =>
-							parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
-					);
+					allYearsData = this.allData.filter((d) => parseInt(d.stub_name_num) === parseInt(this.stubNameNum));
 				}
 				break;
 		}
@@ -952,13 +950,11 @@ export class LandingPage {
 						dontDraw: false,
 						assignedLegendColor: "#FFFFFF",
 					}));
-				
+
 				// for line chart and bar chart, REMOVE the undefined data entirely
 				if (!this.showMap) {
 					// remove flag = "- - -" data
-					this.allData = this.allData
-						.filter((d) => d.flag !== "- - -") // remove undefined data
-
+					this.allData = this.allData.filter((d) => d.flag !== "- - -"); // remove undefined data
 				}
 
 				//this.renderAfterDataReady();
@@ -1311,14 +1307,13 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
-		//console.log("new stub name num: ", this.stubNameNum);
+
+		// have to update UNIT bc some stubs dont have all units
+		this.setVerticalUnitAxisSelect();
 
 		// have to update START TIME PERIOD select bc some stubs for same data have different
 		// years that are valid data
 		this.resetTimePeriods();
-
-		// have to update UNIT bc some stubs dont have both units
-		this.setVerticalUnitAxisSelect();
 
 		if (stubNameNum === 0) {
 			// disable the map for TOTAL
@@ -1353,7 +1348,7 @@ export class LandingPage {
 		// the time period selects
 		// WHY?  Because some characteristics have no data -> flag = "- - -"
 		// and we need to filter those years out
-		
+
 		let max;
 		let index;
 		let singleYearsArray = [];
@@ -1363,7 +1358,7 @@ export class LandingPage {
 				return d.year;
 			})
 			.keys();
-		
+
 		$("#year-start-select").empty();
 		$("#year-end-select").empty();
 		switch (this.dataTopic) {
@@ -1394,12 +1389,10 @@ export class LandingPage {
 				this.endYear = singleYearsArray[index]; // now get that year
 				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
 				break;
-			
+
 			// Data sets with single year selects
 			case "suicide":
 			case "medicaidU65":
-
-
 				// have to build an array of "only the first year"
 				allYearsArray.forEach((y) => {
 					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
