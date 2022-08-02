@@ -112,7 +112,7 @@ const saveCanvasAs = (uri, filename) => {
 // 	}, 100);
 // };
 
-export const downLoadMap2 = function (viz) {
+export const downLoadMap2 = function () {
 	let mapImageContainer = document.getElementById("us-map-container");
 	let imageHeightContainer = document.getElementById("us-map-container");
 	//let imageTargetName = document.getElementById("maptitle").textContent;
@@ -161,7 +161,8 @@ export const downLoadMap2 = function (viz) {
 			// let titleChart = document.getElementById("chart-title").textContent;
 			// document.getElementById("us-map-container").innerHTML = "<div>" + titleChart + "<br />" + "Test</div>";
 			let titleChart = document.getElementById("chart-title").textContent;
-			saveCanvasAs(canvas.toDataURL(), titleChart);
+			let imgName = `${titleChart}.png`;
+			saveCanvasAs(canvas.toDataURL(), imgName);
 			downloadButton.innerHTML = "Download Image";
 			downloadButton.classList.remove("disabled");
 			downloadButtonContent.classList.remove("fa-circle-notch", "fa-spin");

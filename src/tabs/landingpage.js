@@ -97,7 +97,8 @@ export class LandingPage {
 				};
 				downLoadGenChart(params);
 			} else if (mapButton && mapButton.className.includes("active")) {
-				downLoadMap2("us-map-container");
+				downLoadMap2();
+				return;
 			}
 		});
 	}
