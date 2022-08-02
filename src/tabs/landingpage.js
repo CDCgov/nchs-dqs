@@ -259,18 +259,6 @@ export class LandingPage {
 		this.renderDataTable(this.flattenedFilteredData);
 		hashTab.writeHashToUrl();
 
-		// at end of render (TTT) - remove this on release
-		let justThisData = this.flattenedFilteredData.filter(
-			(d) =>
-						d.stub_label === "Under 19 years: 200%-399%" &&
-						parseInt(d.unit_num) === parseInt(this.unitNum) &&
-						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
-						parseInt(d.year_pt) >= parseInt(this.startYear) &&
-					parseInt(d.year_pt) <= parseInt(this.endYear)
-					//&& d.dontDraw === false
-				);
-
-		console.log("###### END of render: Under 19 years: 200%-399%", justThisData);
 }
 
 	getFlattenedFilteredData() {
@@ -334,7 +322,7 @@ export class LandingPage {
 			case "medicaidU65":
 				//console.log("##BEFORE medicaid flatten.filter allData=", this.allData);
 							// (TTT) REMOVE BEFORE CHECKING IN
-			let justThisData = this.allData.filter(
+/* 			let justThisData = this.allData.filter(
 			(d) =>
 						d.stub_label === "Under 19 years: 200%-399%" &&
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
@@ -344,7 +332,7 @@ export class LandingPage {
 					//&& d.dontDraw === false
 				);
 
-				console.log("### FLAT data BEFORE filter:", justThisData);
+				console.log("### FLAT data BEFORE filter:", justThisData); */
 
 				selectedPanelData = this.allData.filter(
 					(d) =>
@@ -355,7 +343,7 @@ export class LandingPage {
 				);
 
 			// (TTT) REMOVE BEFORE CHECKING IN
-			 justThisData = this.allData.filter(
+/* 			 justThisData = this.allData.filter(
 			(d) =>
 						d.stub_label === "Under 19 years: 200%-399%" &&
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
@@ -365,7 +353,7 @@ export class LandingPage {
 					//&& d.dontDraw === false
 				);
 
-				console.log("### FLAT data AFTER filter:", justThisData);
+				console.log("### FLAT data AFTER filter:", justThisData); */
 				
 				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
@@ -1688,8 +1676,10 @@ export class LandingPage {
 			if (DataCache.activeLegendList.length < 10) {
 				DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false, });
 			}
+			
 		}
 
+		console.log("ACtiveLegend List after click:", DataCache.activeLegendList);
 		
 		switch (this.dataTopic) {
 			case "obesity-child":

@@ -130,17 +130,15 @@ export class GenChart {
 			// creating yScaleLeft
 		}
 
-		console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
+		//console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
 		
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
 
-		//debugger;
-
 		// if you need to look at incoming data
-		console.log("genChart p.data after removing dontDraw=true vals:", p.data);
+		//console.log("genChart p.data after removing dontDraw=true vals:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -688,27 +686,79 @@ function getPosition (element) {
 					.entries(allIncomingData);
 
 				// limit legend to 10 max
-				let numToDraw = 0;
+				let numLinesToDraw = 0;
 				fullNestedData.forEach((d, i) => {
-					numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+					numLinesToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
 				});
 
-				if (numToDraw === 0) numToDraw = 10;
-				console.log("### numToDraw", numToDraw);
-				
+				if (numLinesToDraw === 0) numLinesToDraw = 10;
+				console.log("### numToDraw", numLinesToDraw);
+
+				// now deal with the legend and whether the lines are drawn
 				fullNestedData.forEach((d, i) => {
-					//if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
-					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
+					if (d.values[0].dontDraw === false && lineCount < numLinesToDraw) {
 						lineCount++; // increment barCount
+						if (i > 9) {
+							//console.log(" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount", d, d.dontDraw, i, barCount,maxBarCount);
+						}
+
+						console.log("nest d:", d);
+
+						// PUSH only if not already on the list
+						if (DataCache.activeLegendList.filter(function (e) {
+							if (e.stub_label === d.values[0].stub_label) {
+								console.log("MATCH e stub_label, d stub_label", e.stub_label, d.values[0].stub_label);
+							}
+							return e.stub_label === d.values[0].stub_label;
+						}).length > 0) {
+							// it is on the list
+							// so dont push it
+							console.log("Already on the list",d.values[0].stub_label);
+						} else {
+							// not on there so push it
+							
+/* 							// have to fetch that object
+							const tempList = d.values.filter(
+								(e,i) =>
+											e.stub_label !== d.values[i].stub_label
+							); */
+
+							// the line after this ispushing the wrong obect
+							DataCache.activeLegendList.push(d.values[0]);
+
+							//console.log("fullnested d pushed:", d.values[0]);
+							console.log("fullnested d pushed:", d.values[0]);
+						}				
+						
 					} else {
+						// remove if it was on active list
+						const tempList = DataCache.activeLegendList.filter(
+							(e) =>
+										e.stub_label !== d.values[0].stub_label
+						);
+						DataCache.activeLegendList = [];
+						DataCache.activeLegendList = tempList;
+
 						// then either dontDraw already true or needs to be set to true
-						// bc line count is exceeded
-						// --- iterate over ALL values and set ALL to true
-						//console.log("nested dontDraw SET TRUE on data d,i", d, i);
+						// bc bar count is exceeded
+						d.values[0].dontDraw = true;
+						if (i < 11) {
+							//console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
+						}
+					}
+
+					// CHANGE - if on the active list then set dontDraw = false
+					// - if not on the list set it to dontDraw = true
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+						// it is on the list
+						d.values[0].dontDraw = false;
+					} else {
 						d.values[0].dontDraw = true;
 					}
+				
 				});
 
+				
 				fullNestedData.forEach((nd, i) => {
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
@@ -1628,8 +1678,13 @@ function getPosition (element) {
 				// of this code
 								
 				//Sort ascending order
-				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
-				legendData = legendSorted;
+				//let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
+				//legendData = legendSorted;
+				
+				// now sort by stub_label_num
+				fullNestedData.sort((a, b) => {
+					return a.values[0].stub_label_num - b.values[0].stub_label_num;
+				});
 
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
@@ -1647,6 +1702,7 @@ function getPosition (element) {
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
+				
 					/* 					allIncomingData.forEach((d, i) => {
 											legendData[i] = {
 											stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
