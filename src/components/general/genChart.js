@@ -1414,6 +1414,7 @@ export class GenChart {
 							.attr("id", "selectTenTxt")
 							.attr("x", -80) //legendTx - 120)
 							.attr("y", -16) //legendTy - 250)
+
 							//.attr("dy", "0.32em")
 							.style("fill", "black")
 							.style("font-size", "17px")
@@ -1425,6 +1426,7 @@ export class GenChart {
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
 						.append("rect")
 						.attr("id", `${svgId}-chart-legend`)
+						.attr("data-html2canvas-ignore", "")
 						.attr("height", legendHeight)
 						.attr("fill", "#F2F2F2")
 						.attr("rx", "5")
@@ -1651,6 +1653,7 @@ export class GenChart {
 					.attr("transform", `translate(${legendTx}, ${legendTy})`)
 					.append("rect")
 					.attr("id", `${svgId}-chart-legend`)
+					.attr("data-html2canvas-ignore", "")
 					.attr("height", legendHeight)
 					.attr("fill", "#F2F2F2")
 					.attr("rx", "5")
@@ -1663,6 +1666,7 @@ export class GenChart {
 						.append("g")
 						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
 						.attr("id", legendId)
+						.attr("data-html2canvas-ignore", "")
 						.attr(
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
@@ -1748,6 +1752,7 @@ export class GenChart {
 						.attr("id", "selectTenTxt")
 						.attr("x", -80)
 						.attr("y", -12)
+						.attr("data-html2canvas-ignore", "")
 						.style("fill", "black")
 						.style("font-size", "17px")
 						.text("Select up to 10 groups");

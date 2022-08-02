@@ -176,12 +176,12 @@ export const downLoadGenChart = (params) => {
 	//if (params.needToShowHide) $("#chart-container").show();
 	const contentContainer = document.getElementById(params.contentContainer);
 	const svgContainer = document.getElementById("chart-container-svg");
-	const height = "1500";
+	const height = document.getElementById("chart-container").clientHeight + 500;
 	// const width = "175%";
 	const downloadButton = document.getElementById(params.downloadButton);
 	downloadButton.innerHTML = 'Downloading <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
 	downloadButton.classList.add("disabled");
-	// console.log("height", height);
+	console.log("height", height);
 	// console.log("width", width);
 	// Any elements that come on the page prior to the current selection for html2Canvas
 	// that have the data-html2canvas-ignore attribute will throw off the correct y-page
