@@ -1,8 +1,8 @@
 export const ExportEvents = {
 	registerEvents() {
-		let basicUSTable = document.getElementById("btnUSTableExport");
+		let basicUSTable = document.getElementById("btnTableExport");
 		if (typeof basicUSTable !== "undefined" && basicUSTable != null) {
-			document.getElementById("btnUSTableExport").addEventListener("click", (evt) => {
+			document.getElementById("btnTableExport").addEventListener("click", (evt) => {
 				evt.preventDefault();
 				appState.ACTIVE_TAB.exportCSV();
 			});
@@ -103,6 +103,5 @@ export const ExportEvents = {
 				appState.ACTIVE_TAB.exportCSV();
 			});
 		}
-
 	},
 };

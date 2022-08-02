@@ -8,6 +8,8 @@ import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downLoadUsCaseandChartMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
+import { downloadCSV } from "../utils/downloadCSV";
+import { get } from "jquery";
 
 export class LandingPage {
 	constructor() {
@@ -1757,6 +1759,10 @@ export class LandingPage {
 		// DATATABLE FUNCTION
 		let tableTitleId = "table-title";
 		let tableId = "nchs-table";
+		let keys = [];
+		let cols = [];
+		let viewSelected = $("#data-topic-select").val();
+		console.log("viewSelected", viewSelected);
 		let tableHeading = "";
 
 		/* 		const formattedData = tableData.map((d) => ({
@@ -1767,8 +1773,48 @@ export class LandingPage {
 		
 				formattedData.sort((a, b) => b.date - a.date); */
 
-		let keys = Object.keys(tableData[0]);
-		// information saved for csv download
+		//let keys = Object.keys(tableData[0]);
+
+		switch (`${viewSelected}`) {
+			case "obesity-child":
+			case "obesity-adult":
+			case "medicaidU65":
+				cols = [
+					"Subtopic",
+					"Characteristic",
+					"Group",
+					"Year",
+					"Age",
+					"Estimate",
+					"Standard Error",
+					"Estimate_lci",
+					"Estimate_uci",
+				];
+
+				keys = [
+					"panel",
+					"stub_name",
+					"stub_label",
+					"year",
+					"age",
+					"estimate",
+					"se",
+					"estimate_lci",
+					"estimate_uci",
+				];
+				break;
+			case "suicide":
+			case "injury":
+			case "infant-mortality":
+			case "birthweight":
+				cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error", "Flag"];
+
+				keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se", "flag"];
+				break;
+			default:
+				break;
+		}
+
 		this.csv = {
 			data: tableData,
 			dataKeys: keys,
@@ -1788,8 +1834,8 @@ export class LandingPage {
 				!item.match("assignedLegendColor") &&
 				item !== "date"
 		);
-		const cols = keys;
-
+		//const cols = keys;
+		//console.log("keys", keys);
 		/* Table element manipulation and rendering */
 		let tableContainer = document.getElementById(`${tableId}-container`);
 		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
@@ -1896,6 +1942,13 @@ export class LandingPage {
 	exportCSV() {
 		downloadCSV(this.csv);
 	}
+
+	// getCSVData(data) {
+	// 	let keys = [];
+	// 	let cols = [];
+	// 	let viewSelected = $("#data-topic-select").val();
+	// 	console.log("viewSelected", viewSelected);
+	// }
 
 	// TO DO: Change the selectors to be filled using data code??
 	tabContent = `<!-- TOP SELECTORS --><div class="color-area-wrapper">
@@ -2110,7 +2163,11 @@ export class LandingPage {
 <!-- Tabs content -->
 
 					<div class="dwnl-img-container margin-spacer">
-						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn">Download Image</button>
+						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn" style="margin-right:20px">Download Image <i class='	fas fa-image' aria-hidden="true"></i></button>
+						
+						<button id="btnTableExport" class="theme-cyan ui btn" tabindex="0" aria-label="Download Data">
+						Download Data <i class='fas fa-download' aria-hidden="true"></i>
+						</button>
 					</div>
 					<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px;margin-bottom:15px;">
 						<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
