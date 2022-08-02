@@ -455,7 +455,9 @@ export class GenChart {
 			.ticks(p.rightTickCount)
 			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
-		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+		const svg = viz.append("svg").attr("id", svgId);
+		if (p.chartRotate) svg.attr("height", svgHeight).attr("width", svgWidth);
+		else svg.attr("viewBox", [0, 0, svgWidth, svgHeight]);
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
 		// - this could also be enabled or disabled from a PROP
@@ -1635,7 +1637,7 @@ export class GenChart {
 				let legendTy;
 
 				if (p.legendBottom) {
-					svg.attr("height", svgHeight + legendHeight + 30);
+					svg.attr("viewBox", [0, 0, svgWidth, svgHeight + legendHeight + 30]);
 					svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
 					// try to center it

@@ -454,6 +454,7 @@ export class LandingPage {
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
 						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
+
 				break;
 			case "suicide":
 			case "injury":
@@ -1342,14 +1343,13 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
-		//console.log("new stub name num: ", this.stubNameNum);
+
+		// have to update UNIT bc some stubs dont have all units
+		this.setVerticalUnitAxisSelect();
 
 		// have to update START TIME PERIOD select bc some stubs for same data have different
 		// years that are valid data
 		this.resetTimePeriods();
-
-		// have to update UNIT bc some stubs dont have both units
-		this.setVerticalUnitAxisSelect();
 
 		if (stubNameNum === 0) {
 			// disable the map for TOTAL
