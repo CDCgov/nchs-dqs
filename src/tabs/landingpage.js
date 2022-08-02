@@ -1,19 +1,16 @@
-import { resetAppStateVars } from "../utils/appState";
 import { Utils } from "../utils/utils";
 import { DataCache } from "../utils/datacache";
-import * as config from "../components/landingPage/config";
-//import { MainCard } from "../components/landingPage/mainCard";
-//import { SubCard } from "../components/landingPage/subCard";
-import { PageEvents } from "../eventhandlers/pageevents";
+// import * as config from "../components/landingPage/config";
+// import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
+import * as hashTab from "../utils/hashTab";
+import { MainEvents } from "../eventhandlers/mainevents";
 import { downLoadUsCaseandChartMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
 
 export class LandingPage {
 	constructor() {
-		resetAppStateVars();
-		appState.CURRENT_TAB = "nchs-home";
 		this.allData = null;
 		this.currentData = null;
 		this.currentLocation = null;
@@ -52,29 +49,24 @@ export class LandingPage {
 		this.showMap = 0;
 		this.geometries = {};
 		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
+		this.enableCI = 0; // 1 = Enable Confidence Intervals for datasets that have them
+		this.selections = null;
+		this.currentTimePeriodIndex = 0;
+		this.animating = false;
 	}
-
-	// capString(str) {
-	// 	return str.charAt(0).toUpperCase() + str.slice(1);
-	// }
 
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
 
-		/* 		const countyViewInput = document.getElementById("county-view-input");
-				$(document).on("click", (e) => {
-					if (e.target !== countyViewInput) closeSearchArea();
-				}); */
+		this.selections = hashTab.getSelections();
+		if (this.selections) {
+			this.dataTopic = this.selections.topic;
+		}
+
+		console.log("hash panel:", this.panelNum);
 
 		this.getInitialData(); // for starters OBESITY DATA
-
-		/* 		document.addEventListener("DOMContentLoaded", evt => {
-			if (evt.target.readyState === "complete") {
-				this.addClickListeners();
-			}
-		}); */
-
-		this.addClickListeners();
+		MainEvents.registerEvents(); // add any click events inside here
 
 		//let vizParentContainer = document.getElementById("widget_4"); // main-widget-container
 		$("#dwn-chart-img").click((evt) => {
@@ -111,24 +103,31 @@ export class LandingPage {
 	}
 
 	renderAfterDataReady() {
+		if (this.selections) {
+			this.panelNum = parseInt(this.selections.subTopic, 10);
+			this.stubNameNum = parseInt(this.selections.characteristic, 10);
+			this.updateDataTopic(this.dataTopic, true);
+
+			if (this.selections.viewSinglePeriod) {
+				$("#year-end-label").hide();
+				$("#year-end-select").hide();
+				this.showBarChart = true;
+			} else {
+				$("#year-end-label").show();
+				$("#year-end-select").show();
+				this.showBarChart = false;
+			}
+		}
+
 		// set default yscale:
 		if (!this.yScaleType) {
 			this.yScaleType = "linear";
 			this.storedScaleState = "linear";
 		}
 
-		console.log("Panel Num", this.panelNum);
+		// console.log("Panel Num", this.panelNum);
 
-		//updateTitle(this.charttype, this.numbertype, this.neworcumulative);
 		$(".dimmer").attr("class", "ui inverted dimmer");
-
-		//debugger;
-
-		//(TTT 06-27-2022 might need this but it just started erroring on thes)
-		//this.setStubNameSelect();
-
-		//this.setVerticalUnitAxisSelect();
-
 		this.renderChart();
 	}
 
@@ -144,16 +143,6 @@ export class LandingPage {
 		async function getUSMapData() {
 			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
 		}
-		/* 			.then((topo) => {
-						DataCache.USTopo = JSON.parse(topo);
-						const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-						this.geometries = geometries;
-						return Utils.getJsonFile("content/json/US_MAP_LEGEND.json");
-					})
-					.then((legenddata) => {
-						DataCache.LegendData = JSON.parse(legenddata);
-						return;
-					}) */
 
 		// getUSMapData - if we do it here we just load the map date ONE TIME
 		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()])
@@ -175,8 +164,6 @@ export class LandingPage {
 				for (i = 0; this.footNotes.length > i; i += 1) {
 					this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
 				}
-
-				//debugger;
 
 				// create a year_pt col from time period
 				if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
@@ -206,7 +193,6 @@ export class LandingPage {
 								return d;
 							}
 						})
-						//.filter((d) => d.flag !== "- - -") // remove undefined data
 						.map((d) => ({
 							...d,
 							estimate: parseFloat(d.estimate),
@@ -227,16 +213,6 @@ export class LandingPage {
 		return parseInt(yearsArray[0]);
 	}
 
-	/* 	updateComparisonChart(loadingState) {
-			if (!loadingState) {
-				// only update if not a false update function during initial page load
-				renderComparisonChart();
-				document
-					.getElementById("dwn-chart-img")
-					.setAttribute("aria-label", `Download Chart ${$("#main-title").html()}`);
-			}
-		} */
-
 	getSelectorText(sel) {
 		return sel.options[sel.selectedIndex].text;
 	}
@@ -250,16 +226,13 @@ export class LandingPage {
 			// need to SHOW A MESSAGE
 			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
-			// hide the map in case it's not hidden
-			/* 			let theMap = document.getElementById("map-tab");
-						theMap.style.display = "none";
-						theMap.classList.remove("show");
-						theMap.classList.remove("active"); */
+			$("#us-map-time-slider").hide();
 		} else {
 			$("#us-map-message").html("");
 			// get rid of the big margins
 			$("#us-map-message").hide();
 			$("#us-map-legend").show();
+			$("#us-map-time-slider").show();
 
 			// (TTTT) to do the PLAY legend - can't do this
 			// -- you need to pass ALL THE DATA to do the PLAY function
@@ -268,51 +241,45 @@ export class LandingPage {
 			// Get filtered data
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
+			const allDates = this.allData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
 			stateData = stateData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 			this.flattenedFilteredData = stateData;
-			// filter out Total data
-			/* let stateData = this.allData
-				.filter(function (d) {
-					if (d.stub_name !== "Total") {
-						return d;
-					}
-				}); */
-			//debugger;
+
 			const mapVizId = "us-map";
 			let map = new GenMap({
 				mapData: stateData, // misCdata[3].Jurisdiction2,
 				vizId: mapVizId,
 				classifyType: this.classifyType,
 				startYear: parseInt(this.startYear),
+				allDates,
+				currentTimePeriodIndex: this.currentTimePeriodIndex,
+				animating: this.animating,
 			});
 			map.render(this.geometries);
+			$("#us-map-time-slider").empty();
+			map.renderTimeSeriesAxisSelector();
 		}
 
 		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
 	}
 
-	renderChart() {
-		// $("#metric_callout_box").html(config.calloutText.get(this.casesOrDeaths + this.newOrCumulative));
-		//debugger;
+	renderChart(fromHash = false) {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
-		console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
+		// console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
 		this.chartConfig = this.getChartBaseProps();
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
 		this.chartConfig.chartTitle = ""; // dont use the built in chart title
 
-		//debugger;
 		$(`#${this.chartConfig.vizId}`).empty();
 		const genChart = new GenChart(this.chartConfig);
-		// not using a slider here
-		//config.renderSlider(genChart.render(), this.currentSliderDomain);
 		genChart.render();
 
 		// set the title - easier to do it all here based on selectors
-		let indicatorText = $("#data-topic-select option:selected").text(); //this.getSelectorText("#data-topic-select");
-		let stubText = $("#stub-name-num-select option:selected").text(); //this.getSelectorText("#stub-name-num-select");
+		let indicatorText = $("#data-topic-select option:selected").text();
+		let stubText = $("#stub-name-num-select option:selected").text();
 		if (this.showBarChart) {
 			this.chartTitle = indicatorText + " by " + stubText + " in " + this.startPeriod;
 		} else {
@@ -325,28 +292,22 @@ export class LandingPage {
 
 		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
-
-		// set background to white - THIS DOESNT WORK
-		//$("#chart-container-svg").style("background-color", '#FFFFFF');
-
-		// example of removing lines from the graph
-		/* 		const removedCategories = this.savedNamedCategories.filter((s) => !this.currentNamedCategories.includes(s));
-				removedCategories.forEach((r) => $(`.${r}`).hide()); */
+		hashTab.writeHashToUrl();
 	}
 
 	getFlattenedFilteredData() {
-		const { classification } = this;
-		//debugger;
-		// Make sure panel num is correct
-		this.panelNum = $("#panel-num-select option:selected").val();
-		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
-
 		let selectedPanelData;
+		//debugger;
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "birthweight":
 			case "infant-mortality":
+				// correct panel num = NA
+				if (this.panelNum === "NA") {
+					// set to valid value
+					this.panelNum = 1;
+				}
 				selectedPanelData = this.allData.filter(
 					(d) =>
 						parseInt(d.panel_num) === parseInt(this.panelNum) &&
@@ -357,14 +318,6 @@ export class LandingPage {
 				);
 				break;
 			case "suicide":
-				// NO SUICIDE HAS 2 valid unit nums so DONT DO THIS
-				/* 				// this "if" statement is data specific
-								// - suicide ONLY has a unit num of 2 and no other
-								if (this.unitNum === 1) {
-									// set to a valid value
-									this.unitNum = 2; // only option is crude
-								} */
-				//console.log("suicide data unit num:", this.unitNum);
 				selectedPanelData = this.allData.filter(
 					(d) =>
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
@@ -372,7 +325,6 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
-				//debugger;
 				break;
 			case "injury":
 				// BE CAREFUL not sure if this will work universally
@@ -388,9 +340,7 @@ export class LandingPage {
 					// set to a valid value
 					this.unitNum = 2;
 				}
-				// This is returning NO DATA
-				console.log("INJURY unit,stub_name_num:", this.unitNum, this.stubNameNum);
-				console.log("INJURY start_yr,end_yr:", this.startYear, this.endYear);
+
 				selectedPanelData = this.allData.filter(
 					(d) =>
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
@@ -402,7 +352,6 @@ export class LandingPage {
 				/* 				selectedPanelData = this.allData.filter(
 									(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
 								); */
-				//debugger;
 				break;
 			case "medicaidU65":
 				selectedPanelData = this.allData.filter(
@@ -412,9 +361,21 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+				if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
+					// enable the CI checkbox
+					$("#enable-CI-checkbox").prop("disabled", false);
+				} else {
+					// disable it
+					$("#enable-CI-checkbox").prop("disabled", true);
+					$("#enable-CI-checkbox").prop("checked", false);
+				}
+
 				break;
 		}
 
+		// DONT ADD CODE LIKE THIS...
 		// *** WE WANT TO LEAVE ESTIMATES AS null IF INVALID SO IT SHOWS A MISSING AREA
 		// remove any remaining data where estimate is blank or null
 		//selectedPanelData = selectedPanelData.filter(function (d) { return d.estimate != ""  && d.estimate != null && d.estimate; });
@@ -448,15 +409,14 @@ export class LandingPage {
 			}));
 		}
 
-		//debugger;
 		let allFootnoteIdsArray = d3
 			.map(selectedPanelData, function (d) {
 				return d.footnote_id_list;
 			})
 			.keys();
-		console.log("footnote ids: ", allFootnoteIdsArray); //selectedPanelData[0].footnote_id_list
-		this.updateFootnotes(allFootnoteIdsArray);
-		//debugger;
+		// console.log("**********************footnote ids: ", allFootnoteIdsArray);
+		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
+
 		/* 		const noLocationNamedData = [...classifiedData, ...allCountiesData];
 				if (this.currentLocation === "United States")
 					return noLocationNamedData.map((d) => ({
@@ -465,16 +425,21 @@ export class LandingPage {
 						subLine: functions.getCategoryName2(d.Category, classification),
 					})); */
 
+		// "date" property is necessary for correctly positioning data point for these charts
+		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
+			return [...selectedPanelData].map((d) => ({
+				...d,
+				date: new Date(`${d.year}-01-01T00:00:00`),
+			}));
+
 		return [...selectedPanelData];
 	}
 
 	// can't use getFlattenedFilteredData bc that filters down to existing year set
 	// - we need this one to pull all the available years BUT still filter by panel, unit and stubname
 	getFilteredYearData() {
-		//debugger;
 		// Make sure panel num is correct
 		this.panelNum = $("#panel-num-select option:selected").val();
-		//this.panelNum = document.getElementById("panel-num-select").selectedIndex;
 
 		let allYearsData;
 		switch (this.dataTopic) {
@@ -498,7 +463,11 @@ export class LandingPage {
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
 						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
 				);
-				//debugger;
+				// on rare data sets unit num 1 does not work
+				// ... so try again without the unit num
+				if (!(allYearsData.length > 0)) {
+					allYearsData = this.allData.filter((d) => parseInt(d.stub_name_num) === parseInt(this.stubNameNum));
+				}
 				break;
 		}
 		return [...allYearsData];
@@ -506,12 +475,6 @@ export class LandingPage {
 
 	getChartBaseProps() {
 		const chartValueProperty = "estimate";
-
-		/* this.newOrCumulative !== "total"
-				? `${this.newOrCumulative}_day_avg_new_${this.casesOrDeaths}_per_100k`
-				: `total_${this.casesOrDeaths}_per_100k`; */
-
-		//const newTotalText = this.newOrCumulative === "seven" ? "7-day" : "14-day";
 
 		let yAxisTitle;
 		let xAxisTitle;
@@ -525,15 +488,12 @@ export class LandingPage {
 			case "infant-mortality":
 			case "medicaidU65":
 				yAxisTitle = this.unitNumText; //"Percent of Population, crude (%)";
-				//xAxisTitle = "Time Period";
 				break;
 			case "suicide":
 				yAxisTitle = this.unitNumText; //"Deaths per 100,000 resident population, crude";
-				//xAxisTitle = "Time Period";
 				break;
 			case "injury":
 				yAxisTitle = this.unitNumText; //"Initial injury-related visits in thousands, crude";
-				//xAxisTitle = "Time Period";
 				break;
 		}
 		// X Axis Title is the "Characteristic" selected
@@ -572,7 +532,6 @@ export class LandingPage {
 		}
 		// if one single year then use bar chart
 		let useBars;
-		//debugger;
 		if (this.showBarChart) {
 			//yAxisTitle = this.unitNumText;
 			useBars = true;
@@ -584,6 +543,7 @@ export class LandingPage {
 					yAxis: "estimate",
 					bars: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -630,15 +590,20 @@ export class LandingPage {
 				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
 			};
 		} else {
+			const scaleTimeIndicators = ["suicide", "Medicaid"];
+			const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
+
+			// ********************* update data
 			// DRAW A LINE CHART
 			useBars = false;
 			props = {
 				data,
 				chartProperties: {
 					yLeft1: chartValueProperty,
-					xAxis: "year",
+					xAxis: needsScaleTime ? "date" : "year",
 					yAxis: "estimate",
 				},
+				enableCI: this.enableCI,
 				usesLegend: true,
 				legendBottom: true,
 				usesDateDomainSlider: false,
@@ -650,6 +615,7 @@ export class LandingPage {
 				usesBottomAxis: true,
 				usesBottomAxisTitle: false, // they dont want a title there
 				usesDateAsXAxis: true,
+				needsScaleTime,
 				yLeftLabelScale: 3,
 				legendCoordinatePercents: legendCoordPercents,
 				leftAxisTitle: yAxisTitle,
@@ -737,14 +703,22 @@ export class LandingPage {
 				datumType: "string",
 			},
 			flag: {
-				title: "Flag:",
+				title: "Flag: ",
+				datumType: "string",
+			},
+			estimate_lci: {
+				title: "95% confidence LCI: ",
+				datumType: "string",
+			},
+			estimate_uci: {
+				title: "95% confidence UCI: ",
 				datumType: "string",
 			},
 			"": { title: "", datumType: "empty" },
 		};
 
 		const headerProps = ["stub_name", "stub_label"];
-		const bodyProps = ["panel", "unit", chartValueProperty, "year", "age"];
+		const bodyProps = ["panel", "unit", chartValueProperty, "estimate_uci", "estimate_lci", "year", "age", "flag"];
 
 		return {
 			propertyLookup,
@@ -797,14 +771,33 @@ export class LandingPage {
 		return "deathRateCumulativeSubmission";
 	}
 
-	updateFootnotes(footnotesIdArray) {
+	updateFootnotes(footnotesIdArray, dataTopic) {
 		let footnotesList;
 		let sourceList;
 		let allFootnotesText = "";
 		let sourceText = "";
-		//debugger;
 		// in some cases this gets called with no footnotes.
-		if (footnotesIdArray[0]) {
+
+		if (dataTopic == "obesity-child" && footnotesIdArray[1]) {
+			// this includes every item in the footnotes
+			footnotesList = footnotesIdArray[1].split(",");
+
+			// get ONLY the source codes list
+			sourceList = footnotesList;
+			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
+			sourceList.forEach(
+				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+			);
+
+			// now remove the SC notes from footnotesList
+			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
+
+			// foreach footnote ID, look it up in the tabnotes and ADD it to text
+			allFootnotesText = "";
+			footnotesList.forEach(
+				(f) => (allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>")
+			);
+		} else if (footnotesIdArray[0]) {
 			// this includes every item in the footnotes
 			footnotesList = footnotesIdArray[0].split(",");
 
@@ -812,15 +805,12 @@ export class LandingPage {
 			sourceList = footnotesList;
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
 			sourceList.forEach(
-				(f) =>
-					(sourceText +=
-						"<div class='source-text'><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
 			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
 
-			//console.log("footnote ids: ", footnotesList);
 			// foreach footnote ID, look it up in the tabnotes and ADD it to text
 			allFootnotesText = "";
 			footnotesList.forEach(
@@ -828,7 +818,6 @@ export class LandingPage {
 			);
 		}
 		// update source text
-		//console.log("#Source text is: ", sourceText);
 		$("#source-text-map").html(sourceText);
 		$("#source-text-chart").html(sourceText);
 
@@ -846,10 +835,10 @@ export class LandingPage {
 		return `<p>There was an error pulling footnote` + fn_id + `. Try refreshing your browser to see them.</p>`;
 	}
 
-	updateDataTopic(dataTopic) {
+	updateDataTopic(dataTopic, fromHash = false) {
 		this.dataTopic = dataTopic; // string
 		let selectedDataCache;
-		//debugger;
+
 		// return the cached data or get the data from file
 		async function getSelectedData(dataFile, selectedDataCache) {
 			if (selectedDataCache) {
@@ -857,12 +846,10 @@ export class LandingPage {
 			} else {
 				// load from file
 				const theData = await Utils.getJsonFile(dataFile);
-				//debugger;
 				return theData;
 			}
 		}
 
-		//debugger;
 		let theChartTab = document.getElementById("icons-tab-2");
 
 		// switch to new data source
@@ -871,70 +858,91 @@ export class LandingPage {
 				this.dataFile = "content/json/ObesityChildren.json";
 				this.chartTitle = "Obesity Among Children and Adolescents";
 				selectedDataCache = DataCache.ObesityData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
 				this.dataFile = "content/json/ObesityAdults.json";
 				this.chartTitle = "Obesity Among Adults";
 				selectedDataCache = DataCache.ObesityAdultData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// show 95% CI checkbox
+				$("#enable-CI-checkbox-wrapper").show();
 				break;
-			case "suicide":
-				//debugger;
+			case "suicide": // no panel
 				this.dataFile = "content/json/DeathRatesForSuicide.json";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
 				this.dataFile = "content/json/InjuryEDVis.json";
 				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
 				selectedDataCache = DataCache.InjuryData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "birthweight":
 				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
 				this.dataFile = "content/json/InfantMortality.json";
 				this.chartTitle = "Infant Mortality";
 				selectedDataCache = DataCache.InfantMortalityData;
+				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
+				// hide 95% CI checkbox since "suicide" has no se data
+				$("#enable-CI-checkbox-wrapper").hide();
 				break;
-			case "medicaidU65":
+			case "medicaidU65": // no panel
 				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
 				this.chartTitle = "Medicaid Coverage Among Persons Under Age 65";
 				selectedDataCache = DataCache.MedicaidU65Data;
-				this.panelNum = 0; // no panel
+				this.panelNum = "NA"; // no panel
 				// set a valid unit num or else chart breaks
-				this.unitNum = 1;
+				this.unitNum = 2;
+				// show 95% CI checkbox
+				$("#enable-CI-checkbox-wrapper").show();
+				// default unit num does not support CI
+				$("#enable-CI-checkbox").prop("disabled", true); // start unchecked
 				break;
 		}
+		// always start new topic with Enable CI disabled
+		this.enableCI = 0; // but keep it disabled
+		$("#enable-CI-checkbox").prop("checked", false); // start unchecked
+
 		// if we switch Topic then start with Total every time
-		this.stubNameNum = 0;
+		if (!fromHash) this.stubNameNum = 0;
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.chartTitle}</strong>`);
 
-		//debugger;
-
 		// now get the data if it has not been fetched already
 		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR DATA TO LOAD
 		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
-		console.log("ATTEMPTING dataFile Promise:", this.dataFile);
+		// console.log("ATTEMPTING dataFile Promise:", this.dataFile);
 		Promise.all([getSelectedData(this.dataFile, selectedDataCache)])
 			.then((data) => {
-				console.log("FULFILLED dataFile Promise:", this.dataFile);
-				//debugger;
+				// console.log("FULFILLED dataFile Promise:", this.dataFile);
 				if (selectedDataCache !== undefined) {
 					this.allData = data[0];
 				} else {
@@ -964,10 +972,11 @@ export class LandingPage {
 						DataCache.MedicaidU65Data = this.allData;
 						break;
 				}
-				//debugger;
+
 				// create a year_pt col from time period
 				this.allData = this.allData
-					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data REMOVE??? (TTT)
+					// ONLY FOR US MAP - dont filter out "- - -"
+					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data
 					.map((d) => ({
 						...d,
 						estimate: parseFloat(d.estimate),
@@ -975,9 +984,14 @@ export class LandingPage {
 						dontDraw: false,
 						assignedLegendColor: "#FFFFFF",
 					}));
-				//this.renderAfterDataReady();
 
-				//debugger;
+				// for line chart and bar chart, REMOVE the undefined data entirely
+				if (!this.showMap) {
+					// remove flag = "- - -" data
+					this.allData = this.allData.filter((d) => d.flag !== "- - -"); // remove undefined data
+				}
+
+				//this.renderAfterDataReady();
 
 				// have to put interface changes in separate switch statements
 				// - it WAS in switch statement at top but...
@@ -998,11 +1012,26 @@ export class LandingPage {
 						this.updateShowMap(0);
 						break;
 
+					// cases with LINE CHART only and no map data
+					case "obesity-child":
+					case "obesity-adult":
+					case "suicide":
+					case "injury":
+					case "medicaidU65":
+						// show the chart tab
+						$("#tab-chart").css("visibility", "visible");
+						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
+						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
+						// hide the map tab
+						$("#tab-map").css("visibility", "hidden");
+						this.updateShowMap(0);
+						break;
+
 					// cases with US Map data option
 					case "birthweight":
 					case "infant-mortality":
 						// show the map tab BUT DO NOT MAKE IT THE DEFAULT
-						//$('#').click();
+						//$('#icons-tab-1').click();
 						$("#tab-map").css("visibility", "visible");
 						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
 						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
@@ -1019,20 +1048,32 @@ export class LandingPage {
 
 				//disable single year if it is set
 				// force "year" to reset and not have single year clicked
-				if (document.getElementById("show-one-period-checkbox").checked) {
+				if (document.getElementById("show-one-period-checkbox").checked && !fromHash) {
 					$("#show-one-period-checkbox").click();
 				}
 
 				// need data in place before filling year selects
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-				this.setAllSelectDropdowns();
-
+				this.setAllSelectDropdowns(fromHash);
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
 				// now filter data again to pick up unit num
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
+
+				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+				if (this.flattenedFilteredData[0] !== undefined) {
+					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+						// enable the CI checkbox
+						$("#enable-CI-checkbox").prop("disabled", false);
+					} else {
+						// disable it
+						$("#enable-CI-checkbox").prop("disabled", true);
+						$("#enable-CI-checkbox").prop("checked", false);
+					}
+				}
 
 				// now re-render the chart based on updated selection
 				this.renderChart();
@@ -1042,10 +1083,9 @@ export class LandingPage {
 			});
 	}
 
-	setAllSelectDropdowns() {
+	setAllSelectDropdowns(fromHash = false) {
 		let allYearsArray;
 		// always filter the data again
-		//debugger;
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
 		let yearsData;
 		let max;
@@ -1061,16 +1101,13 @@ export class LandingPage {
 				//this.unitNum = 1;
 
 				// this is Subtooic
-				this.setPanelSelect();
+				this.setPanelSelect(fromHash);
 
 				// set stub names
 				this.setStubNameSelect();
 
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
-
-				console.log("BEFORE all data OBESIty", this.allData);
-				console.log("BEFORE flattened data OBESIty", this.flattenedFilteredData);
 
 				// Get the start year options
 				yearsData = this.getFilteredYearData();
@@ -1079,7 +1116,7 @@ export class LandingPage {
 						return d.year;
 					})
 					.keys();
-				console.log("allyears OBESITY start:", allYearsArray);
+				// console.log("allyears OBESITY start:", allYearsArray);
 				$("#year-start-select").empty();
 				$("#year-end-select").empty();
 				allYearsArray.forEach((y) => {
@@ -1102,12 +1139,11 @@ export class LandingPage {
 				index = singleYearsArray.indexOf(max);
 				this.endYear = singleYearsArray[index]; // now get that year
 				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
-				//debugger;
 				break;
 			case "suicide":
 			case "medicaidU65":
 				// subtopic
-				$("#panel-num-select").empty().append('<option selected="selected" value="NA">Not Applicable</option>');
+				$("#panel-num-select").empty().append('<option selected value="NA">Not Applicable</option>');
 				// set stub names
 				this.setStubNameSelect();
 
@@ -1118,7 +1154,7 @@ export class LandingPage {
 						return d.year;
 					})
 					.keys();
-				console.log("allyears SUICIDE start:", allYearsArray);
+				// console.log("allyears SUICIDE start:", allYearsArray);
 				$("#year-start-select").empty();
 				$("#year-end-select").empty();
 
@@ -1149,7 +1185,7 @@ export class LandingPage {
 	}
 
 	// Subtopic
-	setPanelSelect() {
+	setPanelSelect(fromHash = false) {
 		//console.log("flattenedData before:", this.flattenedFilteredData);
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
@@ -1158,12 +1194,24 @@ export class LandingPage {
 		allPanelsArray.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
-		console.log("allPanelsArray", allPanelsArray);
+		// console.log("allPanelsArray", allPanelsArray);
 		$("#panel-num-select").empty();
 
-		allPanelsArray.forEach((y) => {
-			$("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
+		allPanelsArray.forEach((y, i) => {
+			// allow string int comparison
+			// if (fromHash) {
+			if (this.panelNum == y.panel_num)
+				$("#panel-num-select").append(`<option value="${y.panel_num}" selected>${y.panel}</option>`);
+			else $("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
+			// } else if (i === 0)
+			// 	$("#panel-num-select").append(`<option value="${y.panel_num}" selected>${y.panel}</option>`);
+			// else $("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
 		});
+
+		if (!fromHash) {
+			const firstVal = $("#panel-num-select option:first").val();
+			$("#panel-num-select").val(firstVal);
+		}
 	}
 
 	setStubNameSelect() {
@@ -1174,7 +1222,7 @@ export class LandingPage {
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 			}
 		}
-		console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
+		// console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
 
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
@@ -1193,15 +1241,15 @@ export class LandingPage {
 		allStubsArray.sort((a, b) => {
 			return a.stub_name_num - b.stub_name_num;
 		});
-		console.log("allStubsArray", allStubsArray);
+		// console.log("allStubsArray", allStubsArray);
 		$("#stub-name-num-select").empty();
 
 		// reload the stubs but if new list has match for current selection
 		// then - keep current selected
 		let foundUnit = false;
-		console.log("### current stubnamenum before rebuilding dropdown:", this.stubNameNum);
-		allStubsArray.forEach((y, i) => {
-			console.log("i , stubnamename", i, y.stub_name_num);
+		// console.log("### current stubnamenum before rebuilding dropdown:", this.stubNameNum);
+		allStubsArray.forEach((y) => {
+			// console.log("i , stubnamename", i, y.stub_name_num);
 			if (this.stubNameNum === parseInt(y.stub_name_num)) {
 				$("#stub-name-num-select").append(
 					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
@@ -1222,16 +1270,14 @@ export class LandingPage {
 			// now update the stubname num to the ALREADY selected
 			this.stubNameNum = $("#stub-name-num-select option:selected").val();
 		} */
-		console.log("### stubnamenum after rebuilding dropdown:", this.stubNameNum);
-
-		//debugger;
+		// console.log("### stubnamenum after rebuilding dropdown:", this.stubNameNum);
 	}
 
 	setVerticalUnitAxisSelect() {
-		console.log("UNIT flattenedData before:", this.flattenedFilteredData);
+		// console.log("UNIT flattenedData before:", this.flattenedFilteredData);
 		// filter out by characteristic / stub_name bc some stub_names do not have both UNIT options
 		// only show the ones related to selected CHaracteristic
-		let theSelectedStubNum = this.stubNameNum;
+		// let theSelectedStubNum = this.stubNameNum;
 
 		allUnitsArray = this.allData.filter((item) => parseInt(item.stub_name_num) === parseInt(this.stubNameNum));
 
@@ -1243,7 +1289,7 @@ export class LandingPage {
 		allUnitsArray.sort((a, b) => {
 			return a.unit_num - b.unit_num;
 		});
-		console.log("allUnitsArray", allUnitsArray);
+		// console.log("allUnitsArray", allUnitsArray);
 		$("#unit-num-select-map").empty();
 		$("#unit-num-select-chart").empty();
 		// on the table tab
@@ -1252,7 +1298,6 @@ export class LandingPage {
 		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
-			//debugger;
 			if (this.unitNum === parseInt(y.unit_num)) {
 				$("#unit-num-select-map").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$("#unit-num-select-chart").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
@@ -1274,8 +1319,6 @@ export class LandingPage {
 			this.unitNum = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
 			this.unitNumText = $("#unit-num-select-chart option:first").text(); // set to first item on the unit list
 		}
-		//console.log("### Leaving setVertUnit: unitNumText TITLE is: ",this.unitNumText);
-		//debugger;
 	}
 
 	updatePanelNum(panelNum) {
@@ -1298,9 +1341,11 @@ export class LandingPage {
 
 	updateStubNameNum(stubNameNum) {
 		this.stubNameNum = stubNameNum;
-		//debugger;
-		//this.setCategoriesSelect();
-		console.log("new stub name num: ", this.stubNameNum);
+		//console.log("new stub name num: ", this.stubNameNum);
+
+		// have to update START TIME PERIOD select bc some stubs for same data have different
+		// years that are valid data
+		this.resetTimePeriods();
 
 		// have to update UNIT bc some stubs dont have both units
 		this.setVerticalUnitAxisSelect();
@@ -1319,6 +1364,8 @@ export class LandingPage {
 			$("#us-map-message").show();
 			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
+			$("#us-map-time-slider").hide();
+
 			// cant just call click = infinite loop
 			//$('#icons-tab-2').click(); // click event will render the chart
 			// only call chart render if map NOT selected
@@ -1330,7 +1377,83 @@ export class LandingPage {
 		}
 	}
 
+	resetTimePeriods() {
+		// when stubname Characteristic changes, we need to
+		// go back through the filtered year data and update
+		// the time period selects
+		// WHY?  Because some characteristics have no data -> flag = "- - -"
+		// and we need to filter those years out
+
+		let max;
+		let index;
+		let singleYearsArray = [];
+		let yearsData = this.getFilteredYearData();
+		let allYearsArray = d3
+			.map(yearsData, function (d) {
+				return d.year;
+			})
+			.keys();
+
+		$("#year-start-select").empty();
+		$("#year-end-select").empty();
+		switch (this.dataTopic) {
+			// Data sets with time period ranges like 2002-2005
+			case "obesity-child":
+			case "obesity-adult":
+			case "injury":
+			case "birthweight":
+			case "infant-mortality":
+				allYearsArray.forEach((y) => {
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
+					singleYearsArray.push(this.getYear(y));
+				});
+				// make the last end year selected
+				$("#year-end-select option:last").attr("selected", "selected");
+				// fix labels
+				$("#year-start-label").text("Start Period");
+				$("#year-end-label").text("End Period");
+
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = singleYearsArray[0];
+				this.startPeriod = $("#year-start-select option:selected").text(); // set this for the chart title
+				// max converts the strings to integers and gets the max
+				max = Math.max(...singleYearsArray);
+				// indexOf gets the index of the maximum value so we can set as the "End year"
+				index = singleYearsArray.indexOf(max);
+				this.endYear = singleYearsArray[index]; // now get that year
+				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
+				break;
+
+			// Data sets with single year selects
+			case "suicide":
+			case "medicaidU65":
+				// have to build an array of "only the first year"
+				allYearsArray.forEach((y) => {
+					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
+					$("#year-end-select").append(`<option value="${y}">${y}</option>`);
+				});
+				// make the last end year selected
+				$("#year-end-select option:last").attr("selected", "selected");
+				// fix labels
+				$("#year-start-label").text("Start Year");
+				$("#year-end-label").text("End Year");
+
+				// now set the start and end years otherwise flattenedfiltereddata is WRONG
+				this.startYear = allYearsArray[0];
+				this.startPeriod = this.startYear;
+				// max converts the strings to integers and gets the max
+				max = Math.max(...allYearsArray);
+				// indexOf however fails unless we convert max back to a string!
+				index = allYearsArray.indexOf(max.toString());
+				this.endYear = allYearsArray[index];
+				this.endPeriod = this.endYear;
+				break;
+		} // end switch
+	}
+
 	updateStartPeriod(start) {
+		$("#year-start-select").val(start);
 		// NOW update END period
 		// - get ALL END OPTION AGAIN
 		// - then REMOVE any that are <= START YEAR
@@ -1341,7 +1464,6 @@ export class LandingPage {
 				return d.year;
 			})
 			.keys();
-		//console.log("allyears OBESITY start:", allYearsArray);
 		$("#year-end-select").empty();
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
@@ -1369,7 +1491,7 @@ export class LandingPage {
 					}
 				});
 				break;
-		}
+		} // end switch
 
 		// make the last end year selected
 		$("#year-end-select option:last").attr("selected", "selected");
@@ -1412,11 +1534,22 @@ export class LandingPage {
 
 		// have to update the "text" to draw on the chart
 		this.unitNumText = $("#unit-num-select-chart option:selected").text(); //(TTT)
-		console.log("unitNum text=", this.unitNumText);
+		// console.log("unitNum text=", this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
 		// - call set stub names
 		this.setStubNameSelect();
+
+		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+			// enable the CI checkbox
+			$("#enable-CI-checkbox").prop("disabled", false);
+		} else {
+			// disable it
+			$("#enable-CI-checkbox").prop("disabled", true);
+			$("#enable-CI-checkbox").prop("checked", false);
+		}
 
 		if (this.showMap) {
 			this.renderMap();
@@ -1430,9 +1563,12 @@ export class LandingPage {
 		this.renderChart();
 	}
 
+	updateEnableCI(value) {
+		this.enableCI = value;
+		this.renderChart();
+	}
+
 	updateShowMap(value) {
-		console.log(value);
-		//debugger;
 		this.showMap = value;
 		let theMapWrapper = document.getElementById("map-wrapper");
 		if (this.showMap) {
@@ -1519,7 +1655,7 @@ export class LandingPage {
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
 		const selDataPt = value.replace(/_/g, " ");
-		console.log("#### toggle:", selDataPt);
+		// console.log("#### toggle:", selDataPt);
 
 		switch (this.dataTopic) {
 			case "obesity-child":
@@ -1535,7 +1671,7 @@ export class LandingPage {
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
 						d.dontDraw = !d.dontDraw; // toggle it
-						console.log("toggle has panel dontDraw=", d.dontDraw);
+						// console.log("toggle has panel dontDraw=", d.dontDraw);
 					}
 				});
 				break;
@@ -1552,29 +1688,12 @@ export class LandingPage {
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
 						d.dontDraw = !d.dontDraw; // toggle it
-						console.log("toggle no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw);
+						// console.log("toggle no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw);
 					}
 				});
-				//debugger;
 				break;
 		}
-
 		this.renderChart();
-	}
-
-	addClickListeners() {
-		/* 		// this is a weird eslint rule. class methods must use this for assigments unless static.
-				const buttons = document.querySelectorAll(".landing-card-main");
-				PageEvents.addButtonsClickListers(buttons);
-				this.buttons = document.querySelectorAll(".daily-update-card");
-				PageEvents.addButtonsClickListers(this.buttons);
-				// these are not buttons, but hrefs but this will get the scroll effect we need
-				// -- the .landing-link listeners need to be here AND in update-list code
-				// -- if you remove these 2 lines below then the non-update-list landing-links don't work (TT)
-				this.buttons = document.querySelectorAll(".landing-link");
-				PageEvents.addButtonsClickListers(this.buttons);
-				this.communityButtons = document.querySelectorAll(".community-links");
-				PageEvents.addButtonsClickListers(this.communityButtons); */
 	}
 
 	/* getTableInfo(state) {
@@ -1666,13 +1785,12 @@ export class LandingPage {
 				!item.match("year_pt") &&
 				!item.match("subLine") &&
 				!item.match("dontDraw") &&
-				!item.match("assignedLegendColor")
+				!item.match("assignedLegendColor") &&
+				item !== "date"
 		);
 		const cols = keys;
-		//debugger;
 
 		/* Table element manipulation and rendering */
-		//document.getElementById(tableTitleId).innerHTML = "";  // dont show title this.chartTitle;
 		let tableContainer = document.getElementById(`${tableId}-container`);
 		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
 		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
@@ -1800,6 +1918,7 @@ export class LandingPage {
 				<option value="infant-mortality">Infant Mortality</option>
 				<option value="birthweight">Low birthweight live births</option>
 				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
+
 				</optgroup>
 			</select>
 			</div>
@@ -1838,7 +1957,6 @@ export class LandingPage {
 			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
 				<option value="0" selected>Total</option>
 				<option value="1">Sex</option>
-				<option value="2">Age</option>
 				<option value="3"">Race and Hispanic origin</option>
         		<option value="4">Sex and race and Hispanic origin</option>
 				<option value="5">Percent of poverty level</option>
@@ -1859,7 +1977,7 @@ export class LandingPage {
 			<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox">
 			<label for="show-one-period-checkbox">View single period</label>
 		</div>
-		<div style="display: flex;">
+		<div id="timePeriodContainer" style="display: flex;">
 			<div style="flex-direction: column;">
 				<div class="label-style" id="year-start-label">Start Period <br> </div>
 				<div>
@@ -1925,7 +2043,7 @@ export class LandingPage {
 <!-- Tabs content -->
 <div class="tab-content" id="ex-with-icons-content">
   <div class="tab-pane fade" id="map-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-1">
-		<div class="map-wrapper" style="height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="map-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 			<div style="display:inline;float:left;">
 				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
 					<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
@@ -1941,24 +2059,30 @@ export class LandingPage {
 					</div>
 				</fieldset>
 			</div>
-				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;">
-					<div id="mapDownloadTitle"></div>
-					<div id="us-map" class="general-map" style="margin-left:50px;margin-right:50px;height:fit-content;align:left;background-color: #FFFFFF;"></div>				
-					<div id="us-map-message" class="chart-title" style=""></div>
+				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;">
+				<div id="mapDownloadTitle"></div>
+					<div id="us-map" class="general-map"></div>				
+					<div id="us-map-message" class="chart-title"></div>
+					<div id="us-map-time-slider"></div>
 					<div id="us-map-legend"></div>
 				</div>
 				<br>
-				<div class="source-text" id="source-text-map"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>
+				<div class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
 		</div><!-- end map wrapper -->
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
-		<div class="chart-wrapper" style=" height:fit-content;background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
+					
+					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline">
+						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox">
+						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
+					</div>
 				</div>
-				<div id="chart-container" class="general-chart" style="text-align:center;">
+				<div id="chart-container" class="general-chart">
 				</div>
 				<br>
 				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is from xyslkalkahsdflskhfaslkfdhsflkhlaksdf and alkjlk.</div>

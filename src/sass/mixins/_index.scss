@@ -1,123 +1,122 @@
 @import "media_queries.scss";
 
 @mixin color-rectangle($color) {
-    width: 260px;
-    height: 190px;
-    background: $color;
-    padding: 0px;
+	width: 260px;
+	height: 190px;
+	background: $color;
+	padding: 0px;
 
-    &::before {
-        content: "";
-        display: block;
-        padding-bottom: -3 0px;
-    }
+	&::before {
+		content: "";
+		display: block;
+		padding-bottom: -3 0px;
+	}
 }
 
 @mixin color-chevron($color) {
-    position: relative;
-    //border: solid red 2px;
-    top: 18px;
-    left: 5px;
-    right: 50px; // this has no effect
-    text-align: center;
-    padding: 12px;
-    margin-bottom: 6px;
-    height: 100px;
-    width: 190px; // this is height for right rotated
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    -ms-transform: rotate(-90deg);
-    -o-transform: rotate(-90deg);
-    transform: rotate(-90deg);
+	position: relative;
+	//border: solid red 2px;
+	top: 18px;
+	left: 5px;
+	right: 50px; // this has no effect
+	text-align: center;
+	padding: 12px;
+	margin-bottom: 6px;
+	height: 100px;
+	width: 190px; // this is height for right rotated
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	-ms-transform: rotate(-90deg);
+	-o-transform: rotate(-90deg);
+	transform: rotate(-90deg);
 
-    &::before {
-        content: "";
-        position: absolute;
-        box-shadow: 0px 2px 0px 0px #e5e5e5;
-        top: 100px; // moves it right or left
-        left: 0;
-        height: 100%;
-        width: 51%;
-        background: $color;
-        -webkit-transform: skew(0deg, 12deg);
-        -moz-transform: skew(0deg, 12deg);
-        -ms-transform: skew(0deg, 12deg);
-        -o-transform: skew(0deg, 12deg);
-        transform: skew(0deg, 12deg);
-    }
+	&::before {
+		content: "";
+		position: absolute;
+		box-shadow: 0px 2px 0px 0px #e5e5e5;
+		top: 100px; // moves it right or left
+		left: 0;
+		height: 100%;
+		width: 51%;
+		background: $color;
+		-webkit-transform: skew(0deg, 12deg);
+		-moz-transform: skew(0deg, 12deg);
+		-ms-transform: skew(0deg, 12deg);
+		-o-transform: skew(0deg, 12deg);
+		transform: skew(0deg, 12deg);
+	}
 
-    &::after {
-        content: "";
-        position: absolute;
-        box-shadow: 0px 2px 0px 0px #e5e5e5;
-        top: 100px; /// this actually moves it right due to transform
-        height: 100%;
-        width: 50%;
-        background: $color;
-        -webkit-transform: skew(0deg, -12deg);
-        -moz-transform: skew(0deg, -12deg);
-        -ms-transform: skew(0deg, -12deg);
-        -o-transform: skew(0deg, -12deg);
-        transform: skew(0deg, -12deg);
-    }
+	&::after {
+		content: "";
+		position: absolute;
+		box-shadow: 0px 2px 0px 0px #e5e5e5;
+		top: 100px; /// this actually moves it right due to transform
+		height: 100%;
+		width: 50%;
+		background: $color;
+		-webkit-transform: skew(0deg, -12deg);
+		-moz-transform: skew(0deg, -12deg);
+		-ms-transform: skew(0deg, -12deg);
+		-o-transform: skew(0deg, -12deg);
+		transform: skew(0deg, -12deg);
+	}
 }
-
 
 /* ADD NEW NCHS PROJECT STUFF */
 .color-area-wrapper {
-    border: solid 2px #e5e5e5;
-    box-shadow: 2px 2px 0px 0px #e5e5e5;
-    display: flex;
-    flex-direction: row;
-    margin-top: 0px;
+	border: solid 2px #e5e5e5;
+	box-shadow: 2px 2px 0px 0px #e5e5e5;
+	display: flex;
+	flex-direction: row;
+	margin-top: 0px;
 }
 
 .inner-content-wrapper {
-    /* 
+	/* 
   //margin-top: 25px; moves chevron down too */
-    position: relative;
-    margin-left: 40px;
-    top: 25px;
-    /* does not effect chevron */
-    z-index: 5;
-    /* needs to be on top */
+	position: relative;
+	margin-left: 40px;
+	top: 25px;
+	/* does not effect chevron */
+	z-index: 5;
+	/* needs to be on top */
 }
 
 .checkbox-style {
-    font-family: Open Sans, sans-serif;
-    color: #010101;
-    margin-left: 40px;
-    font-weight: 400;
-    font-size: 14px;
-    margin-top: 12px;
+	font-family: Open Sans, sans-serif;
+	color: #010101;
+	margin-left: 40px;
+	font-weight: 400;
+	font-size: 14px;
+	margin-top: 12px;
 }
 
 .label-style {
-    display: flex;
-    /* border: solid 1px red; */
-    padding-right: 25px;
-    margin-right: 15px;
-    width: 125px;
-    font-family: Open Sans, sans-serif;
-    color: #010101;
-    font-weight: 300;
-    font-size: 12px;
-    margin-top: 5px;
+	display: flex;
+	/* border: solid 1px red; */
+	padding-right: 25px;
+	margin-right: 15px;
+	width: 125px;
+	font-family: Open Sans, sans-serif;
+	color: #010101;
+	font-weight: 300;
+	font-size: 12px;
+	margin-top: 5px;
 }
 
-.styled-select select  {
-    //@at-root: block;
-    height: 2em;
-    width: 100px;
-    //padding: 1em;
-    border: 1px solid #333;
-    font-family: Open Sans,sans-serif;
-    font-weight: 300;
-    font-size: 12px;
+.styled-select select {
+	//@at-root: block;
+	height: 2em;
+	width: 100px;
+	//padding: 1em;
+	border: 1px solid #333;
+	font-family: Open Sans, sans-serif;
+	font-weight: 300;
+	font-size: 12px;
 
-    /** for the dropdown indicator */
-    //appearance: none;
-    /*
+	/** for the dropdown indicator */
+	//appearance: none;
+	/*
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' polyline-points='6 9 12 15 18 9'/polyline/svg");
     background-repeat: no-repeat;
     background-position: right 1rem center;
@@ -125,98 +124,90 @@
 }
 
 .styled-select select optgroup {
-
-        font-family: Open Sans,
-        sans-serif;
-        font-weight: 300;
-        font-size: 12px;
+	font-family: Open Sans, sans-serif;
+	font-weight: 300;
+	font-size: 12px;
 }
 
 .rectangle-yellow {
-    @include color-rectangle(#ffd200);
+	@include color-rectangle(#ffd200);
 }
 
 .rectangle-white {
-    @include color-rectangle(#ffffff);
-    //border: solid 1px red;
+	@include color-rectangle(#ffffff);
+	//border: solid 1px red;
 }
 
 .rectangle-green {
-    @include color-rectangle(#006858);
+	@include color-rectangle(#006858);
 }
 
-
-
 .chevron-green {
-    @include color-chevron(#006858);
-    //padding-top: -25px;
-    margin-top: -92px;
+	@include color-chevron(#006858);
+	//padding-top: -25px;
+	margin-top: -92px;
 }
 
 .chevron-yellow {
-    @include color-chevron(#ffd200);
-    //padding-top: -25px;
-    margin-top: -92px;
-    //margin-right: -25px;
+	@include color-chevron(#ffd200);
+	//padding-top: -25px;
+	margin-top: -92px;
+	//margin-right: -25px;
 }
 
 .chevron-white {
-    @include color-chevron(#ffffff);
-    //padding-top: -25px;
-    margin-top: -91px;
+	@include color-chevron(#ffffff);
+	//padding-top: -25px;
+	margin-top: -91px;
 }
 
 .chart-title {
-    margin-top: 70px;
-    padding-top: 80px;
-    padding-bottom: 80px;
-    font-family: Open Sans,sans-serif;
-    font-weight: 700;
-    font-size: 28px;
-    text-align: center;
+	margin-top: 70px;
+	padding-top: 80px;
+	padding-bottom: 80px;
+	font-family: Open Sans, sans-serif;
+	font-weight: 700;
+	font-size: 28px;
+	text-align: center;
 }
 
 .chart-subtitle {
-    margin-top: 5px;
-    padding-bottom: 20px;
-    font-family: Open Sans,
-        sans-serif;
-    font-weight: 200;
-    font-size: 10px;
-    text-align: center;
+	margin-top: 5px;
+	padding-bottom: 20px;
+	font-family: Open Sans, sans-serif;
+	font-weight: 200;
+	font-size: 10px;
+	text-align: center;
 }
 
 .nav-link .active {
-    border-top-style: solid;
-    border-top-color: blue;
+	border-top-style: solid;
+	border-top-color: blue;
 }
 
 .source-text {
-    margin-left: 100px;
-    padding-bottom: 15px;
-    padding-top: 10px;
-    font-family: Open Sans, sans-serif;
-    font-weight: 300;
-    font-size: 12px;
-    text-align: left;
-    width: 84%;
+	margin-left: 4rem;
+	margin-right: 4rem;
+	padding-bottom: 2.5rem;
+	font-family: Open Sans, sans-serif;
+	font-weight: 300;
+	font-size: 12px;
 }
 
 .footnote-text {
-        font-family: Open Sans,
-        sans-serif;
-        font-weight: 300;
-        font-size: 14px;
-        text-align: left;
-        margin-bottom: 10px;
+	font-family: Open Sans, sans-serif;
+	font-weight: 300;
+	font-size: 14px;
+	text-align: left;
+	margin-bottom: 10px;
 }
 
 #table-container {
-    margin:20px;
+	margin: 20px;
 }
 
 #table-container > table {
-    display: block;
-    max-height: 60vh;
-    overflow: auto;
+	display: block;
+	max-height: 60vh;
+	overflow: auto;
 }

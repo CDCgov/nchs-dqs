@@ -1,144 +1,58 @@
-const hashUrls = require("./hashUrls.json");
+import { hashLookup } from "../config";
 
-// setTimeout(() => {
-//     dropdownListener();
-// }, 1300)
+const topicId = "data-topic-select";
+const subTopicId = "panel-num-select";
+const characteristicId = "stub-name-num-select";
+const showOnePeriodCheckboxId = "show-one-period-checkbox";
 
-// const getSelects = (value) => {
-//         let drops = [],
-//         dropdowns = $('.dropdown:visible').filter('.selection').each((i, item) => {
+export const writeHashToUrl = () => {
+	const topic = $(`#${topicId} :selected`)[0].value;
+	const subTopic = $(`#${subTopicId} :selected`)[0].value;
+	const characteristic = $(`#${characteristicId} :selected`)[0].value;
+	const singlePeriod = $(`#${showOnePeriodCheckboxId}`)[0].checked ? "single-time-period" : "all-time-periods";
+	// const view = $("a.nav-link.active").text().toLocaleLowerCase();
+	const currentHash = window.location.hash;
+	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
-//         if ($(item).dropdown('get value') !== null) {
-//             let $item = $(item).parent().children('.selection').children('select')
-
-//             if (value !== null) {
-//                 let str = {
-//                     "id": $item.attr('data-ref') ? $item.attr('data-ref') : $item.prop('id') || `sel${i}`,
-//                     "value": $(item).dropdown('get value')
-//                 }
-//                     drops.push(str);
-//             }
-//         }
-//     })
-
-//     setTimeout(() => {
-
-//         let wHash =  window.location.hash.split('&')[0];
-
-//             let uHash = drops.map((x) => {
-//                 return `${x.id}=${x.value}`;
-//             });
-
-//             uHash = `${wHash}&${uHash.join('&')}`;
-
-//             appState.countyHash = uHash;
-
-//             if (uHash[uHash.length -1] == '&') {
-//                 window.location.hash = window.location.hash
-//             }
-
-//             else {
-//                 if (appState.NAV_ITEM != 'trends_dailycases') {
-//                     window.location.hash = uHash;
-//                 }
-//             }
-
-//     }, 500);
-// }
-// const dropdownListener = () => {
-//     $('.dropdown').dropdown({
-//         onChange: function(value) {
-//             getSelects(value)
-//         }
-//     })
-
-//     if (window.location.hash.includes('county-view')) {
-//         setTimeout(() => {
-//             $("#list_select_state").dropdown('set selected', 'Select a State')
-//         }, 500);
-//     }
-// }
-
-const storeHash = () => {
-	document.addEventListener(
-		"click",
-		function (event) {
-			if (event.target.type == "radio") {
-				let r = $(
-						'.radio-selection-container input[type="radio"]:checked:visible, .selectsED-container input[type="radio"]:checked:visible'
-					),
-					m = [...r].map(function (item) {
-						return item.getAttribute("id");
-					});
-				appState.hash = window.btoa(m);
-				setTimeout(() => {
-					applyHash();
-				}, 300);
-			}
-		},
-		false
-	);
-};
-
-document.addEventListener(
-	"click",
-	function (event) {
-		if (event.target.type == "radio") {
-			let r = $(
-					'.radio-selection-container input[type="radio"]:checked:visible, .selectsED-container input[type="radio"]:checked:visible'
-				),
-				m = [...r].map(function (item) {
-					return item.getAttribute("id");
-				});
-			appState.hash = window.btoa(m);
-			setTimeout(() => {
-				applyHash();
-			}, 300);
-		}
-	},
-	false
-);
-
-const applyHash = () => {
-	prettyUrlfromHash();
-
-	let urlHash = window.location.hash.split("_")[1];
-
-	if (urlHash) {
-		let prettyUrlObj = hashUrls.urls.filter(function (entry) {
-			return entry.id == urlHash;
-		});
-
-		if (prettyUrlObj[0]) {
-			let hashObj = window.atob(prettyUrlObj[0].hash).replace(/['"]+/g, "").split(",");
-
-			hashObj.forEach((element) => {
-				let stateCheck = setInterval(() => {
-					if ($(`#${element}`).length) {
-						clearInterval(stateCheck);
-						$(`#${element}`).click();
-						appState.hash = "";
-					}
-				}, 100);
-			});
-		}
-
-		appState.prevTabHash = window.location.hash.split("_")[0];
+	try {
+		window.location.hash = `
+		${hashPrefix.replace("#", "")}_
+		${hashLookup[topicId].find((l) => l.value === topic).hash}/
+		${hashLookup[topicId].find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash}/
+		${hashLookup[topicId].find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash}/
+		${singlePeriod}		
+	`;
+	} catch {
+		/* do nothing */
 	}
 };
 
-const prettyUrlfromHash = () => {
-	if (appState.hash) {
-		let prettyUrlObj = hashUrls.urls.filter(function (entry) {
-			return entry.hash == appState.hash;
-		});
+export const getSelections = () => {
+	const { hash } = window.location;
+	if (hash) {
+		let selections = hash.split("_");
+		if (selections.length <= 1) return null;
 
-		if (prettyUrlObj[0] && appState.NAV_ITEM != undefined) {
-			window.location.hash = `${appState.NAV_ITEM.split("_")[0]}_${prettyUrlObj[0].id}`;
-		} else if (appState.NAV_ITEM != undefined) {
-			window.location.hash = `${appState.NAV_ITEM}`;
-		}
+		selections = selections[1].split("/");
+		const topic = hashLookup[topicId].find((l) => l.hash === selections[0]).value;
+		const subTopic = hashLookup[topicId]
+			.find((l) => l.hash === selections[0])
+			[subTopicId].find((s) => s.hash === selections[1]).value;
+		const characteristic = hashLookup[topicId]
+			.find((l) => l.hash === selections[0])
+			[characteristicId].find((c) => c.hash === selections[2]).value;
+		const viewSinglePeriod = selections[3] === "single-time-period";
+
+		$(`#${topicId}`).val(topic);
+		$(`#${characteristicId}`).val(characteristic);
+		$(`#${showOnePeriodCheckboxId}`).prop("checked", viewSinglePeriod);
+
+		return {
+			topic,
+			subTopic,
+			characteristic,
+			viewSinglePeriod,
+		};
 	}
+	return null;
 };
-
-export { storeHash, applyHash, prettyUrlfromHash };

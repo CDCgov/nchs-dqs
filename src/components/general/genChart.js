@@ -21,6 +21,7 @@ import { genFormat } from "../../utils/genFormat";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
+import { data } from "jquery";
 
 export class GenChart {
 	constructor(providedProps) {
@@ -29,6 +30,8 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+		//console.log("genChart props=", p);
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -41,7 +44,7 @@ export class GenChart {
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
 		// (1) backup ORIGINAL p.data that has ALL DATA in it
-		const allIncomingData = p.data; // this has to be used for the LEGENDS
+		let allIncomingData = p.data; // this has to be used for the LEGENDS
 		// (2) Limit the draw data to max of 10 lines or bars
 		let barCount = 0;
 		const maxBarCount = 10; /// this could be a PROP PASSED INTO genChart (TT)
@@ -49,6 +52,7 @@ export class GenChart {
 		// - note cannot do exact same for lines bc there are data points not just one data per line
 		// whereas in the bar charts each bar is one data point so the below approach works
 		if (p.usesBars) {
+			//console.log("##DRAW BAR CHART###");
 			p.data.forEach((d, i) => {
 				if (d.dontDraw === false && barCount < maxBarCount) {
 					barCount++; // increment barCount
@@ -63,10 +67,40 @@ export class GenChart {
 			// - bc there are MANY points for each line not just one data point
 			// need to look at the "nested" data and use only MAX of 10 "nests"
 			// - see below by searching for fullNestedData
+			// 7/28/22 (TT) NOTE: I saw a line chart where the yScaleLeft was too big compared to the data
+			// I think it is due to line chart yScaleLeft scaling on all data vs. selected data
+			// - if that is the case we will need to narrow down the drawn data BEFORE
+			// creating yScaleLeft
 		}
+
+		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
+
+		//debugger;
+
+		// if you need to look at incoming data
+		console.log("genChart p.data:", p.data);
+
+		// FOr reliability, convert any NaN values to null.
+		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
+		//allIncomingData = allIncomingData.filter((d) => (d.estimate !== null) && (!isNaN(d.estimate)));
+
+		p.data = p.data.filter(function (d) {
+			if (isNaN(d.estimate)) {
+				return (d.estimate = null); // estimate missing so fill in with null???
+			} else {
+				return d;
+			}
+		});
+		allIncomingData = allIncomingData.filter(function (d) {
+			if (isNaN(d.estimate)) {
+				return (d.estimate = null); // estimate missing so fill in with null???
+			} else {
+				return d;
+			}
+		});
 
 		// NOW filter down to only bars/lines to be drawn
 		const drawData = p.data;
@@ -93,41 +127,136 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		var insertLinebreaks = function (d) {
-			var el = d3.select(this);
-			var words = d.split(":"); // split labels on : colon
+		const insertLinebreaks = function (d) {
+			let el = d3.select(this);
 			el.text("");
-			//this.dy = this.dy + offset;
-			for (var i = 0; i < words.length; i++) {
-				var str;
-				var result;
-				var tspan;
-				if (words[i].length < 24) {
-					tspan = el.append("tspan").text(words[i]);
-					tspan.attr("x", 0).attr("dy", "10");
-				} else {
-					str = words[i];
-					result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
-					tspan = tspan.append("tspan").text(result[0]);
-					tspan.attr("x", 0).attr("dy", "10");
-					tspan = tspan.append("tspan").text(result[1]);
+			let words;
+			// some Characteristics are long but NO COLON just spaces
+			if (d.match(":")) {
+				words = d.split(":"); // split labels on : colon
+				//console.log("Colon split:", d, words);
+				for (var i = 0; i < words.length; i++) {
+					var str;
+					var result;
+					var tspan;
+					if (words[i].length < 24) {
+						tspan = el.append("tspan").text(words[i]);
+						tspan.attr("x", 0).attr("dy", "12"); // dy is space between lines
+						/* 						if (words.length < 2) {
+							tspan.attr("x", 0).attr("dy", "32");
+						} 
+						if (words.length == 2) {
+							tspan.attr("x", 0).attr("dy", "30");
+						}
+						if (words.length == 3) {
+							tspan.attr("x", 0).attr("dy", "12"); // was 21
+						}
+						if (words.length == 4) {
+							tspan.attr("x", 0).attr("dy", "12");
+						} */
+					} else {
+						str = words[i];
+						result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
+						tspan = tspan.append("tspan").text(result[0]);
+						tspan.attr("x", 0).attr("dy", "11");
+						tspan = tspan.append("tspan").text(result[1]);
+					}
+				} // end for loop
+			} else {
+				// try spaces
+				// - to understand why this is here select Medicaid and then "Level of Difficulty"
+				// - very long text with no colon but lots of spaces
+				words = d.split(" "); // split labels on spaces
+				//console.log("SPACE split d, words:", d, words);
+				// now accumulate strings up to a certain length
+				let tmpLine = "";
+				let lineMaxLen = 21;
+				let lineLen = 0;
+				let lines = [];
+				words.forEach((wd) => {
+					if (lineLen + wd.length < lineMaxLen) {
+						tmpLine += wd + " ";
+						lineLen += wd.length + 1;
+					} else {
+						lines.push(tmpLine);
+						console.log("Push line:", tmpLine);
+						tmpLine = wd + " "; // start with word that didnt fit
+						lineLen = wd.length + 1;
+					}
+				}); // end foreach
+				// always ends on one final string which needs to be pushed
+				lines.push(tmpLine);
+				if (lines.length === 1) {
+					// push a blank line for now bc couldnt get dy changes below to do anything
+					lines.push("      ");
 				}
+				for (var i = 0; i < lines.length; i++) {
+					var str;
+					var result;
+					var tspan;
+					if (lines[i].length < 25) {
+						tspan = el.append("tspan").text(lines[i]);
+					}
+					//console.log("BEFORE tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+					if (lines.length < 2) {
+						tspan.attr("x", 0).attr("dy", "32");
+					}
+					if (lines.length == 2) {
+						tspan.attr("x", 0).attr("dy", "30");
+					}
+					if (lines.length == 3) {
+						tspan.attr("x", 0).attr("dy", "21");
+					}
+					if (lines.length == 4) {
+						tspan.attr("x", 0).attr("dy", "12");
+					}
+					//console.log("AFTER tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+				} // end for loop
+			} // end else case
 
-				if (i > 0)
-					// the dy value is the "space between label lines" - try to calc so it adjusts some
-					tspan.attr("x", 0).attr("dy", axisLabelFontSize / 2 + 6); // was 15
+			// if this is here it only affects the last line
+			if (i > 0) {
+				// the dy value is the "space between label lines" - try to calc so it adjusts some
+				tspan.attr("x", 0).attr("dy", axisLabelFontSize / 2 + 6); // was 15
+				//tspan.attr("y", 0).attr("dy",
 			}
+
 			// based on number of lines, adjust height
 			let offset = words.length * 0.005;
 			if (words.length > 2) {
 				//d3.select(this).attr("dy",-offset + "em"); //-offset + "em"
-				d3.select(this).attr("dy", 23);
+				d3.select(this).attr("dy", 27);
 			} else {
 				// move it down closer to hash
 				offset = 3 * offset;
 				d3.select(this).attr("dy", 30);
 			}
 		};
+
+		// Find the position of a SVG DOM element
+		function getPosition(element) {
+			let match;
+			let x, y;
+			// We have a transform, that might contain a translate(x,y)
+			let transform = element.attr("transform");
+			if (transform) match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
+
+			// We have translate(x,y)
+			if (match?.length >= 2) {
+				x = parseFloat(match[1]);
+				y = parseFloat(match[2]);
+
+				// We try to get x="" and y=""
+			} else {
+				x = element.attr("x");
+				y = element.attr("y");
+			}
+			// Set x and y to 0 if they are undefined or null
+			x = x ? x : 0;
+			y = y ? y : 0;
+
+			return { x, y };
+		}
 
 		const svgId = `${p.vizId}-svg`;
 
@@ -173,17 +302,15 @@ export class GenChart {
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: axisSize, // gives room for tick label when no chart title
+			top: axisSize, // + 40, // gives room for tick label when no chart title
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: bottomTitleSize + bottomAxisScale * axisSize * p.xLabelScale + 40, // add default extra 10px to bottom for below bottom line letters (like y)
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
 		};
 
 		if (p.chartRotate === true) {
-			// increase bottom margin - which ends up being left side where Characteristics are displayed
-			margin.bottom = margin.bottom + 90;
-			//margin.left = 90;
-			// messing with margin.left here pushed the barchart legend up onto the barchart :-(
+			margin.bottom *= 3;
+			margin.top *= 1.5;
 		}
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -192,16 +319,6 @@ export class GenChart {
 		let svgHeight = svgWidth * svgHeightRatio;
 		let chartWidth = svgWidth - xMargin;
 		let chartHeight = svgHeight - yMargin;
-		// change dimensions some for rotated bar chart (TT)
-		// - these ratios could be converted to props and passed in TODO
-		if (p.chartRotate === true) {
-			// increase height some
-			svgHeight = svgHeight * 1.4;
-			chartHeight = chartHeight * 1.4;
-			// reduce width some
-			svgWidth = svgWidth * 0.8;
-			chartWidth = chartWidth * 0.8;
-		}
 
 		// get chart x and y centers
 		const halfXMargins = xMargin / 2;
@@ -212,7 +329,15 @@ export class GenChart {
 		const halfHeight = svgHeight / 2;
 		const chartCenterY = halfHeight + margin.top - halfYMargins;
 
-		// apply chart title
+		if (p.chartRotate) {
+			const barWidth = 60;
+			chartHeight = chartWidth - xMargin;
+			svgHeight = svgWidth;
+			chartWidth = p.data.length * barWidth + 0.3 * barWidth;
+			svgWidth = xMargin + chartWidth;
+		}
+
+		//  apply chart title
 		if (p.usesChartTitle) {
 			const title = viz
 				.append("div")
@@ -235,9 +360,9 @@ export class GenChart {
 		if (p.firefoxReversed === true) {
 			xScale = d3.scaleBand().range([chartWidth, 0]).paddingInner(0.1).paddingOuter(0.1);
 		} else {
-			// (TT) could make paddingOuter a prop and pass it in - for now hardcoding this to 1.7
-			//xScale = d3.scaleTime().range([0, chartWidth]);
-			xScale = d3.scaleBand().range([0, chartWidth]).paddingInner(0.1).paddingOuter(1.7);
+			xScale = p.needsScaleTime
+				? d3.scaleTime().range([0, chartWidth])
+				: d3.scaleBand().range([0, chartWidth]).paddingInner(0.15).paddingOuter(0.15);
 		}
 
 		let yScaleExtent = [0];
@@ -249,6 +374,30 @@ export class GenChart {
 			yLeft1TickValues = Utils.getPowerOf10ArrayWithinBounds(...yScaleExtent, 6);
 		}
 
+		// (TT) leave this COMMENTED OUT code here for now
+		// - saw a case where the calc Max was way high vs. the data
+		// and I think it is bc the .max statement below is on all p.data
+		// where as the line charts use fullNestedData
+		// so scale is too high compared to "selected" 10 lines data
+		// this section can help debug that if we see it again
+		/* 		console.log("Max scale leftDomainOverageScale =", p.leftDomainOverageScale);
+		console.log("Max scale p.data=", p.data);
+		let calcMax = d3.max(p.data, (d) =>
+			d3.max([
+				p.leftDomainMin,
+				d[p.chartProperties.yLeft1],
+				d[p.chartProperties.yLeft2],
+				d[p.chartProperties.yLeft3],
+				d[p.chartProperties.bars],
+				parseFloat(d["estimate_uci"]), // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+			])
+		);  // * p.leftDomainOverageScale;
+		console.log("Max scale calcMax=", calcMax); */
+
+		// THE PROBLEM: WE CALC MAX  HERE BUT THAT IS ON ALL DATA
+		// FOR LINE CHARTS!
+		// GO down below here when we set dontDraw on nested line data
+		// so that's a problem bc the scale is WAY OFF for SOME line charts
 		const yScaleLeft = yScaleType
 			.domain(
 				p.leftDomain
@@ -262,6 +411,7 @@ export class GenChart {
 									d[p.chartProperties.yLeft2],
 									d[p.chartProperties.yLeft3],
 									d[p.chartProperties.bars],
+									p.enableCI ? parseFloat(d["estimate_uci"]) : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
 								])
 							) * p.leftDomainOverageScale,
 					  ]
@@ -305,19 +455,7 @@ export class GenChart {
 			.ticks(p.rightTickCount)
 			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
-		// apply the svg to the container element
-		const svg = viz
-			.append("svg") //.attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
-			.attr("id", svgId)
-			.attr("width", "100%") // percent width
-			.attr("height", "100%") // percent height
-			.attr(
-				"style",
-				"width: 100%; padding-bottom: 92%; height: 1px; overflow: visible; display:inline; margin: auto;"
-			)
-			.attr("viewbox", "0 0 100 100")
-			.attr("preserveAspectRatio", "xMinYMin meet");
-		//.attr('preserveAspectRatio', 'xMidYMid meet')
+		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
 		// - this could also be enabled or disabled from a PROP
@@ -327,7 +465,6 @@ export class GenChart {
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
 			.attr("width", svgWidth);
-		// CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -346,6 +483,7 @@ export class GenChart {
 					.attr("x", chartCenterX)
 					.attr("y", chartCenterY);
 			}
+			// note if we have no data, genChart still tries to build the bar chart legend
 		} else {
 			// append the axes
 			// xAxis
@@ -403,7 +541,7 @@ export class GenChart {
 			}
 
 			// left yAxis
-			if (p.usesLeftAxisTitle) {
+			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
@@ -481,7 +619,6 @@ export class GenChart {
 			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
-				//debugger;
 				// need the legend Nests from ALL incoming data
 				fullNestedData = d3
 					.nest()
@@ -490,26 +627,24 @@ export class GenChart {
 
 				// limit legend to 10 max
 				fullNestedData.forEach((d, i) => {
-					if (i > 9) {
-						console.log("nested dontDraw on data d,i", d, i);
-					}
+					//if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
 					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
 						lineCount++; // increment barCount
 					} else {
 						// then either dontDraw already true or needs to be set to true
 						// bc line count is exceeded
-						// --- might need to iterate over ALL values and set ALL to true
+						// --- iterate over ALL values and set ALL to true
 						//console.log("nested dontDraw SET TRUE on data d,i", d, i);
 						d.values[0].dontDraw = true;
 					}
 				});
 
 				fullNestedData.forEach((nd, i) => {
-					//debugger;
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
-						//console.log("nested nd,i", nd, i);
-						lines[i] = d3.line();
+						lines[i] = d3.line().defined(function (d) {
+							return d.estimate !== null;
+						});
 						const lineGroup = svg
 							.append("g")
 							.attr("class", nd.key.replace(/[\W_]+/g, ""))
@@ -524,10 +659,6 @@ export class GenChart {
 							.append("path")
 							.attr("fill", "none")
 							.attr("stroke", multiLineColors(i))
-							/* 							.attr("stroke", (nd) => {
-															// save the color used
-															return multiLineColors[i];
-														}) */
 							.attr("stroke-width", 2);
 					}
 				});
@@ -568,8 +699,6 @@ export class GenChart {
 				.attr("stroke", rightLineColor)
 				.attr("stroke-width", 4);
 
-			//debugger;
-
 			const endRangeSpecialSectionStartDate = p.usesMultiLineLeftAxis
 				? fullNestedData[0].values.slice(-p.finalDataPointsDaysCount)[0].date
 				: p.data.slice(-p.finalDataPointsDaysCount)[0].date;
@@ -603,7 +732,13 @@ export class GenChart {
 
 			const updateTheChart = (data, nestedData) => {
 				const sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
-				xScale.domain(sortedXValues.map((d) => d));
+				if (p.needsScaleTime) {
+					let minReported = sortedXValues[0];
+					let maxReported = [...sortedXValues.slice(-1)][0];
+					minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
+					maxReported.setDate(maxReported.getDate() + 1);
+					xScale.domain([minReported, maxReported]).nice();
+				} else xScale.domain(sortedXValues.map((d) => d));
 
 				if (p.usesDomainCallout) {
 					const calloutDomainY = yScaleLeft(p.domainCalloutY);
@@ -670,7 +805,8 @@ export class GenChart {
 										return barColor;
 									})
 									.attr("height", (d) => chartHeight - yScaleLeft(d[p.chartProperties.bars]))
-									.attr("x", (d) => xScale(d[p.chartProperties.xAxis]))
+									//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
+									.attr("x", (d, i) => xScale(d[p.chartProperties.xAxis]))
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("opacity", 0.85);
 							},
@@ -698,6 +834,54 @@ export class GenChart {
 								exit.remove();
 							}
 						);
+
+					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
+					if (p.enableCI) {
+						// did this so I could log the data
+						//console.log("cidata,xbandwidth", drawData, xScale.bandwidth());
+
+						drawData.forEach((d, i) => {
+							// (TT) note bc of the rotated chart:
+							// - x in the below code is up and down as you see chart
+							// - y is left and right as you look at chart
+							const CIBarId = "CIBar" + i;
+							const CIBarItem = svg
+								.append("line")
+								.datum(d)
+								.attr("class", `${svgId}-CIBarItem`)
+								.attr("id", CIBarId)
+								.filter(function (d) {
+									// console.log(
+									// 	"cidata2 i, lci, est, uci:",
+									// 	i,
+									// 	d.estimate_lci,
+									// 	d.estimate,
+									// 	d.estimate_uci
+									// );
+									return d.estimate_uci;
+								})
+								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM FROM TESTING THESE CI WHISKERS ARE CORRECT
+								.attr("x1", function (d) {
+									return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left;
+								}) //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() );
+								.attr("y1", function (d) {
+									return yScaleLeft(d.estimate_lci) + margin.top;
+								})
+								//.attr("y1", function (d) { console.log("y1=", (yScaleLeft(d[p.chartProperties.bars] - d.estimate_lci))); return  yScaleLeft(d.estimate_lci) + margin.top; })
+								.attr(
+									"x2",
+									(d) => xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left
+								)
+								//.attr("y2", function (d) { return  yScaleLeft(d.estimate_uci) + margin.top; })
+								.attr("y2", function (d) {
+									// console.log("cProp.bars=", d[p.chartProperties.bars]);
+									// console.log("y2=", yScaleLeft(d[p.chartProperties.bars]));
+									return yScaleLeft(d.estimate_uci) + margin.top;
+								})
+								.attr("stroke", "black")
+								.attr("stroke-width", 3);
+						});
+					}
 				}
 
 				if (p.usesStackedBars) {
@@ -721,7 +905,6 @@ export class GenChart {
 				if (p.usesBars) {
 					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
 					p.numberOfEquallySpacedDates = drawData.length + 1;
-					//console.log("numberOfEquallySpacedDates set to:", p.numberOfEquallySpacedDates);
 				}
 				const allDateTicksButLast = xScale
 					.domain()
@@ -735,7 +918,8 @@ export class GenChart {
 					tickValues = [...allDateTicksButLast, lastTick];
 				} else tickValues = [...allDateTicksButLast, lastTick];
 				tickValues = [...allDateTicksButLast, lastTick];
-				const offset = xScale.bandwidth() / 2; // the alignment value for line/ellipse position to bar positions
+
+				const offset = p.needsScaleTime ? 0 : xScale.bandwidth() / 2; // the alignment value for line/ellipse position to bar positions
 
 				if (p.finalDataPointsDaysCount && p.finalDataPointsType) {
 					// end-data edge-cases
@@ -772,11 +956,42 @@ export class GenChart {
 					nestedData.forEach((nd, i) => {
 						// only draw those whose first data point is dontDraw = false
 						if (nd.values[0].dontDraw === false) {
-							console.log("nd values:", nd);
-
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
+
+							// #### Show confidence interval #####
+							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
+							if (p.enableCI) {
+								lineGroups[i]
+									.append("path")
+									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
+									.attr("fill", multiLineColors(i))
+									.attr("stroke", "none")
+									.style("opacity", 0.4)
+									.attr(
+										"d",
+										d3
+											.area()
+											.x(function (d) {
+												// console.log(
+												// 	"x d,i,x:",
+												// 	d,
+												// 	i,
+												// 	xScale(d[p.chartProperties.xAxis]) + offset
+												// );
+												return xScale(d[p.chartProperties.xAxis]) + offset;
+											})
+											.y0(function (d) {
+												// console.log("y0 d:", yScaleLeft(d.estimate_lci));
+												return yScaleLeft(d.estimate_lci);
+											})
+											.y1(function (d) {
+												// console.log("y1 d:", yScaleLeft(d.estimate_uci));
+												return yScaleLeft(d.estimate_uci);
+											})
+									);
+							}
 
 							lineGroupPaths[i].attr("d", lines[i](nd.values));
 							lineGroups[i]
@@ -786,28 +1001,29 @@ export class GenChart {
 									(enter) => {
 										enter
 											.append("ellipse") // adding hover over ellipses
+											.filter(function (d) {
+												return d.estimate;
+											})
 											.style("fill", multiLineColors(i))
-											/* 											.style("fill", (d, i) => {
-																							// save the color used
-																							d.assignedLegendColor = multiLineColors[i];
-																							console.log("color assigned to i,d,multilinecolor:", d.assignedLegendColor,d,multiLineColors[i]);
-																							return multiLineColors[i];
-																						}) */
 											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
 											.attr("ry", d3.max([5, d3.min([offset, 15])]))
-											.style("opacity", 0);
+											.style("opacity", 0); // this makes it invisible
 										enter
 											.append("ellipse") // add always visible "point" (TT)
+											// filter out the nulls at last possible moment (TT)
+											.filter(function (d) {
+												return d.estimate;
+											})
 											// change to a function and set based on the "flag"
 											.style("fill", function (d) {
 												if (d.flag === "*") {
 													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
-													return "white";
+													return "white"; // creates circle that appears "empty" for "*" flag
 												} else {
 													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
-													return multiLineColors(i);
+													return multiLineColors(i); // fills in the dot with line color
 												}
 											})
 											.style("stroke", function (d) {
@@ -1031,7 +1247,10 @@ export class GenChart {
 						.attr("opacity", calloutDateX ? "1" : "0");
 				}
 
-				if (p.usesDateAsXAxis) xAxis.tickValues(tickValues);
+				if (p.usesDateAsXAxis) {
+					if (p.needsScaleTime) xAxis.ticks(7).tickFormat((d) => genFormat(d, "year"));
+					else xAxis.tickValues(tickValues);
+				}
 				if (p.usesBars === true && p.chartRotate === true) {
 					// need to format axis tick vals
 					xAxisDraw.call(xAxis);
@@ -1046,7 +1265,7 @@ export class GenChart {
 						.attr("text-anchor", "end")
 						.attr(
 							"transform",
-							`translate(${p.xLabelRotatedXAdjust * overallScale}, ${
+							`translate(${p.xLabelRotatedXAdjust * overallScale + 6}, ${
 								p.xLabelRotatedYAdjust * overallScale
 							}) rotate(${p.bottomAxisRotation})`
 						);
@@ -1113,16 +1332,14 @@ export class GenChart {
 			genTooltip.render();
 		}
 
-		// (TT) this is where we rotate the entire bar chart
+		let currPos;
 		if (p.usesBars === true && p.chartRotate === true) {
-			// rotate the entire chart
-			let moveCenter = svgWidth / 3; // this helps center bar chart (TT)
-			d3.selectAll(`#${svgId}`).attr(
-				"transform",
-				`rotate(${p.chartRotationPercent}) translate(70 ${moveCenter})`
-			);
+			// rotate the chart prior to adding legend items for proper location setting
+			currPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			d3.select(`#${svgId}`).attr("transform", "rotate(90)");
 
-			// now add the LEGEND! - have to do this last after Bar Chart drawn
+			// Add the legend. Have to do this last after Bar Chart drawn
+
 			if (p.usesLegend === true) {
 				// set up the data first
 				//console.log("p.data:", p.data);
@@ -1136,6 +1353,8 @@ export class GenChart {
 					return a.stub_label_num - b.stub_label_num;
 				});
 
+				// (TT) Reliability they want all Null and NaN entries REMOVED
+
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
@@ -1148,6 +1367,20 @@ export class GenChart {
 						//console.log("legend incoming data:", i, d.stub_label);
 					}
 				});
+
+				// Are there more than 10 legend items
+				//console.log("### BARS numLegendItems:", numLegendItems);
+
+				/* 				svg.append("text")
+							.attr("id", "legendBarTxt")
+							//.attr("class", "visible")
+							.attr("x", labelTx)
+							.attr("y", labelTy)
+							.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups"); */
+
 				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
@@ -1159,15 +1392,8 @@ export class GenChart {
 					svg.attr("width", svgWidth + legendHeight + 100);
 					svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30);
 
-					//console.log("genChart: svgH, svgW:", svgHeight, svgWidth);
-
-					// try to center it
-					legendTx = svgHeight / 2 - margin.left + 25;
-					// move it down outside the bottom margin
-					legendTy = margin.top + svgWidth;
-
 					legendTx = svgWidth + 10;
-					legendTy = (svgHeight / 3) * 2 + 25;
+					legendTy = (svgHeight - margin.top - margin.bottom) / 2; // * 2 + 25;
 
 					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 				} else {
@@ -1176,6 +1402,24 @@ export class GenChart {
 				}
 
 				if (legendData[0].text.length > 0) {
+					// ***********************************************
+					// (TTT) MOVE TO AFTER THE LEGEND IS MADE
+					// THEN POSITION IT EXACTLY CENTER OF THE LEGEND
+					//**************************************************
+					if (legendData.length > 10) {
+						const selectTenText = svg
+							.append("g")
+							.attr("transform", `translate(${legendTx}, ${legendTy})`)
+							.append("text")
+							.attr("id", "selectTenTxt")
+							.attr("x", -80) //legendTx - 120)
+							.attr("y", -16) //legendTy - 250)
+							//.attr("dy", "0.32em")
+							.style("fill", "black")
+							.style("font-size", "17px")
+							.text("Select up to 10 groups")
+							.attr("transform", `rotate(-${p.chartRotationPercent})`);
+					}
 					const legendContainer = svg
 						.append("g")
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -1280,31 +1524,41 @@ export class GenChart {
 					legendContainer
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
+
+					// Now center the legend container
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
+
+					// Now get each legend Item Line and move those to the left
+					let adjustX;
+					let adjustY;
+					const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+					legendElementG.forEach((text) => {
+						d3.select(text).attr("transform", function (d) {
+							adjustX = text.transform.animVal[0].matrix.e;
+							// since bar chart is rotated the move left is on the Y not the X
+							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width") / 2;
+							//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+							//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+							let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
+							//console.log("newTransform:", newTransform);
+							return newTransform; // this.getAttribute("transform") +
+						});
+					});
 				} // end if legendData.length > 0
-
-				// enlarge chart container - NOT WORKING FOR SOME REASON
-				/* 				const chartContainer = document.querySelectorAll(`.chart-container`);
-								chartContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75);
-								const tabContainer = document.querySelectorAll(`.ex-with-icons-content`);
-								tabContainer
-									.attr("margin-top",50)
-									.attr("width", svgHeight + 100)
-									.attr("height", svgWidth + 75); */
-
-				///
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
-			//debugger;
 			if (p.usesLegend) {
 				// FOR ASSIGNED LEGEND COLOR TO WORK, LEGEND HAS TO BE DRAWN
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
-				if (p.usesMultiLineLeftAxis && fullNestedData[0].key !== "undefined") {
+
+				//Sort ascending order
+				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
+				legendData = legendSorted;
+
+				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
 					fullNestedData.forEach((d, i) => {
 						//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
@@ -1315,6 +1569,8 @@ export class GenChart {
 							dontDraw: d.values[0].dontDraw,
 						};
 					});
+
+					//console.log("## LINES numLegendItems:", numLegendItems);
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
@@ -1335,18 +1591,6 @@ export class GenChart {
 						};
 					});
 					legendData.reverse();
-					// CAN WE DEBUG THIS TO SHOW LEGEND FOR BARS -- scale and text both UNDEFINED
-					// - also even if I got this working it CAN"T GO HERE
-					// - we need to add the LEGEND LAST AFTER ROTATING THE CHART!!!
-					/* 				} else if (p.usesBars) { 
-										p.data.forEach((d, i) => {
-											legendData[i] = {
-												stroke: p.barColors[i],
-												dashArrayScale: p.left1DashArrayScale,
-												text: d.key,
-											};
-										});
-										legendData.reverse(); */
 				} else {
 					if (p.usesLeftLine1) {
 						legendData.push({
@@ -1393,7 +1637,7 @@ export class GenChart {
 					svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
 					// try to center it
-					legendTx = svgWidth / 2 - margin.left + 25;
+					legendTx = (svgWidth - margin.left - margin.right) / 2 + 50;
 					// move it down outside the bottom margin
 					legendTy = margin.top + svgHeight;
 					// now move the legend below the axis
@@ -1412,7 +1656,7 @@ export class GenChart {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-				// TTT
+
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
@@ -1449,7 +1693,7 @@ export class GenChart {
 						.attr("font-size", axisLabelFontSize * 1.1)
 						.attr("x", 45)
 						.attr("y", axisLabelFontSize * 0.5)
-						.text(function (dtemp) {
+						.text(function (curD2) {
 							// TRICKY: you can do a function on any variable but then use
 							// curD to get the value of dontDraw
 							// if you use d or curD in both places it does not work!
@@ -1460,7 +1704,6 @@ export class GenChart {
 								return "\uf14a"; // check square unicode
 							}
 						});
-					//debugger;
 
 					legendItem
 						.append("g")
@@ -1473,18 +1716,81 @@ export class GenChart {
 
 				// get all legend items and find the longest then set the legend container size
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+				//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 				const newWidth = d3.max(legendWidths);
 				legendContainer.attr("width", newWidth + 56);
 
-				// (TT) the code below never worked bc it only moved the outer legend wrapper not
-				// try to move container
-				// try to center it
-				//legendTx = legendContainer.attr("x") - 0.5 * newWidth;
-				// move it down outside the bottom margin
-				//legendTy = legendContainer.attr("y") + legendHeight;
-				//legendContainer.attr("transform", `translate(${legendTx}, ${legendTy})`)
+				// Now center the legend container
+				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
+
+				// Now get each legend Item Line and move those to the left
+				let adjustX;
+				let adjustY;
+				const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
+				legendElementG.forEach((text) => {
+					d3.select(text).attr("transform", function (d) {
+						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2;
+						adjustY = text.transform.animVal[0].matrix.f;
+						//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
+						//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
+						let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
+						//console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") +
+					});
+				});
+
+				if (legendData.length > 10) {
+					const selectTenText = svg
+						.append("g")
+						.attr("transform", `translate(${legendTx}, ${legendTy})`)
+						.append("text")
+						.attr("id", "selectTenTxt")
+						.attr("x", -80)
+						.attr("y", -12)
+						.style("fill", "black")
+						.style("font-size", "17px")
+						.text("Select up to 10 groups");
+
+					// if setting the location above is not consistent,
+					// then calc width of the text and place half way across container
+					// minus half the width of the text
+					/* 					const selTenTxt = document.querySelector(`#selectTenTxt`);
+					const selTenWidth = selTenTxt.getBoundingClientRect().width;
+					console.log("10width:", selTenWidth);
+					console.log("10 top:", selTenTxt.getBoundingClientRect().top);
+					console.log("10 left:", selTenTxt.getBoundingClientRect().left);
+					console.log("legendContainer x:", legendContainer.attr("x"));
+					
+					d3.select(selTenTxt).attr("transform", function (d) {
+						console.log("d and d.x", d);
+						adjustX = selTenTxt.getBoundingClientRect().left ;
+						adjustY = legendContainer.attr("y") - legendContainer.attr("width") / 2;
+						adjustY = selTenTxt.getBoundingClientRect().top;
+						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						console.log("newTransform:", newTransform);
+						return newTransform; // this.getAttribute("transform") + 
+					});  */
+				}
 			}
+		}
+
+		if (p.chartRotate) {
+			// Rotation occurs around the center of the svg. The final width of the rotated svg is designed to be the
+			// original height, pre-rotation. Due to css positioning of the svg, when the rotated height becomes greater than
+			// the width after adding legend items, rotation changes the position of the svg off of desired center.
+			// To move it back, we first get the desired location then rotate (done above), find out where it is after rotation,
+			// (done here) and finally move it back(required re-rotating WITH translation at the same time).
+
+			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
+			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
+
+			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`);
+
+			// finally adjust the green container height for the content of the new svg height
+			$("#chart-container").css("height", newPos.height - 80);
+		} else {
+			$("#chart-container").css("height", $(`#${svgId}`)[0].getBoundingClientRect().height);
 		}
 
 		return {

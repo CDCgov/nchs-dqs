@@ -1,4 +1,4 @@
-// A copy-past version of all chart props available is at the bottom of this file in
+// A copy-paste version of all chart props available is at the bottom of this file in
 // the /* ** COPY-PAST-CONFIG ** */ section, below
 
 export const getProps = (props) => {
@@ -30,6 +30,7 @@ export const getProps = (props) => {
 		usesLegend: props.usesLegend || false, // e.g. Demographic Trends (pop-factors) and e.g. Health Care Personnel (a stacked bar with legend)
 		usesHoverBars: props.usesHoverBars || false, // the very faint bars that highlight, when hovered, over full y range. Enable tooltip to show anywhere in chart area
 		usesDateAsXAxis: props.usesDateAsXAxis || false, // this ensures there is enough margin right/left for the first and last dates to stay within chart visible area
+		needsScaleTime: props.needsScaleTime || false, // uneven time periods for data reporting need the xAxis scaled with scaleTime() instead of default of scaleBand()
 		usesMultiLineLeftAxis: props.usesMultiLineLeftAxis || false, // multiple lines centered on a key within a data set, each displaying the same json property for that key
 		usesTwoLineXAxisLabels: props.usesTwoLineXAxisLabels || false, // doubles the calculated margin-bottom; handle algorithm of how to split the label with genChart returned values; e.g. MIS-C "Patients by Race & Ethnicity" chart
 		usesDateCallout: props.usesDateCallout || false, // adds a dashed line and label to give info about a specific date in a date range chart
@@ -100,7 +101,8 @@ export const getProps = (props) => {
 		firefoxReversed: props.firefoxReversed || false, // this prop is used when firefox reverses the order of the bars compared to chrome
 		noDataMessage: props.noDataMessage || "There is no data for your selections. Please change your options.", // message to be displayed in place of chart when no data array is passed into genChart (CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component)
 		chartRotate: props.chartRotate, // true/false on ewhether to rotate the entire chart
-		chartRotationPercent: props.chartRotationPercent,
+		chartRotationPercent: props.chartRotationPercent, // (TT) this is used to rotate bar chart
+		enableCI: props.enableCI || 0, // (TT) enable confidence intervals
 	};
 };
 
@@ -129,6 +131,7 @@ export const getProps = (props) => {
 // usesLegend: true,
 // usesHoverBars: true,
 // usesDateAsXAxis: true,
+// needsScaleTime: true,
 // usesMultiLineLeftAxis: true,
 // usesTwoLineXAxisLabels: true,
 // usesDateCallout: true,

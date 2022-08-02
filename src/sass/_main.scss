@@ -125,13 +125,13 @@ img {
 #outerContainer {
 	display: flex;
 	flex-direction: row;
-	padding-left: 0em;
-	padding-right: 20px;
-	//margin: 0 auto;
+	// padding-left: 0em;
+	// padding-right: 20px;
+	margin: 0 auto;
 	//max-width: 1500px;
-	margin: 0;
+	// margin: 0;
 	width: 95%;
-	margin-right: 25px;
+	// margin-right: 25px;
 	border-left: 0;
 
 	@include mobile-max {
