@@ -18,6 +18,7 @@ export const MainEvents = {
 			stopAnimation();
 			$("#timePeriodContainer").css("display", "flex");
 			document.getElementById("icons-tab-2").classList.add("active");
+			document.getElementById("dwn-chart-img").classList.remove("disabled");
 
 			let dataTopic = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
