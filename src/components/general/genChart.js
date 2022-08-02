@@ -22,6 +22,7 @@ import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
 import { data } from "jquery";
+import { DataCache } from "../../utils/datacache";
 
 export class GenChart {
 	constructor(providedProps) {
@@ -52,16 +53,72 @@ export class GenChart {
 		// - note cannot do exact same for lines bc there are data points not just one data per line
 		// whereas in the bar charts each bar is one data point so the below approach works
 		if (p.usesBars) {
+			
 			//console.log("##DRAW BAR CHART###");
+			console.log("genChart p.data BEFORE dontDraw CODE:", p.data);
+			//DataCache.activeLegendList = [];
+			//debugger;
+
+			let numToDraw = 0;
 			p.data.forEach((d, i) => {
-				if (d.dontDraw === false && barCount < maxBarCount) {
+				numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+			});
+			console.log("### numToDraw", numToDraw);
+
+			if (numToDraw === 0) numToDraw = 10;
+
+			// THe problem is I think this code always wants to force to 10 items selected
+			// which is not what we need... if we start with 10 and they deselect 1 then it should be 9 obviously
+			// how can we start with 10 on initial render but then have a list of 8 or 9 or 2
+			// on re-render --->  NEED TO PERSIST THE LIST OF SELECTED ITEMS
+			p.data.forEach((d, i) => {
+				if (d.dontDraw === false && barCount < numToDraw) {
 					barCount++; // increment barCount
+					if (i > 9) {
+						console.log(" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount", d, d.dontDraw, i, barCount,maxBarCount);
+					}
+
+					// PUSH only if not already on the list
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+						// it is on the list
+						// so dont push it
+					} else {
+						// not on there so push it
+						DataCache.activeLegendList.push(d);
+					}				
+					
 				} else {
+					// remove if it was on active list
+					const tempList = DataCache.activeLegendList.filter(
+						(e) =>
+									e.stub_label !== d.stub_label
+					);
+					DataCache.activeLegendList = [];
+					DataCache.activeLegendList = tempList;
+
 					// then either dontDraw already true or needs to be set to true
 					// bc bar count is exceeded
 					d.dontDraw = true;
+					if (i < 11) {
+						console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
+					}
 				}
+
+				// CHANGE - if on the active list then set dontDraw = false
+				// - if not on the list set it to dontDraw = true
+				if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+					// it is on the list
+					d.dontDraw = false;
+				} else {
+					d.dontDraw = true;
+				}
+				
 			});
+
+			// the list below has 200-399 and NOT 133-199
+			// so something is messed up
+
+			console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		} else {
 			// for LINE data we have to do something different
 			// - bc there are MANY points for each line not just one data point
@@ -73,6 +130,8 @@ export class GenChart {
 			// creating yScaleLeft
 		}
 
+		console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
+		
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
@@ -81,7 +140,7 @@ export class GenChart {
 		//debugger;
 
 		// if you need to look at incoming data
-		console.log("genChart p.data:", p.data);
+		console.log("genChart p.data after removing dontDraw=true vals:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -629,6 +688,14 @@ function getPosition (element) {
 					.entries(allIncomingData);
 
 				// limit legend to 10 max
+				let numToDraw = 0;
+				fullNestedData.forEach((d, i) => {
+					numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+				});
+
+				if (numToDraw === 0) numToDraw = 10;
+				console.log("### numToDraw", numToDraw);
+				
 				fullNestedData.forEach((d, i) => {
 					//if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
 					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
@@ -1435,6 +1502,8 @@ function getPosition (element) {
 						.attr("ry", "5")
 						.attr("stroke", "black");
 
+					console.log("genChart legendData before DRAW:", legendData);
+					
 					legendData.forEach((d, i) => {
 						// create unique id name
 						const legendId = d.text.replace(/ /g, "_");
@@ -1498,7 +1567,7 @@ function getPosition (element) {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
+								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
