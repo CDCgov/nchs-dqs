@@ -142,7 +142,7 @@ export class GenChart {
 					if (words[i].length < 24) {
 						tspan = el.append("tspan").text(words[i]);
 						tspan.attr("x", 0).attr("dy", "12"); // dy is space between lines
-/* 						if (words.length < 2) {
+						/* 						if (words.length < 2) {
 							tspan.attr("x", 0).attr("dy", "32");
 						} 
 						if (words.length == 2) {
@@ -161,7 +161,6 @@ export class GenChart {
 						tspan.attr("x", 0).attr("dy", "11");
 						tspan = tspan.append("tspan").text(result[1]);
 					}
-
 				} // end for loop
 			} else {
 				// try spaces
@@ -175,7 +174,7 @@ export class GenChart {
 				let lineLen = 0;
 				let lines = [];
 				words.forEach((wd) => {
-					if ((lineLen + wd.length) < lineMaxLen) {
+					if (lineLen + wd.length < lineMaxLen) {
 						tmpLine += wd + " ";
 						lineLen += wd.length + 1;
 					} else {
@@ -219,7 +218,7 @@ export class GenChart {
 			if (i > 0) {
 				// the dy value is the "space between label lines" - try to calc so it adjusts some
 				tspan.attr("x", 0).attr("dy", axisLabelFontSize / 2 + 6); // was 15
-				//tspan.attr("y", 0).attr("dy", 
+				//tspan.attr("y", 0).attr("dy",
 			}
 
 			// based on number of lines, adjust height
@@ -235,31 +234,30 @@ export class GenChart {
 		};
 
 		// Find the position of a SVG DOM element
-function getPosition (element) {
-	let match;
-	let x, y;
-	// We have a transform, that might contain a translate(x,y)
-	let transform = element.attr('transform');
-	if (transform)
-		match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
-	
-	// We have translate(x,y)	
-	if (match?.length >= 2) {
-		x = parseFloat(match[1]);
-		y = parseFloat(match[2]);
-		
-			// We try to get x="" and y=""
-		} else {
-		x = element.attr('x');
-		y = element.attr('y');
+		function getPosition(element) {
+			let match;
+			let x, y;
+			// We have a transform, that might contain a translate(x,y)
+			let transform = element.attr("transform");
+			if (transform) match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
+
+			// We have translate(x,y)
+			if (match?.length >= 2) {
+				x = parseFloat(match[1]);
+				y = parseFloat(match[2]);
+
+				// We try to get x="" and y=""
+			} else {
+				x = element.attr("x");
+				y = element.attr("y");
+			}
+			// Set x and y to 0 if they are undefined or null
+			x = x ? x : 0;
+			y = y ? y : 0;
+
+			return { x, y };
 		}
-	// Set x and y to 0 if they are undefined or null
-	x = x ? x : 0;
-	y = y ? y : 0;
-	
-	return { x, y };
-	}
-	
+
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -467,7 +465,6 @@ function getPosition (element) {
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
 			.attr("width", svgWidth);
-
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -1269,7 +1266,7 @@ function getPosition (element) {
 						.attr(
 							"transform",
 							`translate(${p.xLabelRotatedXAdjust * overallScale + 6}, ${
-								p.xLabelRotatedYAdjust * overallScale 
+								p.xLabelRotatedYAdjust * overallScale
 							}) rotate(${p.bottomAxisRotation})`
 						);
 
@@ -1374,7 +1371,7 @@ function getPosition (element) {
 				// Are there more than 10 legend items
 				//console.log("### BARS numLegendItems:", numLegendItems);
 
-/* 				svg.append("text")
+				/* 				svg.append("text")
 							.attr("id", "legendBarTxt")
 							//.attr("class", "visible")
 							.attr("x", labelTx)
@@ -1383,7 +1380,7 @@ function getPosition (element) {
 							.style("fill", "black")
 							.style("font-size", "17px")
 							.text("Select up to 10 groups"); */
-				
+
 				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
@@ -1396,7 +1393,7 @@ function getPosition (element) {
 					svg.select("#whitebox").attr("width", svgWidth + legendHeight + 30);
 
 					legendTx = svgWidth + 10;
-					legendTy = (svgHeight - margin.top - margin.bottom)/ 2 ; // * 2 + 25; 
+					legendTy = (svgHeight - margin.top - margin.bottom) / 2; // * 2 + 25;
 
 					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 				} else {
@@ -1405,19 +1402,18 @@ function getPosition (element) {
 				}
 
 				if (legendData[0].text.length > 0) {
-
 					// ***********************************************
 					// (TTT) MOVE TO AFTER THE LEGEND IS MADE
 					// THEN POSITION IT EXACTLY CENTER OF THE LEGEND
-					//************************************************** 
+					//**************************************************
 					if (legendData.length > 10) {
 						const selectTenText = svg
 							.append("g")
 							.attr("transform", `translate(${legendTx}, ${legendTy})`)
 							.append("text")
 							.attr("id", "selectTenTxt")
-							.attr("x", -80)  //legendTx - 120)
-							.attr("y", -16)  //legendTy - 250)
+							.attr("x", -80) //legendTx - 120)
+							.attr("y", -16) //legendTy - 250)
 							//.attr("dy", "0.32em")
 							.style("fill", "black")
 							.style("font-size", "17px")
@@ -1433,7 +1429,8 @@ function getPosition (element) {
 						.attr("fill", "#F2F2F2")
 						.attr("rx", "5")
 						.attr("ry", "5")
-						.attr("stroke", "black");
+						.attr("stroke", "black")
+						.attr("data-html2canvas-ignore", "");
 
 					legendData.forEach((d, i) => {
 						// create unique id name
@@ -1446,7 +1443,8 @@ function getPosition (element) {
 								"transform",
 								`translate(${legendTx + 1.1 * axisLabelFontSize * (i + 1)},
 								${legendTy + axisLabelFontSize / 2 - 15})`
-							);
+							)
+							.attr("data-html2canvas-ignore", "");
 
 						// only draw color line if data is drawn
 						if (!d.dontDraw) {
@@ -1526,29 +1524,27 @@ function getPosition (element) {
 					legendContainer
 						.attr("width", newWidth + 56) //might need to calculate the 53 based on fontsize or something
 						.attr("transform", `rotate(-${p.chartRotationPercent})`);
-					
+
 					// Now center the legend container
-					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
 
 					// Now get each legend Item Line and move those to the left
 					let adjustX;
 					let adjustY;
 					const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
 					legendElementG.forEach((text) => {
-
 						d3.select(text).attr("transform", function (d) {
-							adjustX = text.transform.animVal[0].matrix.e; 
+							adjustX = text.transform.animVal[0].matrix.e;
 							// since bar chart is rotated the move left is on the Y not the X
-							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width")/2;
+							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width") / 2;
 							//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
 							//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
-							let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+							let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
 							//console.log("newTransform:", newTransform);
-							return newTransform; // this.getAttribute("transform") + 
-						}); 
+							return newTransform; // this.getAttribute("transform") +
+						});
 					});
-						
-		} // end if legendData.length > 0
+				} // end if legendData.length > 0
 			}
 		} else {
 			// DRAW LEGEND FOR NON-ROTATED CHARTS
@@ -1557,7 +1553,7 @@ function getPosition (element) {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
-								
+
 				//Sort ascending order
 				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
 				legendData = legendSorted;
@@ -1650,7 +1646,6 @@ function getPosition (element) {
 					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
 				}
 
-
 				const legendContainer = svg
 					.append("g")
 					.attr("transform", `translate(${legendTx}, ${legendTy})`)
@@ -1661,7 +1656,7 @@ function getPosition (element) {
 					.attr("rx", "5")
 					.attr("ry", "5")
 					.attr("stroke", "black");
-				
+
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg
@@ -1672,7 +1667,7 @@ function getPosition (element) {
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
 								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-						); 
+						);
 
 					//console.log("legendItem d,i:", d, i);
 
@@ -1717,7 +1712,6 @@ function getPosition (element) {
 						.attr("y", axisLabelFontSize * 0.5) // up and down
 						.text(d.text)
 						.attr("font-size", axisLabelFontSize);
-					
 				});
 
 				// get all legend items and find the longest then set the legend container size
@@ -1728,23 +1722,22 @@ function getPosition (element) {
 				legendContainer.attr("width", newWidth + 56);
 
 				// Now center the legend container
-				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width")/2);
+				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
 
 				// Now get each legend Item Line and move those to the left
 				let adjustX;
 				let adjustY;
 				const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
 				legendElementG.forEach((text) => {
-
 					d3.select(text).attr("transform", function (d) {
-						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width")/2;
+						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2;
 						adjustY = text.transform.animVal[0].matrix.f;
 						//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
 						//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
-						let newTransform =  " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") + 
+						let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
 						//console.log("newTransform:", newTransform);
-						return newTransform; // this.getAttribute("transform") + 
-					}); 
+						return newTransform; // this.getAttribute("transform") +
+					});
 				});
 
 				if (legendData.length > 10) {
@@ -1753,16 +1746,16 @@ function getPosition (element) {
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
 						.append("text")
 						.attr("id", "selectTenTxt")
-						.attr("x", -80)  
-						.attr("y", -12) 
+						.attr("x", -80)
+						.attr("y", -12)
 						.style("fill", "black")
 						.style("font-size", "17px")
-						.text("Select up to 10 groups")
-					
+						.text("Select up to 10 groups");
+
 					// if setting the location above is not consistent,
 					// then calc width of the text and place half way across container
 					// minus half the width of the text
-/* 					const selTenTxt = document.querySelector(`#selectTenTxt`);
+					/* 					const selTenTxt = document.querySelector(`#selectTenTxt`);
 					const selTenWidth = selTenTxt.getBoundingClientRect().width;
 					console.log("10width:", selTenWidth);
 					console.log("10 top:", selTenTxt.getBoundingClientRect().top);
@@ -1779,7 +1772,6 @@ function getPosition (element) {
 						return newTransform; // this.getAttribute("transform") + 
 					});  */
 				}
-				
 			}
 		}
 
@@ -1793,10 +1785,7 @@ function getPosition (element) {
 			const newPos = $(`#${svgId}`)[0].getBoundingClientRect();
 			const yAdjust = currPos.width > currPos.height ? newPos.left - currPos.left : 0;
 
-			d3.select(`#${svgId}`).attr(
-				"transform",
-				`rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`
-			);
+			d3.select(`#${svgId}`).attr("transform", `rotate(90), translate(${currPos.top - newPos.top}, ${yAdjust})`);
 
 			// finally adjust the green container height for the content of the new svg height
 			$("#chart-container").css("height", newPos.height - 80);

@@ -6,6 +6,8 @@ import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
+import { downLoadUsCaseandChartMap2 } from "../utils/downloadimg";
+import { downLoadGenChart } from "../utils/downloadimg";
 
 export class LandingPage {
 	constructor() {
@@ -65,6 +67,39 @@ export class LandingPage {
 
 		this.getInitialData(); // for starters OBESITY DATA
 		MainEvents.registerEvents(); // add any click events inside here
+
+		//let vizParentContainer = document.getElementById("widget_4"); // main-widget-container
+		$("#dwn-chart-img").click((evt) => {
+			const chartButton = document.getElementById("icons-tab-2");
+			const mapButton = document.getElementById("icons-tab-1");
+			// let classes;
+			// if (chartButton) {
+			// 	return (classes = chartButton.className);
+			// } else if (mapButton) {
+			// 	return (classes = mapButton.className);
+			// }
+			// if (window.location.hash.toString() === "#cases_community") {
+			// 	downLoadUsCaseandChartMap(vizParentContainer, evt.target.id);
+			// }
+			let titleChart = document.getElementById("chart-title").textContent;
+			if (chartButton && chartButton.className.includes("active")) {
+				const mapTitle = $("#maptitle").text();
+				//$(".maptitle.map-chart-title").html(mapTitle);
+				// $("#download_image").show();
+				let containerSVG = document.getElementById("chart-container");
+				//console.log(containerSVG);
+				const params = {
+					contentContainer: "chart-container",
+					downloadButton: "dwn-chart-img",
+					imageSaveName: titleChart,
+					//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
+					//needToShowHide: true,
+				};
+				downLoadGenChart(params);
+			} else if (mapButton && mapButton.className.includes("active")) {
+				downLoadUsCaseandChartMap2("us-map-container");
+			}
+		});
 	}
 
 	renderAfterDataReady() {
@@ -431,10 +466,7 @@ export class LandingPage {
 				// on rare data sets unit num 1 does not work
 				// ... so try again without the unit num
 				if (!(allYearsData.length > 0)) {
-					allYearsData = this.allData.filter(
-						(d) =>
-							parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
-					);
+					allYearsData = this.allData.filter((d) => parseInt(d.stub_name_num) === parseInt(this.stubNameNum));
 				}
 				break;
 		}
@@ -952,13 +984,11 @@ export class LandingPage {
 						dontDraw: false,
 						assignedLegendColor: "#FFFFFF",
 					}));
-				
+
 				// for line chart and bar chart, REMOVE the undefined data entirely
 				if (!this.showMap) {
 					// remove flag = "- - -" data
-					this.allData = this.allData
-						.filter((d) => d.flag !== "- - -") // remove undefined data
-
+					this.allData = this.allData.filter((d) => d.flag !== "- - -"); // remove undefined data
 				}
 
 				//this.renderAfterDataReady();
@@ -1353,7 +1383,7 @@ export class LandingPage {
 		// the time period selects
 		// WHY?  Because some characteristics have no data -> flag = "- - -"
 		// and we need to filter those years out
-		
+
 		let max;
 		let index;
 		let singleYearsArray = [];
@@ -1363,7 +1393,7 @@ export class LandingPage {
 				return d.year;
 			})
 			.keys();
-		
+
 		$("#year-start-select").empty();
 		$("#year-end-select").empty();
 		switch (this.dataTopic) {
@@ -1394,12 +1424,10 @@ export class LandingPage {
 				this.endYear = singleYearsArray[index]; // now get that year
 				this.endPeriod = $("#year-end-select option:selected").text(); // set this for chart title
 				break;
-			
+
 			// Data sets with single year selects
 			case "suicide":
 			case "medicaidU65":
-
-
 				// have to build an array of "only the first year"
 				allYearsArray.forEach((y) => {
 					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
@@ -1436,7 +1464,6 @@ export class LandingPage {
 				return d.year;
 			})
 			.keys();
-
 		$("#year-end-select").empty();
 		switch (this.dataTopic) {
 			// Data sets with time period ranges like 2002-2005
@@ -2033,6 +2060,7 @@ export class LandingPage {
 				</fieldset>
 			</div>
 				<div id="us-map-container" class="general-map" style="margin-left:50px;margin-right:50px;align:left;background-color: #FFFFFF;">
+				<div id="mapDownloadTitle"></div>
 					<div id="us-map" class="general-map"></div>				
 					<div id="us-map-message" class="chart-title"></div>
 					<div id="us-map-time-slider"></div>
@@ -2081,8 +2109,8 @@ export class LandingPage {
 </div>
 <!-- Tabs content -->
 
-					<div class="dwnl-img-container margin-spacer" data-html2canvas-ignore>
-						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn">Download Chart</button>
+					<div class="dwnl-img-container margin-spacer">
+						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn">Download Image</button>
 					</div>
 					<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px;margin-bottom:15px;">
 						<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
