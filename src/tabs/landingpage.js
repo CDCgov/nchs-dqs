@@ -1684,8 +1684,10 @@ export class LandingPage {
 				DataCache.activeLegendList = tempList;
 			}
 		} else {
-			// add it
-			DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false, });
+			// add it if we are not at the max of 10
+			if (DataCache.activeLegendList.length < 10) {
+				DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false, });
+			}
 		}
 
 		
