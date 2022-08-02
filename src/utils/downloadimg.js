@@ -112,7 +112,7 @@ const saveCanvasAs = (uri, filename) => {
 // 	}, 100);
 // };
 
-export const downLoadUsCaseandChartMap2 = function (viz) {
+export const downLoadMap2 = function (viz) {
 	let mapImageContainer = document.getElementById("us-map-container");
 	let imageHeightContainer = document.getElementById("us-map-container");
 	//let imageTargetName = document.getElementById("maptitle").textContent;

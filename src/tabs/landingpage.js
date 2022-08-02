@@ -6,7 +6,7 @@ import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
-import { downLoadUsCaseandChartMap2 } from "../utils/downloadimg";
+import { downLoadMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
 
 export class LandingPage {
@@ -97,7 +97,7 @@ export class LandingPage {
 				};
 				downLoadGenChart(params);
 			} else if (mapButton && mapButton.className.includes("active")) {
-				downLoadUsCaseandChartMap2("us-map-container");
+				downLoadMap2("us-map-container");
 			}
 		});
 	}
