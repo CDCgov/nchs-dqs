@@ -2063,7 +2063,7 @@ export class LandingPage {
 				<div id="mapDownloadTitle"></div>
 					<div id="us-map" class="general-map"></div>				
 					<div id="us-map-message" class="chart-title"></div>
-					<div id="us-map-time-slider"></div>
+					<div id="us-map-time-slider" data-html2canvas-ignore></div>
 					<div id="us-map-legend"></div>
 				</div>
 				<br>

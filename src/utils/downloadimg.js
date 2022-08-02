@@ -232,20 +232,21 @@ export const downLoadGenChart = (params) => {
 					);
 					clone.querySelector("#chart-container-svg").setAttribute("width", "2000");
 					clone.querySelector("#chart-container-svg").setAttribute("height", "1200");
+
 					if (navigator.userAgent.indexOf("Firefox") != -1) {
 						clone
 							.querySelector("#chart-container-svg")
-							.setAttribute("transform", "rotate(90) translate(0, 520)");
-						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 700 -100");
+							.setAttribute("transform", "rotate(90) translate(50,50)");
+						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "-250 800 1800 600");
 					} else {
 						clone
 							.querySelector("#chart-container-svg")
-							.setAttribute("transform", "rotate(45) translate(180,160)");
-						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 2600 1300");
+							.setAttribute("transform", "rotate(45) translate(300,0)");
+						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 2700 1500");
 					}
-
+					clone.querySelector("#chart-container").setAttribute("style", " ");
 					//clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 3500 2700");
-					clone.querySelector("#chart-container-svg").setAttribute("preserveAspectRatio", " ");
+					//clone.querySelector("#chart-container-svg").setAttribute("preserveAspectRatio", " ");
 					// clone.querySelector("#chart-container-svg").setAttribute(
 					// 	"style",
 					// 	"transform:  margin-top:500px; margin-left:200px; border: 1px solid blue"
@@ -258,6 +259,7 @@ export const downLoadGenChart = (params) => {
 				//doc.getElementById("chart-container-svg").setAttribute("height", "500px!important");
 				// $("#chart-container-svg").css("background-color", "red!important");
 				// $("#chart-container-svg").css("padding-bottom", "0px!important");
+				clone.getElementById("chart-container-chartTitle").setAttribute("style", "font-size: 33.66px ");
 				clone.getElementById("chart-container-chartTitle").innerHTML = "<div>" + titleChart + "</div>";
 			},
 		}).then((canvas) => {
