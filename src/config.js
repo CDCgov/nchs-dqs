@@ -84,7 +84,7 @@ export const tabContent = `
                     	<h3 tabindex="0" id="compare-trends-subtitle" class="pregnancy-chart-title-subline"></h3>
 				    </div>
                     <div class="dwnl-img-container margin-spacer" data-html2canvas-ignore>
-						<button tabindex="0" id="dwn-compare-trends-img" class="theme-cyan ui btn">Download Chart</button>
+						<button tabindex="0" id="dwn-compare-trends-img" class="theme-cyan ui btn">Download Chart11</button>
                     </div>
                     <div class="data-table-container" style="margin-top: 10px;" data-html2canvas-ignore>
                         <div id="compare-trends-table-toggle" class="table-toggle closed" tabindex="0" aria-labelledby="compare-trends-table-title">
@@ -117,14 +117,12 @@ export const tabContent = `
 export const vizConfig = {
 	caseObesity: {
 		title: "Obesity in Children and Adolescents",
-		subtitle:
-			"Total Cases",
+		subtitle: "Total Cases",
 		ySelect: "estimate",
 		tooltipLabel: "New Cases per 100K",
 		yLabel: "Cases",
 		subnav: "newcasesper100ksubmission",
-		calloutBox:
-			"This is the callout box data explanation",
+		calloutBox: "This is the callout box data explanation",
 	},
 	deathRawCumulativeSubmission: {
 		title: "Cumulative deaths attributed to Covid-19, reported to CDC, in",
@@ -165,7 +163,6 @@ const getGenTooltipConstructor = (props) => {
 };
 
 export const getGenChartConfig = (props) => {
-
 	return {
 		data: props.data,
 		vizId: props.vizId,
