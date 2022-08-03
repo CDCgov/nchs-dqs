@@ -291,31 +291,6 @@ export class GenChart {
 			}
 		};
 
-		// Find the position of a SVG DOM element
-function getPosition (element) {
-	let match;
-	let x, y;
-	// We have a transform, that might contain a translate(x,y)
-	let transform = element.attr('transform');
-	if (transform)
-		match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
-	
-	// We have translate(x,y)	
-	if (match?.length >= 2) {
-		x = parseFloat(match[1]);
-		y = parseFloat(match[2]);
-		
-			// We try to get x="" and y=""
-		} else {
-		x = element.attr('x');
-		y = element.attr('y');
-		}
-	// Set x and y to 0 if they are undefined or null
-	x = x ? x : 0;
-	y = y ? y : 0;
-	
-	return { x, y };
-	}
 	
 		const svgId = `${p.vizId}-svg`;
 
@@ -684,25 +659,62 @@ function getPosition (element) {
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
 					.entries(allIncomingData);
+				
+				console.log("genChart allIncomingData BEFORE line draw CODE:", allIncomingData);
 
 				// limit legend to 10 max
 				let numLinesToDraw = 0;
 				fullNestedData.forEach((d, i) => {
 					numLinesToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+					
+					// set all data to dontDraw == true
+					d.dontDraw = true; // disable ALL
 				});
 
 				if (numLinesToDraw === 0) numLinesToDraw = 10;
 				console.log("### numToDraw", numLinesToDraw);
 
-				// now deal with the legend and whether the lines are drawn
+				// now set data that is on the activeLegendList to dontDraw == false
+/* 				fullNestedData = fullNestedData.filter(
+					(d) =>
+						parseInt(d.panel_num) === parseInt(this.panelNum) &&
+						parseInt(d.unit_num) === parseInt(this.unitNum) &&
+						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
+				); */
+
+/* 				if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+						// it is on the list
+						d.values[0].dontDraw = false;
+					} else {
+						d.values[0].dontDraw = true;
+					} */
+				// iterate through and set the dontDraw valuse based on activeLegendList
+				let numSetToDraw = 0;
+				fullNestedData.forEach((d, i) => {
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+						// it is on the list
+						d.values[0].dontDraw = false;
+						numSetToDraw++;
+					} else {
+						d.values[0].dontDraw = true;
+					} 
+				});
+
+				if (numSetToDraw === 0) {
+					// then select 10 to draw
+					fullNestedData.forEach((d, i) => {
+						if (numSetToDraw < numLinesToDraw) {
+							// it is on the list
+							d.values[0].dontDraw = false;
+							numSetToDraw++;
+						} 
+						});
+				}
+
+				// NOW WE CAN deal with the legend and whether the lines are drawn
 				fullNestedData.forEach((d, i) => {
 					if (d.values[0].dontDraw === false && lineCount < numLinesToDraw) {
 						lineCount++; // increment barCount
-						if (i > 9) {
-							//console.log(" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount", d, d.dontDraw, i, barCount,maxBarCount);
-						}
-
-						console.log("nest d:", d);
 
 						// PUSH only if not already on the list
 						if (DataCache.activeLegendList.filter(function (e) {
@@ -713,21 +725,15 @@ function getPosition (element) {
 						}).length > 0) {
 							// it is on the list
 							// so dont push it
-							console.log("Already on the list",d.values[0].stub_label);
+							//console.log("ALREADY on the list",d.values[0].stub_label);
 						} else {
-							// not on there so push it
-							
-/* 							// have to fetch that object
-							const tempList = d.values.filter(
-								(e,i) =>
-											e.stub_label !== d.values[i].stub_label
-							); */
+							// not on there so push it8/2/2022 
 
-							// the line after this ispushing the wrong obect
+							// the line after this is pushing the wrong object
 							DataCache.activeLegendList.push(d.values[0]);
 
 							//console.log("fullnested d pushed:", d.values[0]);
-							console.log("fullnested d pushed:", d.values[0]);
+							//console.log("fullnested d pushed:", d.values[0]);
 						}				
 						
 					} else {

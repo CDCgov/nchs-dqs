@@ -1740,7 +1740,9 @@ export class LandingPage {
 				break;
 		} // end switch
 
-		console.log("Datacache BEFORE removing selDataPt", DataCache.activeLegendList);
+		console.log("Datacache AFTER removing selDataPt", DataCache.activeLegendList);
+
+		console.log("this.alldata BEFORE renderChart", this.allData);
 
 		this.renderChart();
 	}
