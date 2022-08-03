@@ -14,7 +14,7 @@ export const MainEvents = {
 			$("#mapPlayButtonContainer").hide();
 		};
 
-		$("#data-topic-select").change((evt) => {
+		$("#data-topic-select").on("change", (evt) => {
 			stopAnimation();
 			$("#timePeriodContainer").css("display", "flex");
 
@@ -27,7 +27,7 @@ export const MainEvents = {
 			//}
 			// console.log("New data topic:", dataTopic);
 		});
-		$("#panel-num-select").change((evt) => {
+		$("#panel-num-select").on("change", (evt) => {
 			stopAnimation();
 			let panelNum = evt.target.value;
 			appState.ACTIVE_TAB.updatePanelNum(panelNum);
@@ -36,7 +36,7 @@ export const MainEvents = {
 			//console.log("appstate:",appState)
 			//debugger;
 		});
-		$("#stub-name-num-select").change((evt) => {
+		$("#stub-name-num-select").on("change", (evt) => {
 			stopAnimation();
 			let stubNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
@@ -75,31 +75,31 @@ export const MainEvents = {
 				appState.ACTIVE_TAB.updateStartPeriod(allYears[indexClicked].value);
 			});
 
-		$("#year-start-select").change((evt) => {
+		$("#year-start-select").on("change", (evt) => {
 			let yrStart = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateStartPeriod(yrStart);
 			console.log("New Start Period:", yrStart);
 		});
 
-		$("#year-end-select").change((evt) => {
+		$("#year-end-select").on("change", (evt) => {
 			let yrEnd = evt.target.value; // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
 			console.log("New End Period:", yrEnd);
 		});
 		// on the map tab
-		$("#unit-num-select-map").change((evt) => {
+		$("#unit-num-select-map").on("change", (evt) => {
 			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);
 		});
 		// on the chart tab
-		$("#unit-num-select-chart").change((evt) => {
+		$("#unit-num-select-chart").on("change", (evt) => {
 			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);
 		});
 		// on the table tab
-		$("#unit-num-select-table").change((evt) => {
+		$("#unit-num-select-table").on("change", (evt) => {
 			let unitNum = parseInt(evt.target.value); // if you dont do this then stubNum is string
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 			console.log("New Unit num:", unitNum);
@@ -140,7 +140,7 @@ export const MainEvents = {
 			event.stopPropagation();
 			// get the unique id of the legend item
 			let legItem = event.target.parentNode.parentNode.id;
-			console.log("legendItem clicked: event.target,item", event.target, legItem);
+			console.log("*** legendItem clicked: event.target,item", event.target, legItem);
 			appState.ACTIVE_TAB.toggleLegendItem(legItem);
 			event.preventDefault();
 		});

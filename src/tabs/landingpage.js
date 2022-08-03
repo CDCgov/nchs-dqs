@@ -125,8 +125,6 @@ export class LandingPage {
 			this.storedScaleState = "linear";
 		}
 
-		// console.log("Panel Num", this.panelNum);
-
 		$(".dimmer").attr("class", "ui inverted dimmer");
 		this.renderChart();
 	}
@@ -143,6 +141,8 @@ export class LandingPage {
 		async function getUSMapData() {
 			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
 		}
+
+		DataCache.activeLegendList = [];
 
 		// getUSMapData - if we do it here we just load the map date ONE TIME
 		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()])
@@ -267,7 +267,7 @@ export class LandingPage {
 	renderChart(fromHash = false) {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
-		// console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
+		//console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
 		this.chartConfig = this.getChartBaseProps();
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
@@ -293,7 +293,8 @@ export class LandingPage {
 		// always render data table  with the latest data
 		this.renderDataTable(this.flattenedFilteredData);
 		hashTab.writeHashToUrl();
-	}
+
+}
 
 	getFlattenedFilteredData() {
 		let selectedPanelData;
@@ -348,12 +349,9 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
-				// backup
-				/* 				selectedPanelData = this.allData.filter(
-									(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
-								); */
 				break;
 			case "medicaidU65":
+
 				selectedPanelData = this.allData.filter(
 					(d) =>
 						parseInt(d.unit_num) === parseInt(this.unitNum) &&
@@ -361,15 +359,18 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
+				
 				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
-				if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
-					// enable the CI checkbox
-					$("#enable-CI-checkbox").prop("disabled", false);
-				} else {
-					// disable it
-					$("#enable-CI-checkbox").prop("disabled", true);
-					$("#enable-CI-checkbox").prop("checked", false);
+				if (selectedPanelData) {
+					if (selectedPanelData[0].hasOwnProperty("estimate_uci")) {
+						// enable the CI checkbox
+						$("#enable-CI-checkbox").prop("disabled", false);
+					} else {
+						// disable it
+						$("#enable-CI-checkbox").prop("disabled", true);
+						$("#enable-CI-checkbox").prop("checked", false);
+					}
 				}
 
 				break;
@@ -393,15 +394,18 @@ export class LandingPage {
 			return a.year_pt - b.year_pt;
 		});
 
+		// now sort by stub_label_num
+		// - do not sort alphabetically bc that results in "Below 100%" values in wrong order
+		selectedPanelData.sort((a, b) => {
+			return a.stub_label_num - b.stub_label_num;
+			//return a.stub_label - b.stub_label;
+		}); 
+
 		if (this.showBarChart) {
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 		} else {
-			// DONT DO THIS HERE - DO ONLY ON LEGEND NOT THE LINE
-			// now sort by stub_label_num
-			/* 			selectedPanelData.sort((a, b) => {
-							return a.stub_label_num - b.stub_label_num;
-						}); */
+			
 			// set up for line chart
 			selectedPanelData = selectedPanelData.map((d) => ({
 				...d,
@@ -416,14 +420,6 @@ export class LandingPage {
 			.keys();
 		// console.log("**********************footnote ids: ", allFootnoteIdsArray);
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
-
-		/* 		const noLocationNamedData = [...classifiedData, ...allCountiesData];
-				if (this.currentLocation === "United States")
-					return noLocationNamedData.map((d) => ({
-						...d,
-						date: new Date(`${d.date}T00:00:00`),
-						subLine: functions.getCategoryName2(d.Category, classification),
-					})); */
 
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
@@ -851,6 +847,9 @@ export class LandingPage {
 			}
 		}
 
+		// clear the list of active legend items
+		DataCache.activeLegendList = [];
+
 		let theChartTab = document.getElementById("icons-tab-2");
 
 		// switch to new data source
@@ -1223,7 +1222,6 @@ export class LandingPage {
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 			}
 		}
-		// console.log("flattenedData SETSTUBNAMESELECT before:", this.flattenedFilteredData);
 
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
@@ -1242,15 +1240,15 @@ export class LandingPage {
 		allStubsArray.sort((a, b) => {
 			return a.stub_name_num - b.stub_name_num;
 		});
-		// console.log("allStubsArray", allStubsArray);
+
 		$("#stub-name-num-select").empty();
 
 		// reload the stubs but if new list has match for current selection
 		// then - keep current selected
 		let foundUnit = false;
-		// console.log("### current stubnamenum before rebuilding dropdown:", this.stubNameNum);
+
 		allStubsArray.forEach((y) => {
-			// console.log("i , stubnamename", i, y.stub_name_num);
+
 			if (this.stubNameNum === parseInt(y.stub_name_num)) {
 				$("#stub-name-num-select").append(
 					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
@@ -1267,11 +1265,7 @@ export class LandingPage {
 			// now update the stubname num to the first on the list
 			this.stubNameNum = $("#stub-name-num-select option:first").val();
 		}
-		/* else {
-			// now update the stubname num to the ALREADY selected
-			this.stubNameNum = $("#stub-name-num-select option:selected").val();
-		} */
-		// console.log("### stubnamenum after rebuilding dropdown:", this.stubNameNum);
+
 	}
 
 	setVerticalUnitAxisSelect() {
@@ -1371,6 +1365,10 @@ export class LandingPage {
 			// only call chart render if map NOT selected
 			// - map could be selected but data does not support map
 			//if (document.getElementById("icons-tab-1").display === 'none') {
+			
+			// clear the list of active legend items when stub name changes
+			DataCache.activeLegendList = [];
+
 			// always call this
 			this.renderChart();
 			//}
@@ -1659,11 +1657,39 @@ export class LandingPage {
 	toggleLegendItem(value) {
 		//this.showBarChart = value;
 		const selDataPt = value.replace(/_/g, " ");
-		// console.log("#### toggle:", selDataPt);
 
+		// REMOVE the clicked item from the active legend items list
+		// - PROBLEM: this filter is copying the items into the list TWICE
+		// - it does filter out the selected item but doubles the list
+		let tempList=[];
+
+		// 
+		if (DataCache.activeLegendList.filter((f) => f.stub_label === selDataPt).length) {
+			// remove it BUT ONLY IF WE HAVE MORE THAN 1 ITEM ON THE ACTIVE LIST
+			// - dont let it go to zero
+			if (DataCache.activeLegendList.length > 1) { 
+				tempList = DataCache.activeLegendList.filter(
+					(d) =>
+						d.stub_label !== selDataPt
+				);
+				DataCache.activeLegendList = [];
+				DataCache.activeLegendList = tempList;
+			}
+		} else {
+			// add it if we are not at the max of 10
+			if (DataCache.activeLegendList.length < 10) {
+				DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false, });
+			}
+			
+		}
+
+		console.log("ACtiveLegend List after click:", DataCache.activeLegendList);
+		
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
+			case "infant-mortality":
+			case "birthweight":
 				// has a "panel"
 				this.allData.forEach((d) => {
 					if (
@@ -1674,8 +1700,17 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
-						d.dontDraw = !d.dontDraw; // toggle it
+						//d.dontDraw = !d.dontDraw; // toggle it
 						// console.log("toggle has panel dontDraw=", d.dontDraw);
+												
+						// NEW if on the active list THEN set dontDraw = false
+						if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+							// it is on the list
+							d.dontDraw = false;
+						} else {
+							// not on there so dont draw it
+							d.dontDraw = true;
+						}	
 					}
 				});
 				break;
@@ -1691,12 +1726,28 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
-						d.dontDraw = !d.dontDraw; // toggle it
-						// console.log("toggle no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw);
-					}
+						// NO dont just blindly toggle it
+						//d.dontDraw = !d.dontDraw; // toggle it
+					
+						// NEW if on the active list THEN set dontDraw = false
+						if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+							// it is on the list
+							d.dontDraw = false;
+						} else {
+							// not on there so dont draw it
+							d.dontDraw = true;
+						}	
+
+						//console.log("TOGGLE no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw, selDataPt);
+					} 
 				});
 				break;
-		}
+		} // end switch
+
+		console.log("Datacache AFTER removing selDataPt", DataCache.activeLegendList);
+
+		console.log("this.alldata BEFORE renderChart", this.allData);
+
 		this.renderChart();
 	}
 
