@@ -1428,6 +1428,10 @@ export class LandingPage {
 			// Data sets with single year selects
 			case "suicide":
 			case "medicaidU65":
+				// saw case where the returned values were NOT sorted in order
+				// - saw add a sort here FIRST
+				allYearsArray.sort((a, b) => a - b);
+
 				// have to build an array of "only the first year"
 				allYearsArray.forEach((y) => {
 					$("#year-start-select").append(`<option value="${y}">${y}</option>`);
