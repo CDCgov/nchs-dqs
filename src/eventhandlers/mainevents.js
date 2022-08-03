@@ -152,13 +152,17 @@ export const MainEvents = {
 			// have to do this LAST not FIRST - appState.ACTIVE_TAB.updateShowMap(1);
 			// the map div must be visible in the Dom before you can render the map
 			let theMap = document.getElementById("map-tab");
+			let theMapBtn = document.getElementById("icons-tab-1");
 			theMap.style.display = "block";
 			theMap.classList.add("show");
 			theMap.classList.add("active");
+			theMapBtn.classList.add("active");
 			let theChart = document.getElementById("chart-tab");
+			let theChartTabBtn = document.getElementById("icons-tab-2");
 			theChart.style.display = "none";
 			theChart.classList.remove("show");
 			theChart.classList.remove("active");
+			theChartTabBtn.classList.remove("active");
 			// have to render Chart again otherwise svg has no "size" = NaN
 			appState.ACTIVE_TAB.renderChart();
 			let theTable = document.getElementById("table-tab");
@@ -173,6 +177,7 @@ export const MainEvents = {
 			theChartTab.style.backgroundColor = "#ffffff";
 			theChartTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			let theTableTab = document.getElementById("icons-tab-3");
+			document.getElementById("dwn-chart-img").classList.remove("disabled");
 			theTableTab.style.backgroundColor = "#ffffff";
 			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			// also need to reset the Characteristic stubNameNum back to what is selected!!!
@@ -198,13 +203,17 @@ export const MainEvents = {
 			$("#timePeriodContainer").css("display", "flex");
 			event.stopPropagation();
 			let theMap = document.getElementById("map-tab");
+			let theMapBtn = document.getElementById("icons-tab-1");
 			theMap.style.display = "none";
 			theMap.classList.remove("show");
 			theMap.classList.remove("active");
+			theMapBtn.classList.remove("active");
 			let theChart = document.getElementById("chart-tab");
+			let theChartBtn = document.getElementById("icons-tab-2");
 			theChart.style.display = "block";
 			theChart.classList.add("show");
 			theChart.classList.add("active");
+			theChartBtn.classList.add("active");
 			// have to render Chart again otherwise svg has no "size" = NaN
 			appState.ACTIVE_TAB.renderChart();
 			let theTable = document.getElementById("table-tab");
@@ -219,6 +228,7 @@ export const MainEvents = {
 			theChartTab.style.backgroundColor = "#b3d2ce";
 			theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 			let theTableTab = document.getElementById("icons-tab-3");
+			document.getElementById("dwn-chart-img").classList.remove("disabled");
 			theTableTab.style.backgroundColor = "#ffffff";
 			theTableTab.style.cssText += "border-top: solid 1px #C0C0C0";
 			appState.ACTIVE_TAB.updateShowMap(0);
@@ -280,6 +290,7 @@ export const MainEvents = {
 			let theTableTab = document.getElementById("icons-tab-3");
 			theTableTab.style.backgroundColor = "#b3d2ce";
 			theTableTab.style.cssText += "border-top: solid 5px #8ab9bb";
+			document.getElementById("dwn-chart-img").classList.add("disabled");
 			// dont do this here bc updateShowMap is defaulting to Chart
 			// appState.ACTIVE_TAB.updateShowMap(0);
 			event.preventDefault();
