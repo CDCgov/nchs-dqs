@@ -29,6 +29,9 @@ export class GenChart {
 		this.props = getProps(providedProps);
 	}
 
+	// NOTE: ALl data sorting needs to be done on the data
+	// BEFORE passing into this genChart (TT)
+
 	render() {
 		const p = this.props;
 		//console.log("genChart props=", p);
@@ -41,6 +44,7 @@ export class GenChart {
 		}
 		//console.log("multilinecolors TOP:", multiLineColors);
 		let fullNestedData;
+
 		////////////////////////////////////////////////////////////////////////////////
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
@@ -55,15 +59,11 @@ export class GenChart {
 		if (p.usesBars) {
 			
 			//console.log("##DRAW BAR CHART###");
-			console.log("genChart p.data BEFORE dontDraw CODE:", p.data);
-			//DataCache.activeLegendList = [];
-			//debugger;
 
 			let numToDraw = 0;
 			p.data.forEach((d, i) => {
 				numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
 			});
-			console.log("### numToDraw", numToDraw);
 
 			if (numToDraw === 0) numToDraw = 10;
 
@@ -118,7 +118,7 @@ export class GenChart {
 			// the list below has 200-399 and NOT 133-199
 			// so something is messed up
 
-			console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
+			//console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		} else {
 			// for LINE data we have to do something different
 			// - bc there are MANY points for each line not just one data point
@@ -659,8 +659,6 @@ export class GenChart {
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
 					.entries(allIncomingData);
-				
-				console.log("genChart allIncomingData BEFORE line draw CODE:", allIncomingData);
 
 				// limit legend to 10 max
 				let numLinesToDraw = 0;
@@ -672,23 +670,8 @@ export class GenChart {
 				});
 
 				if (numLinesToDraw === 0) numLinesToDraw = 10;
-				console.log("### numToDraw", numLinesToDraw);
 
-				// now set data that is on the activeLegendList to dontDraw == false
-/* 				fullNestedData = fullNestedData.filter(
-					(d) =>
-						parseInt(d.panel_num) === parseInt(this.panelNum) &&
-						parseInt(d.unit_num) === parseInt(this.unitNum) &&
-						parseInt(d.stub_name_num) === parseInt(this.stubNameNum)
-				); */
-
-/* 				if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
-						// it is on the list
-						d.values[0].dontDraw = false;
-					} else {
-						d.values[0].dontDraw = true;
-					} */
-				// iterate through and set the dontDraw valuse based on activeLegendList
+				// iterate through and set the dontDraw values based on activeLegendList
 				let numSetToDraw = 0;
 				fullNestedData.forEach((d, i) => {
 					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
@@ -700,6 +683,7 @@ export class GenChart {
 					} 
 				});
 
+				// otherwise it might draw nothing
 				if (numSetToDraw === 0) {
 					// then select 10 to draw
 					fullNestedData.forEach((d, i) => {
@@ -909,6 +893,8 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
+
+
 					bars.selectAll("rect")
 						.data(drawData)
 						.join(
@@ -1475,11 +1461,13 @@ export class GenChart {
 				// without this the clicking slowly disappears the options never to return
 
 				// now sort by stub_label_num
-				allIncomingData.sort((a, b) => {
+/* 				allIncomingData.sort((a, b) => {
 					return a.stub_label_num - b.stub_label_num;
-				});
+				}); */
 
-				// (TT) Reliability they want all Null and NaN entries REMOVED
+				// if you try to SORT here only the LEGEND gets sorted
+
+				// (TT) Reliability for BAR CHARTS, they want all Null and NaN entries REMOVED
 
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE
 				allIncomingData.forEach((d, i) => {
@@ -1489,25 +1477,8 @@ export class GenChart {
 						text: d.stub_label,
 						dontDraw: d.dontDraw,
 					};
-					if (!d.draw) {
-						//console.log("legend incoming data:", i, d.stub_label);
-					}
 				});
 
-				// Are there more than 10 legend items
-				//console.log("### BARS numLegendItems:", numLegendItems);
-
-/* 				svg.append("text")
-							.attr("id", "legendBarTxt")
-							//.attr("class", "visible")
-							.attr("x", labelTx)
-							.attr("y", labelTy)
-							.attr("dy", "0.32em")
-							.style("fill", "black")
-							.style("font-size", "17px")
-							.text("Select up to 10 groups"); */
-				
-				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
 				let legendTx;
@@ -1559,7 +1530,16 @@ export class GenChart {
 						.attr("stroke", "black");
 
 					console.log("genChart legendData before DRAW:", legendData);
-					
+									
+					// IF YOU ONLY DO THIS HERE THEN THE BARS ARE OUTOF ALIGNMENT WITH LEGEND ITEMS
+					// - so dont do this here!
+					// Sort alphabetically
+/* 					legendData.sort(function (a, b) {
+						let textA = a.text.toLowerCase(),
+							textB = b.text.toLowerCase();
+						return textA < textB ? -1 : textA > textB ? 1 : 0;
+					}); */
+
 					legendData.forEach((d, i) => {
 						// create unique id name
 						const legendId = d.text.replace(/ /g, "_");
@@ -1682,15 +1662,13 @@ export class GenChart {
 				// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
 				// - therefore all legend drawing must be moved to the END
 				// of this code
-								
-				//Sort ascending order
-				//let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
-				//legendData = legendSorted;
+
 				
+				// ONLY SORT DATA PASSED INTO GENCHART - DONT SORT IN HERE
 				// now sort by stub_label_num
-				fullNestedData.sort((a, b) => {
+/* 				fullNestedData.sort((a, b) => {
 					return a.values[0].stub_label_num - b.values[0].stub_label_num;
-				});
+				}); */
 
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
@@ -1701,10 +1679,15 @@ export class GenChart {
 							dashArrayScale: p.left1DashArrayScale,
 							text: d.key,
 							dontDraw: d.values[0].dontDraw,
+							stub_label_num: d.stub_label_num,
 						};
 					});
 
-					//console.log("## LINES numLegendItems:", numLegendItems);
+/* 				// now sort by stub_label_num
+				legendData.sort((a, b) => {
+					return a.text - b.text;
+				});
+					console.log("## legendData:", legendData); */
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
@@ -1793,6 +1776,15 @@ export class GenChart {
 					.attr("ry", "5")
 					.attr("stroke", "black");
 				
+
+/* 				// Sort alphabetically
+				legendData.sort(function (a, b) {
+					let textA = a.text.toLowerCase(),
+						textB = b.text.toLowerCase();
+					return textA < textB ? -1 : textA > textB ? 1 : 0;
+				});
+ */
+
 				legendData.forEach((d, i) => {
 					const legendId = d.text.replace(/ /g, "_");
 					const legendItem = svg

@@ -232,7 +232,7 @@ export class LandingPage {
 	renderChart(fromHash = false) {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
-		console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
+		//console.log(`landing ${this.dataTopic} filtered data:`, flattenedData);
 		this.chartConfig = this.getChartBaseProps();
 		this.chartValueProperty = this.chartConfig.chartValueProperty;
 		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
@@ -314,25 +314,8 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
-				// backup
-				/* 				selectedPanelData = this.allData.filter(
-									(d) =>  parseInt(d.unit_num) === parseInt(this.unitNum) && parseInt(d.stub_name_num) === parseInt(this.stubNameNum) && parseInt(d.year_pt) >= parseInt(this.startYear) && parseInt(d.year_pt) <= parseInt(this.endYear)
-								); */
 				break;
 			case "medicaidU65":
-				//console.log("##BEFORE medicaid flatten.filter allData=", this.allData);
-							// (TTT) REMOVE BEFORE CHECKING IN
-/* 			let justThisData = this.allData.filter(
-			(d) =>
-						d.stub_label === "Under 19 years: 200%-399%" &&
-						parseInt(d.unit_num) === parseInt(this.unitNum) &&
-						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
-						parseInt(d.year_pt) >= parseInt(this.startYear) &&
-					parseInt(d.year_pt) <= parseInt(this.endYear)
-					//&& d.dontDraw === false
-				);
-
-				console.log("### FLAT data BEFORE filter:", justThisData); */
 
 				selectedPanelData = this.allData.filter(
 					(d) =>
@@ -341,19 +324,6 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 				);
-
-			// (TTT) REMOVE BEFORE CHECKING IN
-/* 			 justThisData = this.allData.filter(
-			(d) =>
-						d.stub_label === "Under 19 years: 200%-399%" &&
-						parseInt(d.unit_num) === parseInt(this.unitNum) &&
-						parseInt(d.stub_name_num) === parseInt(this.stubNameNum) &&
-						parseInt(d.year_pt) >= parseInt(this.startYear) &&
-					parseInt(d.year_pt) <= parseInt(this.endYear)
-					//&& d.dontDraw === false
-				);
-
-				console.log("### FLAT data AFTER filter:", justThisData); */
 				
 				// MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
@@ -389,15 +359,18 @@ export class LandingPage {
 			return a.year_pt - b.year_pt;
 		});
 
+		// now sort by stub_label_num
+		// - do not sort alphabetically bc that results in "Below 100%" values in wrong order
+		selectedPanelData.sort((a, b) => {
+			return a.stub_label_num - b.stub_label_num;
+			//return a.stub_label - b.stub_label;
+		}); 
+
 		if (this.showBarChart) {
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter((d) => parseInt(d.year_pt) === parseInt(this.startYear));
 		} else {
-			// DONT DO THIS HERE - DO ONLY ON LEGEND NOT THE LINE
-			// now sort by stub_label_num
-			/* 			selectedPanelData.sort((a, b) => {
-							return a.stub_label_num - b.stub_label_num;
-						}); */
+			
 			// set up for line chart
 			selectedPanelData = selectedPanelData.map((d) => ({
 				...d,
