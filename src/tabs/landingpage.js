@@ -2239,12 +2239,12 @@ export class LandingPage {
 </div>
 <!-- Tabs content -->
 
-					<div class="dwnl-img-container margin-spacer">
-						<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn" style="margin-right:20px">Download Image <i class='	fas fa-image' aria-hidden="true"></i></button>
-						
-						<button id="btnTableExport" class="theme-cyan ui btn" tabindex="0" aria-label="Download Data">
-						Download Data <i class='fas fa-download' aria-hidden="true"></i>
-						</button>
+					<div class="dwnl-img-container margin-spacer" style="display: flex; justify-content: space-between; text-align: center;">
+						<span><a id="cdcDataGovButton" class="theme-cyan ui btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">View Data on data.cdc.gov <i class='fas fa-download' aria-hidden="true"></i></a></span>
+						<span>
+							<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn" style="margin-right:20px">Download Image <i class='fas fa-image' aria-hidden="true"></i></button>
+							<button id="btnTableExport" class="theme-cyan ui btn" tabindex="0" aria-label="Download Data">Download Data <i class='fas fa-download' aria-hidden="true"></i></button>
+						</span>
 					</div>
 					<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px;margin-bottom:15px;">
 						<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
