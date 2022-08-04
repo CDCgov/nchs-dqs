@@ -22,11 +22,15 @@ import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
 import { data } from "jquery";
+import { DataCache } from "../../utils/datacache";
 
 export class GenChart {
 	constructor(providedProps) {
 		this.props = getProps(providedProps);
 	}
+
+	// NOTE: ALl data sorting needs to be done on the data
+	// BEFORE passing into this genChart (TT)
 
 	render() {
 		const p = this.props;
@@ -40,6 +44,7 @@ export class GenChart {
 		}
 		//console.log("multilinecolors TOP:", multiLineColors);
 		let fullNestedData;
+
 		////////////////////////////////////////////////////////////////////////////////
 		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
 		// BUT leave all data items on the legend!!!
@@ -52,16 +57,68 @@ export class GenChart {
 		// - note cannot do exact same for lines bc there are data points not just one data per line
 		// whereas in the bar charts each bar is one data point so the below approach works
 		if (p.usesBars) {
+			
 			//console.log("##DRAW BAR CHART###");
+
+			let numToDraw = 0;
 			p.data.forEach((d, i) => {
-				if (d.dontDraw === false && barCount < maxBarCount) {
+				numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+			});
+
+			if (numToDraw === 0) numToDraw = 10;
+
+			// THe problem is I think this code always wants to force to 10 items selected
+			// which is not what we need... if we start with 10 and they deselect 1 then it should be 9 obviously
+			// how can we start with 10 on initial render but then have a list of 8 or 9 or 2
+			// on re-render --->  NEED TO PERSIST THE LIST OF SELECTED ITEMS
+			p.data.forEach((d, i) => {
+				if (d.dontDraw === false && barCount < numToDraw) {
 					barCount++; // increment barCount
+					if (i > 9) {
+						console.log(" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount", d, d.dontDraw, i, barCount,maxBarCount);
+					}
+
+					// PUSH only if not already on the list
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+						// it is on the list
+						// so dont push it
+					} else {
+						// not on there so push it
+						DataCache.activeLegendList.push(d);
+					}				
+					
 				} else {
+					// remove if it was on active list
+					const tempList = DataCache.activeLegendList.filter(
+						(e) =>
+									e.stub_label !== d.stub_label
+					);
+					DataCache.activeLegendList = [];
+					DataCache.activeLegendList = tempList;
+
 					// then either dontDraw already true or needs to be set to true
 					// bc bar count is exceeded
 					d.dontDraw = true;
+					if (i < 11) {
+						console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
+					}
 				}
+
+				// CHANGE - if on the active list then set dontDraw = false
+				// - if not on the list set it to dontDraw = true
+				if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+					// it is on the list
+					d.dontDraw = false;
+				} else {
+					d.dontDraw = true;
+				}
+				
 			});
+
+			// the list below has 200-399 and NOT 133-199
+			// so something is messed up
+
+			//console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		} else {
 			// for LINE data we have to do something different
 			// - bc there are MANY points for each line not just one data point
@@ -73,15 +130,15 @@ export class GenChart {
 			// creating yScaleLeft
 		}
 
+		//console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
+		
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
 
-		//debugger;
-
 		// if you need to look at incoming data
-		console.log("genChart p.data:", p.data);
+		//console.log("genChart p.data after removing dontDraw=true vals:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -233,31 +290,7 @@ export class GenChart {
 			}
 		};
 
-		// Find the position of a SVG DOM element
-		function getPosition(element) {
-			let match;
-			let x, y;
-			// We have a transform, that might contain a translate(x,y)
-			let transform = element.attr("transform");
-			if (transform) match = transform.match(/translate\(\s*(-?[\d.]*)\s*[,]\s*(-?[\d.]*)\s*/);
-
-			// We have translate(x,y)
-			if (match?.length >= 2) {
-				x = parseFloat(match[1]);
-				y = parseFloat(match[2]);
-
-				// We try to get x="" and y=""
-			} else {
-				x = element.attr("x");
-				y = element.attr("y");
-			}
-			// Set x and y to 0 if they are undefined or null
-			x = x ? x : 0;
-			y = y ? y : 0;
-
-			return { x, y };
-		}
-
+	
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -543,12 +576,25 @@ export class GenChart {
 			}
 
 			// left yAxis
+			// for LINE chart
 			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY + 24) // up and down bc rotated
+					.attr("x", -chartCenterY + 0) // up and down bc rotated  - (TT) removed the adjust value centered it
+					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
+					.attr("font-size", axisTitleFontSize)
+					.attr("fill", p.leftAxisColor);
+			}
+			// add to BAR CHART
+			let titleWidth = p.leftAxisTitle.length * axisTitleFontSize;
+			if (p.usesLeftAxisTitle && p.chartRotate) {
+				svg.append("text")
+					.text(p.leftAxisTitle)
+					.style("text-anchor", "middle")
+					.attr("transform", "rotate(-90)")
+					.attr("x", -chartCenterY - titleWidth/2 - svgHeight/4 + margin.bottom) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
@@ -628,19 +674,94 @@ export class GenChart {
 					.entries(allIncomingData);
 
 				// limit legend to 10 max
+				let numLinesToDraw = 0;
 				fullNestedData.forEach((d, i) => {
-					//if (i > 9) { console.log("nested dontDraw on data d,i", d, i); }
-					if (d.values[0].dontDraw === false && lineCount < maxLineCount) {
-						lineCount++; // increment barCount
-					} else {
-						// then either dontDraw already true or needs to be set to true
-						// bc line count is exceeded
-						// --- iterate over ALL values and set ALL to true
-						//console.log("nested dontDraw SET TRUE on data d,i", d, i);
-						d.values[0].dontDraw = true;
-					}
+					numLinesToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+					
+					// set all data to dontDraw == true
+					d.dontDraw = true; // disable ALL
 				});
 
+				if (numLinesToDraw === 0) numLinesToDraw = 10;
+
+				// iterate through and set the dontDraw values based on activeLegendList
+				let numSetToDraw = 0;
+				fullNestedData.forEach((d, i) => {
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+						// it is on the list
+						d.values[0].dontDraw = false;
+						numSetToDraw++;
+					} else {
+						d.values[0].dontDraw = true;
+					} 
+				});
+
+				// otherwise it might draw nothing
+				if (numSetToDraw === 0) {
+					// then select 10 to draw
+					fullNestedData.forEach((d, i) => {
+						if (numSetToDraw < numLinesToDraw) {
+							// it is on the list
+							d.values[0].dontDraw = false;
+							numSetToDraw++;
+						} 
+						});
+				}
+
+				// NOW WE CAN deal with the legend and whether the lines are drawn
+				fullNestedData.forEach((d, i) => {
+					if (d.values[0].dontDraw === false && lineCount < numLinesToDraw) {
+						lineCount++; // increment barCount
+
+						// PUSH only if not already on the list
+						if (DataCache.activeLegendList.filter(function (e) {
+							if (e.stub_label === d.values[0].stub_label) {
+								console.log("MATCH e stub_label, d stub_label", e.stub_label, d.values[0].stub_label);
+							}
+							return e.stub_label === d.values[0].stub_label;
+						}).length > 0) {
+							// it is on the list
+							// so dont push it
+							//console.log("ALREADY on the list",d.values[0].stub_label);
+						} else {
+							// not on there so push it8/2/2022 
+
+							// the line after this is pushing the wrong object
+							DataCache.activeLegendList.push(d.values[0]);
+
+							//console.log("fullnested d pushed:", d.values[0]);
+							//console.log("fullnested d pushed:", d.values[0]);
+						}				
+						
+					} else {
+						// remove if it was on active list
+						const tempList = DataCache.activeLegendList.filter(
+							(e) =>
+										e.stub_label !== d.values[0].stub_label
+						);
+						DataCache.activeLegendList = [];
+						DataCache.activeLegendList = tempList;
+
+						// then either dontDraw already true or needs to be set to true
+						// bc bar count is exceeded
+						d.values[0].dontDraw = true;
+						if (i < 11) {
+							//console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
+						}
+					}
+
+					// CHANGE - if on the active list then set dontDraw = false
+					// - if not on the list set it to dontDraw = true
+					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+						// it is on the list
+						d.values[0].dontDraw = false;
+					} else {
+						d.values[0].dontDraw = true;
+					}
+				
+				});
+
+				
 				fullNestedData.forEach((nd, i) => {
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
@@ -785,6 +906,8 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
+
+
 					bars.selectAll("rect")
 						.data(drawData)
 						.join(
@@ -1351,11 +1474,13 @@ export class GenChart {
 				// without this the clicking slowly disappears the options never to return
 
 				// now sort by stub_label_num
-				allIncomingData.sort((a, b) => {
+/* 				allIncomingData.sort((a, b) => {
 					return a.stub_label_num - b.stub_label_num;
-				});
+				}); */
 
-				// (TT) Reliability they want all Null and NaN entries REMOVED
+				// if you try to SORT here only the LEGEND gets sorted
+
+				// (TT) Reliability for BAR CHARTS, they want all Null and NaN entries REMOVED
 
 				// ALSO REMOVES THE COLOR LINES ON ONES WITH dontDraw = TRUE
 				allIncomingData.forEach((d, i) => {
@@ -1365,25 +1490,8 @@ export class GenChart {
 						text: d.stub_label,
 						dontDraw: d.dontDraw,
 					};
-					if (!d.draw) {
-						//console.log("legend incoming data:", i, d.stub_label);
-					}
 				});
 
-				// Are there more than 10 legend items
-				//console.log("### BARS numLegendItems:", numLegendItems);
-
-				/* 				svg.append("text")
-							.attr("id", "legendBarTxt")
-							//.attr("class", "visible")
-							.attr("x", labelTx)
-							.attr("y", labelTy)
-							.attr("dy", "0.32em")
-							.style("fill", "black")
-							.style("font-size", "17px")
-							.text("Select up to 10 groups"); */
-
-				////
 				// need height first
 				const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
 				let legendTx;
@@ -1416,6 +1524,7 @@ export class GenChart {
 							.attr("id", "selectTenTxt")
 							.attr("x", -80) //legendTx - 120)
 							.attr("y", -16) //legendTy - 250)
+
 							//.attr("dy", "0.32em")
 							.style("fill", "black")
 							.style("font-size", "17px")
@@ -1427,12 +1536,24 @@ export class GenChart {
 						.attr("transform", `translate(${legendTx}, ${legendTy})`)
 						.append("rect")
 						.attr("id", `${svgId}-chart-legend`)
+						.attr("data-html2canvas-ignore", "")
 						.attr("height", legendHeight)
 						.attr("fill", "#F2F2F2")
 						.attr("rx", "5")
 						.attr("ry", "5")
 						.attr("stroke", "black")
 						.attr("data-html2canvas-ignore", "");
+
+					console.log("genChart legendData before DRAW:", legendData);
+									
+					// IF YOU ONLY DO THIS HERE THEN THE BARS ARE OUTOF ALIGNMENT WITH LEGEND ITEMS
+					// - so dont do this here!
+					// Sort alphabetically
+/* 					legendData.sort(function (a, b) {
+						let textA = a.text.toLowerCase(),
+							textB = b.text.toLowerCase();
+						return textA < textB ? -1 : textA > textB ? 1 : 0;
+					}); */
 
 					legendData.forEach((d, i) => {
 						// create unique id name
@@ -1498,7 +1619,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
+								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
@@ -1556,9 +1677,12 @@ export class GenChart {
 				// - therefore all legend drawing must be moved to the END
 				// of this code
 
-				//Sort ascending order
-				let legendSorted = legendData.slice().sort((a, b) => d3.ascending(a.text, b.text));
-				legendData = legendSorted;
+				
+				// ONLY SORT DATA PASSED INTO GENCHART - DONT SORT IN HERE
+				// now sort by stub_label_num
+/* 				fullNestedData.sort((a, b) => {
+					return a.values[0].stub_label_num - b.values[0].stub_label_num;
+				}); */
 
 				if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 					// ALL nests go on the legend but only draw those that are set to dontDraw = false
@@ -1569,13 +1693,19 @@ export class GenChart {
 							dashArrayScale: p.left1DashArrayScale,
 							text: d.key,
 							dontDraw: d.values[0].dontDraw,
+							stub_label_num: d.stub_label_num,
 						};
 					});
 
-					//console.log("## LINES numLegendItems:", numLegendItems);
+/* 				// now sort by stub_label_num
+				legendData.sort((a, b) => {
+					return a.text - b.text;
+				});
+					console.log("## legendData:", legendData); */
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
+				
 					/* 					allIncomingData.forEach((d, i) => {
 											legendData[i] = {
 											stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
@@ -1653,6 +1783,7 @@ export class GenChart {
 					.attr("transform", `translate(${legendTx}, ${legendTy})`)
 					.append("rect")
 					.attr("id", `${svgId}-chart-legend`)
+					.attr("data-html2canvas-ignore", "")
 					.attr("height", legendHeight)
 					.attr("fill", "#F2F2F2")
 					.attr("rx", "5")
@@ -1665,6 +1796,7 @@ export class GenChart {
 						.append("g")
 						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
 						.attr("id", legendId)
+						.attr("data-html2canvas-ignore", "")
 						.attr(
 							"transform",
 							`translate(${legendTx + axisLabelFontSize / 2},
@@ -1750,6 +1882,7 @@ export class GenChart {
 						.attr("id", "selectTenTxt")
 						.attr("x", -80)
 						.attr("y", -12)
+						.attr("data-html2canvas-ignore", "")
 						.style("fill", "black")
 						.style("font-size", "17px")
 						.text("Select up to 10 groups");

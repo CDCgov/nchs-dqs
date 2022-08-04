@@ -112,7 +112,7 @@ const saveCanvasAs = (uri, filename) => {
 // 	}, 100);
 // };
 
-export const downLoadUsCaseandChartMap2 = function (viz) {
+export const downLoadMap2 = function () {
 	let mapImageContainer = document.getElementById("us-map-container");
 	let imageHeightContainer = document.getElementById("us-map-container");
 	//let imageTargetName = document.getElementById("maptitle").textContent;
@@ -161,7 +161,8 @@ export const downLoadUsCaseandChartMap2 = function (viz) {
 			// let titleChart = document.getElementById("chart-title").textContent;
 			// document.getElementById("us-map-container").innerHTML = "<div>" + titleChart + "<br />" + "Test</div>";
 			let titleChart = document.getElementById("chart-title").textContent;
-			saveCanvasAs(canvas.toDataURL(), titleChart);
+			let imgName = `${titleChart}.png`;
+			saveCanvasAs(canvas.toDataURL(), imgName);
 			downloadButton.innerHTML = "Download Image";
 			downloadButton.classList.remove("disabled");
 			downloadButtonContent.classList.remove("fa-circle-notch", "fa-spin");
@@ -176,12 +177,12 @@ export const downLoadGenChart = (params) => {
 	//if (params.needToShowHide) $("#chart-container").show();
 	const contentContainer = document.getElementById(params.contentContainer);
 	const svgContainer = document.getElementById("chart-container-svg");
-	const height = "1500";
+	const height = document.getElementById("chart-container").clientHeight + 500;
 	// const width = "175%";
 	const downloadButton = document.getElementById(params.downloadButton);
 	downloadButton.innerHTML = 'Downloading <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
 	downloadButton.classList.add("disabled");
-	// console.log("height", height);
+	console.log("height", height);
 	// console.log("width", width);
 	// Any elements that come on the page prior to the current selection for html2Canvas
 	// that have the data-html2canvas-ignore attribute will throw off the correct y-page
@@ -232,20 +233,21 @@ export const downLoadGenChart = (params) => {
 					);
 					clone.querySelector("#chart-container-svg").setAttribute("width", "2000");
 					clone.querySelector("#chart-container-svg").setAttribute("height", "1200");
+
 					if (navigator.userAgent.indexOf("Firefox") != -1) {
 						clone
 							.querySelector("#chart-container-svg")
-							.setAttribute("transform", "rotate(90) translate(0, 520)");
-						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 700 -100");
+							.setAttribute("transform", "rotate(90) translate(50,50)");
+						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "-250 800 1800 600");
 					} else {
 						clone
 							.querySelector("#chart-container-svg")
-							.setAttribute("transform", "rotate(45) translate(180,160)");
-						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 2600 1300");
+							.setAttribute("transform", "rotate(45) translate(300,0)");
+						clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 2700 1500");
 					}
-
+					clone.querySelector("#chart-container").setAttribute("style", " ");
 					//clone.querySelector("#chart-container-svg").setAttribute("viewBox", "0 0 3500 2700");
-					clone.querySelector("#chart-container-svg").setAttribute("preserveAspectRatio", " ");
+					//clone.querySelector("#chart-container-svg").setAttribute("preserveAspectRatio", " ");
 					// clone.querySelector("#chart-container-svg").setAttribute(
 					// 	"style",
 					// 	"transform:  margin-top:500px; margin-left:200px; border: 1px solid blue"
@@ -258,6 +260,7 @@ export const downLoadGenChart = (params) => {
 				//doc.getElementById("chart-container-svg").setAttribute("height", "500px!important");
 				// $("#chart-container-svg").css("background-color", "red!important");
 				// $("#chart-container-svg").css("padding-bottom", "0px!important");
+				clone.getElementById("chart-container-chartTitle").setAttribute("style", "font-size: 33.66px ");
 				clone.getElementById("chart-container-chartTitle").innerHTML = "<div>" + titleChart + "</div>";
 			},
 		}).then((canvas) => {
