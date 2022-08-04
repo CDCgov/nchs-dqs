@@ -1211,6 +1211,7 @@ export class LandingPage {
 		if (!fromHash) {
 			const firstVal = $("#panel-num-select option:first").val();
 			$("#panel-num-select").val(firstVal);
+			this.panelNum = firstVal;
 		}
 	}
 
@@ -1226,7 +1227,7 @@ export class LandingPage {
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
-		if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
+		if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult" || this.dataTopic === "birthweight" || this.dataTopic === "injury") {
 			allStubsArray = this.allData.filter((item) => parseInt(item.panel_num) === parseInt(this.panelNum));
 		} else {
 			allStubsArray = this.allData;
@@ -1257,8 +1258,6 @@ export class LandingPage {
 				$("#stub-name-num-select").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 			}
 		});
-		// NO DONT DO THIS - set first item to "selected"
-		//$('#stub-name-num-select option:first-child').attr("selected", "selected");
 
 		if (foundUnit === false) {
 			// now update the stubname num to the first on the list
@@ -1746,70 +1745,48 @@ export class LandingPage {
 				break;
 		} // end switch
 
-		console.log("Datacache AFTER removing selDataPt", DataCache.activeLegendList);
-
-		console.log("this.alldata BEFORE renderChart", this.allData);
-
 		this.renderChart();
 	}
 
-	/* getTableInfo(state) {
-		let tableTitle = config.leftAxisLookup.get(this.selection.leftAxis).tableTitle;
+	// call this when Reset Button is clicked
+	resetSelections() {
 
-		const keys = ["state", "displayDate", this.selection.leftAxis];
-		if (this.selection.dayCheckBox && this.selection.leftAxis === "New_case") keys.push("seven_day_avg_new_cases");
-		else if (this.selection.dayCheckBox && this.selection.leftAxis === "new_death")
-			keys.push("seven_day_avg_new_deaths");
-		else if (this.selection.dayCheckBox && this.selection.leftAxis === "new_test_results_reported")
-			keys.push("new_test_results_reported_7_day_rolling_average");
+		// reset panel
+		this.setPanelSelect(false);
 
-		if (this.selection.rightAxis !== "select") keys.push(this.selection.rightAxis);
-
-		const cols = ["State", "Date", config.leftAxisLookup.get(this.selection.leftAxis).dtHeader];
-		if (
-			this.selection.dayCheckBox &&
-			(this.selection.leftAxis === "New_case" ||
-				this.selection.leftAxis === "new_death" ||
-				this.selection.leftAxis === "new_test_results_reported")
-		)
-			cols.push("7-Day Moving Avg");
-
-		if (this.selection.rightAxis !== "select")
-			cols.push(config.rightAxisLookup.get(this.selection.rightAxis).dtHeader);
-
-		if (state === "The United States") {
-			if (this.selection.leftAxis === "New_case") {
-				keys.push("historical_new_total_cases");
-				cols.push("Historic Cases");
-			} else if (this.selection.leftAxis === "new_death") {
-				keys.push("historical_new_total_deaths");
-				cols.push("Historic Deaths");
-			}
+		// reset Characteristic
+		this.stubNameNum = 0; // should always be TOTAL in every data set!!!
+		this.setStubNameSelect();
+		
+		// always show the line chart
+		//this.updateShowBarChart(0);
+		//disable single year if it is set
+		// force "year" to reset and not have single year clicked
+		if (document.getElementById("show-one-period-checkbox").checked) {
+			$("#show-one-period-checkbox").click();
 		}
 
-		const rightTitle = config.rightAxisLookup.get(this.selection.rightAxis)?.titleText ?? "";
-		let chartTitle = config.leftAxisLookup.get(this.selection.leftAxis).titleText;
-		if (chartTitle.includes("COVID-19") && rightTitle.includes("COVID-19"))
-			chartTitle = chartTitle.replace("COVID-19 ", "");
-		chartTitle += `${rightTitle}in ${state} Reported to CDC`;
-		chartTitle += config.rightAxisLookup.get(this.selection.rightAxis)?.titleEnd ?? "";
+		// reset time periods
+		// have to update START TIME PERIOD select bc some stubs for same data have different
+		// years that are valid data
+		this.resetTimePeriods();
 
-		let callout = config.leftAxisLookup.get(this.selection.leftAxis).calloutText;
-		if (
-			this.selection.dayCheckBox &&
-			(this.selection.leftAxis === "New_case" || this.selection.leftAxis === "new_death")
-		)
-			callout += ` The red line is the 7-day moving average of ${this.selection.leftAxis.split("_")[1]}s.`;
+		// reset the unit
+		this.setVerticalUnitAxisSelect();
+		
+		if (this.stubNameNum === 0) {
+			// disable the map for TOTAL
+			this.updateShowMap(0);
+		}
 
-		// to get the specific text this had to be a separate callout case
-		if (this.selection.dayCheckBox && this.selection.leftAxis === "new_test_results_reported")
-			callout += ` The red line is the 7-day moving average of NAATs that were performed.`;
+		// clear the list of active legend items when stub name changes
+		DataCache.activeLegendList = [];
+		
+		// now set back to Chart and render the chart
+		this.renderChart();
 
-		callout += config.rightAxisLookup.get(this.selection.rightAxis)?.calloutText ?? "";
-
-		return { chartTitle, tableTitle, keys, cols, callout };
 	}
- */
+
 	renderDataTable(tableData) {
 		// DATATABLE FUNCTION
 		let tableTitleId = "table-title";
@@ -1817,7 +1794,7 @@ export class LandingPage {
 		let keys = [];
 		let cols = [];
 		let viewSelected = $("#data-topic-select").val();
-		console.log("viewSelected", viewSelected);
+		
 		let tableHeading = "";
 
 		/* 		const formattedData = tableData.map((d) => ({
@@ -1991,21 +1968,13 @@ export class LandingPage {
 			return -1 * parseFloat(cellValue.replace(/,/g, ""));
 		});
 
-		//document.getElementById("table-note").innerHTML = DataCache.JSONReleaseWithPullTime;
 	}
 
 	exportCSV() {
 		downloadCSV(this.csv);
 	}
 
-	// getCSVData(data) {
-	// 	let keys = [];
-	// 	let cols = [];
-	// 	let viewSelected = $("#data-topic-select").val();
-	// 	console.log("viewSelected", viewSelected);
-	// }
-
-	// TO DO: Change the selectors to be filled using data code??
+	// NOTE: Some selectors load static on initial load, then we load using data from then on
 	tabContent = `<!-- TOP SELECTORS -->			
 <div class="row">
 	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
@@ -2145,7 +2114,23 @@ export class LandingPage {
 	</div>
 </div>
 <!-- #b3d2ce -->
+<div class="row" style="padding:0 !important;">
+	<div class="col-lg-4 col-md-3 col-sm-6 homeSmallGroup" >
+			<div class="col homeSmallIcon d-inline-block">
+				<i class="fas fa-caret-right"></i>
+				<span  class=" homeSmallText">View Additional Filters</span>
+			</div>
+			<div class="col homeTinyIcon d-inline-block float-right">
+				<i class="fas fa-pen fa-xs"></i>
+				<span  class="homeTinyText" style="text-decoration-line: underline;">Edit Your Filters</span>
+			</div>
+	</div>
 
+    <div class="col col-lg-4 col-md-3 col-sm-6 align-self-end  d-inline-block " style="text-align: right;">
+     <i class="fas fa-info-circle homeTinyIcon" title="Reset all selections except for Topic selection"></i> <button id="home-btn-reset"class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
+    </div>
+	</div>
+</div>
 <br>
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
 		<span id="chart-title" class="chart-title"></span>
