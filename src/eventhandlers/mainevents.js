@@ -106,18 +106,16 @@ export const MainEvents = {
 		});
 		$("#show-one-period-checkbox").on("change", (evt) => {
 			stopAnimation();
-			let isChecked = evt.target.checked; // if you dont do this then stubNum is string
-			if (isChecked) {
+			$("#startYearContainer").toggleClass("offset-3");
+			if (evt.target.checked) {
 				//console.log("Checkbox is checked..");
 				// hide the ending period select dropdown
-				$("#year-end-label").hide();
-				$("#year-end-select").hide();
+				$("#endYearContainer").hide();
 				// set to enable bar chart
 				appState.ACTIVE_TAB.updateShowBarChart(1);
 			} else {
 				// show the ending period select dropdown
-				$("#year-end-label").show();
-				$("#year-end-select").show();
+				$("#endYearContainer").show();
 				// set to enable line chart
 				appState.ACTIVE_TAB.updateShowBarChart(0);
 			}

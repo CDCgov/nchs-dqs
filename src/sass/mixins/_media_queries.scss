@@ -1,6 +1,7 @@
 // @media query breakpoints mixin
 
 $mobile-max-width: 767px;
+$mobile-max-width-2: 576px;
 $mobile-min-width: 320px;
 $tablet-min-width: 768px;
 $tablet-max-width: 1024px;
@@ -9,6 +10,7 @@ $desktop-min-width-2: 1000px;
 $large-screen-min-width: 1400px;
 $large-screen-min-width-2: 1200px;
 $large-screen-min-width-3: 1600px;
+$large-screen-min-width-4: 992px;
 $large-screen-max-width: 2560px;
 $mobile-screen-max-width: 420px;
 $mobile-screen-only-max-width: 426px;

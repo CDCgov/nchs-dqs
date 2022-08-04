@@ -1898,90 +1898,113 @@ export class LandingPage {
 	}
 
 	// TO DO: Change the selectors to be filled using data code??
-	tabContent = `<!-- TOP SELECTORS --><div class="color-area-wrapper">
-	<div class="rectangle-white">
-		<div class="inner-content-wrapper">
-			<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
-				<i class="fa fa-circle fa-stack-2x"></i>
-				<strong class="fa-stack-1x fa-stack-text fa-inverse">1</strong>
-			</span>
-			<span style="padding-bottom:0px; font-family:Open Sans,sans-serif;color: black; font-weight:300; ">Select a topic</span><br>
-			<span style="margin-left: 47px; margin-top:-10px; font-family:Open Sans,sans-serif;color: black; font-weight:600;font-size:22px;">Topic</span>
-			<br>&nbsp;<br>
-			<div class="styled-select">
-			<select name="data-topic-select" id="data-topic-select" form="select-view-options"  style="font-size:12px;height:2em;width:180px;">
-				<optgroup style="font-size:12px;">
-				<option value="obesity-child" selected>Obesity among Children</option>
-				<option value="obesity-adult">Obesity among Adults</option>
-				<option value="suicide">Death Rates for Suicide</option>
-				<option value="injury">Initial injury-related visits to hospital emergency departments</option>
-				<option value="infant-mortality">Infant Mortality</option>
-				<option value="birthweight">Low birthweight live births</option>
-				<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
-
-				</optgroup>
-			</select>
+	tabContent = `<!-- TOP SELECTORS -->			
+<div class="row">
+	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="row">
+			<div class="col-2 homeIcon">
+				<i class="fas fa-arrow-circle-right"></i>
+			</div>
+			<div class="col-10 homeSelectorText">
+				<div class="preSelText">Select a</div>
+				<div class="mainSelText">Topic</div>
 			</div>
 		</div>
-		<div class="chevron-white"></div>
-	</div>
-	<div class="rectangle-white">
-		<div class="inner-content-wrapper">
-			<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
-				<i class="fa fa-circle fa-stack-2x"></i>
-				<strong class="fa-stack-1x fa-stack-text fa-inverse">2</strong>
-			</span>
-			<span style="font-family:Open Sans,sans-serif;color: #010101; font-weight:300; ">Refine to a</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color: #010101; font-weight:600;font-size:22px;">Subtopic</span>
-			<br>&nbsp;<br>
-			<select name="panel-num-select" id="panel-num-select" form="select-view-options" class="styled-select"  style="font-size:12px;height:2em;width:180px;">
-				<optgroup>
-				<option value="1" selected>2-19 years</option>
-				<option value="2">2-5 years</option>
-				<option value="3">6-11 years</option>
-				<option value="4">12-19 years</option>
-				</optgroup>
-			</select>
+		<div class="row">
+			<div class="col-2">&nbsp;</div>
+			<div class="col-10 homeSelectorText">
+				<div class="styled-select">
+					<select name="data-topic-select" id="data-topic-select" form="select-view-options">
+						<optgroup style="font-size:12px;">
+							<option value="obesity-child" selected>Obesity among Children</option>
+							<option value="obesity-adult">Obesity among Adults</option>
+							<option value="suicide">Death Rates for Suicide</option>
+							<option value="injury">Initial injury-related visits to hospital emergency departments</option>
+							<option value="infant-mortality">Infant Mortality</option>
+							<option value="birthweight">Low birthweight live births</option>
+							<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
 		</div>
-		<div class="chevron-white"></div>
 	</div>
-	<div class="rectangle-white">
-		<div class="inner-content-wrapper">
-			<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
-				<i class="fa fa-circle fa-stack-2x"></i>
-				<strong class="fa-stack-1x fa-stack-text fa-inverse">3</strong>
-			</span>
-			<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">View data by</span><br>
-			<span style="margin-left: 47px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Characteristic</span>
-			<br>&nbsp;<br>
-			<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options"  class="custom-select"  style="font-size:12px;height:2em;width:180px;">
-				<option value="0" selected>Total</option>
-				<option value="1">Sex</option>
-				<option value="3"">Race and Hispanic origin</option>
-        		<option value="4">Sex and race and Hispanic origin</option>
-				<option value="5">Percent of poverty level</option>
-			</select>
+	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="row">
+			<div class="col-2 homeIcon">
+				<i class="fas fa-arrow-circle-right"></i>
+			</div>
+			<div class="col-10 homeSelectorText">
+				<div class="preSelText">Refine to a</div>
+				<div class="mainSelText">Subtopic</div>
+			</div>
 		</div>
-		<div class="chevron-white"></div>
+		<div class="row">
+			<div class="col-2">&nbsp;</div>
+			<div class="col-10 homeSelectorText">
+				<div class="styled-select">
+					<select name="panel-num-select" id="panel-num-select" form="select-view-options">
+						<optgroup>
+							<option value="1" selected>2-19 years</option>
+							<option value="2">2-5 years</option>
+							<option value="3">6-11 years</option>
+							<option value="4">12-19 years</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+		</div>
 	</div>
-	<!-- last section with no chevron -->
-	<div class="inner-content-wrapper">
-		<span class="fa-stack fa-1x" style="color: #008BB0; padding-top:10px; padding-bottom:10px;">
-			<i class="fa fa-circle fa-stack-2x"></i>
-			<strong class="fa-stack-1x fa-stack-text fa-inverse">4</strong>
-		</span>
-		<span style="font-family:Open Sans,sans-serif;color:#010101; font-weight:300; ">Choose from available</span><br>
-		<span style="margin-left:47px; margin-top:-5px; font-family:Open Sans,sans-serif;color:#010101; font-weight:600;font-size:22px;">Time
-			Periods</span>
-		<div class="checkbox-style">
-			<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox">
-			<label for="show-one-period-checkbox">View single period</label>
+	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="row">
+			<div class="col-2 homeIcon">
+				<i class="fas fa-arrow-circle-right"></i>
+			</div>
+			<div class="col-10 homeSelectorText">
+				<div class="preSelText">View Data by</div>
+				<div class="mainSelText">Characteristic</div>
+			</div>
 		</div>
-		<div id="timePeriodContainer" style="display: flex;">
-			<div style="flex-direction: column;">
-				<div class="label-style" id="year-start-label">Start Period <br> </div>
-				<div>
-					<select name="year-start" id="year-start-select" form="select-view-options" class="select-style"  style="font-size:12px;height:2em;width:100px;">
+		<div class="row">
+			<div class="col-2">&nbsp;</div>
+			<div class="col-10 homeSelectorText">
+				<div class="styled-select">
+					<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options">
+						<optgroup>
+							<option value="0" selected>Total</option>
+							<option value="1">Sex</option>
+							<option value="3"">Race and Hispanic origin</option>
+			        		<option value="4">Sex and race and Hispanic origin</option>
+							<option value="5">Percent of poverty level</option>
+						</optgroup>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="row">
+			<div class="col-2 homeIcon">
+				<i class="fas fa-arrow-circle-right"></i>
+			</div>
+			<div class="col-10 homeSelectorText">
+				<div class="preSelText">Choose from available</div>
+				<div class="mainSelText">Time Periods</div>
+			</div>
+		</div>
+		<div class="row" style="text-align: center">			
+			<div class="col-12">
+				<div style="margin-top: 0.4vw">
+					<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox">
+					<label class="label-style" for="show-one-period-checkbox">View single period</label>
+				</div>
+			</div>
+		</div>
+		<div class="row" id="timePeriodContainer">
+			<div id="startYearContainer" class="col-6" style="text-align: center">
+				<div class="label-style" id="year-start-label">Start Period</div>
+				<div class="styled-select">
+					<select name="year-start" id="year-start-select" form="select-view-options" style="margin-top: 0">
 						<option value="1988-1994" selected>1988-1994</option>
 						<option value="1999-2002">1999-2002</option>
 						<option value="2001-2004">2001-2004</option>
@@ -1994,10 +2017,10 @@ export class LandingPage {
 					</select>
 				</div>
 			</div>
-			<div style="flex-direction: column;">
+			<div id="endYearContainer" class="col-6" style="text-align: center">
 				<div class="label-style" id="year-end-label">End Period</div>
-				<div>
-					<select name="year-end" id="year-end-select" form="select-view-options" class="select-style"  style="font-size:12px;height:2em;width:100px;">
+				<div class="styled-select">
+					<select name="year-end" id="year-end-select" form="select-view-options" style="margin-top: 0">
 						<option value="1988-1994">1988-1994</option>
 						<option value="1999-2002">1999-2002</option>
 						<option value="2001-2004">2001-2004</option>
@@ -2008,12 +2031,11 @@ export class LandingPage {
 						<option value="2011-2014">2011-2014</option>
 						<option value="2013-2016" selected>2013-2016</option>
 					</select>
-				</div>
-			</div>
-		</div>
+				</div>					
+			</div>			
+		</div>		
 	</div>
 </div>
-
 <!-- #b3d2ce -->
 
 <br>
@@ -2025,15 +2047,15 @@ export class LandingPage {
 
 	<!-- Tabs navs -->
 <ul class="nav nav-tabs justify-content-center" id="ex-with-icons" role="tablist" style="margin-top: 15px;">
-  <li class="nav-item center" role="presentation" id="tab-map" style="visibility:hidden;width: 200px;  text-align: center;">
+  <li class="nav-item center" role="presentation" id="tab-map" style="visibility:hidden;">
     <a class="nav-link" id="icons-tab-1" data-mdb-toggle="tab" href="#map-tab" role="tab"
       aria-controls="ex-with-icons-tabs-1" aria-selected="true"  style="background-color:#b3d2ce;"><i class="fas fa-map fa-fw me-2"></i>Map</a>
   </li>
-    <li class="nav-item center" role="presentation" id="tab-chart" style="width: 200px;  text-align: center;">
+    <li class="nav-item center" role="presentation" id="tab-chart">
     <a class="nav-link active" id="icons-tab-2" data-mdb-toggle="tab" href="#chart-tab" role="tab"
       aria-controls="ex-with-icons-tabs-2" aria-selected="true"  style="background-color:#b3d2ce;border-top:solid 5px #8ab9bb;"><i class="fas fa-chart-line fa-fw me-2"></i>Chart</a>
   </li>
-  <li class="nav-item center" role="presentation"  id="tab-table" style="width: 200px;  text-align: center;">
+  <li class="nav-item center" role="presentation"  id="tab-table">
     <a class="nav-link" id="icons-tab-3" data-mdb-toggle="tab" href="#table-tab" role="tab"
       aria-controls="ex-with-icons-tabs-3" aria-selected="false"  style="border-top:solid 1px #C0C0C0;"><i class="fas fa-table fa-fw me-2"></i>Table</a>
   </li>
@@ -2072,7 +2094,7 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-				<div style="margin-left:90px;margin-right:50px;margin-bottom:10px;width:auto;display:inline;float:left;">Adjust Unit<br>
+				<div id="adjustUnitContainer">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
