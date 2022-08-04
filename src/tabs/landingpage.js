@@ -1842,8 +1842,8 @@ export class LandingPage {
 					"Age",
 					"Estimate",
 					"Standard Error",
-					"Estimate_lci",
-					"Estimate_uci",
+					"Lower Confidence Interval",
+					"Upper Confidence Interval",
 				];
 
 				keys = [
