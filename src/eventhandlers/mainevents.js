@@ -136,6 +136,13 @@ export const MainEvents = {
 			}
 		});
 
+		$(document).on("click", "#home-btn-reset", (event) => {
+			event.stopPropagation();
+			console.log("*** reset Button clicked: event.target", event.target);
+			appState.ACTIVE_TAB.resetSelections();
+			event.preventDefault();
+		});
+		
 		$(document).on("click", ".chart-container-svg-legendItem", (event) => {
 			event.stopPropagation();
 			// get the unique id of the legend item
