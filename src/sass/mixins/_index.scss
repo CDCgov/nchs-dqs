@@ -85,48 +85,67 @@
 .checkbox-style {
 	font-family: Open Sans, sans-serif;
 	color: #010101;
-	margin-left: 40px;
+	margin-left: 1rem;
 	font-weight: 400;
-	font-size: 14px;
-	margin-top: 12px;
+	font-size: 0.9vw;
+	white-space: nowrap;
+
+	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		font-size: 1.35vw;
+	}
+	@media screen and (max-width: $tablet-min-width) {
+		font-size: 1.8vw;
+	}
+	@media screen and (max-width: $mobile-max-width-2) {
+		font-size: 2.25vw;
+	}
 }
 
 .label-style {
-	display: flex;
-	/* border: solid 1px red; */
-	padding-right: 25px;
-	margin-right: 15px;
-	width: 125px;
-	font-family: Open Sans, sans-serif;
-	color: #010101;
-	font-weight: 300;
-	font-size: 12px;
-	margin-top: 5px;
+	font-size: 0.9vw;
+
+	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		font-size: 1.35vw;
+	}
+
+	@media screen and (max-width: $tablet-min-width) {
+		font-size: 1.8vw;
+	}
+
+	@media screen and (max-width: $mobile-max-width-2) {
+		font-size: 2.25vw;
+	}
 }
 
 .styled-select select {
-	//@at-root: block;
-	height: 2em;
-	width: 100px;
-	//padding: 1em;
+	width: 100%;
 	border: 1px solid #333;
+	border-radius: 3px;
 	font-family: Open Sans, sans-serif;
 	font-weight: 300;
-	font-size: 12px;
+	margin: 1vw 0;
+	font-size: 0.9vw;
 
-	/** for the dropdown indicator */
-	//appearance: none;
-	/*
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' polyline-points='6 9 12 15 18 9'/polyline/svg");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1em; */
+	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		font-size: 1.35vw;
+	}
+	@media screen and (max-width: $tablet-min-width) {
+		font-size: 1.8vw;
+	}
+	@media screen and (max-width: $mobile-max-width-2) {
+		font-size: 2.25vw;
+	}
 }
 
 .styled-select select optgroup {
 	font-family: Open Sans, sans-serif;
 	font-weight: 300;
 	font-size: 12px;
+}
+
+.nav-item.center {
+	width: 18vw;
+	text-align: center;
 }
 
 .rectangle-yellow {
@@ -163,8 +182,6 @@
 
 .chart-title {
 	margin-top: 70px;
-	padding-top: 80px;
-	padding-bottom: 80px;
 	font-family: Open Sans, sans-serif;
 	font-weight: 700;
 	font-size: 28px;
@@ -186,9 +203,9 @@
 }
 
 .source-text {
-	margin-left: 4rem;
-	margin-right: 4rem;
-	padding-bottom: 2.5rem;
+	margin-left: 4vw;
+	margin-right: 4vw;
+	padding-bottom: 2.5vw;
 	font-family: Open Sans, sans-serif;
 	font-weight: 300;
 	font-size: 12px;
