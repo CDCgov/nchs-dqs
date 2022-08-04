@@ -57,12 +57,13 @@ export class GenChart {
 		// - note cannot do exact same for lines bc there are data points not just one data per line
 		// whereas in the bar charts each bar is one data point so the below approach works
 		if (p.usesBars) {
-			
 			//console.log("##DRAW BAR CHART###");
 
 			let numToDraw = 0;
 			p.data.forEach((d, i) => {
-				numToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
+				numToDraw = DataCache.activeLegendList.filter(function (e) {
+					return e.dontDraw === false;
+				}).length;
 			});
 
 			if (numToDraw === 0) numToDraw = 10;
@@ -75,24 +76,31 @@ export class GenChart {
 				if (d.dontDraw === false && barCount < numToDraw) {
 					barCount++; // increment barCount
 					if (i > 9) {
-						console.log(" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount", d, d.dontDraw, i, barCount,maxBarCount);
+						console.log(
+							" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount",
+							d,
+							d.dontDraw,
+							i,
+							barCount,
+							maxBarCount
+						);
 					}
 
 					// PUSH only if not already on the list
-					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+					if (
+						DataCache.activeLegendList.filter(function (e) {
+							return e.stub_label === d.stub_label;
+						}).length > 0
+					) {
 						// it is on the list
 						// so dont push it
 					} else {
 						// not on there so push it
 						DataCache.activeLegendList.push(d);
-					}				
-					
+					}
 				} else {
 					// remove if it was on active list
-					const tempList = DataCache.activeLegendList.filter(
-						(e) =>
-									e.stub_label !== d.stub_label
-					);
+					const tempList = DataCache.activeLegendList.filter((e) => e.stub_label !== d.stub_label);
 					DataCache.activeLegendList = [];
 					DataCache.activeLegendList = tempList;
 
@@ -106,13 +114,16 @@ export class GenChart {
 
 				// CHANGE - if on the active list then set dontDraw = false
 				// - if not on the list set it to dontDraw = true
-				if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.stub_label; }).length > 0) {
+				if (
+					DataCache.activeLegendList.filter(function (e) {
+						return e.stub_label === d.stub_label;
+					}).length > 0
+				) {
 					// it is on the list
 					d.dontDraw = false;
 				} else {
 					d.dontDraw = true;
 				}
-				
 			});
 
 			// the list below has 200-399 and NOT 133-199
@@ -131,7 +142,7 @@ export class GenChart {
 		}
 
 		//console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
-		
+
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
@@ -290,7 +301,6 @@ export class GenChart {
 			}
 		};
 
-	
 		const svgId = `${p.vizId}-svg`;
 
 		// setup fontSizes
@@ -594,7 +604,7 @@ export class GenChart {
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY - titleWidth/2 - svgHeight/4 + margin.bottom) // up and down bc rotated  - (TT) removed the adjust value centered it
+					.attr("x", -chartCenterY - titleWidth / 2 - svgHeight / 4 + margin.bottom) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
@@ -676,8 +686,10 @@ export class GenChart {
 				// limit legend to 10 max
 				let numLinesToDraw = 0;
 				fullNestedData.forEach((d, i) => {
-					numLinesToDraw = DataCache.activeLegendList.filter(function (e) { return e.dontDraw === false; }).length;
-					
+					numLinesToDraw = DataCache.activeLegendList.filter(function (e) {
+						return e.dontDraw === false;
+					}).length;
+
 					// set all data to dontDraw == true
 					d.dontDraw = true; // disable ALL
 				});
@@ -687,13 +699,17 @@ export class GenChart {
 				// iterate through and set the dontDraw values based on activeLegendList
 				let numSetToDraw = 0;
 				fullNestedData.forEach((d, i) => {
-					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+					if (
+						DataCache.activeLegendList.filter(function (e) {
+							return e.stub_label === d.values[0].stub_label;
+						}).length > 0
+					) {
 						// it is on the list
 						d.values[0].dontDraw = false;
 						numSetToDraw++;
 					} else {
 						d.values[0].dontDraw = true;
-					} 
+					}
 				});
 
 				// otherwise it might draw nothing
@@ -704,8 +720,8 @@ export class GenChart {
 							// it is on the list
 							d.values[0].dontDraw = false;
 							numSetToDraw++;
-						} 
-						});
+						}
+					});
 				}
 
 				// NOW WE CAN deal with the legend and whether the lines are drawn
@@ -714,30 +730,34 @@ export class GenChart {
 						lineCount++; // increment barCount
 
 						// PUSH only if not already on the list
-						if (DataCache.activeLegendList.filter(function (e) {
-							if (e.stub_label === d.values[0].stub_label) {
-								console.log("MATCH e stub_label, d stub_label", e.stub_label, d.values[0].stub_label);
-							}
-							return e.stub_label === d.values[0].stub_label;
-						}).length > 0) {
+						if (
+							DataCache.activeLegendList.filter(function (e) {
+								if (e.stub_label === d.values[0].stub_label) {
+									console.log(
+										"MATCH e stub_label, d stub_label",
+										e.stub_label,
+										d.values[0].stub_label
+									);
+								}
+								return e.stub_label === d.values[0].stub_label;
+							}).length > 0
+						) {
 							// it is on the list
 							// so dont push it
 							//console.log("ALREADY on the list",d.values[0].stub_label);
 						} else {
-							// not on there so push it8/2/2022 
+							// not on there so push it8/2/2022
 
 							// the line after this is pushing the wrong object
 							DataCache.activeLegendList.push(d.values[0]);
 
 							//console.log("fullnested d pushed:", d.values[0]);
 							//console.log("fullnested d pushed:", d.values[0]);
-						}				
-						
+						}
 					} else {
 						// remove if it was on active list
 						const tempList = DataCache.activeLegendList.filter(
-							(e) =>
-										e.stub_label !== d.values[0].stub_label
+							(e) => e.stub_label !== d.values[0].stub_label
 						);
 						DataCache.activeLegendList = [];
 						DataCache.activeLegendList = tempList;
@@ -752,16 +772,18 @@ export class GenChart {
 
 					// CHANGE - if on the active list then set dontDraw = false
 					// - if not on the list set it to dontDraw = true
-					if (DataCache.activeLegendList.filter(function (e) { return e.stub_label === d.values[0].stub_label; }).length > 0) {
+					if (
+						DataCache.activeLegendList.filter(function (e) {
+							return e.stub_label === d.values[0].stub_label;
+						}).length > 0
+					) {
 						// it is on the list
 						d.values[0].dontDraw = false;
 					} else {
 						d.values[0].dontDraw = true;
 					}
-				
 				});
 
-				
 				fullNestedData.forEach((nd, i) => {
 					// only draw those whose first data point is dontDraw = false
 					if (nd.values[0].dontDraw === false) {
@@ -906,8 +928,6 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
-
-
 					bars.selectAll("rect")
 						.data(drawData)
 						.join(
@@ -1474,7 +1494,7 @@ export class GenChart {
 				// without this the clicking slowly disappears the options never to return
 
 				// now sort by stub_label_num
-/* 				allIncomingData.sort((a, b) => {
+				/* 				allIncomingData.sort((a, b) => {
 					return a.stub_label_num - b.stub_label_num;
 				}); */
 
@@ -1545,11 +1565,11 @@ export class GenChart {
 						.attr("data-html2canvas-ignore", "");
 
 					console.log("genChart legendData before DRAW:", legendData);
-									
+
 					// IF YOU ONLY DO THIS HERE THEN THE BARS ARE OUTOF ALIGNMENT WITH LEGEND ITEMS
 					// - so dont do this here!
 					// Sort alphabetically
-/* 					legendData.sort(function (a, b) {
+					/* 					legendData.sort(function (a, b) {
 						let textA = a.text.toLowerCase(),
 							textB = b.text.toLowerCase();
 						return textA < textB ? -1 : textA > textB ? 1 : 0;
@@ -1561,6 +1581,7 @@ export class GenChart {
 						const legendItem = svg
 							.append("g")
 							.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+							.attr("style", "cursor: default")
 							.attr("id", legendId)
 							.attr(
 								"transform",
@@ -1619,7 +1640,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD,d);
+								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
@@ -1677,10 +1698,9 @@ export class GenChart {
 				// - therefore all legend drawing must be moved to the END
 				// of this code
 
-				
 				// ONLY SORT DATA PASSED INTO GENCHART - DONT SORT IN HERE
 				// now sort by stub_label_num
-/* 				fullNestedData.sort((a, b) => {
+				/* 				fullNestedData.sort((a, b) => {
 					return a.values[0].stub_label_num - b.values[0].stub_label_num;
 				}); */
 
@@ -1697,7 +1717,7 @@ export class GenChart {
 						};
 					});
 
-/* 				// now sort by stub_label_num
+					/* 				// now sort by stub_label_num
 				legendData.sort((a, b) => {
 					return a.text - b.text;
 				});
@@ -1705,7 +1725,7 @@ export class GenChart {
 
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
-				
+
 					/* 					allIncomingData.forEach((d, i) => {
 											legendData[i] = {
 											stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
@@ -1795,6 +1815,7 @@ export class GenChart {
 					const legendItem = svg
 						.append("g")
 						.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
+						.attr("style", "cursor: default")
 						.attr("id", legendId)
 						.attr("data-html2canvas-ignore", "")
 						.attr(
