@@ -1227,7 +1227,12 @@ export class LandingPage {
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
-		if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult" || this.dataTopic === "birthweight" || this.dataTopic === "injury") {
+		if (
+			this.dataTopic === "obesity-child" ||
+			this.dataTopic === "obesity-adult" ||
+			this.dataTopic === "birthweight" ||
+			this.dataTopic === "injury"
+		) {
 			allStubsArray = this.allData.filter((item) => parseInt(item.panel_num) === parseInt(this.panelNum));
 		} else {
 			allStubsArray = this.allData;
@@ -1750,14 +1755,13 @@ export class LandingPage {
 
 	// call this when Reset Button is clicked
 	resetSelections() {
-
 		// reset panel
 		this.setPanelSelect(false);
 
 		// reset Characteristic
 		this.stubNameNum = 0; // should always be TOTAL in every data set!!!
 		this.setStubNameSelect();
-		
+
 		// always show the line chart
 		//this.updateShowBarChart(0);
 		//disable single year if it is set
@@ -1773,7 +1777,7 @@ export class LandingPage {
 
 		// reset the unit
 		this.setVerticalUnitAxisSelect();
-		
+
 		if (this.stubNameNum === 0) {
 			// disable the map for TOTAL
 			this.updateShowMap(0);
@@ -1781,10 +1785,9 @@ export class LandingPage {
 
 		// clear the list of active legend items when stub name changes
 		DataCache.activeLegendList = [];
-		
+
 		// now set back to Chart and render the chart
 		this.renderChart();
-
 	}
 
 	renderDataTable(tableData) {
@@ -1794,7 +1797,7 @@ export class LandingPage {
 		let keys = [];
 		let cols = [];
 		let viewSelected = $("#data-topic-select").val();
-		
+
 		let tableHeading = "";
 
 		/* 		const formattedData = tableData.map((d) => ({
@@ -1967,7 +1970,6 @@ export class LandingPage {
 			}
 			return -1 * parseFloat(cellValue.replace(/,/g, ""));
 		});
-
 	}
 
 	exportCSV() {
@@ -2114,8 +2116,8 @@ export class LandingPage {
 	</div>
 </div>
 <!-- #b3d2ce -->
-<div class="row" style="padding:0 !important;">
-	<div class="col-lg-4 col-md-3 col-sm-6 homeSmallGroup" >
+<div class="row homeSmallGroup">
+	<div id="additionalFiltersContainer" class="col-lg-5 col-md-6 col-sm-6">
 			<div class="col homeSmallIcon d-inline-block">
 				<i class="fas fa-caret-right"></i>
 				<span  class=" homeSmallText">View Additional Filters</span>
@@ -2126,8 +2128,9 @@ export class LandingPage {
 			</div>
 	</div>
 
-    <div class="col col-lg-4 col-md-3 col-sm-6 align-self-end  d-inline-block " style="text-align: right;">
-     <i class="fas fa-info-circle homeTinyIcon" title="Reset all selections except for Topic selection"></i> <button id="home-btn-reset"class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
+    <div class="col col-lg-4 col-md-3 col-sm-6 align-self-end d-inline-block" style="text-align: right;">
+    	<i class="fas fa-info-circle" title="Reset all selections except for Topic selection" style="font-size: 0.8em; color: #0033a1"></i>
+		<button id="home-btn-reset" class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
     </div>
 	</div>
 </div>
