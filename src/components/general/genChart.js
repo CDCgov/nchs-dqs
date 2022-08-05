@@ -732,6 +732,13 @@ export class GenChart {
 						// PUSH only if not already on the list
 						if (
 							DataCache.activeLegendList.filter(function (e) {
+								if (e.stub_label === d.values[0].stub_label) {
+									console.log(
+										"MATCH e stub_label, d stub_label",
+										e.stub_label,
+										d.values[0].stub_label
+									);
+								}
 								return e.stub_label === d.values[0].stub_label;
 							}).length > 0
 						) {
@@ -739,10 +746,13 @@ export class GenChart {
 							// so dont push it
 							//console.log("ALREADY on the list",d.values[0].stub_label);
 						} else {
-							// not on there so push it 8/2/2022
+							// not on there so push it8/2/2022
 
 							// the line after this is pushing the wrong object
 							DataCache.activeLegendList.push(d.values[0]);
+
+							//console.log("fullnested d pushed:", d.values[0]);
+							//console.log("fullnested d pushed:", d.values[0]);
 						}
 					} else {
 						// remove if it was on active list
@@ -1630,7 +1640,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
+								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
