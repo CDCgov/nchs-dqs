@@ -852,6 +852,9 @@ export class LandingPage {
 
 		let theChartTab = document.getElementById("icons-tab-2");
 
+		// make sure time periods are visible (hidden if on Map tab or on refresh)
+		$("#timePeriodContainer").css("display", "flex");
+
 		// switch to new data source
 		switch (dataTopic) {
 			case "obesity-child":
@@ -1055,7 +1058,8 @@ export class LandingPage {
 				// need data in place before filling year selects
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-				this.setAllSelectDropdowns(fromHash);
+				this.setAllSelectDropdowns(fromHash); // includes time periods
+				
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
@@ -1775,6 +1779,9 @@ export class LandingPage {
 		// years that are valid data
 		this.resetTimePeriods();
 
+		// make sure time periods are visible (hidden if on Map tab)
+		$("#timePeriodContainer").css("display", "flex");
+		
 		// reset the unit
 		this.setVerticalUnitAxisSelect();
 
