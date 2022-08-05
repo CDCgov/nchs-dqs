@@ -9,7 +9,7 @@ import { MainEvents } from "../eventhandlers/mainevents";
 import { downLoadMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
 import { downloadCSV } from "../utils/downloadCSV";
-import { get } from "jquery";
+import { HtmlTooltip } from "../components/general/htmlTooltip";
 
 export class LandingPage {
 	constructor() {
@@ -57,6 +57,38 @@ export class LandingPage {
 		this.animating = false;
 	}
 
+	addHtmlTooltips = () => {
+		const resetInfoTooltip = new HtmlTooltip({
+			h3: "Reset all selections except for Topic selection.",
+			containerId: "resetInfoContainer",
+		});
+		resetInfoTooltip.render();
+
+		$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
+		$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
+		$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
+
+		const addFiltersTooltip = new HtmlTooltip({
+			h3: "This feature is a work in progress.",
+			containerId: "resetInfoContainer",
+		});
+		addFiltersTooltip.render();
+
+		$("#addFiltersTextContainer").mouseover((e) => addFiltersTooltip.mouseover(e));
+		$("#addFiltersTextContainer").mousemove((e) => addFiltersTooltip.mousemove(e));
+		$("#addFiltersTextContainer").mouseleave((e) => addFiltersTooltip.mouseout(e));
+
+		const editFiltersTooltip = new HtmlTooltip({
+			h3: "This feature is a work in progress.",
+			containerId: "resetInfoContainer",
+		});
+		editFiltersTooltip.render();
+
+		$("#editFiltersTextContainer").mouseover((e) => editFiltersTooltip.mouseover(e));
+		$("#editFiltersTextContainer").mousemove((e) => editFiltersTooltip.mousemove(e));
+		$("#editFiltersTextContainer").mouseleave((e) => editFiltersTooltip.mouseout(e));
+	};
+
 	renderTab() {
 		document.getElementById("maincontent").innerHTML = this.tabContent;
 
@@ -69,6 +101,7 @@ export class LandingPage {
 
 		this.getInitialData(); // for starters OBESITY DATA
 		MainEvents.registerEvents(); // add any click events inside here
+		this.addHtmlTooltips();
 
 		//let vizParentContainer = document.getElementById("widget_4"); // main-widget-container
 		$("#dwn-chart-img").click((evt) => {
@@ -1059,7 +1092,7 @@ export class LandingPage {
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
 				this.setAllSelectDropdowns(fromHash); // includes time periods
-				
+
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
@@ -1781,7 +1814,7 @@ export class LandingPage {
 
 		// make sure time periods are visible (hidden if on Map tab)
 		$("#timePeriodContainer").css("display", "flex");
-		
+
 		// reset the unit
 		this.setVerticalUnitAxisSelect();
 
@@ -1984,7 +2017,7 @@ export class LandingPage {
 	}
 
 	// NOTE: Some selectors load static on initial load, then we load using data from then on
-	tabContent = `<!-- TOP SELECTORS -->			
+	tabContent = `<!-- TOP SELECTORS -->
 <div class="row">
 	<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 		<div class="row">
@@ -2123,20 +2156,22 @@ export class LandingPage {
 	</div>
 </div>
 <!-- #b3d2ce -->
-<div class="row homeSmallGroup">
+<div id="resetInfoContainer" class="row homeSmallGroup">
 	<div id="additionalFiltersContainer" class="col-lg-5 col-md-6 col-sm-6">
-			<div class="col homeSmallIcon d-inline-block">
+			<div id="addFiltersTextContainer" class="col homeSmallIcon d-inline-block">
 				<i class="fas fa-caret-right"></i>
 				<span  class=" homeSmallText">View Additional Filters</span>
 			</div>
-			<div class="col homeTinyIcon d-inline-block float-right">
+			<div id="editFiltersTextContainer" class="col homeTinyIcon d-inline-block float-right">
 				<i class="fas fa-pen fa-xs"></i>
 				<span  class="homeTinyText" style="text-decoration-line: underline;">Edit Your Filters</span>
 			</div>
 	</div>
 
     <div class="col col-lg-4 col-md-3 col-sm-6 align-self-end d-inline-block" style="text-align: right;">
-    	<i class="fas fa-info-circle" title="Reset all selections except for Topic selection" style="font-size: 0.8em; color: #0033a1"></i>
+    	
+			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
+		
 		<button id="home-btn-reset" class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
     </div>
 	</div>
