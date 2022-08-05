@@ -1713,6 +1713,11 @@ sup.dagger-size {
 
 	&.margin-spacer {
 		margin: 1rem 0;
+
+		button,
+		a {
+			margin: 3px 0;
+		}
 	}
 
 	&.trendsgraph-spacer {
