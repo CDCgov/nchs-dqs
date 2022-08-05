@@ -59,7 +59,7 @@ export class LandingPage {
 
 	addHtmlTooltips = () => {
 		const resetInfoTooltip = new HtmlTooltip({
-			h3: "Reset all selections except for Topic selection",
+			h3: "Reset all selections except for Topic selection.",
 			containerId: "resetInfoContainer",
 		});
 		resetInfoTooltip.render();
@@ -69,7 +69,7 @@ export class LandingPage {
 		$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
 
 		const addFiltersTooltip = new HtmlTooltip({
-			h3: "This feature is a work in progress",
+			h3: "This feature is a work in progress.",
 			containerId: "resetInfoContainer",
 		});
 		addFiltersTooltip.render();
@@ -79,7 +79,7 @@ export class LandingPage {
 		$("#addFiltersTextContainer").mouseleave((e) => addFiltersTooltip.mouseout(e));
 
 		const editFiltersTooltip = new HtmlTooltip({
-			h3: "This feature is a work in progress",
+			h3: "This feature is a work in progress.",
 			containerId: "resetInfoContainer",
 		});
 		editFiltersTooltip.render();
@@ -1092,7 +1092,7 @@ export class LandingPage {
 				this.flattenedFilteredData = this.getFlattenedFilteredData();
 
 				this.setAllSelectDropdowns(fromHash); // includes time periods
-				
+
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
@@ -1814,7 +1814,7 @@ export class LandingPage {
 
 		// make sure time periods are visible (hidden if on Map tab)
 		$("#timePeriodContainer").css("display", "flex");
-		
+
 		// reset the unit
 		this.setVerticalUnitAxisSelect();
 
