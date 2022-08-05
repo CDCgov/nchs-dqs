@@ -17,6 +17,8 @@ export const MainEvents = {
 		$("#data-topic-select").on("change", (evt) => {
 			stopAnimation();
 			$("#timePeriodContainer").css("display", "flex");
+			$("#year-end-label").show();
+			$("#year-end-select").show();
 			document.getElementById("icons-tab-2").classList.add("active");
 			document.getElementById("dwn-chart-img").classList.remove("disabled");
 
@@ -139,6 +141,7 @@ export const MainEvents = {
 		$(document).on("click", "#home-btn-reset", (event) => {
 			event.stopPropagation();
 			console.log("*** reset Button clicked: event.target", event.target);
+			$("#timePeriodContainer").css("display", "flex");
 			appState.ACTIVE_TAB.resetSelections();
 			event.preventDefault();
 		});

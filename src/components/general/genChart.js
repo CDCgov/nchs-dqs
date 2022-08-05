@@ -1630,7 +1630,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
+								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
