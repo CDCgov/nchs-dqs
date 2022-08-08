@@ -504,36 +504,17 @@ export class LandingPage {
 		return [...allYearsData];
 	}
 
-	getChartBaseProps() {
+	getChartBaseProps = () => {
 		const chartValueProperty = "estimate";
-
-		let yAxisTitle;
 		let xAxisTitle;
 
-		// (TTT) since this is driven from text - GET RID OF SWITCH???
-		// - wait for a few more datasets to be sure
-		switch (this.dataTopic) {
-			case "obesity-child":
-			case "obesity-adult":
-			case "birthweight":
-			case "infant-mortality":
-			case "medicaidU65":
-				yAxisTitle = this.unitNumText; //"Percent of Population, crude (%)";
-				break;
-			case "suicide":
-				yAxisTitle = this.unitNumText; //"Deaths per 100,000 resident population, crude";
-				break;
-			case "injury":
-				yAxisTitle = this.unitNumText; //"Initial injury-related visits in thousands, crude";
-				break;
-		}
 		// X Axis Title is the "Characteristic" selected
 		xAxisTitle = $("#stub-name-num-select option:selected").text();
-		return { chartValueProperty, yAxisTitle, xAxisTitle };
-	}
+		return { chartValueProperty, xAxisTitle };
+	};
 
 	getAllChartProps = (data, chartBaseProps) => {
-		const { chartValueProperty, yAxisTitle, xAxisTitle } = chartBaseProps;
+		const { chartValueProperty, xAxisTitle } = chartBaseProps;
 		const vizId = "chart-container";
 		let props;
 		// figure out legend placement
@@ -613,7 +594,6 @@ export class LandingPage {
 				yLeftLabelScale: 1,
 
 				legendCoordinatePercents: legendCoordPercents,
-				leftAxisTitle: yAxisTitle,
 				bottomAxisTitle: xAxisTitle,
 				formatXAxis: "string",
 				usesMultiLineLeftAxis: false,
@@ -649,7 +629,6 @@ export class LandingPage {
 				needsScaleTime,
 				yLeftLabelScale: 3,
 				legendCoordinatePercents: legendCoordPercents,
-				leftAxisTitle: yAxisTitle,
 				bottomAxisTitle: xAxisTitle,
 				formatXAxis: "string",
 				usesMultiLineLeftAxis: true,

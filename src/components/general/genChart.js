@@ -21,7 +21,6 @@ import { genFormat } from "../../utils/genFormat";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
-import { data } from "jquery";
 import { DataCache } from "../../utils/datacache";
 
 export class GenChart {
@@ -589,22 +588,22 @@ export class GenChart {
 			// for LINE chart
 			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
-					.text(p.leftAxisTitle)
+					.text($("#unit-num-select-chart :selected").text())
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY + 0) // up and down bc rotated  - (TT) removed the adjust value centered it
+					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
 			}
+
 			// add to BAR CHART
-			let titleWidth = p.leftAxisTitle.length * axisTitleFontSize;
 			if (p.usesLeftAxisTitle && p.chartRotate) {
 				svg.append("text")
-					.text(p.leftAxisTitle)
+					.text($("#unit-num-select-chart :selected").text())
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterY - titleWidth / 2 - svgHeight / 4 + margin.bottom) // up and down bc rotated  - (TT) removed the adjust value centered it
+					.attr("x", -(halfWidth + margin.left - halfXMargins)) // re-do the calculation now since margins have been hacked
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
