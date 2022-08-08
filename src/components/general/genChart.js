@@ -603,7 +603,8 @@ export class GenChart {
 					.text(p.leftAxisTitle)
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -chartCenterX)
+					.attr("x", -(halfWidth + margin.left - halfXMargins)) // re-do the calculation now since margins have been hacked
+					// .attr("x", -chartCenterX)
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
