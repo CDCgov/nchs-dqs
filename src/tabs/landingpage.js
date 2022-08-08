@@ -1268,8 +1268,7 @@ export class LandingPage {
 		if (
 			this.dataTopic === "obesity-child" ||
 			this.dataTopic === "obesity-adult" ||
-			this.dataTopic === "birthweight" ||
-			this.dataTopic === "injury"
+			this.dataTopic === "birthweight"
 		) {
 			allStubsArray = this.allData.filter((item) => parseInt(item.panel_num) === parseInt(this.panelNum));
 		} else {

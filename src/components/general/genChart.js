@@ -1863,7 +1863,7 @@ export class GenChart {
 				const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
 				//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 				const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-				const newWidth = d3.max(legendWidths);
+				const newWidth = d3.max(legendWidths) ?? 0;
 				legendContainer.attr("width", newWidth + 56);
 
 				// Now center the legend container
