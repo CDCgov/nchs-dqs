@@ -333,7 +333,7 @@ export class LandingPage {
 
 	getFlattenedFilteredData() {
 		let selectedPanelData;
-		//debugger;
+
 		switch (this.dataTopic) {
 			case "obesity-child":
 			case "obesity-adult":
@@ -451,6 +451,7 @@ export class LandingPage {
 				return d.footnote_id_list;
 			})
 			.keys();
+
 		// console.log("**********************footnote ids: ", allFootnoteIdsArray);
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 
