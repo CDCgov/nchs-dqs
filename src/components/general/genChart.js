@@ -588,7 +588,7 @@ export class GenChart {
 			// for LINE chart
 			if (p.usesLeftAxisTitle && !p.chartRotate) {
 				svg.append("text")
-					.text(p.leftAxisTitle)
+					.text($("#unit-num-select-chart :selected").text())
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
@@ -600,7 +600,7 @@ export class GenChart {
 			// add to BAR CHART
 			if (p.usesLeftAxisTitle && p.chartRotate) {
 				svg.append("text")
-					.text(p.leftAxisTitle)
+					.text($("#unit-num-select-chart :selected").text())
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
 					.attr("x", -(halfWidth + margin.left - halfXMargins)) // re-do the calculation now since margins have been hacked
