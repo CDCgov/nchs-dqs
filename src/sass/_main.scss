@@ -48,6 +48,10 @@ a {
 	}
 }
 
+#us-map-legend > div > input {
+	cursor: pointer;
+}
+
 #additionalFiltersContainer {
 	border-right: 2px solid lightgray;
 	@media screen and (max-width: $mobile-max-width-2) {

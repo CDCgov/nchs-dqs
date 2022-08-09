@@ -13,6 +13,7 @@ export class GenMap {
 		this.allDates = props.allDates;
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
 		this.animating = props.animating;
+		this.noDataColorHexVal = null;
 	}
 
 	renderTimeSeriesAxisSelector() {
@@ -174,7 +175,7 @@ export class GenMap {
 		const mNoDataFlagID = -1;
 		const mInActiveFlagID = -3;
 		let mInActiveColor = "#FFFFFF";
-		const noDataColorHexVal = "#dee2e6";
+		let noDataColorHexVal = "#dee2e6";
 		//const unreliableHexVal = "#9b9ea1"; // they decided for now not to use this
 		// (TT) I'm not going to delete it though in case we need it back later.
 
@@ -884,6 +885,14 @@ export class GenMap {
 
 			// get bg color of the one clicked
 			let theClickedColor = convertRGB(evt.target.parentNode.style.backgroundColor);
+
+			if (theClickedColor === "#dee2e6") {
+				// this is the color used for 'No Data'
+				this.noDataHasColor = !this.noDataHasColor;
+				if (this.noDataHasColor) noDataColorHexVal = "#ffffff";
+				else noDataColorHexVal = "#dee2e6";
+			}
+
 			index = mActiveLegendItemColors.indexOf(theClickedColor);
 			// Add or Remove that color to/from the Active list of colors
 			// - note the ORDER of the colors is NOT related to the bin number
@@ -935,8 +944,8 @@ export class GenMap {
 
 		function addEventListeners() {
 			//removeEventListeners();
-			$(document).off("click", "#us-map-legend");
-			$(document).on("click", "#us-map-legend", legendClickHandler);
+			$(document).off("click", "#us-map-legend > div > input");
+			$(document).on("click", "#us-map-legend > div > input", legendClickHandler);
 
 			// TO DO: Add back in listener to see if they resize browser
 			// and if they do then resize map all over again
