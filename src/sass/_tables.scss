@@ -127,13 +127,14 @@ th.sorted {
 
 table.expanded-data-table {
 	width: 96%;
-	margin-left: auto;
-	margin-right: auto;
+	margin-left: 2%;
+	margin-right: 2%;
 
-	// th,
-	// td {
-	// 	padding-left: 15px;
-	// }
+	th,
+	td {
+		padding-left: 3px;
+		padding-right: 3px;
+	}
 
 	tbody tr:nth-child(odd) {
 		background-color: #ffffff;

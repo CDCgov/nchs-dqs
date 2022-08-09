@@ -2171,7 +2171,7 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-				<div id="adjustUnitContainer">Adjust Unit<br>
+				<div class="adjustUnitContainer">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
@@ -2189,7 +2189,7 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
 		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
-			<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
+			<div class="adjustUnitContainer">Adjust Unit<br>
 				<select name="unit-num-select-table" id="unit-num-select-table" form="select-view-options" class="custom-select">
 					<option value="1" selected>Percent of population, crude</option>
 				</select>
