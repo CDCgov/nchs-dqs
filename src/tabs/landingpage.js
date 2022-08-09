@@ -1843,6 +1843,7 @@ export class LandingPage {
 					"Standard Error",
 					"Lower Confidence Interval",
 					"Upper Confidence Interval",
+					"Flag",
 				];
 
 				keys = [
@@ -1855,6 +1856,7 @@ export class LandingPage {
 					"se",
 					"estimate_lci",
 					"estimate_uci",
+					"flag",
 				];
 				break;
 			case "suicide":
