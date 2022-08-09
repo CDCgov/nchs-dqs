@@ -603,7 +603,7 @@ export class GenChart {
 					.text($("#unit-num-select-chart :selected").text())
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -(halfWidth + margin.left - halfXMargins)) // re-do the calculation now since margins have been hacked
+					.attr("x", -(svgHeight / 2 + (margin.top - margin.bottom) / 2)) // re-do the calculation now since margins have been hacked
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
