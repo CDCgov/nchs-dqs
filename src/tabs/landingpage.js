@@ -1811,65 +1811,23 @@ export class LandingPage {
 
 	renderDataTable(tableData) {
 		// DATATABLE FUNCTION
-		let tableTitleId = "table-title";
 		let tableId = "nchs-table";
-		let keys = [];
-		let cols = [];
-		let viewSelected = $("#data-topic-select").val();
+		let cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
 
-		let tableHeading = "";
-
-		/* 		const formattedData = tableData.map((d) => ({
-					...d,
-					displayDate: genFormat(d.date, "tableDate"),
-					value: d[keys[0]],
-				}));
-		
-				formattedData.sort((a, b) => b.date - a.date); */
-
-		//let keys = Object.keys(tableData[0]);
-
-		switch (`${viewSelected}`) {
+		switch ($("#data-topic-select").val()) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "medicaidU65":
-				cols = [
-					"Subtopic",
-					"Characteristic",
-					"Group",
-					"Year",
-					"Age",
-					"Estimate",
-					"Standard Error",
-					"Lower Confidence Interval",
-					"Upper Confidence Interval",
-					"Flag",
-				];
-
-				keys = [
-					"panel",
-					"stub_name",
-					"stub_label",
-					"year",
-					"age",
-					"estimate",
-					"se",
-					"estimate_lci",
-					"estimate_uci",
-					"flag",
-				];
-				break;
-			case "suicide":
-			case "injury":
-			case "infant-mortality":
-			case "birthweight":
-				cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error", "Flag"];
-
-				keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se", "flag"];
+				cols.push("Lower Confidence Interval", "Upper Confidence Interval");
+				keys.push("estimate_lci", "estimate_uci");
 				break;
 			default:
 				break;
 		}
+
+		cols.push("Flag");
+		keys.push("flag");
 
 		this.csv = {
 			data: tableData,
