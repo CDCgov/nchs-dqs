@@ -83,13 +83,26 @@ export class LandingPage {
 	getSelectedSocrataData = async (topic, isDSPrivate) => {
 
 		try {
+			let [metadata, jsondata] = [];
+			//console.log("window.location = ", window.location.href);
 			console.log("SOCRATA get topic", topic);
-			let [metadata, jsondata] = await Promise.all([
+			//debugger;
+			let localHref = window.location.href;
+			if (localHref.match("localhost")) {
+				console.log("Running on localhost");
+			    [metadata, jsondata] = await Promise.all([
 				//t is topic, m is metadata and p is private
 				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
 				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
-			]);
-
+				]);
+			} else { 
+				console.log("NOT running on Localhost");
+			   [metadata, jsondata] = await Promise.all([
+				//t is topic, m is metadata and p is private
+				fetch(`../../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
+				fetch(`../../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
+				]);
+			}
 			//console.log("meta data: ", JSON.parse(metadata).columns);
 			const columns = JSON.parse(metadata).columns.map(col => col.fieldName);
 			//console.log("columns: ", columns);
