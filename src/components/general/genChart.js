@@ -413,9 +413,7 @@ export class GenChart {
 			.tickSizeInner(5)
 			.tickFormat((drawData) => genFormat(drawData, p.formatXAxis));
 
-		const yAxisLeft = d3.axisLeft(yScaleLeft).tickSize(3).tickSizeInner(-chartWidth); //.ticks(p.leftTickCount);
-		// .tickFormat((drawData) => genFormat(drawData, p.formatYAxisLeft)); // this is what sets the tick labels
-		// but where do we rotate them???
+		const yAxisLeft = d3.axisLeft(yScaleLeft).tickSize(3).tickSizeInner(-chartWidth);
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
 
@@ -469,7 +467,6 @@ export class GenChart {
 			}
 
 			// left yAxis
-			// debugger;
 			let leftAxisDraw;
 			if (p.usesLeftAxis) {
 				leftAxisDraw = svg
@@ -503,7 +500,7 @@ export class GenChart {
 							: margin.top + chartHeight + (axisSize + xAxisTitleSize * 1.5)
 					);
 
-				if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
+				// if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
 			}
 
 			// left yAxis
@@ -777,7 +774,6 @@ export class GenChart {
 			const updateTheChart = (data, nestedData) => {
 				const sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
 
-				// debugger;
 				if (p.needsScaleTime) {
 					let minReported = sortedXValues[0];
 					let maxReported = [...sortedXValues.slice(-1)][0];
@@ -1021,23 +1017,9 @@ export class GenChart {
 										"d",
 										d3
 											.area()
-											.x(function (d) {
-												// console.log(
-												// 	"x d,i,x:",
-												// 	d,
-												// 	i,
-												// 	xScale(d[p.chartProperties.xAxis]) + offset
-												// );
-												return xScale(d[p.chartProperties.xAxis]) + offset;
-											})
-											.y0(function (d) {
-												// console.log("y0 d:", yScaleLeft(d.estimate_lci));
-												return yScaleLeft(d.estimate_lci);
-											})
-											.y1(function (d) {
-												// console.log("y1 d:", yScaleLeft(d.estimate_uci));
-												return yScaleLeft(d.estimate_uci);
-											})
+											.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
+											.y0((d) => yScaleLeft(d.estimate_lci))
+											.y1((d) => yScaleLeft(d.estimate_uci))
 									);
 							}
 
@@ -1516,6 +1498,7 @@ export class GenChart {
 					.append("g")
 					.append("text")
 					.attr("class", "far")
+					.attr("data-html2canvas-ignore", "")
 					.attr("font-size", axisLabelFontSize * 1.1)
 					.attr("x", 45)
 					.attr("y", axisLabelFontSize * 0.5)

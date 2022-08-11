@@ -105,16 +105,13 @@ export class LandingPage {
 			const chartButton = document.getElementById("icons-tab-2");
 			const mapButton = document.getElementById("icons-tab-1");
 			let titleChart = document.getElementById("chart-title").textContent;
-			// if (chartButton && chartButton.className.includes("active")) {
 			const mapTitle = $("#maptitle").text();
-			//$(".maptitle.map-chart-title").html(mapTitle);
-			// $("#download_image").show();
 			let containerSVG = document.getElementById("chart-container");
-			//console.log(containerSVG);
 			const params = {
 				contentContainer: "chart-container",
 				downloadButton: "dwn-chart-img",
 				imageSaveName: titleChart,
+				// imageSaveName: "placeholder",
 				//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
 				//needToShowHide: true,
 			};
@@ -529,8 +526,8 @@ export class LandingPage {
 		}
 		const scaleTimeIndicators = ["suicide", "Medicaid"];
 		const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-		// debugger;
-		props = {
+
+		return {
 			data,
 			chartProperties: {
 				yLeft1: this.showBarChart ? "stub_label" : chartValueProperty,
@@ -598,8 +595,6 @@ export class LandingPage {
 			vizId,
 			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
 		};
-
-		return props;
 	};
 
 	getTooltipConstructor = (vizId, chartValueProperty) => {
@@ -2082,9 +2077,8 @@ export class LandingPage {
 </div>
 <br>
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
-		<span id="chart-title" class="chart-title"></span>
-		<br>
-		<span tabindex="0" id="chart-subtitle" class=""></span>
+		<span id="chart-title" class="chart-title"></span><br>	
+		<span tabindex="0" id="chart-subtitle"></span>
 	</div>
 
 	<!-- Tabs navs -->

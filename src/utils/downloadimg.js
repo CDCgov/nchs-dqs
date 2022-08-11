@@ -16,7 +16,7 @@ const saveCanvasAs = (uri, filename) => {
 };
 
 export const downLoadGenChart = (params) => {
-	console.log("params", params);
+	// console.log("params", params);
 	//if (params.needToShowHide) $("#chart-container").show();
 	const contentContainer = document.getElementById(params.contentContainer);
 	const svgContainer = document.getElementById("chart-container-svg");
@@ -25,7 +25,7 @@ export const downLoadGenChart = (params) => {
 	const downloadButton = document.getElementById(params.downloadButton);
 	downloadButton.innerHTML = 'Downloading <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
 	downloadButton.classList.add("disabled");
-	console.log("height", height);
+	// console.log("height", height);
 	// console.log("width", width);
 	// Any elements that come on the page prior to the current selection for html2Canvas
 	// that have the data-html2canvas-ignore attribute will throw off the correct y-page
@@ -44,9 +44,8 @@ export const downLoadGenChart = (params) => {
 	});
 
 	setTimeout(() => {
-		console.log(contentContainer.clientHeight);
-		// debugger;
-		console.log(ignoredElementsHeight);
+		// console.log(contentContainer.clientHeight);
+		// console.log(ignoredElementsHeight);
 
 		const heightWithoutHiddenElements = contentContainer.clientHeight - ignoredElementsHeight;
 
@@ -55,14 +54,12 @@ export const downLoadGenChart = (params) => {
 			backgroundColor: "#ffffff",
 			onclone: (clone) => {
 				let titleChart = clone.getElementById("chart-title").textContent;
-				clone
-					.getElementById("chart-container-svg")
-					.setAttribute(
-						"style",
-						`margin-top:10px; height:${heightWithoutHiddenElements} width:100%; overflow:visible;`
-					);
-				clone.getElementById("chart-container-chartTitle").setAttribute("style", "font-size: 33.66px ");
-				clone.getElementById("chart-container-chartTitle").innerHTML = "<div>" + titleChart + "</div>";
+				let subTitle = clone.getElementById("chart-subtitle").textContent;
+				clone.getElementById("chart-container-svg");
+				clone.getElementById("chart-container-chartTitle").innerHTML = `
+					<div style='font-size: 33.66px'>${titleChart}</div>
+					<div style='font-size: 24px'>${subTitle}</div>
+				`;
 			},
 		}).then((canvas) => {
 			let imgName = `${params.imageSaveName}.png`;
