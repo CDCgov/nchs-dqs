@@ -217,20 +217,21 @@ export class LandingPage {
 
 	getInitialSocrataData() {
 
+		// the footnotes id lookup data is still loaded from a file
 		async function getFootnoteData() {
 			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
 		}
 
+		// the map topo json is still loaded from a file
 		async function getUSMapData() {
 			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
 		}
 
 		DataCache.activeLegendList = [];
 
-		// getUSMapData - if we do it here we just load the map date ONE TIME
+		// this loads the obesity-childhood data as the INITIAL data load
 		Promise.all([this.getSelectedSocrataData("64sz-mcbq", "1"), getFootnoteData(), getUSMapData()])
 			.then((data) => {
-				//const [destructuredData] = data;
 				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
 				DataCache.USTopo = JSON.parse(DataCache.USTopo);
 				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
