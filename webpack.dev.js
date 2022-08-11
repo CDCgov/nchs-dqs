@@ -6,6 +6,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
 
+const fs = require('fs');
+
 module.exports = {
 	entry: {
 		index: ["@babel/polyfill", "./src/index.js"],
@@ -18,9 +20,28 @@ module.exports = {
 	devtool: "source-map",
 	devServer: {
 		contentBase: path.join(__dirname, "dist"),
+		// IF USING UNSECURE localhost:8080
 		port: 8080,
-		open: true,
-		// hot: true,
+		//open: true,
+
+		// if using HTTPS IN LOCALHOST
+		//https: true,
+		//key: fs.readFileSync(path.join(__dirname, '../cert3/cert.key')),
+		//cert: fs.readFileSync(path.join(__dirname, '../cert3/cert.pem')),
+		//ca: fs.readFileSync(path.join(__dirname, '../cert/CA/CA.pem')),
+		//key: fs.readFileSync(path.join(__dirname, '../cert-mk/cert.key')),
+		//cert: fs.readFileSync(path.join(__dirname, '../cert-mk/cert.crt')),
+		//ca: fs.readFileSync(path.join(__dirname, '../cert/CA/CA.pem')),
+		//key: fs.readFileSync(path.join(__dirname, '../cert/CA/localhost/localhost.decrypted.key')),
+		//cert: fs.readFileSync(path.join(__dirname, '../cert/CA/localhost/localhost.crt')),
+		//requestCert: true,
+		//hot: true,
+		//port: 3000,
+		//headers: {
+		//	"Access-Control-Allow-Origin": "*",
+		//	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+		//	"Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+		//},
 	},
 	module: {
 		rules: [

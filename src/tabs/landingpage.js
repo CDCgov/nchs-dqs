@@ -55,8 +55,55 @@ export class LandingPage {
 		this.selections = null;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
+		this.socrataID = "";
+
 	}
 
+	// this is the function that cleans up Socrata data
+	addMissingProps = (cols, rows) => {
+		let newArray = [];
+		rows.forEach(row => {
+			const keys = Object.keys(row);
+			const difference = cols.filter(col => !keys.includes(col));
+			if (difference.length > 0) {
+				difference.forEach(item => {
+					row[item] = null;
+				});
+				newArray.push(row);
+			}
+			else {
+				newArray.push(row);
+			}
+		});
+		//console.log(rows);
+		//console.log(JSON.stringify(newArray));
+		return JSON.stringify(newArray);
+	};
+	
+	getSelectedSocrataData = async (topic, isDSPrivate) => {
+
+		try {
+			console.log("SOCRATA get topic", topic);
+			let [metadata, jsondata] = await Promise.all([
+				//t is topic, m is metadata and p is private
+				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
+				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
+			]);
+
+			//console.log("meta data: ", JSON.parse(metadata).columns);
+			const columns = JSON.parse(metadata).columns.map(col => col.fieldName);
+			//console.log("columns: ", columns);
+			//console.log(jsondata);
+			
+			let nchsdata = this.addMissingProps(columns, JSON.parse(jsondata));
+			
+			return nchsdata;
+		} catch (err) {
+			console.error("Error fetching data", err);
+		}
+
+	};
+			
 	addHtmlTooltips = () => {
 		const resetInfoTooltip = new HtmlTooltip({
 			h3: "Reset all selections except for Topic selection.",
@@ -97,9 +144,12 @@ export class LandingPage {
 			this.dataTopic = this.selections.topic;
 		}
 
-		console.log("hash panel:", this.panelNum);
+		//console.log("hash panel:", this.panelNum);
 
-		this.getInitialData(); // for starters OBESITY DATA
+		//  OLD JSON FILES method
+		// this.getInitialData(); // for starters OBESITY DATA
+		//debugger;
+		this.getInitialSocrataData();
 		MainEvents.registerEvents(); // add any click events inside here
 		this.addHtmlTooltips();
 
@@ -163,6 +213,82 @@ export class LandingPage {
 
 		$(".dimmer").attr("class", "ui inverted dimmer");
 		this.renderChart();
+	}
+
+	getInitialSocrataData() {
+
+		async function getFootnoteData() {
+			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
+		}
+
+		async function getUSMapData() {
+			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
+		}
+
+		DataCache.activeLegendList = [];
+
+		// getUSMapData - if we do it here we just load the map date ONE TIME
+		Promise.all([this.getSelectedSocrataData("64sz-mcbq", "1"), getFootnoteData(), getUSMapData()])
+			.then((data) => {
+				//const [destructuredData] = data;
+				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
+				DataCache.USTopo = JSON.parse(DataCache.USTopo);
+				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
+				this.geometries = geometries;
+
+				this.allData = JSON.parse(data[0]);
+				DataCache.ObesityData = this.allData;
+				this.footNotes = JSON.parse(data[1]);
+				DataCache.Footnotes = this.footNotes;
+
+				// build footnote map - but this needs to be done on EVERY data change
+				this.footnoteMap = {};
+				let i = null;
+				for (i = 0; this.footNotes.length > i; i += 1) {
+					this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
+				}
+
+				// create a year_pt col from time period
+				if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
+					this.allData = this.allData
+						.filter(function (d) {
+							if (d.flag === "- - -") {
+								return (d.estimate = null); // estimate missing so fill in with null???
+							} else {
+								return d;
+							}
+						})
+						.map((d) => ({
+							...d,
+							estimate: parseFloat(d.estimate),
+							year_pt: this.getYear(d.year),
+							dontDraw: false,
+							assignedLegendColor: "#FFFFFF",
+						}));
+					this.renderAfterDataReady();
+				} else {
+					this.allData = this.allData
+						.filter(function (d) {
+							if (d.flag === "- - -") {
+								d.estimate = null;
+								return d;
+							} else {
+								return d;
+							}
+						})
+						.map((d) => ({
+							...d,
+							estimate: parseFloat(d.estimate),
+							year_pt: d.year,
+							dontDraw: false,
+							assignedLegendColor: "#FFFFFF",
+						}));
+					this.renderAfterDataReady();
+				}
+			})
+			.catch(function (err) {
+				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
+			});
 	}
 
 	getInitialData() {
@@ -658,25 +784,6 @@ export class LandingPage {
 		return props;
 	};
 
-	// ORIG SET OF COLORS
-	/* 				barColors: [
-					"#88419d",
-					"#1f78b4",
-					"#b2df8a",
-					"#33a02c",
-					"#0b84a5",
-					"#cc4c02",
-					"#690207",
-					"#e1ed3e",
-					"#7c7e82",
-					"#8dddd0",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-		], */
-
 	getTooltipConstructor = (vizId, chartValueProperty) => {
 		const propertyLookup = {
 			// list properties needed in tooltip body and give their line titles and datum types
@@ -871,17 +978,19 @@ export class LandingPage {
 		// switch to new data source
 		switch (dataTopic) {
 			case "obesity-child":
-				this.dataFile = "content/json/ObesityChildren.json";
+				//this.dataFile = "content/json/ObesityChildren.json";
+				this.socrataID = "64sz-mcbq";
 				this.chartTitle = "Obesity Among Children and Adolescents";
 				selectedDataCache = DataCache.ObesityData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show 95% CI checkbox since "suicide" has no se data
+				// show 95% CI checkbox 
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
-				this.dataFile = "content/json/ObesityAdults.json";
+				//this.dataFile = "content/json/ObesityAdults.json";
+				this.socrataID = "23va-ejrn";
 				this.chartTitle = "Obesity Among Adults";
 				selectedDataCache = DataCache.ObesityAdultData;
 				this.panelNum = 1;
@@ -891,7 +1000,8 @@ export class LandingPage {
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "suicide": // no panel
-				this.dataFile = "content/json/DeathRatesForSuicide.json";
+				//this.dataFile = "content/json/DeathRatesForSuicide.json";
+				this.socrataID = "u9f7-4q6s";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
@@ -900,37 +1010,41 @@ export class LandingPage {
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
-				this.dataFile = "content/json/InjuryEDVis.json";
+				//this.dataFile = "content/json/InjuryEDVis.json";
+				this.socrataID = "k99r-jkp7";
 				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
 				selectedDataCache = DataCache.InjuryData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox 
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "birthweight":
-				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
+				//this.dataFile = "content/json/LowBirthweightLiveBirths.json";
+				this.socrataID = "3p8z-99bn";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox 
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
-				this.dataFile = "content/json/InfantMortality.json";
+				//this.dataFile = "content/json/InfantMortality.json";
+				this.socrataID = "bzax-vvbx";
 				this.chartTitle = "Infant Mortality";
 				selectedDataCache = DataCache.InfantMortalityData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox 
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65": // no panel
-				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
+				//this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
+				this.socrataID = "2g8y-scu5";
 				this.chartTitle = "Medicaid Coverage Among Persons Under Age 65";
 				selectedDataCache = DataCache.MedicaidU65Data;
 				this.panelNum = "NA"; // no panel
@@ -956,7 +1070,7 @@ export class LandingPage {
 		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR DATA TO LOAD
 		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
 		// console.log("ATTEMPTING dataFile Promise:", this.dataFile);
-		Promise.all([getSelectedData(this.dataFile, selectedDataCache)])
+		Promise.all([selectedDataCache ?? this.getSelectedSocrataData(this.socrataID, "1")])
 			.then((data) => {
 				// console.log("FULFILLED dataFile Promise:", this.dataFile);
 				if (selectedDataCache !== undefined) {
@@ -1028,21 +1142,6 @@ export class LandingPage {
 						this.updateShowMap(0);
 						break;
 
-					// cases with LINE CHART only and no map data
-					case "obesity-child":
-					case "obesity-adult":
-					case "suicide":
-					case "injury":
-					case "medicaidU65":
-						// show the chart tab
-						$("#tab-chart").css("visibility", "visible");
-						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
-						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
-						// hide the map tab
-						$("#tab-map").css("visibility", "hidden");
-						this.updateShowMap(0);
-						break;
-
 					// cases with US Map data option
 					case "birthweight":
 					case "infant-mortality":
@@ -1052,10 +1151,6 @@ export class LandingPage {
 						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
 						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
 						// hide the chart tab
-						//$('#tab-chart').css("visibility", "hidden");
-						// set chart tab to white
-						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 						theChartTab.style.backgroundColor = "#b3d2ce";
 						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 						this.updateShowMap(0);
@@ -1554,7 +1649,6 @@ export class LandingPage {
 
 		// have to update the "text" to draw on the chart
 		this.unitNumText = $("#unit-num-select-chart option:selected").text(); //(TTT)
-		// console.log("unitNum text=", this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
 		// - call set stub names
@@ -1714,10 +1808,7 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
-						//d.dontDraw = !d.dontDraw; // toggle it
-						// console.log("toggle has panel dontDraw=", d.dontDraw);
-
-						// NEW if on the active list THEN set dontDraw = false
+						//  if on the active list THEN set dontDraw = false
 						if (
 							DataCache.activeLegendList.filter(function (e) {
 								return e.stub_label === d.stub_label;
@@ -1747,7 +1838,7 @@ export class LandingPage {
 						// NO dont just blindly toggle it
 						//d.dontDraw = !d.dontDraw; // toggle it
 
-						// NEW if on the active list THEN set dontDraw = false
+						// INSTEAD if on the active list THEN set dontDraw = false
 						if (
 							DataCache.activeLegendList.filter(function (e) {
 								return e.stub_label === d.stub_label;
@@ -1759,8 +1850,6 @@ export class LandingPage {
 							// not on there so dont draw it
 							d.dontDraw = true;
 						}
-
-						//console.log("TOGGLE no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw, selDataPt);
 					}
 				});
 				break;
@@ -1818,16 +1907,6 @@ export class LandingPage {
 		let viewSelected = $("#data-topic-select").val();
 
 		let tableHeading = "";
-
-		/* 		const formattedData = tableData.map((d) => ({
-					...d,
-					displayDate: genFormat(d.date, "tableDate"),
-					value: d[keys[0]],
-				}));
-		
-				formattedData.sort((a, b) => b.date - a.date); */
-
-		//let keys = Object.keys(tableData[0]);
 
 		switch (`${viewSelected}`) {
 			case "obesity-child":
@@ -1888,8 +1967,7 @@ export class LandingPage {
 				!item.match("assignedLegendColor") &&
 				item !== "date"
 		);
-		//const cols = keys;
-		//console.log("keys", keys);
+
 		/* Table element manipulation and rendering */
 		let tableContainer = document.getElementById(`${tableId}-container`);
 		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
@@ -1924,18 +2002,7 @@ export class LandingPage {
 				return column.charAt(0).toUpperCase() + column.slice(1);
 				//return this.capString(column);
 			})
-			/* 			.attr("class", function (column, i) {
-							let classString;
-							if (column === "Date") {
-								classString = "table-sort-header data-table-header date-sort";
-							} else {
-								classString = "table-sort-header data-table-header number-sort";
-							}
-							if (keys[i] === "state") {
-								classString += " sorted";
-							}
-							return classString;
-						}) */
+
 			.append("i")
 			.attr("id", (column, i) => `${keys[i]}-icon`)
 			.attr("class", "sort icon");

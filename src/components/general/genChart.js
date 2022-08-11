@@ -74,16 +74,6 @@ export class GenChart {
 			p.data.forEach((d, i) => {
 				if (d.dontDraw === false && barCount < numToDraw) {
 					barCount++; // increment barCount
-					if (i > 9) {
-						console.log(
-							" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount",
-							d,
-							d.dontDraw,
-							i,
-							barCount,
-							maxBarCount
-						);
-					}
 
 					// PUSH only if not already on the list
 					if (
@@ -106,9 +96,6 @@ export class GenChart {
 					// then either dontDraw already true or needs to be set to true
 					// bc bar count is exceeded
 					d.dontDraw = true;
-					if (i < 11) {
-						console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
-					}
 				}
 
 				// CHANGE - if on the active list then set dontDraw = false
@@ -140,15 +127,10 @@ export class GenChart {
 			// creating yScaleLeft
 		}
 
-		//console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
-
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
-
-		// if you need to look at incoming data
-		//console.log("genChart p.data after removing dontDraw=true vals:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -201,7 +183,6 @@ export class GenChart {
 			// some Characteristics are long but NO COLON just spaces
 			if (d.match(":")) {
 				words = d.split(":"); // split labels on : colon
-				//console.log("Colon split:", d, words);
 				for (var i = 0; i < words.length; i++) {
 					var str;
 					var result;
@@ -209,18 +190,6 @@ export class GenChart {
 					if (words[i].length < 24) {
 						tspan = el.append("tspan").text(words[i]);
 						tspan.attr("x", 0).attr("dy", "12"); // dy is space between lines
-						/* 						if (words.length < 2) {
-							tspan.attr("x", 0).attr("dy", "32");
-						} 
-						if (words.length == 2) {
-							tspan.attr("x", 0).attr("dy", "30");
-						}
-						if (words.length == 3) {
-							tspan.attr("x", 0).attr("dy", "12"); // was 21
-						}
-						if (words.length == 4) {
-							tspan.attr("x", 0).attr("dy", "12");
-						} */
 					} else {
 						str = words[i];
 						result = str.replace(/.{20}\S*\s+/g, "$&@").split(/\s+@/);
@@ -234,7 +203,6 @@ export class GenChart {
 				// - to understand why this is here select Medicaid and then "Level of Difficulty"
 				// - very long text with no colon but lots of spaces
 				words = d.split(" "); // split labels on spaces
-				//console.log("SPACE split d, words:", d, words);
 				// now accumulate strings up to a certain length
 				let tmpLine = "";
 				let lineMaxLen = 21;
@@ -246,7 +214,6 @@ export class GenChart {
 						lineLen += wd.length + 1;
 					} else {
 						lines.push(tmpLine);
-						console.log("Push line:", tmpLine);
 						tmpLine = wd + " "; // start with word that didnt fit
 						lineLen = wd.length + 1;
 					}
@@ -264,7 +231,7 @@ export class GenChart {
 					if (lines[i].length < 25) {
 						tspan = el.append("tspan").text(lines[i]);
 					}
-					//console.log("BEFORE tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+
 					if (lines.length < 2) {
 						tspan.attr("x", 0).attr("dy", "32");
 					}
@@ -277,7 +244,7 @@ export class GenChart {
 					if (lines.length == 4) {
 						tspan.attr("x", 0).attr("dy", "12");
 					}
-					//console.log("AFTER tspan i, x, y:", i, tspan.attr("x"), tspan.attr("y"));
+
 				} // end for loop
 			} // end else case
 
@@ -754,9 +721,6 @@ export class GenChart {
 						// then either dontDraw already true or needs to be set to true
 						// bc bar count is exceeded
 						d.values[0].dontDraw = true;
-						if (i < 11) {
-							//console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
-						}
 					}
 
 					// CHANGE - if on the active list then set dontDraw = false
@@ -787,7 +751,6 @@ export class GenChart {
 						lineGroups[i] = lineGroup;
 
 						nd.values[0].assignedLegendColor = multiLineColors(i);
-						//console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
 
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
@@ -939,7 +902,6 @@ export class GenChart {
 										return barColor;
 									})
 									.attr("height", (d) => chartHeight - yScaleLeft(d[p.chartProperties.bars]))
-									//console.log("BAR x=", xScale(d[p.chartProperties.xAxis]));
 									.attr("x", (d, i) => xScale(d[p.chartProperties.xAxis]))
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.bars]))
 									.attr("opacity", 0.85);
@@ -971,8 +933,6 @@ export class GenChart {
 
 					// MEOWWWW - DRAW CI WHISKERS FOR BAR CHART
 					if (p.enableCI) {
-						// did this so I could log the data
-						//console.log("cidata,xbandwidth", drawData, xScale.bandwidth());
 
 						drawData.forEach((d, i) => {
 							// (TT) note bc of the rotated chart:
@@ -997,7 +957,7 @@ export class GenChart {
 								//(TTT) LEAVE THESE LOGS HERE UNTIL WE CONFIRM FROM TESTING THESE CI WHISKERS ARE CORRECT
 								.attr("x1", function (d) {
 									return xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() / 2 + margin.left;
-								}) //console.log("x1,bandwidth,total=", xScale(d[p.chartProperties.xAxis]), xScale.bandwidth(), xScale(d[p.chartProperties.xAxis]) + xScale.bandwidth() );
+								})
 								.attr("y1", function (d) {
 									return yScaleLeft(d.estimate_lci) + margin.top;
 								})
@@ -1108,12 +1068,6 @@ export class GenChart {
 										d3
 											.area()
 											.x(function (d) {
-												// console.log(
-												// 	"x d,i,x:",
-												// 	d,
-												// 	i,
-												// 	xScale(d[p.chartProperties.xAxis]) + offset
-												// );
 												return xScale(d[p.chartProperties.xAxis]) + offset;
 											})
 											.y0(function (d) {
@@ -1153,16 +1107,13 @@ export class GenChart {
 											// change to a function and set based on the "flag"
 											.style("fill", function (d) {
 												if (d.flag === "*") {
-													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
 													return "white"; // creates circle that appears "empty" for "*" flag
 												} else {
-													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
 													return multiLineColors(i); // fills in the dot with line color
 												}
 											})
 											.style("stroke", function (d) {
 												if (d.flag !== undefined) {
-													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
 													return multiLineColors(i);
 												}
 											})
@@ -1475,19 +1426,10 @@ export class GenChart {
 			// Add the legend. Have to do this last after Bar Chart drawn
 
 			if (p.usesLegend === true) {
-				// set up the data first
-				//console.log("p.data:", p.data);
 
 				// HERE IS WHERE WE USE ALL DATA even if dontDraw = false
 				// THis the bar chart LEGEND gives option of turning on and off ALL values
 				// without this the clicking slowly disappears the options never to return
-
-				// now sort by stub_label_num
-				/* 				allIncomingData.sort((a, b) => {
-					return a.stub_label_num - b.stub_label_num;
-				}); */
-
-				// if you try to SORT here only the LEGEND gets sorted
 
 				// (TT) Reliability for BAR CHARTS, they want all Null and NaN entries REMOVED
 
@@ -1514,7 +1456,6 @@ export class GenChart {
 					legendTx = svgWidth + 10;
 					legendTy = (svgHeight - margin.top - margin.bottom) / 2; // * 2 + 25;
 
-					//console.log("genChart: legTx, LegTy, legendHeight:", legendTx, legendTy, legendHeight);
 				} else {
 					legendTx = margin.left + p.legendCoordinatePercents[0] * svgWidth;
 					legendTy = margin.top + p.legendCoordinatePercents[1] * svgHeight;
@@ -1553,8 +1494,6 @@ export class GenChart {
 						.attr("stroke", "black")
 						.attr("data-html2canvas-ignore", "");
 
-					console.log("genChart legendData before DRAW:", legendData);
-
 					// IF YOU ONLY DO THIS HERE THEN THE BARS ARE OUTOF ALIGNMENT WITH LEGEND ITEMS
 					// - so dont do this here!
 					// Sort alphabetically
@@ -1592,7 +1531,6 @@ export class GenChart {
 								.attr("stroke-dasharray", d.dashArrayScale)
 								.attr("transform", `rotate(-${p.chartRotationPercent})`);
 						}
-						//console.log("2 data d:", d);
 
 						// Could not get these methods of implementing a checkbox to work
 						// just see a white space and no checkbox and not aligned in proper location either
@@ -1629,7 +1567,7 @@ export class GenChart {
 							.attr("x", 45)
 							.attr("y", axisLabelFontSize * 0.5)
 							.text(function (curD) {
-								//console.log("GenChart-Legend BARCHART - set checked or not - 3 data curD,d:", curD, d);
+								// set whether checked or not
 								if (d.dontDraw) {
 									return "\uf0c8"; // square unicode [&#xf0c8;]
 								} else {
@@ -1670,11 +1608,8 @@ export class GenChart {
 							adjustX = text.transform.animVal[0].matrix.e;
 							// since bar chart is rotated the move left is on the Y not the X
 							adjustY = text.transform.animVal[0].matrix.f + legendContainer.attr("width") / 2;
-							//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
-							//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
 							let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
-							//console.log("newTransform:", newTransform);
-							return newTransform; // this.getAttribute("transform") +
+							return newTransform; 
 						});
 					});
 				} // end if legendData.length > 0
@@ -1706,15 +1641,8 @@ export class GenChart {
 						};
 					});
 
-					/* 				// now sort by stub_label_num
-				legendData.sort((a, b) => {
-					return a.text - b.text;
-				});
-					console.log("## legendData:", legendData); */
-
 					// cannot do it this way below because
 					// the data is NOT nested and lists too many legend entries
-
 					/* 					allIncomingData.forEach((d, i) => {
 											legendData[i] = {
 											stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
@@ -1813,8 +1741,6 @@ export class GenChart {
 								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
 						);
 
-					//console.log("legendItem d,i:", d, i);
-
 					// only draw color line if data is drawn
 					if (!d.dontDraw) {
 						legendItem
@@ -1841,7 +1767,6 @@ export class GenChart {
 							// TRICKY: you can do a function on any variable but then use
 							// curD to get the value of dontDraw
 							// if you use d or curD in both places it does not work!
-							//console.log("GenChart-Legend LINES - set checked or not - 4 data curD:", curD2, d);
 							if (d.dontDraw === true) {
 								return "\uf0c8"; // square unicode [&#xf0c8;]
 							} else {
@@ -1876,10 +1801,7 @@ export class GenChart {
 					d3.select(text).attr("transform", function (d) {
 						adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2;
 						adjustY = text.transform.animVal[0].matrix.f;
-						//console.log(text.transform.animVal[0].matrix.e + ", " + text.transform.animVal[0].matrix.f);
-						//console.log("slect transform", this, this.getAttribute("transform"), this.getAttribute("transform"));
-						let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +
-						//console.log("newTransform:", newTransform);
+						let newTransform = " translate(" + `${adjustX},${adjustY}` + ")"; // this.getAttribute("transform") +						//console.log("newTransform:", newTransform);
 						return newTransform; // this.getAttribute("transform") +
 					});
 				});

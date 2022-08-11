@@ -7,11 +7,9 @@ import { TabEvents } from "./eventhandlers/tabevents";
 import { allowedURL } from "./utils/whitelist";
 // import { Analytics } from "./eventhandlers/analytics";
 
-//import { obesityMap } from "./components/obesity/map";
-//import { obesityTemplate } from "./components/obesity/template";
-
 // self executing function
 (function () {
+
 	// page initialization code
 	// the DOM will be available
 	setupAppStateVars();
