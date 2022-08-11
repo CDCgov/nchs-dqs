@@ -21,7 +21,8 @@ export const getProps = (props) => {
 		usesRightAxis: props.usesRightAxis || false, // the ticks and tick values on the right axis
 		usesRightAxisTitle: props.usesRightAxisTitle || false, // text describing the right axis
 		usesBottomAxis: props.usesBottomAxis || false, // the ticks and tick values on the bottom axis
-		usesBottomAxisTitle: props.usesBottomAxisTitle || false, // text describing the bottom axis. If it is a date, leave blank
+		usesTopAxis: props.usesTopAxis || false, // the ticks and tick values on the top axis
+		usesXAxisTitle: props.usesXAxisTitle || false, // text describing the bottom axis. If it is a date, leave blank
 		usesLeftLine1: props.usesLeftLine1 || false, // primary line associated to the left axis scale
 		usesLeftLine2: props.usesLeftLine2 || false, // secondary line associated to the left axis scale (e.g. an average line) around wildly swinging leftLine1 values
 		usesRightLine: props.usesRightLine || false, // primary line associated to the right axis scale (e.g. the right axis on US Trends)
@@ -68,6 +69,7 @@ export const getProps = (props) => {
 		xLabelRotatedYAdjust: props.xLabelRotatedYAdjust || 0, // these need trial and error to get right
 		barColor: props.barColor, // color applied to all bars; defaults to leftLine1Color if set ... if not set, defaults to leftAxisColor
 		barColors: props.barColors, // this is an array of colors for a category or stacked bar chart
+		barLayout: props.barLayout || { horizontal: false, size: null }, // size (height or width in px) for a bar chart dependent on only one set of data (e.g. a list of percents or magnitudes)
 		finalDataPointsDaysCount: props.finalDataPointsDaysCount, // how many final days in the dataset to apply some special condition to (see lines below)
 		finalDataPointsType: props.finalDataPointsType, // a string. currently only have one type, "rect", applied over some final days range (in MIS-C)
 		rectColorForFinalDataPoints: props.rectColorForFinalDataPoints, // add a transparent rect over the top of the final data points; (e.g. MIS-C line chart)
@@ -122,7 +124,7 @@ export const getProps = (props) => {
 // usesRightAxis: true,
 // usesRightAxisTitle: true,
 // usesBottomAxis: true,
-// usesBottomAxisTitle: true,
+// usesXAxisTitle: true,
 // usesLeftLine1: true,
 // usesLeftLine2: true,
 // usesRightLine: true,
