@@ -367,7 +367,7 @@ export class GenChart {
 		let yScaleLeft;
 
 		if (p.barLayout && p.barLayout.horizontal) {
-			yScaleLeft = d3.scaleBand().range([chartHeight, 0]).paddingInner(0.15).paddingOuter(0.15);
+			yScaleLeft = d3.scaleBand().range([0, chartHeight]).paddingInner(0.15).paddingOuter(0.15);
 		} else {
 			yScaleLeft = yScaleType
 				.domain(
@@ -1074,11 +1074,6 @@ export class GenChart {
 											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 											.attr("rx", d3.max([5, offset]))
 											.attr("ry", d3.max([5, d3.min([offset, 15])]));
-										/* 											.style("fill", (d, i) => {
-																						// save the color used
-																						d.assignedLegendColor = multiLineColors[i];
-																						return multiLineColors[i];
-																					}) */
 									},
 									(exit) => {
 										exit.remove();
