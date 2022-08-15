@@ -56,6 +56,7 @@ export class LandingPage {
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
 		this.socrataID = "";
+		this.footnotesSocrataID = "m6mz-p2ij";
 
 	}
 
@@ -86,23 +87,13 @@ export class LandingPage {
 			let [metadata, jsondata] = [];
 			//console.log("window.location = ", window.location.href);
 			console.log("SOCRATA get topic", topic);
-			//debugger;
-			let localHref = window.location.href;
-			if (localHref.match("localhost")) {
-				console.log("Running on localhost");
-			    [metadata, jsondata] = await Promise.all([
-				//t is topic, m is metadata and p is private
-				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
-				fetch(`../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
-				]);
-			} else { 
-				console.log("NOT running on Localhost");
-			   [metadata, jsondata] = await Promise.all([
-				//t is topic, m is metadata and p is private
-				fetch(`../../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
-				fetch(`../../NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
-				]);
-			}
+	
+			[metadata, jsondata] = await Promise.all([
+			//t is topic, m is metadata and p is private
+			fetch(`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
+			fetch(`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
+			]);
+			
 			//console.log("meta data: ", JSON.parse(metadata).columns);
 			const columns = JSON.parse(metadata).columns.map(col => col.fieldName);
 			//console.log("columns: ", columns);
@@ -157,11 +148,6 @@ export class LandingPage {
 			this.dataTopic = this.selections.topic;
 		}
 
-		//console.log("hash panel:", this.panelNum);
-
-		//  OLD JSON FILES method
-		// this.getInitialData(); // for starters OBESITY DATA
-		//debugger;
 		this.getInitialSocrataData();
 		MainEvents.registerEvents(); // add any click events inside here
 		this.addHtmlTooltips();
@@ -243,7 +229,7 @@ export class LandingPage {
 		DataCache.activeLegendList = [];
 
 		// this loads the obesity-childhood data as the INITIAL data load
-		Promise.all([this.getSelectedSocrataData("64sz-mcbq", "1"), getFootnoteData(), getUSMapData()])
+		Promise.all([this.getSelectedSocrataData("64sz-mcbq", "1"), DataCache.Footnotes ?? this.getSelectedSocrataData(this.footnotesSocrataID,"1"), getUSMapData()])
 			.then((data) => {
 				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
 				DataCache.USTopo = JSON.parse(DataCache.USTopo);
@@ -305,84 +291,6 @@ export class LandingPage {
 			});
 	}
 
-	getInitialData() {
-		async function getSelectedData() {
-			return DataCache.ObesityData ?? Utils.getJsonFile("content/json/ObesityChildren.json");
-		}
-
-		async function getFootnoteData() {
-			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
-		}
-
-		async function getUSMapData() {
-			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
-		}
-
-		DataCache.activeLegendList = [];
-
-		// getUSMapData - if we do it here we just load the map date ONE TIME
-		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()])
-			.then((data) => {
-				//const [destructuredData] = data;
-				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
-				DataCache.USTopo = JSON.parse(DataCache.USTopo);
-				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
-				this.geometries = geometries;
-
-				this.allData = JSON.parse(data[0]);
-				DataCache.ObesityData = this.allData;
-				this.footNotes = JSON.parse(data[1]);
-				DataCache.Footnotes = this.footNotes;
-
-				// build footnote map - but this needs to be done on EVERY data change
-				this.footnoteMap = {};
-				let i = null;
-				for (i = 0; this.footNotes.length > i; i += 1) {
-					this.footnoteMap[this.footNotes[i].fn_id] = this.footNotes[i].fn_text;
-				}
-
-				// create a year_pt col from time period
-				if (this.dataTopic === "obesity-child" || this.dataTopic === "obesity-adult") {
-					this.allData = this.allData
-						.filter(function (d) {
-							if (d.flag === "- - -") {
-								return (d.estimate = null); // estimate missing so fill in with null???
-							} else {
-								return d;
-							}
-						})
-						.map((d) => ({
-							...d,
-							estimate: parseFloat(d.estimate),
-							year_pt: this.getYear(d.year),
-							dontDraw: false,
-							assignedLegendColor: "#FFFFFF",
-						}));
-					this.renderAfterDataReady();
-				} else {
-					this.allData = this.allData
-						.filter(function (d) {
-							if (d.flag === "- - -") {
-								d.estimate = null;
-								return d;
-							} else {
-								return d;
-							}
-						})
-						.map((d) => ({
-							...d,
-							estimate: parseFloat(d.estimate),
-							year_pt: d.year,
-							dontDraw: false,
-							assignedLegendColor: "#FFFFFF",
-						}));
-					this.renderAfterDataReady();
-				}
-			})
-			.catch(function (err) {
-				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
-			});
-	}
 
 	getYear(period) {
 		const yearsArray = period.split("-");
@@ -585,7 +493,7 @@ export class LandingPage {
 				subLine: d.stub_label,
 			}));
 		}
-
+		
 		let allFootnoteIdsArray = d3
 			.map(selectedPanelData, function (d) {
 				return d.footnote_id_list;
