@@ -1,12 +1,9 @@
 import { Utils } from "../utils/utils";
 import { DataCache } from "../utils/datacache";
-// import * as config from "../components/landingPage/config";
-// import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
-import { downLoadMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
 import { downloadCSV } from "../utils/downloadCSV";
 import { HtmlTooltip } from "../components/general/htmlTooltip";
@@ -107,34 +104,19 @@ export class LandingPage {
 		$("#dwn-chart-img").click((evt) => {
 			const chartButton = document.getElementById("icons-tab-2");
 			const mapButton = document.getElementById("icons-tab-1");
-			// let classes;
-			// if (chartButton) {
-			// 	return (classes = chartButton.className);
-			// } else if (mapButton) {
-			// 	return (classes = mapButton.className);
-			// }
-			// if (window.location.hash.toString() === "#cases_community") {
-			// 	downLoadUsCaseandChartMap(vizParentContainer, evt.target.id);
-			// }
 			let titleChart = document.getElementById("chart-title").textContent;
-			if (chartButton && chartButton.className.includes("active")) {
-				const mapTitle = $("#maptitle").text();
-				//$(".maptitle.map-chart-title").html(mapTitle);
-				// $("#download_image").show();
-				let containerSVG = document.getElementById("chart-container");
-				//console.log(containerSVG);
-				const params = {
-					contentContainer: "chart-container",
-					downloadButton: "dwn-chart-img",
-					imageSaveName: titleChart,
-					//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
-					//needToShowHide: true,
-				};
-				downLoadGenChart(params);
-			} else if (mapButton && mapButton.className.includes("active")) {
-				downLoadMap2();
-				return;
-			}
+			const mapTitle = $("#maptitle").text();
+			let containerSVG = document.getElementById("chart-container");
+			const params = {
+				contentContainer: "chart-container",
+				downloadButton: "dwn-chart-img",
+				imageSaveName: titleChart,
+				// imageSaveName: "placeholder",
+				//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
+				//needToShowHide: true,
+			};
+
+			downLoadGenChart(params);
 		});
 	}
 
@@ -542,140 +524,78 @@ export class LandingPage {
 				legendCoordPercents = [0.4, 0.58];
 				break;
 		}
-		// if one single year then use bar chart
-		let useBars;
-		if (this.showBarChart) {
-			//yAxisTitle = this.unitNumText;
-			useBars = true;
-			props = {
-				data,
-				chartProperties: {
-					yLeft1: chartValueProperty,
-					xAxis: "stub_label",
-					yAxis: "estimate",
-					bars: "estimate",
-				},
-				enableCI: this.enableCI,
-				usesLegend: true,
-				legendBottom: true,
-				usesDateDomainSlider: false,
-				usesBars: true,
-				usesHoverBars: true,
-				barColors: [
-					"#6a3d9a",
-					"#cab2d6",
-					"#ff7f00",
-					"#fdbf6f",
-					"#e31a1c",
-					"#fb9a99",
-					"#33a02c",
-					"#b2df8a",
-					"#1f78b4",
-					"#a6cee3",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-				],
-				chartRotate: true,
-				chartRotationPercent: 90,
-				bottomAxisRotation: -90,
-				xLabelRotatedYAdjust: 10,
-				xLabelRotatedXAdjust: -40,
-				axisLabelFontScale: 0.55,
-				usesChartTitle: true,
-				usesLeftAxis: true,
-				usesLeftAxisTitle: true,
-				usesRightAxis: true,
-				usesBottomAxis: true,
-				usesBottomAxisTitle: false,
-				usesDateAsXAxis: true,
-				yLeftLabelScale: 1,
+		const scaleTimeIndicators = ["suicide", "Medicaid"];
+		const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
 
-				legendCoordinatePercents: legendCoordPercents,
-				bottomAxisTitle: xAxisTitle,
-				formatXAxis: "string",
-				usesMultiLineLeftAxis: false,
-				vizId,
-				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
-			};
-		} else {
-			const scaleTimeIndicators = ["suicide", "Medicaid"];
-			const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-
-			// ********************* update data
-			// DRAW A LINE CHART
-			useBars = false;
-			props = {
-				data,
-				chartProperties: {
-					yLeft1: chartValueProperty,
-					xAxis: needsScaleTime ? "date" : "year",
-					yAxis: "estimate",
-				},
-				enableCI: this.enableCI,
-				usesLegend: true,
-				legendBottom: true,
-				usesDateDomainSlider: false,
-				usesBars: false,
-				usesHoverBars: false,
-				usesChartTitle: true,
-				usesLeftAxis: true,
-				usesLeftAxisTitle: true,
-				usesBottomAxis: true,
-				usesBottomAxisTitle: false, // they dont want a title there
-				usesDateAsXAxis: true,
-				needsScaleTime,
-				yLeftLabelScale: 3,
-				legendCoordinatePercents: legendCoordPercents,
-				bottomAxisTitle: xAxisTitle,
-				formatXAxis: "string",
-				usesMultiLineLeftAxis: true,
-				multiLineColors: [
-					"#88419d",
-					"#1f78b4",
-					"#b2df8a",
-					"#33a02c",
-					"#0b84a5",
-					"#cc4c02",
-					"#690207",
-					"#e1ed3e",
-					"#7c7e82",
-					"#8dddd0",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-				],
-				multiLineLeftAxisKey: "subLine",
-				vizId,
-				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
-			};
-		}
-
-		return props;
+		return {
+			data,
+			chartProperties: {
+				yLeft1: this.showBarChart ? "stub_label" : chartValueProperty,
+				xAxis: this.showBarChart ? chartValueProperty : needsScaleTime ? "date" : "year",
+				bars: "estimate",
+			},
+			enableCI: this.enableCI,
+			usesLegend: true,
+			legendBottom: true,
+			usesDateDomainSlider: false,
+			usesBars: this.showBarChart,
+			usesHoverBars: this.showBarChart,
+			barLayout: this.showBarChart ? { horizontal: true, size: 60 } : { horizontal: false, size: null },
+			barColors: [
+				"#6a3d9a",
+				"#cab2d6",
+				"#ff7f00",
+				"#fdbf6f",
+				"#e31a1c",
+				"#fb9a99",
+				"#33a02c",
+				"#b2df8a",
+				"#1f78b4",
+				"#a6cee3",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+			],
+			marginRightMin: 20,
+			axisLabelFontScale: this.showBarChart ? 0.5 : 1,
+			usesChartTitle: true,
+			usesLeftAxis: true,
+			usesLeftAxisTitle: true,
+			usesBottomAxis: !this.showBarChart,
+			usesTopAxis: this.showBarChart,
+			usesXAxisTitle: true,
+			usesDateAsXAxis: !this.showBarChart,
+			needsScaleTime: !this.showBarChart && needsScaleTime,
+			yLeftLabelScale: this.showBarChart ? 10 : 1,
+			legendCoordinatePercents: legendCoordPercents,
+			bottomAxisTitle: xAxisTitle,
+			// leftAxisTitle: xAxisTitle,
+			formatXAxis: "string",
+			usesMultiLineLeftAxis: !this.showBarChart,
+			multiLineColors: [
+				"#88419d",
+				"#1f78b4",
+				"#b2df8a",
+				"#33a02c",
+				"#0b84a5",
+				"#cc4c02",
+				"#690207",
+				"#e1ed3e",
+				"#7c7e82",
+				"#8dddd0",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+			],
+			multiLineLeftAxisKey: "subLine",
+			vizId,
+			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
+		};
 	};
-
-	// ORIG SET OF COLORS
-	/* 				barColors: [
-					"#88419d",
-					"#1f78b4",
-					"#b2df8a",
-					"#33a02c",
-					"#0b84a5",
-					"#cc4c02",
-					"#690207",
-					"#e1ed3e",
-					"#7c7e82",
-					"#8dddd0",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-		], */
 
 	getTooltipConstructor = (vizId, chartValueProperty) => {
 		const propertyLookup = {
@@ -2117,9 +2037,8 @@ export class LandingPage {
 </div>
 <br>
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
-		<span id="chart-title" class="chart-title"></span>
-		<br>
-		<span tabindex="0" id="chart-subtitle" class=""></span>
+		<span id="chart-title" class="chart-title"></span><br>	
+		<span tabindex="0" id="chart-subtitle"></span>
 	</div>
 
 	<!-- Tabs navs -->
