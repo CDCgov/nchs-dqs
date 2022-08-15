@@ -165,7 +165,7 @@ a {
 	padding-right: 0.6em;
 }
 
-#adjustUnitContainer {
+.adjustUnitContainer {
 	margin-left: 4vw;
 	margin-right: 20px;
 	margin-bottom: 10px;
@@ -293,18 +293,16 @@ img {
 	width: 100%;
 	align: left;
 	margin-left: 0px;
-	padding-left: 25px;
-	padding-right: 25px;
+	padding: 0 25px;
 	margin-top: 5px;
 	//border: solid 1px red;
 
-	@include mobile-max {
-		//padding: 0 1rem;
-		width: 100%;
-	}
 	@media screen and (max-width: $tablet-max-width) {
 		margin-top: 20px;
-		padding-right: 1.5em;
+		padding: 0 10px;
+	}
+	@include mobile-max {
+		padding: 0 3px;
 	}
 }
 /* now we can override it on V2 landing page */
