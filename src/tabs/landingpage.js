@@ -7,6 +7,7 @@ import { MainEvents } from "../eventhandlers/mainevents";
 import { downLoadGenChart } from "../utils/downloadimg";
 import { downloadCSV } from "../utils/downloadCSV";
 import { HtmlTooltip } from "../components/general/htmlTooltip";
+import * as config from "../config";
 
 export class LandingPage {
 	constructor() {
@@ -184,6 +185,8 @@ export class LandingPage {
 				$("#year-end-select").show();
 				this.showBarChart = false;
 			}
+		} else {
+			$("#cdcDataGovButton").attr("href", config.topicLookup["obesity-child"].dataUrl);
 		}
 
 		// set default yscale:
@@ -817,6 +820,7 @@ export class LandingPage {
 
 	updateDataTopic(dataTopic, fromHash = false) {
 		this.dataTopic = dataTopic; // string
+		$("#cdcDataGovButton").attr("href", config.topicLookup[dataTopic].dataUrl);
 		let selectedDataCache;
 
 		// return the cached data or get the data from file
