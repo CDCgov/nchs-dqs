@@ -1818,27 +1818,23 @@ export class LandingPage {
 			.append("th")
 			.attr("scope", "col")
 			.attr("tabindex", "0")
-			.attr("id", (column, i) => `${keys[i]}-th`)
-			.text(function (column) {
-				if (column === "panel") {
-					column = "Subtopic";
+			.attr("id", (col, i) => `${keys[i]}-th`)
+			.html((col, i) => {
+				// group the <th> content so that the last word of the th is wrapped in a span with the sort icon
+				// so that the sort icon can be in a <span> with css of white-space: nowrap
+				const words = col.split(" ");
+				console.log(`Words: ${words}`);
+				const lastWord = words.splice(-1);
+				console.log(`Last word: ${lastWord}`);
+				console.log(`Words: ${words}`);
+				let header = "<span>";
+				if (words.length) {
+					words.forEach((w) => (header += `${w} `));
+					header += "</span>";
 				}
-				if (column === "stub_name") {
-					column = "Characteristic";
-				}
-				if (column === "stub_label") {
-					column = "Group";
-				}
-				if (column === "se") {
-					column = "Standard Error";
-				}
-				return column.charAt(0).toUpperCase() + column.slice(1);
-				//return this.capString(column);
-			})
-
-			.append("i")
-			.attr("id", (column, i) => `${keys[i]}-icon`)
-			.attr("class", "sort icon");
+				header += `<span class="sortIconNoWrap">${lastWord} <i id="${keys[i]}-icon" class="sort icon"></i></span>`;
+				return header;
+			});
 
 		let tbody = table.append("tbody");
 		let row = tbody.selectAll("tr").data(tableData);
