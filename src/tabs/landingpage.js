@@ -1,12 +1,9 @@
 import { Utils } from "../utils/utils";
 import { DataCache } from "../utils/datacache";
-// import * as config from "../components/landingPage/config";
-// import { PageEvents } from "../eventhandlers/pageevents";
 import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
-import { downLoadMap2 } from "../utils/downloadimg";
 import { downLoadGenChart } from "../utils/downloadimg";
 import { downloadCSV } from "../utils/downloadCSV";
 import { HtmlTooltip } from "../components/general/htmlTooltip";
@@ -57,22 +54,20 @@ export class LandingPage {
 		this.animating = false;
 		this.socrataID = "";
 		this.footnotesSocrataID = "m6mz-p2ij";
-
 	}
 
 	// this is the function that cleans up Socrata data
 	addMissingProps = (cols, rows) => {
 		let newArray = [];
-		rows.forEach(row => {
+		rows.forEach((row) => {
 			const keys = Object.keys(row);
-			const difference = cols.filter(col => !keys.includes(col));
+			const difference = cols.filter((col) => !keys.includes(col));
 			if (difference.length > 0) {
-				difference.forEach(item => {
+				difference.forEach((item) => {
 					row[item] = null;
 				});
 				newArray.push(row);
-			}
-			else {
+			} else {
 				newArray.push(row);
 			}
 		});
@@ -80,34 +75,36 @@ export class LandingPage {
 		//console.log(JSON.stringify(newArray));
 		return JSON.stringify(newArray);
 	};
-	
-	getSelectedSocrataData = async (topic, isDSPrivate) => {
 
+	getSelectedSocrataData = async (topic, isDSPrivate) => {
 		try {
 			let [metadata, jsondata] = [];
 			//console.log("window.location = ", window.location.href);
 			console.log("SOCRATA get topic", topic);
-	
+
 			[metadata, jsondata] = await Promise.all([
-			//t is topic, m is metadata and p is private
-			fetch(`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`).then(res => res.text()),
-			fetch(`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`).then(res => res.text())
+				//t is topic, m is metadata and p is private
+				fetch(
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`
+				).then((res) => res.text()),
+				fetch(
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`
+				).then((res) => res.text()),
 			]);
-			
+
 			//console.log("meta data: ", JSON.parse(metadata).columns);
-			const columns = JSON.parse(metadata).columns.map(col => col.fieldName);
+			const columns = JSON.parse(metadata).columns.map((col) => col.fieldName);
 			//console.log("columns: ", columns);
 			//console.log(jsondata);
-			
+
 			let nchsdata = this.addMissingProps(columns, JSON.parse(jsondata));
-			
+
 			return nchsdata;
 		} catch (err) {
 			console.error("Error fetching data", err);
 		}
-
 	};
-			
+
 	addHtmlTooltips = () => {
 		const resetInfoTooltip = new HtmlTooltip({
 			h3: "Reset all selections except for Topic selection.",
@@ -156,34 +153,19 @@ export class LandingPage {
 		$("#dwn-chart-img").click((evt) => {
 			const chartButton = document.getElementById("icons-tab-2");
 			const mapButton = document.getElementById("icons-tab-1");
-			// let classes;
-			// if (chartButton) {
-			// 	return (classes = chartButton.className);
-			// } else if (mapButton) {
-			// 	return (classes = mapButton.className);
-			// }
-			// if (window.location.hash.toString() === "#cases_community") {
-			// 	downLoadUsCaseandChartMap(vizParentContainer, evt.target.id);
-			// }
 			let titleChart = document.getElementById("chart-title").textContent;
-			if (chartButton && chartButton.className.includes("active")) {
-				const mapTitle = $("#maptitle").text();
-				//$(".maptitle.map-chart-title").html(mapTitle);
-				// $("#download_image").show();
-				let containerSVG = document.getElementById("chart-container");
-				//console.log(containerSVG);
-				const params = {
-					contentContainer: "chart-container",
-					downloadButton: "dwn-chart-img",
-					imageSaveName: titleChart,
-					//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
-					//needToShowHide: true,
-				};
-				downLoadGenChart(params);
-			} else if (mapButton && mapButton.className.includes("active")) {
-				downLoadMap2();
-				return;
-			}
+			const mapTitle = $("#maptitle").text();
+			let containerSVG = document.getElementById("chart-container");
+			const params = {
+				contentContainer: "chart-container",
+				downloadButton: "dwn-chart-img",
+				imageSaveName: titleChart,
+				// imageSaveName: "placeholder",
+				//imageSaveName: mapTitle.replace(/[^\w\s]/gi, ""),
+				//needToShowHide: true,
+			};
+
+			downLoadGenChart(params);
 		});
 	}
 
@@ -215,7 +197,6 @@ export class LandingPage {
 	}
 
 	getInitialSocrataData() {
-
 		// the footnotes id lookup data is still loaded from a file
 		async function getFootnoteData() {
 			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
@@ -229,7 +210,11 @@ export class LandingPage {
 		DataCache.activeLegendList = [];
 
 		// this loads the obesity-childhood data as the INITIAL data load
-		Promise.all([this.getSelectedSocrataData("64sz-mcbq", "1"), DataCache.Footnotes ?? this.getSelectedSocrataData(this.footnotesSocrataID,"1"), getUSMapData()])
+		Promise.all([
+			this.getSelectedSocrataData("64sz-mcbq", "1"),
+			DataCache.Footnotes ?? this.getSelectedSocrataData(this.footnotesSocrataID, "1"),
+			getUSMapData(),
+		])
 			.then((data) => {
 				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
 				DataCache.USTopo = JSON.parse(DataCache.USTopo);
@@ -290,7 +275,6 @@ export class LandingPage {
 				console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`);
 			});
 	}
-
 
 	getYear(period) {
 		const yearsArray = period.split("-");
@@ -493,7 +477,7 @@ export class LandingPage {
 				subLine: d.stub_label,
 			}));
 		}
-		
+
 		let allFootnoteIdsArray = d3
 			.map(selectedPanelData, function (d) {
 				return d.footnote_id_list;
@@ -590,120 +574,77 @@ export class LandingPage {
 				legendCoordPercents = [0.4, 0.58];
 				break;
 		}
-		// if one single year then use bar chart
-		let useBars;
-		if (this.showBarChart) {
-			//yAxisTitle = this.unitNumText;
-			useBars = true;
-			props = {
-				data,
-				chartProperties: {
-					yLeft1: chartValueProperty,
-					xAxis: "stub_label",
-					yAxis: "estimate",
-					bars: "estimate",
-				},
-				enableCI: this.enableCI,
-				usesLegend: true,
-				legendBottom: true,
-				usesDateDomainSlider: false,
-				usesBars: true,
-				usesHoverBars: true,
-				barColors: [
-					"#6a3d9a",
-					"#cab2d6",
-					"#ff7f00",
-					"#fdbf6f",
-					"#e31a1c",
-					"#fb9a99",
-					"#33a02c",
-					"#b2df8a",
-					"#1f78b4",
-					"#a6cee3",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-				],
-				chartRotate: true,
-				chartRotationPercent: 90,
-				bottomAxisRotation: -90,
-				xLabelRotatedYAdjust: 10,
-				xLabelRotatedXAdjust: -40,
-				axisLabelFontScale: 0.55,
-				usesChartTitle: true,
-				usesLeftAxis: true,
-				usesLeftAxisTitle: true,
-				usesRightAxis: true,
-				usesBottomAxis: true,
-				usesBottomAxisTitle: false,
-				usesDateAsXAxis: true,
-				yLeftLabelScale: 1,
+		const scaleTimeIndicators = ["suicide", "Medicaid"];
+		const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
 
-				legendCoordinatePercents: legendCoordPercents,
-				bottomAxisTitle: xAxisTitle,
-				formatXAxis: "string",
-				usesMultiLineLeftAxis: false,
-				vizId,
-				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
-			};
-		} else {
-			const scaleTimeIndicators = ["suicide", "Medicaid"];
-			const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-
-			// ********************* update data
-			// DRAW A LINE CHART
-			useBars = false;
-			props = {
-				data,
-				chartProperties: {
-					yLeft1: chartValueProperty,
-					xAxis: needsScaleTime ? "date" : "year",
-					yAxis: "estimate",
-				},
-				enableCI: this.enableCI,
-				usesLegend: true,
-				legendBottom: true,
-				usesDateDomainSlider: false,
-				usesBars: false,
-				usesHoverBars: false,
-				usesChartTitle: true,
-				usesLeftAxis: true,
-				usesLeftAxisTitle: true,
-				usesBottomAxis: true,
-				usesBottomAxisTitle: false, // they dont want a title there
-				usesDateAsXAxis: true,
-				needsScaleTime,
-				yLeftLabelScale: 3,
-				legendCoordinatePercents: legendCoordPercents,
-				bottomAxisTitle: xAxisTitle,
-				formatXAxis: "string",
-				usesMultiLineLeftAxis: true,
-				multiLineColors: [
-					"#88419d",
-					"#1f78b4",
-					"#b2df8a",
-					"#33a02c",
-					"#0b84a5",
-					"#cc4c02",
-					"#690207",
-					"#e1ed3e",
-					"#7c7e82",
-					"#8dddd0",
-					"#A6A6A6",
-					"#fb9a99",
-					"#e31a1c",
-					"#cab2d6",
-					"#a6cee3",
-				],
-				multiLineLeftAxisKey: "subLine",
-				vizId,
-				genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
-			};
-		}
-
-		return props;
+		return {
+			data,
+			chartProperties: {
+				yLeft1: this.showBarChart ? "stub_label" : chartValueProperty,
+				xAxis: this.showBarChart ? chartValueProperty : needsScaleTime ? "date" : "year",
+				bars: "estimate",
+			},
+			enableCI: this.enableCI,
+			usesLegend: true,
+			legendBottom: true,
+			usesDateDomainSlider: false,
+			usesBars: this.showBarChart,
+			usesHoverBars: this.showBarChart,
+			barLayout: this.showBarChart ? { horizontal: true, size: 60 } : { horizontal: false, size: null },
+			barColors: [
+				"#6a3d9a",
+				"#cab2d6",
+				"#ff7f00",
+				"#fdbf6f",
+				"#e31a1c",
+				"#fb9a99",
+				"#33a02c",
+				"#b2df8a",
+				"#1f78b4",
+				"#a6cee3",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+			],
+			marginRightMin: 20,
+			axisLabelFontScale: this.showBarChart ? 0.5 : 1,
+			usesChartTitle: true,
+			usesLeftAxis: true,
+			usesLeftAxisTitle: true,
+			usesBottomAxis: !this.showBarChart,
+			usesTopAxis: this.showBarChart,
+			usesXAxisTitle: true,
+			usesDateAsXAxis: !this.showBarChart,
+			needsScaleTime: !this.showBarChart && needsScaleTime,
+			yLeftLabelScale: this.showBarChart ? 10 : 1,
+			legendCoordinatePercents: legendCoordPercents,
+			bottomAxisTitle: xAxisTitle,
+			// leftAxisTitle: xAxisTitle,
+			formatXAxis: "string",
+			usesMultiLineLeftAxis: !this.showBarChart,
+			multiLineColors: [
+				"#88419d",
+				"#1f78b4",
+				"#b2df8a",
+				"#33a02c",
+				"#0b84a5",
+				"#cc4c02",
+				"#690207",
+				"#e1ed3e",
+				"#7c7e82",
+				"#8dddd0",
+				"#A6A6A6",
+				"#fb9a99",
+				"#e31a1c",
+				"#cab2d6",
+				"#a6cee3",
+			],
+			multiLineLeftAxisKey: "subLine",
+			vizId,
+			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
+		};
 	};
 
 	getTooltipConstructor = (vizId, chartValueProperty) => {
@@ -907,7 +848,7 @@ export class LandingPage {
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show 95% CI checkbox 
+				// show 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
@@ -939,7 +880,7 @@ export class LandingPage {
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				// hide 95% CI checkbox 
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "birthweight":
@@ -950,7 +891,7 @@ export class LandingPage {
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox 
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
@@ -961,7 +902,7 @@ export class LandingPage {
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox 
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65": // no panel
@@ -1822,53 +1763,23 @@ export class LandingPage {
 
 	renderDataTable(tableData) {
 		// DATATABLE FUNCTION
-		let tableTitleId = "table-title";
 		let tableId = "nchs-table";
-		let keys = [];
-		let cols = [];
-		let viewSelected = $("#data-topic-select").val();
+		let cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
 
-		let tableHeading = "";
-
-		switch (`${viewSelected}`) {
+		switch ($("#data-topic-select").val()) {
 			case "obesity-child":
 			case "obesity-adult":
 			case "medicaidU65":
-				cols = [
-					"Subtopic",
-					"Characteristic",
-					"Group",
-					"Year",
-					"Age",
-					"Estimate",
-					"Standard Error",
-					"Lower Confidence Interval",
-					"Upper Confidence Interval",
-				];
-
-				keys = [
-					"panel",
-					"stub_name",
-					"stub_label",
-					"year",
-					"age",
-					"estimate",
-					"se",
-					"estimate_lci",
-					"estimate_uci",
-				];
-				break;
-			case "suicide":
-			case "injury":
-			case "infant-mortality":
-			case "birthweight":
-				cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error", "Flag"];
-
-				keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se", "flag"];
+				cols.push("Lower Confidence Interval", "Upper Confidence Interval");
+				keys.push("estimate_lci", "estimate_uci");
 				break;
 			default:
 				break;
 		}
+
+		cols.push("Flag");
+		keys.push("flag");
 
 		this.csv = {
 			data: tableData,
@@ -2146,9 +2057,8 @@ export class LandingPage {
 </div>
 <br>
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center;">
-		<span id="chart-title" class="chart-title"></span>
-		<br>
-		<span tabindex="0" id="chart-subtitle" class=""></span>
+		<span id="chart-title" class="chart-title"></span><br>	
+		<span tabindex="0" id="chart-subtitle"></span>
 	</div>
 
 	<!-- Tabs navs -->
@@ -2200,7 +2110,7 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade show active" id="chart-tab" role="tabpanel" aria-labelledby="ex-with-icons-tab-2">
 		<div class="chart-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;"><!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-				<div id="adjustUnitContainer">Adjust Unit<br>
+				<div class="adjustUnitContainer">Adjust Unit<br>
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
@@ -2218,7 +2128,7 @@ export class LandingPage {
   </div>
   <div class="tab-pane fade" id="table-tab" onClick="" role="tabpanel" aria-labelledby="ex-with-icons-tab-3">
 		<div class="table-wrapper" style="background-color:#b3d2ce;margin-top:0px;padding-top:1px;">
-			<div style="margin-left:180px;width:400px;">Adjust vertical axis (Unit)<br>
+			<div class="adjustUnitContainer">Adjust Unit<br>
 				<select name="unit-num-select-table" id="unit-num-select-table" form="select-view-options" class="custom-select">
 					<option value="1" selected>Percent of population, crude</option>
 				</select>
