@@ -52,7 +52,58 @@ export class LandingPage {
 		this.selections = null;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
+		this.socrataID = "";
+		this.footnotesSocrataID = "m6mz-p2ij";
 	}
+
+	// this is the function that cleans up Socrata data
+	addMissingProps = (cols, rows) => {
+		let newArray = [];
+		rows.forEach((row) => {
+			const keys = Object.keys(row);
+			const difference = cols.filter((col) => !keys.includes(col));
+			if (difference.length > 0) {
+				difference.forEach((item) => {
+					row[item] = null;
+				});
+				newArray.push(row);
+			} else {
+				newArray.push(row);
+			}
+		});
+		//console.log(rows);
+		//console.log(JSON.stringify(newArray));
+		return JSON.stringify(newArray);
+	};
+
+	getSelectedSocrataData = async (topic, isDSPrivate) => {
+		try {
+			let [metadata, jsondata] = [];
+			//console.log("window.location = ", window.location.href);
+			console.log("SOCRATA get topic", topic);
+
+			[metadata, jsondata] = await Promise.all([
+				//t is topic, m is metadata and p is private
+				fetch(
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=1&&p=${isDSPrivate}`
+				).then((res) => res.text()),
+				fetch(
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${topic}&&m=0&&p=${isDSPrivate}`
+				).then((res) => res.text()),
+			]);
+
+			//console.log("meta data: ", JSON.parse(metadata).columns);
+			const columns = JSON.parse(metadata).columns.map((col) => col.fieldName);
+			//console.log("columns: ", columns);
+			//console.log(jsondata);
+
+			let nchsdata = this.addMissingProps(columns, JSON.parse(jsondata));
+
+			return nchsdata;
+		} catch (err) {
+			console.error("Error fetching data", err);
+		}
+	};
 
 	addHtmlTooltips = () => {
 		const resetInfoTooltip = new HtmlTooltip({
@@ -94,9 +145,7 @@ export class LandingPage {
 			this.dataTopic = this.selections.topic;
 		}
 
-		console.log("hash panel:", this.panelNum);
-
-		this.getInitialData(); // for starters OBESITY DATA
+		this.getInitialSocrataData();
 		MainEvents.registerEvents(); // add any click events inside here
 		this.addHtmlTooltips();
 
@@ -147,25 +196,26 @@ export class LandingPage {
 		this.renderChart();
 	}
 
-	getInitialData() {
-		async function getSelectedData() {
-			return DataCache.ObesityData ?? Utils.getJsonFile("content/json/ObesityChildren.json");
-		}
-
+	getInitialSocrataData() {
+		// the footnotes id lookup data is still loaded from a file
 		async function getFootnoteData() {
 			return DataCache.Footnotes ?? Utils.getJsonFile("content/json/FootNotes.json");
 		}
 
+		// the map topo json is still loaded from a file
 		async function getUSMapData() {
 			return DataCache.USMapData ?? Utils.getJsonFile("content/json/State_Territory_FluView1.json");
 		}
 
 		DataCache.activeLegendList = [];
 
-		// getUSMapData - if we do it here we just load the map date ONE TIME
-		Promise.all([getSelectedData(), getFootnoteData(), getUSMapData()])
+		// this loads the obesity-childhood data as the INITIAL data load
+		Promise.all([
+			this.getSelectedSocrataData("64sz-mcbq", "1"),
+			DataCache.Footnotes ?? this.getSelectedSocrataData(this.footnotesSocrataID, "1"),
+			getUSMapData(),
+		])
 			.then((data) => {
-				//const [destructuredData] = data;
 				[DataCache.ObesityData, DataCache.Footnotes, DataCache.USTopo] = data;
 				DataCache.USTopo = JSON.parse(DataCache.USTopo);
 				const { geometries } = DataCache.USTopo.objects.State_Territory_FluView1;
@@ -791,17 +841,19 @@ export class LandingPage {
 		// switch to new data source
 		switch (dataTopic) {
 			case "obesity-child":
-				this.dataFile = "content/json/ObesityChildren.json";
+				//this.dataFile = "content/json/ObesityChildren.json";
+				this.socrataID = "64sz-mcbq";
 				this.chartTitle = "Obesity Among Children and Adolescents";
 				selectedDataCache = DataCache.ObesityData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// show 95% CI checkbox since "suicide" has no se data
+				// show 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "obesity-adult":
-				this.dataFile = "content/json/ObesityAdults.json";
+				//this.dataFile = "content/json/ObesityAdults.json";
+				this.socrataID = "23va-ejrn";
 				this.chartTitle = "Obesity Among Adults";
 				selectedDataCache = DataCache.ObesityAdultData;
 				this.panelNum = 1;
@@ -811,7 +863,8 @@ export class LandingPage {
 				$("#enable-CI-checkbox-wrapper").show();
 				break;
 			case "suicide": // no panel
-				this.dataFile = "content/json/DeathRatesForSuicide.json";
+				//this.dataFile = "content/json/DeathRatesForSuicide.json";
+				this.socrataID = "u9f7-4q6s";
 				this.chartTitle = "Death Rates for Suicide";
 				selectedDataCache = DataCache.SuicideData;
 				// set a valid unit num or else chart breaks
@@ -820,37 +873,41 @@ export class LandingPage {
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "injury":
-				this.dataFile = "content/json/InjuryEDVis.json";
+				//this.dataFile = "content/json/InjuryEDVis.json";
+				this.socrataID = "k99r-jkp7";
 				this.chartTitle = "Injury-related Visits to Hospital Emergency Departments";
 				selectedDataCache = DataCache.InjuryData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 2;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "birthweight":
-				this.dataFile = "content/json/LowBirthweightLiveBirths.json";
+				//this.dataFile = "content/json/LowBirthweightLiveBirths.json";
+				this.socrataID = "3p8z-99bn";
 				this.chartTitle = "Low Birthweight Live Births";
 				selectedDataCache = DataCache.BirthweightData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "infant-mortality":
-				this.dataFile = "content/json/InfantMortality.json";
+				//this.dataFile = "content/json/InfantMortality.json";
+				this.socrataID = "bzax-vvbx";
 				this.chartTitle = "Infant Mortality";
 				selectedDataCache = DataCache.InfantMortalityData;
 				this.panelNum = 1;
 				// set a valid unit num or else chart breaks
 				this.unitNum = 1;
-				// hide 95% CI checkbox since "suicide" has no se data
+				// hide 95% CI checkbox
 				$("#enable-CI-checkbox-wrapper").hide();
 				break;
 			case "medicaidU65": // no panel
-				this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
+				//this.dataFile = "content/json/MedicaidcoveragePersonsUnderAge65.json";
+				this.socrataID = "2g8y-scu5";
 				this.chartTitle = "Medicaid Coverage Among Persons Under Age 65";
 				selectedDataCache = DataCache.MedicaidU65Data;
 				this.panelNum = "NA"; // no panel
@@ -876,7 +933,7 @@ export class LandingPage {
 		// *** PROBLEM: THIS PROMISE IS NOT WAITING FOR DATA TO LOAD
 		// -- THEREFORE THE SELECT DROPDOWNS ARE NOT UPDATED ???
 		// console.log("ATTEMPTING dataFile Promise:", this.dataFile);
-		Promise.all([getSelectedData(this.dataFile, selectedDataCache)])
+		Promise.all([selectedDataCache ?? this.getSelectedSocrataData(this.socrataID, "1")])
 			.then((data) => {
 				// console.log("FULFILLED dataFile Promise:", this.dataFile);
 				if (selectedDataCache !== undefined) {
@@ -948,21 +1005,6 @@ export class LandingPage {
 						this.updateShowMap(0);
 						break;
 
-					// cases with LINE CHART only and no map data
-					case "obesity-child":
-					case "obesity-adult":
-					case "suicide":
-					case "injury":
-					case "medicaidU65":
-						// show the chart tab
-						$("#tab-chart").css("visibility", "visible");
-						$("#icons-tab-2").css("background-color", "#b3d2ce"); // didnt work
-						$("#icons-tab-2").css("border-top", "solid 5px #8ab9bb");
-						// hide the map tab
-						$("#tab-map").css("visibility", "hidden");
-						this.updateShowMap(0);
-						break;
-
 					// cases with US Map data option
 					case "birthweight":
 					case "infant-mortality":
@@ -972,10 +1014,6 @@ export class LandingPage {
 						$("#icons-tab-1").css("background-color", "#ffffff"); // didnt work
 						$("#icons-tab-1").css("border-top", "solid 1px #C0C0C0");
 						// hide the chart tab
-						//$('#tab-chart').css("visibility", "hidden");
-						// set chart tab to white
-						//$('#tab-chart').css('background-color', '#ffffff'); // didnt work
-						//$('#tab-chart').css('border-top', 'solid 1px #C0C0C0');
 						theChartTab.style.backgroundColor = "#b3d2ce";
 						theChartTab.style.cssText += "border-top: solid 5px #8ab9bb";
 						this.updateShowMap(0);
@@ -1474,7 +1512,6 @@ export class LandingPage {
 
 		// have to update the "text" to draw on the chart
 		this.unitNumText = $("#unit-num-select-chart option:selected").text(); //(TTT)
-		// console.log("unitNum text=", this.unitNumText);
 
 		// actually have to go update the Stubname options after a unit num change
 		// - call set stub names
@@ -1634,10 +1671,7 @@ export class LandingPage {
 						parseInt(d.year_pt) >= parseInt(this.startYear) &&
 						parseInt(d.year_pt) <= parseInt(this.endYear)
 					) {
-						//d.dontDraw = !d.dontDraw; // toggle it
-						// console.log("toggle has panel dontDraw=", d.dontDraw);
-
-						// NEW if on the active list THEN set dontDraw = false
+						//  if on the active list THEN set dontDraw = false
 						if (
 							DataCache.activeLegendList.filter(function (e) {
 								return e.stub_label === d.stub_label;
@@ -1667,7 +1701,7 @@ export class LandingPage {
 						// NO dont just blindly toggle it
 						//d.dontDraw = !d.dontDraw; // toggle it
 
-						// NEW if on the active list THEN set dontDraw = false
+						// INSTEAD if on the active list THEN set dontDraw = false
 						if (
 							DataCache.activeLegendList.filter(function (e) {
 								return e.stub_label === d.stub_label;
@@ -1679,8 +1713,6 @@ export class LandingPage {
 							// not on there so dont draw it
 							d.dontDraw = true;
 						}
-
-						//console.log("TOGGLE no panel year,i,dontDraw=", d.year_pt, i, d.dontDraw, selDataPt);
 					}
 				});
 				break;
@@ -1768,8 +1800,7 @@ export class LandingPage {
 				!item.match("assignedLegendColor") &&
 				item !== "date"
 		);
-		//const cols = keys;
-		//console.log("keys", keys);
+
 		/* Table element manipulation and rendering */
 		let tableContainer = document.getElementById(`${tableId}-container`);
 		tableContainer.setAttribute("aria-label", `${this.chartTitle} table`);
@@ -1804,18 +1835,7 @@ export class LandingPage {
 				return column.charAt(0).toUpperCase() + column.slice(1);
 				//return this.capString(column);
 			})
-			/* 			.attr("class", function (column, i) {
-							let classString;
-							if (column === "Date") {
-								classString = "table-sort-header data-table-header date-sort";
-							} else {
-								classString = "table-sort-header data-table-header number-sort";
-							}
-							if (keys[i] === "state") {
-								classString += " sorted";
-							}
-							return classString;
-						}) */
+
 			.append("i")
 			.attr("id", (column, i) => `${keys[i]}-icon`)
 			.attr("class", "sort icon");

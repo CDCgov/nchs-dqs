@@ -74,16 +74,6 @@ export class GenChart {
 			p.data.forEach((d, i) => {
 				if (d.dontDraw === false && barCount < numToDraw) {
 					barCount++; // increment barCount
-					if (i > 9) {
-						console.log(
-							" ###### genChart datapt,dontDraw is False, i, barCount,maxBarCount",
-							d,
-							d.dontDraw,
-							i,
-							barCount,
-							maxBarCount
-						);
-					}
 
 					// PUSH only if not already on the list
 					if (
@@ -106,9 +96,6 @@ export class GenChart {
 					// then either dontDraw already true or needs to be set to true
 					// bc bar count is exceeded
 					d.dontDraw = true;
-					if (i < 11) {
-						console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
-					}
 				}
 
 				// CHANGE - if on the active list then set dontDraw = false
@@ -140,15 +127,10 @@ export class GenChart {
 			// creating yScaleLeft
 		}
 
-		//console.log("genChart p.data BEFORE removing dontDraw=true vals:", p.data);
-
 		// FOR ALL CHARTS
 		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
 		// - this keeps us from having to edit a LOT of code
 		p.data = p.data.filter((d) => d.dontDraw === false);
-
-		// if you need to look at incoming data
-		//console.log("genChart p.data after removing dontDraw=true vals:", p.data);
 
 		// FOr reliability, convert any NaN values to null.
 		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
@@ -661,9 +643,6 @@ export class GenChart {
 						// then either dontDraw already true or needs to be set to true
 						// bc bar count is exceeded
 						d.values[0].dontDraw = true;
-						if (i < 11) {
-							//console.log("genChart datapt,dontDraw set True, i, barCount", d, d.dontDraw, i, barCount);
-						}
 					}
 
 					// CHANGE - if on the active list then set dontDraw = false
@@ -694,7 +673,6 @@ export class GenChart {
 						lineGroups[i] = lineGroup;
 
 						nd.values[0].assignedLegendColor = multiLineColors(i);
-						//console.log("lineGroup color assigned to i,nd,multilinecolor:", nd.values[0].assignedLegendColor, nd, multiLineColors(i));
 
 						lineGroupPaths[i] = lineGroups[i]
 							.append("path")
@@ -1049,16 +1027,13 @@ export class GenChart {
 											// change to a function and set based on the "flag"
 											.style("fill", function (d) {
 												if (d.flag === "*") {
-													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
 													return "white"; // creates circle that appears "empty" for "*" flag
 												} else {
-													//console.log("### FLAG does NOT exist i:", i, nd.values[i].flag);
 													return multiLineColors(i); // fills in the dot with line color
 												}
 											})
 											.style("stroke", function (d) {
 												if (d.flag !== undefined) {
-													//console.log("### FLAG exists for i:", i, nd.values[0].flag);
 													return multiLineColors(i);
 												}
 											})
@@ -1469,7 +1444,7 @@ export class GenChart {
 					.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
 					.attr("style", "cursor: default")
 					.attr("id", legendId)
-					//.attr("data-html2canvas-ignore", "")
+					// .attr("data-html2canvas-ignore", "")
 					.attr(
 						"transform",
 						`translate(${legendTx + axisLabelFontSize / 2},
