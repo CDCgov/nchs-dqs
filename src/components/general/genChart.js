@@ -1430,7 +1430,7 @@ export class GenChart {
 				.attr("transform", `translate(${legendTx}, ${legendTy})`)
 				.append("rect")
 				.attr("id", `${svgId}-chart-legend`)
-				.attr("data-html2canvas-ignore", "")
+				// .attr("data-html2canvas-ignore", "")
 				.attr("height", legendHeight)
 				.attr("fill", "#F2F2F2")
 				.attr("rx", "5")
@@ -1444,7 +1444,7 @@ export class GenChart {
 					.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
 					.attr("style", "cursor: default")
 					.attr("id", legendId)
-					.attr("data-html2canvas-ignore", "")
+					// .attr("data-html2canvas-ignore", "")
 					.attr(
 						"transform",
 						`translate(${legendTx + axisLabelFontSize / 2},
