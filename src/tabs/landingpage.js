@@ -289,6 +289,10 @@ export class LandingPage {
 	}
 
 	renderMap() {
+		let panelText = $("#panel-num-select option:selected").text();
+		this.chartSubTitle = "Subtopic: " + panelText;
+		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
+
 		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
 		$("#us-map-container").show();
 
