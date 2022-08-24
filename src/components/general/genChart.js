@@ -1248,9 +1248,19 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					if (p.needsScaleTime) xAxis.ticks(7).tickFormat((d) => genFormat(d, "year"));
-					else xAxis.tickValues(tickValues);
+					debugger;
+					if (p.needsScaleTime) xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+						//Show all tick marks but labels every other tick
+						.tickFormat((d,i) => {
+                  				return i%2 !== 0 ? " ": genFormat(d, "year");
+                 			})
+					else xAxis.tickValues(tickValues)
+							.tickFormat((d,i) => {
+                  				return i%2 !== 0 ? " ": d;
+                 			});
 				}
+				console.log("xaxis tickValues", xAxis.tickValues);
+				
 				if (p.barLayout?.horizontal) {
 					leftAxisDraw.call(yAxisLeft);
 					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLinebreaks);

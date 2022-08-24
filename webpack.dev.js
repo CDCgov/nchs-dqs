@@ -24,16 +24,12 @@ module.exports = {
 		port: 8080,
 		//open: true,
 
-		// if using HTTPS IN LOCALHOST
+		// if using HTTPS IN LOCALHOST, I got this to work but we dont really need it
+		// - any other developer wanting to use this would have to create the cert CA, cert, and key
+		// so that's a lot of work when they
 		//https: true,
 		//key: fs.readFileSync(path.join(__dirname, '../cert3/cert.key')),
 		//cert: fs.readFileSync(path.join(__dirname, '../cert3/cert.pem')),
-		//ca: fs.readFileSync(path.join(__dirname, '../cert/CA/CA.pem')),
-		//key: fs.readFileSync(path.join(__dirname, '../cert-mk/cert.key')),
-		//cert: fs.readFileSync(path.join(__dirname, '../cert-mk/cert.crt')),
-		//ca: fs.readFileSync(path.join(__dirname, '../cert/CA/CA.pem')),
-		//key: fs.readFileSync(path.join(__dirname, '../cert/CA/localhost/localhost.decrypted.key')),
-		//cert: fs.readFileSync(path.join(__dirname, '../cert/CA/localhost/localhost.crt')),
 		//requestCert: true,
 		//hot: true,
 		//port: 3000,
@@ -111,19 +107,20 @@ module.exports = {
 			filename: "./css/[name].css",
 		}),
 
+		// (TT) Obviously we will update this path when we are assigned an app URL
 		new SSICompileWebpackplugin({
 			localBaseDir: "/",
 			minify: false,
 			remoteBasePath: "https://covid.cdc.gov/covid-data-tracker/",
 		}),
+		// the WebAPI proxy is hardcoded in landing page but it could be defined
+		// similar to this but probably not necessary
 		new webpack.DefinePlugin({
 			"process.env.API_URL": JSON.stringify(
 				"https://grasp_internal_test.cdc.gov/CoronavirusInteractive/001_DEV_HHS/COVIDData/getAjaxData?id="
 			),
 		}),
 	],
-	// BACKUP 	"https://grasp_internal_test.cdc.gov/CoronavirusInteractive/001_DEV_HHS/COVIDData/getAjaxData?id="
-	// "https://wipv-grsp-8.cdc.gov/CoronavirusInteractive/001_DEV_HHS/COVIDData/getAjaxData?id="
 
 	resolve: {
 		modules: [path.resolve(__dirname, "/src"), "node_modules/"],
