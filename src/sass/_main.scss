@@ -2270,6 +2270,61 @@ button.disabled {
 	width: 100%;
 }
 
+#tabs {
+	border: none !important;
+}
+
+.ui-tabs .ui-tabs-nav {
+	text-align: center;
+	background-color: white !important;
+	border: none !important;
+	padding-bottom: 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li {
+	float: none !important;
+	display: inline-block;
+	border: none;
+	padding-top: 4px;
+	padding-bottom: 0 !important;
+	margin: 0 !important;
+	width: 30%;
+	height: 100% !important;
+	max-width: 300px;
+
+	a {
+		background-color: white;
+		width: 100% !important;
+		border: 1px solid #f6f6f6;
+		border-top: 0;
+		color: #08548e !important;
+	}
+
+	&.ui-state-active {
+		padding-top: 0;
+
+		a {
+			background-color: #b3d2ce !important;
+			border-top: 5px solid #8ab9bb;
+			border-top-left-radius: 2px;
+			border-top-right-radius: 2px;
+			// border-radius: 5px;
+		}
+	}
+
+	&:hover {
+		a {
+			color: #064572 !important;
+			font-weight: bolder;
+		}
+	}
+}
+
+.ui-tabs-panel {
+	padding: 0 !important;
+	margin-top: -5px !important;
+}
+
 .sortIconNoWrap {
 	white-space: nowrap;
 }
