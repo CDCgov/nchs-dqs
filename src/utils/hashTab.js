@@ -14,6 +14,13 @@ export const writeHashToUrl = () => {
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
+	//////////  leave for debug of new hashLookup object ///////////////////////////////////////////////////////////////
+	// debugger;
+	// hashLookup[topicId].find((l) => l.value === topic).hash;
+	// hashLookup[topicId].find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash;
+	// hashLookup[topicId].find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash;
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	try {
 		window.location.hash = `
 		${hashPrefix.replace("#", "")}_

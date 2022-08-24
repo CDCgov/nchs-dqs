@@ -1,6 +1,5 @@
-import { DataCache } from "../../utils/datacache";
 import * as d3 from "../../lib/d3.min";
-import { GenTooltip } from "../general/genTooltip";
+import { GenTooltip } from "./genTooltip";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 import { ClassifyData } from "../../utils/ClassifyDataNT";
 
@@ -8,7 +7,7 @@ export class GenMap {
 	constructor(props) {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
-		this.classifyType = parseInt(props.classifyType);
+		this.classifyType = parseInt(props.classifyType, 10);
 		this.startYear = props.startYear; // time period start year selected
 		this.allDates = props.allDates;
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
@@ -17,7 +16,6 @@ export class GenMap {
 	}
 
 	renderTimeSeriesAxisSelector() {
-		// debugger;
 		const svgId = "us-map-time-slider-svg";
 
 		// setup fontSizes
@@ -165,31 +163,28 @@ export class GenMap {
 			.attr("font-weight", "bold");
 	}
 
-	render(geometries) {
+	render(topoJson) {
+		const { geometries } = topoJson.objects.State_Territory_FluView1;
 		let mLegendData;
-		let mEstimateByStateID = {};
-		let mStateNameByStateID = {};
+		// let mEstimateByStateID = {};
+		// let mStateNameByStateID = {};
 		let mActiveLegendItems = [];
 		let mActiveLegendItemColors = [];
 		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
-		const mInActiveFlagID = -3;
-		let mInActiveColor = "#FFFFFF";
+		// const mInActiveFlagID = -3;
+		// let mInActiveColor = "#FFFFFF";
 		let noDataColorHexVal = "#dee2e6";
-		//const unreliableHexVal = "#9b9ea1"; // they decided for now not to use this
-		// (TT) I'm not going to delete it though in case we need it back later.
-
-		//const svgId = this.mapVizId;
 		const svgId = `${this.mapVizId}-svg`;
 
 		// Need to clear out the last map that was generated
 		$(`#${this.mapVizId}`).empty();
 
-		const MapSvgDefs = `<defs>
-					<pattern id="crossHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-						<rect width="4" height="8" transform="translate(0,0)" fill="#bbb"></rect>
-					</pattern>
-				</defs>`;
+		// const MapSvgDefs = `<defs>
+		// 			<pattern id="crossHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+		// 				<rect width="4" height="8" transform="translate(0,0)" fill="#bbb"></rect>
+		// 			</pattern>
+		// 		</defs>`;
 
 		function getTooltipConstructor(vizId) {
 			const propertyLookup = {
@@ -205,20 +200,8 @@ export class GenMap {
 		}
 		const genTooltip = new GenTooltip(getTooltipConstructor(this.mapVizId));
 
-		//const copiedData = [...this.data];
-
-		console.log("###genMAP incoming geometries:", geometries);
-		console.log("###genMAP incoming data:", this.data);
-
-		// remove all records without an estimate
-		// - NO DONT DO THIS - we need this data in the graphs and maps
-		/* 		this.data = this.data
-						.filter(function (d) {
-							//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-							if (('estimate' in d) && (d.estimate !== undefined) && (d.estimate !== "")) {
-								return d;
-							}
-						}); */
+		// console.log("###genMAP incoming geometries:", geometries);
+		// console.log("###genMAP incoming data:", this.data);
 
 		// CLASSIFY THE DATA
 		//   METHODS  \\
@@ -247,34 +230,14 @@ export class GenMap {
 				console.log("%c%s\t%o", "background-color:LightGreen;", "Equal Interval", ClassifiedDataObj);
 				console.log(JSON.stringify(ClassifiedDataObj.legend));
 				break;
+			default:
+				break;
 		}
 
 		this.data = ClassifiedDataObj.classifiedData;
-		// the data now has a "Class" assigned to it
-		//debugger;
-
-		// for testing hardcode one year period
-		/* 		this.data = this.data.filter(
-							(d) => parseInt(d.year_pt) === parseInt("2005")
-				); */
-		//console.log("###genMAP incoming 2013 data:", this.data);
-		//debugger;
 
 		function mouseover() {
 			const thisElement = d3.select(this);
-			//console.log("rollover selected element:", thisElement);
-			// dont need this right now but keep as example if we need later
-			/* 			if (thisElement.node().tagName.toLowerCase() === "path") {
-							let additionalProperties = ["properties"];
-							if (thisElement.data()[0].properties.STATE_ABBR === "NY")
-								additionalProperties.push([
-									"NYC Count: ",
-									copiedData.filter((d) => d.rep_juris === "NYC")[0].Total_Cases_Range,
-								]);
-							genTooltip.mouseover(thisElement, additionalProperties);
-						} else {
-							genTooltip.mouseover(thisElement);
-						} */
 			genTooltip.mouseover(thisElement);
 		}
 		function mousemove() {
@@ -287,137 +250,48 @@ export class GenMap {
 		const bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
 		// same as above but remove WHITE
 		mActiveLegendItemColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
-		function getColor(bin, flag) {
-			let index;
-			let binColor = bgColors[bin]; // this IS based on position of the bin to the color
 
-			// Check if the legend bin is inactive...
-			// -- if it is, then return WHITE
-			//console.log("active colors list:", mActiveLegendItemColors);
-			//console.log("check this bincolor:", binColor);
-			index = mActiveLegendItemColors.indexOf(binColor);
-			//console.log("bincolor index check:", index);
-			// Add or Remove that color to/from the Active list of colors
-			// - note the ORDER of the colors is NOT related to the bin number
-			// - this just tracks whether that color is ACTIVE or not
-			if (flag === "- - -") {
-				// ignore bin set to light gray
-				return noDataColorHexVal;
-			} else if (flag === "*") {
-				return "url(#crossHatch)";
-				// ignore bin set to dark gray
-				//return unreliableHexVal;
-			} else if (flag === "none") {
-				// Set to no data color
-				return noDataColorHexVal;
-			} else if (index > -1) {
-				// COLOR FOUND
-				//console.log("RETURNING bincolor:", binColor);
-				return binColor;
-			} else {
-				// COLOR NOT FOUND - so NOT ACTIVE
-				//return "url(#crossHatch)";  // <-- need ANOTHER case where null data gets the cross hatch?
-				return "#FFFFFF";
-			}
+		function getColor(bin, flag) {
+			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
+			if (flag === "*") return "url(#crossHatch)"; // ignore bin set to dark gray
+			if (flag === "none") return noDataColorHexVal; // Set to no data color
+
+			const binColor = bgColors[bin]; // this IS based on position of the bin to the color
+			const index = mActiveLegendItemColors.indexOf(binColor);
+			if (index > -1) return binColor; // COLOR FOUND !!
+			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		function getColorFromDProps(d) {
-			let index;
+			const binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
+			const { flag, estimate, crosshatch } = d.properties;
+			const index = mActiveLegendItemColors.indexOf(binColor);
 
-			let binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
-			let flag = d.properties.flag;
-			let estimate = d.properties.estimate;
-			let crosshatch = d.properties.crosshatch;
-
-			//debugger;
-
-			// Check if the legend bin is inactive...
-			// -- if it is, then return WHITE
-			//console.log("active colors list:", mActiveLegendItemColors);
-			//console.log("check this bincolor:", binColor);
-			index = mActiveLegendItemColors.indexOf(binColor);
-			//console.log("bincolor index check:", index);
-			// Add or Remove that color to/from the Active list of colors
-			// - note the ORDER of the colors is NOT related to the bin number
-			// - this just tracks whether that color is ACTIVE or not
-			if (flag === "- - -") {
-				// ignore bin set to light gray
-				return noDataColorHexVal;
-			} else if ((flag === "*" && estimate === null) || crosshatch) {
-				//console.log("getColor state,flag*,est-null: returning cross hatch", d.properties.STATE_FIPS, crosshatch);
-				return "url(#crossHatch)";
-				// ignore bin set to dark gray
-				//return unreliableHexVal;
-			} else if (flag === "*" && estimate !== null && index > -1) {
-				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
-				// - first original geometry has the bincolor based on estimate
-				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
-				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.properties.STATE_FIPS,binColor);
-				return binColor;
-			} else if (flag === "none" && estimate === null) {
-				// no data record found
-				return noDataColorHexVal;
-			} else if (index > -1) {
-				// COLOR FOUND
-				//console.log("RETURNING bincolor:", binColor);
-				return binColor;
-			} else {
-				// COLOR NOT FOUND - so NOT ACTIVE
-				//return "url(#crossHatch)";  // <-- need ANOTHER case where null data gets the cross hatch?
-				return "#FFFFFF";
-			}
+			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
+			if ((flag === "*" && estimate === null) || crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
+			if (flag === "*" && estimate !== null && index > -1) return binColor;
+			if (flag === "none" && estimate === null) return noDataColorHexVal; // no data record found
+			if (index > -1) return binColor; // COLOR FOUND
+			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
-		// the territories dont have Properties off the d object - so just duplicated function and removed the properties
-		// - yes could have passed an additional flag and swapped between the two but this is easier for debugging
+		// the territories don't have Properties off the d object - so just duplicated function and removed the properties
 		function getColorFromD(d) {
-			let index;
+			const binColor = bgColors[d.class]; // this IS based on position of the bin to the color
+			const { flag, estimate } = d;
 
-			let binColor = bgColors[d.class]; // this IS based on position of the bin to the color
-			let flag = d.flag;
-			let estimate = d.estimate;
-
-			//debugger;
-
-			// Check if the legend bin is inactive...
-			// -- if it is, then return WHITE
-			index = mActiveLegendItemColors.indexOf(binColor);
-			// Add or Remove that color to/from the Active list of colors
-			// - note the ORDER of the colors is NOT related to the bin number
-			// - this just tracks whether that color is ACTIVE or not
-			if (flag === "- - -") {
-				// ignore bin set to light gray
-				return noDataColorHexVal;
-			} else if ((flag === "*" && estimate === null) || d.crosshatch) {
-				//console.log("getColor state,flag*,est-null: returning cross hatch", d.STATE_FIPS);
-				return "url(#crossHatch)";
-				// ignore bin set to dark gray
-				//return unreliableHexVal;
-			} else if (flag === "*" && estimate !== null && index > -1) {
-				// Set to cross hatch AND color => MUST HAVE 2 GEOMETRIES TO DO THIS!!!!
-				// - this is the 1st primary geometry with "*" that sets the background color FIRST
-				// - copied geometry with crosshatch = 1 then sets the crosshatching due to "*" flag
-				//console.log("getColor state,flag*,est-NOTnull: returning bincolor", d.STATE_FIPS,binColor);
-				return binColor;
-			} else if (flag === "none" && estimate === null) {
-				// no data record found
-				return noDataColorHexVal;
-			} else if (index > -1) {
-				// COLOR FOUND
-				//console.log("RETURNING bincolor:", binColor);
-				return binColor;
-			} else {
-				// COLOR NOT FOUND - so NOT ACTIVE
-				return "#FFFFFF";
-			}
+			const index = mActiveLegendItemColors.indexOf(binColor);
+			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
+			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
+			if (flag === "*" && estimate !== null && index > -1) return binColor;
+			if (flag === "none" && estimate === null) return noDataColorHexVal; // no data record found
+			if (index > -1) return binColor; // COLOR FOUND
+			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
 		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
-		function getFontColor(bin) {
-			//console.log("font color bin:", bin);
-			return fontColors[bin];
-		}
+		const getFontColor = (bin) => fontColors[bin];
 
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 50 * overallScale;
@@ -486,9 +360,7 @@ export class GenMap {
 				theFlag = "none";
 			}
 
-			console.log("STATES FLAG:", g.properties.STATE_FIPS, theFlag);
-
-			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch, " classBin:",classBin[0].class);
+			// console.log("STATES FLAG:", g.properties.STATE_FIPS, theFlag);
 
 			if (estimateMatch.length > 0) {
 				estimateMatch = estimateMatch[0].estimate;
@@ -565,7 +437,7 @@ export class GenMap {
 			geometries: filteredStates,
 		};
 
-		const states = topojson.feature(DataCache.USTopo, stateGeoCollection);
+		const states = topojson.feature(topoJson, stateGeoCollection);
 		const projection = d3
 			.geoAlbers()
 			.translate([width / 2, mapHeight / 2])
@@ -643,9 +515,6 @@ export class GenMap {
 		];
 		let filteredTerritories = [];
 		territories.forEach((t) => {
-			//debugger;
-			//console.log("TERR t:", t);
-
 			let estimateMatch = this.data.filter(function (d) {
 				//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
 				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
@@ -749,15 +618,6 @@ export class GenMap {
 			.attr("stroke-width", 0.7)
 			.attr("stroke", "#777")
 			.style("fill", (d) => getColorFromD(d));
-		// dont need this anymore bc added the crosshatch flag
-		/* 			.attr("d.flag", function (d) {
-				if (d.flag === "**") {
-					//console.log("d flag is:", d.properties.flag);
-					// reset it
-					d.flag = "*"; // just reset the "**" back to "*" so that the rollover works
-					return;  
-				} 
-			});*/
 
 		territoryGroup
 			.selectAll("text")
@@ -782,7 +642,6 @@ export class GenMap {
 		genTooltip.render();
 
 		mLegendData = ClassifiedDataObj.legend;
-		//debugger;
 		mActiveLegendItems = getDefaultActiveLegendItems();
 
 		loadMapLegend();
@@ -791,8 +650,6 @@ export class GenMap {
 		// call this in click event handler when legend is being clicked on and off
 		function updateMap() {
 			let t = d3.transition().duration(250);
-
-			//debugger;
 			// update the colors for STATES
 			d3.selectAll("#states path").style("fill", function (d) {
 				let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d); //.properties.class,d.properties.flag)
@@ -835,25 +692,25 @@ export class GenMap {
 			return false;
 		}
 
-		function isValueInActiveLegend(val) {
-			var minVal;
-			var maxVal;
-			var splitVal;
+		// function isValueInActiveLegend(val) {
+		// 	var minVal;
+		// 	var maxVal;
+		// 	var splitVal;
 
-			for (let i = 0; i < mActiveLegendItems.length; i += 1) {
-				if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
-					return true;
-				}
-				splitVal = mActiveLegendItems[i].split("-");
-				minVal = +splitVal[0];
-				maxVal = +splitVal[1];
-				if (+val >= minVal && +val <= maxVal) {
-					return true;
-				}
-			}
+		// 	for (let i = 0; i < mActiveLegendItems.length; i += 1) {
+		// 		if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
+		// 			return true;
+		// 		}
+		// 		splitVal = mActiveLegendItems[i].split("-");
+		// 		minVal = +splitVal[0];
+		// 		maxVal = +splitVal[1];
+		// 		if (+val >= minVal && +val <= maxVal) {
+		// 			return true;
+		// 		}
+		// 	}
 
-			return false;
-		}
+		// 	return false;
+		// }
 
 		function convertRGB(rgb) {
 			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
@@ -907,7 +764,6 @@ export class GenMap {
 				mActiveLegendItemColors.push(theClickedColor);
 			}
 			console.log("Active colors AFTER click:", mActiveLegendItemColors);
-			//debugger;
 
 			if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase()) {
 				itemLabel = $(evt.target).val();
@@ -931,12 +787,6 @@ export class GenMap {
 				mActiveLegendItems.push(itemLabel);
 				$chkBxObj.prop("checked", true);
 			}
-			//console.log("Active Legend items AFTER:", mActiveLegendItems);
-
-			//debugger;
-
-			// tested and dont need this
-			//evt.preventDefault();
 
 			// just update the colors without redrawing the map
 			updateMap();
@@ -1060,7 +910,6 @@ export class GenMap {
             			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;
 					} else {
 						// draw regular with color
-						//debugger;
 						legendGeneratedHTML += `<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
         			<input class='form-check-input' type='checkbox' value='${leg.ItemValue}' ${isCheckedStr} style='margin-right:3px;cursor:pointer"
             			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;

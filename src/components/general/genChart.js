@@ -33,8 +33,6 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
-		//console.log("genChart props=", p);
-
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -44,122 +42,44 @@ export class GenChart {
 		//console.log("multilinecolors TOP:", multiLineColors);
 		let fullNestedData;
 
-		////////////////////////////////////////////////////////////////////////////////
-		// (TT) Need to REMOVE any data items set to dontDraw from the drawn set
-		// BUT leave all data items on the legend!!!
-		// (1) backup ORIGINAL p.data that has ALL DATA in it
-		let allIncomingData = p.data; // this has to be used for the LEGENDS
-		// (2) Limit the draw data to max of 10 lines or bars
-		let barCount = 0;
-		const maxBarCount = 10; /// this could be a PROP PASSED INTO genChart (TT)
-		// For barchart limit drawData to first 10
-		// - note cannot do exact same for lines bc there are data points not just one data per line
-		// whereas in the bar charts each bar is one data point so the below approach works
+		let allIncomingData = p.data.filter((d) => !Number.isNaN(d.estimate)); // this has to be used for the LEGENDS
+		// and for reliability, filter out any null data
+
+		// Limit the bar-chart draw data to max of 10 lines or bars based on activeLegendList
 		if (p.usesBars) {
-			//console.log("##DRAW BAR CHART###");
+			console.log("##DRAW BAR CHART###");
+			// console.log(DataCache.activeLegendList);
+			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
+			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
+			let barsAdded = 0;
+			let stubLabels = DataCache.activeLegendList.map((d) => d.stub_label);
+			p.data = allIncomingData.filter((d) => stubLabels.includes(d.stub_label));
 
-			let numToDraw = 0;
-			p.data.forEach((d, i) => {
-				numToDraw = DataCache.activeLegendList.filter(function (e) {
-					return e.dontDraw === false;
-				}).length;
-			});
-
-			if (numToDraw === 0) numToDraw = 10;
-
-			// THe problem is I think this code always wants to force to 10 items selected
-			// which is not what we need... if we start with 10 and they deselect 1 then it should be 9 obviously
-			// how can we start with 10 on initial render but then have a list of 8 or 9 or 2
-			// on re-render --->  NEED TO PERSIST THE LIST OF SELECTED ITEMS
-			p.data.forEach((d, i) => {
-				if (d.dontDraw === false && barCount < numToDraw) {
-					barCount++; // increment barCount
-
-					// PUSH only if not already on the list
-					if (
-						DataCache.activeLegendList.filter(function (e) {
-							return e.stub_label === d.stub_label;
-						}).length > 0
-					) {
-						// it is on the list
-						// so dont push it
-					} else {
-						// not on there so push it
-						DataCache.activeLegendList.push(d);
+			barsAdded = p.data.length;
+			if (barsAdded < barsToDraw) {
+				const filteredIncoming = allIncomingData.filter((d) => !stubLabels.includes(d.stub_label));
+				for (let i = 0; i < filteredIncoming.length; i++) {
+					if (barsAdded < barsToDraw) {
+						p.data.push(filteredIncoming[i]);
+						if (barsAdded++ === barsToDraw) break;
 					}
-				} else {
-					// remove if it was on active list
-					const tempList = DataCache.activeLegendList.filter((e) => e.stub_label !== d.stub_label);
-					DataCache.activeLegendList = [];
-					DataCache.activeLegendList = tempList;
-
-					// then either dontDraw already true or needs to be set to true
-					// bc bar count is exceeded
-					d.dontDraw = true;
 				}
+			}
 
-				// CHANGE - if on the active list then set dontDraw = false
-				// - if not on the list set it to dontDraw = true
-				if (
-					DataCache.activeLegendList.filter(function (e) {
-						return e.stub_label === d.stub_label;
-					}).length > 0
-				) {
-					// it is on the list
-					d.dontDraw = false;
-				} else {
-					d.dontDraw = true;
-				}
-			});
+			p.data = p.data.map((d) => ({
+				...d,
+				dontDraw: false,
+			}));
+			DataCache.activeLegendList = p.data;
 
-			// the list below has 200-399 and NOT 133-199
-			// so something is messed up
+			stubLabels = p.data.map((d) => d.stub_label);
+			allIncomingData = allIncomingData.map((d) => ({
+				...d,
+				dontDraw: !stubLabels.includes(d.stub_label),
+			}));
 
-			//console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
-		} else {
-			// for LINE data we have to do something different
-			// - bc there are MANY points for each line not just one data point
-			// need to look at the "nested" data and use only MAX of 10 "nests"
-			// - see below by searching for fullNestedData
-			// 7/28/22 (TT) NOTE: I saw a line chart where the yScaleLeft was too big compared to the data
-			// I think it is due to line chart yScaleLeft scaling on all data vs. selected data
-			// - if that is the case we will need to narrow down the drawn data BEFORE
-			// creating yScaleLeft
+			// console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		}
-
-		// FOR ALL CHARTS
-		// (3) go ahead and filter out that dontDraw data so that scales etc. will be correct
-		// - this keeps us from having to edit a LOT of code
-		p.data = p.data.filter((d) => d.dontDraw === false);
-
-		// FOr reliability, convert any NaN values to null.
-		//p.data = p.data.filter((d) =>(d.estimate !== null) && (!isNaN(d.estimate)));
-		//allIncomingData = allIncomingData.filter((d) => (d.estimate !== null) && (!isNaN(d.estimate)));
-
-		p.data = p.data.filter(function (d) {
-			if (isNaN(d.estimate)) {
-				return (d.estimate = null); // estimate missing so fill in with null???
-			} else {
-				return d;
-			}
-		});
-		allIncomingData = allIncomingData.filter(function (d) {
-			if (isNaN(d.estimate)) {
-				return (d.estimate = null); // estimate missing so fill in with null???
-			} else {
-				return d;
-			}
-		});
-
-		// NOW filter down to only bars/lines to be drawn
-		const drawData = p.data;
-		///////////////////////////////////////////////////////////////////////////////
-
-		// Need to store list of used colors bc we have a legend with all data,
-		// but dontDraw property that may not draw it, plus a limit of 10
-		// incoming prop = p.assignedLegendColor
-		// and for lines using exact same prop
-		// (it's easier to create a prop and pass it in than do new map to create)
 
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
@@ -393,7 +313,7 @@ export class GenChart {
 			.tickSize(3)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
-			.tickFormat((drawData) => genFormat(drawData, p.formatXAxis));
+			.tickFormat((d) => genFormat(d, p.formatXAxis));
 
 		const yAxisLeft = d3.axisLeft(yScaleLeft).tickSize(3).tickSizeInner(-chartWidth);
 
@@ -827,7 +747,7 @@ export class GenChart {
 
 				if (p.usesBars) {
 					bars.selectAll("rect")
-						.data(drawData)
+						.data(p.data)
 						.join(
 							(enter) => {
 								const hz = p.barLayout.horizontal;
@@ -892,7 +812,7 @@ export class GenChart {
 					// DRAW CI WHISKERS FOR BAR CHART
 					if (p.enableCI) {
 						const whiskerOffset = yScaleLeft.bandwidth() / 2 + margin.top;
-						drawData.forEach((d, i) => {
+						p.data.forEach((d, i) => {
 							const CIBarId = "CIBar" + i;
 							svg.append("line")
 								.datum(d)
@@ -926,7 +846,7 @@ export class GenChart {
 
 				if (p.usesBars) {
 					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
-					p.numberOfEquallySpacedDates = drawData.length + 1;
+					p.numberOfEquallySpacedDates = p.data.length + 1;
 				}
 				const allDateTicksButLast = xScale
 					.domain()
@@ -1371,9 +1291,16 @@ export class GenChart {
 				});
 				legendData.reverse();
 			} else if (p.usesBars) {
+				allIncomingData = allIncomingData.map((d) => ({
+					...d,
+					assignedLegendColor: d.dontDraw
+						? ""
+						: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
+				}));
+
 				allIncomingData.forEach((d, i) => {
 					legendData[i] = {
-						stroke: d.assignedLegendColor, //  p.barColors[i] -> WRITE FUNCTIN TO RETURN BAR COLOR FROM DRAWN BAR
+						stroke: d.assignedLegendColor,
 						dashArrayScale: 0,
 						text: d.stub_label,
 						dontDraw: d.dontDraw,
@@ -1491,7 +1418,6 @@ export class GenChart {
 
 			// get all legend items and find the longest then set the legend container size
 			const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
-			//const legendItems = d3.selectAll(`${svgId}-legendItem`);
 			const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 			const newWidth = d3.max(legendWidths) ?? 0;
 			legendContainer.attr("width", newWidth + 56);
