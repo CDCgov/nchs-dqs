@@ -144,6 +144,10 @@ export class LandingPage {
 	getYear = (period) => parseInt(period.split("-")[0], 10);
 
 	renderMap() {
+		let panelText = $("#panel-num-select option:selected").text();
+		this.chartSubTitle = "Subtopic: " + panelText;
+		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
+
 		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
 		$("#us-map-container").show();
 
@@ -959,11 +963,23 @@ export class LandingPage {
 			.append("th")
 			.attr("scope", "col")
 			.attr("tabindex", "0")
-			.attr("id", (column, i) => `${keys[i]}-th`)
-			.text((c) => c)
-			.append("i")
-			.attr("id", (column, i) => `${keys[i]}-icon`)
-			.attr("class", "sort icon");
+			.attr("id", (col, i) => `${keys[i]}-th`)
+			.html((col, i) => {
+				// group the <th> content so that the last word of the th is wrapped in a span with the sort icon
+				// so that the sort icon can be in a <span> with css of white-space: nowrap
+				const words = col.split(" ");
+				console.log(`Words: ${words}`);
+				const lastWord = words.splice(-1);
+				console.log(`Last word: ${lastWord}`);
+				console.log(`Words: ${words}`);
+				let header = "<span>";
+				if (words.length) {
+					words.forEach((w) => (header += `${w} `));
+					header += "</span>";
+				}
+				header += `<span class="sortIconNoWrap">${lastWord} <i id="${keys[i]}-icon" class="sort icon"></i></span>`;
+				return header;
+			});
 
 		let tbody = table.append("tbody");
 		let row = tbody.selectAll("tr").data(tableData);
