@@ -968,10 +968,10 @@ export class LandingPage {
 				// group the <th> content so that the last word of the th is wrapped in a span with the sort icon
 				// so that the sort icon can be in a <span> with css of white-space: nowrap
 				const words = col.split(" ");
-				console.log(`Words: ${words}`);
+				//console.log(`Words: ${words}`);
 				const lastWord = words.splice(-1);
-				console.log(`Last word: ${lastWord}`);
-				console.log(`Words: ${words}`);
+				//console.log(`Last word: ${lastWord}`);
+				//console.log(`Words: ${words}`);
 				let header = "<span>";
 				if (words.length) {
 					words.forEach((w) => (header += `${w} `));
