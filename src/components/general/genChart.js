@@ -315,7 +315,11 @@ export class GenChart {
 			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
 
-		const yAxisLeft = d3.axisLeft(yScaleLeft).tickSize(3).tickSizeInner(-chartWidth);
+		const yAxisLeft = d3
+			.axisLeft(yScaleLeft)
+			.tickSize(3)
+			.tickSizeInner(-chartWidth)
+			.tickFormat((d) => genFormat(d, p.formatYAxisLeft));
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
 
