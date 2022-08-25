@@ -66,7 +66,6 @@ export class LandingPage {
 		$("#maincontent").html(config.tabContent);
 		MainEvents.registerEvents(); // add any click events inside here
 		functions.addHtmlTooltips();
-		functions.alignSelectorDropDowns();
 
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
@@ -670,7 +669,7 @@ export class LandingPage {
 
 		// reset and show time period start/end dropdowns
 		this.resetTimePeriods();
-		$("#timePeriodContainer").css("display", "flex");
+		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect(); // reset the unit
 		DataCache.activeLegendList = []; // clear the list of active legend items when stub name changes

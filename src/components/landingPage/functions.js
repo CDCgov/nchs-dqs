@@ -73,6 +73,7 @@ export const alignSelectorDropDowns = () => {
 	}
 
 	topicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
+	topicDropdown.css("backface-visibility", "hidden");
 	subtopicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
 	characteristicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
 };

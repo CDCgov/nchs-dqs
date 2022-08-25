@@ -13,25 +13,22 @@ export const tabContent = `
 					<div class="mainSelText">Topic</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-2">&nbsp;</div>
-				<div class="col-10 homeSelectorText">
-					<div class="styled-select">
-						<select name="data-topic-select" id="data-topic-select" form="select-view-options">
-							<optgroup style="font-size: 12px">
-								<option value="obesity-child" selected>Obesity among Children</option>
-								<option value="obesity-adult">Obesity among Adults</option>
-								<option value="suicide">Death Rates for Suicide</option>
-								<option value="injury">Initial injury-related visits to hospital emergency departments</option>
-								<option value="infant-mortality">Infant Mortality</option>
-								<option value="birthweight">Low birthweight live births</option>
-								<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
-								<option value="drug-overdose">Deaths from drug overdose</option>
-								<option value="ambulatory-care">Ambulatory Care Visits</option>
-							</optgroup>
-						</select>
-					</div>
-				</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="styled-select">
+				<select name="data-topic-select" id="data-topic-select" form="select-view-options">
+					<optgroup style="font-size: 12px">
+						<option value="obesity-child" selected>Obesity among Children</option>
+						<option value="obesity-adult">Obesity among Adults</option>
+						<option value="suicide">Death Rates for Suicide</option>
+						<option value="injury">Initial injury-related visits to hospital emergency departments</option>
+						<option value="infant-mortality">Infant Mortality</option>
+						<option value="birthweight">Low birthweight live births</option>
+						<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
+						<option value="drug-overdose">Deaths from drug overdose</option>
+						<option value="ambulatory-care">Ambulatory Care Visits</option>
+					</optgroup>
+				</select>
 			</div>
 		</div>
 		<div id="subtopicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
@@ -44,20 +41,17 @@ export const tabContent = `
 					<div class="mainSelText">Subtopic</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-2">&nbsp;</div>
-				<div class="col-10 homeSelectorText">
-					<div class="styled-select">
-						<select name="panel-num-select" id="panel-num-select" form="select-view-options">
-							<optgroup>
-								<option value="1" selected>2-19 years</option>
-								<option value="2">2-5 years</option>
-								<option value="3">6-11 years</option>
-								<option value="4">12-19 years</option>
-							</optgroup>
-						</select>
-					</div>
-				</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="styled-select">
+				<select name="panel-num-select" id="panel-num-select" form="select-view-options">
+					<optgroup>
+						<option value="1" selected>2-19 years</option>
+						<option value="2">2-5 years</option>
+						<option value="3">6-11 years</option>
+						<option value="4">12-19 years</option>
+					</optgroup>
+				</select>						
 			</div>
 		</div>
 		<div id="characteristicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
@@ -70,21 +64,18 @@ export const tabContent = `
 					<div class="mainSelText">Characteristic</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-2">&nbsp;</div>
-				<div class="col-10 homeSelectorText">
-					<div class="styled-select">
-						<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options">
-							<optgroup>
-								<option value="0" selected>Total</option>
-								<option value="1">Sex</option>
-								<option value="3">Race and Hispanic origin</option>
-								<option value="4">Sex and race and Hispanic origin</option>
-								<option value="5">Percent of poverty level</option>
-							</optgroup>
-						</select>
-					</div>
-				</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="styled-select">
+				<select name="panel-num-select" id="panel-num-select" form="select-view-options">
+					<optgroup>
+						<option value="0" selected>Total</option>
+						<option value="1">Sex</option>
+						<option value="3">Race and Hispanic origin</option>
+						<option value="4">Sex and race and Hispanic origin</option>
+						<option value="5">Percent of poverty level</option>
+					</optgroup>
+				</select>						
 			</div>
 		</div>
 		<div id="timePeriodsSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
@@ -99,17 +90,17 @@ export const tabContent = `
 			</div>
 			<div class="row" style="text-align: center">
 				<div class="col-12">
-					<div style="margin-top: 0.4vw">
+					<div style="margin-top: 0.4vw; line-height: 1vw">
 						<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
 						<label class="label-style" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
-			<div class="row" id="timePeriodContainer">
+			<div class="row timePeriodContainer">
 				<div id="startYearContainer" class="col-6" style="text-align: center">
 					<div class="label-style" id="year-start-label">Start Period</div>
 					<div class="styled-select">
-						<select name="year-start" id="year-start-select" form="select-view-options" style="margin-top: 0">
+						<select name="year-start" id="year-start-select" form="select-view-options">
 							<option value="1988-1994" selected>1988-1994</option>
 							<option value="1999-2002">1999-2002</option>
 							<option value="2001-2004">2001-2004</option>
@@ -125,7 +116,7 @@ export const tabContent = `
 				<div id="endYearContainer" class="col-6" style="text-align: center">
 					<div class="label-style" id="year-end-label">End Period</div>
 					<div class="styled-select">
-						<select name="year-end" id="year-end-select" form="select-view-options" style="margin-top: 0">
+						<select name="year-end" id="year-end-select" form="select-view-options">
 							<option value="1988-1994">1988-1994</option>
 							<option value="1999-2002">1999-2002</option>
 							<option value="2001-2004">2001-2004</option>
