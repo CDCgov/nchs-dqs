@@ -1,4 +1,4 @@
-import { hashLookup } from "../config";
+import { hashLookup } from "../components/landingPage/config";
 
 const topicId = "data-topic-select";
 const subTopicId = "panel-num-select";
