@@ -371,11 +371,12 @@ export class LandingPage {
 			usesXAxisTitle: true,
 			usesDateAsXAxis: !this.showBarChart,
 			needsScaleTime: !this.showBarChart && needsScaleTime,
-			yLeftLabelScale: this.showBarChart ? 10 : 1,
+			yLeftLabelScale: this.showBarChart ? 10 : 2,
 			legendCoordinatePercents: legendCoordPercents,
 			bottomAxisTitle: xAxisTitle,
 			// leftAxisTitle: xAxisTitle,
 			formatXAxis: "string",
+			formatYAxisLeft: "magnitude",
 			usesMultiLineLeftAxis: !this.showBarChart,
 			multiLineColors: [
 				"#88419d",

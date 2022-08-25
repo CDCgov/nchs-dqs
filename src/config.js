@@ -27,7 +27,7 @@ export const tabContent = `
 								<option value="birthweight">Low birthweight live births</option>
 								<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 								<option value="drug-overdose">Deaths from drug overdose</option>
-								<option value="ambulatory-care">Abulatory Care Visits</option>
+								<option value="ambulatory-care">Ambulatory Care Visits</option>
 							</optgroup>
 						</select>
 					</div>
