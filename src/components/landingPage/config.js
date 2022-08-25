@@ -24,6 +24,7 @@ export const tabContent = `
 						<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 						<option value="drug-overdose">Deaths from drug overdose</option>
 						<option value="ambulatory-care">Ambulatory Care Visits</option>
+						<option value="access-care">Access to Care</option>
 				</select>
 			</div>
 		</div>
@@ -84,15 +85,6 @@ export const tabContent = `
 					<div class="label-style" id="year-start-label">Start Period</div>
 					<div class="styled-select">
 						<select name="year-start" id="year-start-select" form="select-view-options">
-							<option value="1988-1994" selected>1988-1994</option>
-							<option value="1999-2002">1999-2002</option>
-							<option value="2001-2004">2001-2004</option>
-							<option value="2003-2006">2003-2006</option>
-							<option value="2005-2008">2005-2008</option>
-							<option value="2007-2010">2007-2010</option>
-							<option value="2009-2012">2009-2012</option>
-							<option value="2011-2014">2011-2014</option>
-							<option value="2013-2016">2013-2016</option>
 						</select>
 					</div>
 				</div>
@@ -100,15 +92,6 @@ export const tabContent = `
 					<div class="label-style" id="year-end-label">End Period</div>
 					<div class="styled-select">
 						<select name="year-end" id="year-end-select" form="select-view-options">
-							<option value="1988-1994">1988-1994</option>
-							<option value="1999-2002">1999-2002</option>
-							<option value="2001-2004">2001-2004</option>
-							<option value="2003-2006">2003-2006</option>
-							<option value="2005-2008">2005-2008</option>
-							<option value="2007-2010">2007-2010</option>
-							<option value="2009-2012">2009-2012</option>
-							<option value="2011-2014">2011-2014</option>
-							<option value="2013-2016" selected>2013-2016</option>
 						</select>
 					</div>
 				</div>
@@ -379,6 +362,16 @@ export const topicLookup = {
 		panelNum: 1,
 		unitNum: 1,
 		enableCI: false,
+		hasSubtopic: true,
+	},
+	"access-care": {
+		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
+		socrataId: "nt5r-ak33",
+		private: "1",
+		chartTitle: "Access to Care",
+		panelNum: 1,
+		unitNum: 1,
+		enableCI: true,
 		hasSubtopic: true,
 	},
 };
@@ -885,6 +878,82 @@ export const hashLookup = {
 				{
 					hash: "race-and-age",
 					value: "5",
+				},
+			],
+		},
+		{
+			hash: "access-care",
+			value: "access-care",
+			"panel-num-select": [
+				{
+					hash: "nonreceipt-medical-care",
+					value: "1",
+				},
+				{
+					hash: "nonreceipt-drugs",
+					value: "2",
+				},
+				{
+					hash: "nonreceipt-dental-care",
+					value: "3",
+				},
+			],
+			"stub-name-num-select": [
+				{
+					hash: "total",
+					value: "0",
+				},
+				{
+					hash: "age",
+					value: "1",
+				},
+				{
+					hash: "sex",
+					value: "2",
+				},
+				{
+					hash: "race",
+					value: "3",
+				},
+				{
+					hash: "hispanic-origin-and-race",
+					value: "4",
+				},
+				{
+					hash: "education",
+					value: "5",
+				},
+				{
+					hash: "percent-of_poverty_level",
+					value: "6",
+				},
+				{
+					hash: "hispanic-origin-race-and-percent-of_poverty_level",
+					value: "7",
+				},
+				{
+					hash: "health-insurance-status-at-interview",
+					value: "8",
+				},
+				{
+					hash: "health-insurance-status-prior-to-interview",
+					value: "9",
+				},
+				{
+					hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
+					value: "10",
+				},
+				{
+					hash: "level-of-difficulty",
+					value: "11",
+				},
+				{
+					hash: "geographic-region",
+					value: "12",
+				},
+				{
+					hash: "location-of-residence",
+					value: "13",
 				},
 			],
 		},
