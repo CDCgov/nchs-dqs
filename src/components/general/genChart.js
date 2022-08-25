@@ -681,7 +681,8 @@ export class GenChart {
 					let maxReported = [...sortedXValues.slice(-1)][0];
 					minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
 					maxReported.setDate(maxReported.getDate() + 1);
-					xScale.domain([minReported, maxReported]).nice();
+					xScale.domain([minReported, maxReported]); //.nice();
+					//debugger;
 				} else if (p.barLayout.horizontal) {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
 				} else xScale.domain(sortedXValues.map((d) => d));
@@ -1178,18 +1179,19 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					debugger;
+					//debugger;
 					if (p.needsScaleTime) xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+						.ticks(d3.timeYear.every(2))
 						//Show all tick marks but labels every other tick
-						.tickFormat((d,i) => {
-                  				return i%2 !== 0 ? " ": genFormat(d, "year");
-                 			})
-					else xAxis.tickValues(tickValues)
+						.tickFormat((d, i) => {
+							return i % 2 !== 0 ? " " : genFormat(d, "year");
+						})
+					else xAxis     // WHAT IS THIS tickValues for???  .tickValues(tickValues)
+							.ticks(tickValues.length)
 							.tickFormat((d,i) => {
                   				return i%2 !== 0 ? " ": d;
                  			});
 				}
-				console.log("xaxis tickValues", xAxis.tickValues);
 				
 				if (p.barLayout?.horizontal) {
 					leftAxisDraw.call(yAxisLeft);
