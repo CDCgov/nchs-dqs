@@ -171,6 +171,9 @@ export const tabContent = `
 
 	<!-- Tabs navs -->
 	<div id="tabs">
+		<div class="ui inverted dimmer">
+			<div class="ui text loader">Loading</div>
+		</div>
 		<ul>
 			<li id="mapTab-li"><a href="#map-tab"><i class="fas fa-map fa-fw me-2"></i> Map</a></li>
 			<li><a href="#chart-tab"><i class="fas fa-chart-line fa-fw me-2"></i> Chart</a></li>
@@ -207,8 +210,8 @@ export const tabContent = `
 			</div>
 			<!-- end map wrapper -->
 		</div>
-		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
-			<div class="chart-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">			
+			<div class="chart-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">			
 				<!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
 				<div class="adjustUnitContainer">
 					Adjust Unit<br />
@@ -246,7 +249,7 @@ export const tabContent = `
 			<!-- end chart wrapper -->
 		</div>
 	</div>
-
+	
 	<div class="dwnl-img-container margin-spacer" style="display: flex; justify-content: space-between; text-align: center">
 		<span>
 			<a id="cdcDataGovButton" class="theme-cyan ui btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">

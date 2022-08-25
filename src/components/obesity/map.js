@@ -9,7 +9,6 @@ import * as util from "../communityProfile/util";
 import { getCurrentSettingSliderDomain } from "./dataTable";
 import { Utils } from "../../utils/utils";
 
-
 //export var chartConfig = null;
 export class VaccinationsMap {
 	constructor(props) {
@@ -33,20 +32,19 @@ export class VaccinationsMap {
 		this.dataForTable = props.dataForTable.vaccination_equity_summary_data || {};
 		this.dataForSecondChart = props.dataForTable.Booster_eligibility || {};
 		this.viewSelected = "SVI";
-		this.currentCategories = [7,8];
+		this.currentCategories = [7, 8];
 		// this.urbanRuralData = props.urbanRuralData.equity_trends || {};
 		this.locationUpdate = true;
 		this.currentLocation = "US";
 		//this.chartConfig = null;
 		this.currentSliderDomain = null;
-    this.getEquityTrendsInitialData = props.getEquityTrendsInitialData.equity_trends || [];
-    this.selectUsOrStateData = props.selectUsOrStateData.equity_trends_init_data || [];
+		this.getEquityTrendsInitialData = props.getEquityTrendsInitialData.equity_trends || [];
+		this.selectUsOrStateData = props.selectUsOrStateData.equity_trends_init_data || [];
 	}
 
 	render() {
 		$(`#${config.mapId}`).empty();
 		this.initMap();
-    
 	}
 
 	calcSVGheight = (devicetype) => {
@@ -133,7 +131,7 @@ export class VaccinationsMap {
 			this.eventHandlers();
 			this.renderTable();
 			this.urbanRuralSection();
-      this.renderURDataTable();
+			this.renderURDataTable();
 			$("#urbanRuralChartEquity").css("display", "none");
 		});
 	}
@@ -556,7 +554,7 @@ export class VaccinationsMap {
 				} else {
 					this.setAttribute("aria-label", firstColumnVal + " " + columnHeader + " " + column.value);
 				}
-				this.setAttribute("tabindex", "0"); 
+				this.setAttribute("tabindex", "0");
 			});
 
 		if ($(".ui.attached.basic.button.buttonDataViewTogg.btn-cyan.active")[0].id === "map-toggle-btn") {
@@ -798,7 +796,6 @@ export class VaccinationsMap {
 
 		this.createLegend();
 		this.setMapColor();
-		$(".dimmer").removeClass("active");
 		$("#vaccinations-wrapper").css("visibility", "visible");
 	}
 
@@ -1202,7 +1199,6 @@ export class VaccinationsMap {
 				.text("to limit the counties shown.");
 		}
 
-
 		// HEATMAP Rect PERCENTAGES LEFT
 		heatMap
 			.append("text")
@@ -1442,7 +1438,7 @@ export class VaccinationsMap {
 			let population = $("input[name='population-radio']:checked").val();
 			let view = $("input[name='view-radio']:checked").val();
 			let metric = $("input[name='vaccination-radio']:checked").val();
-      this.renderURDataTable();
+			this.renderURDataTable();
 			//hanlde the hiding of filters
 			switch (metric) {
 				case "fullyVaccinated":
@@ -1495,9 +1491,9 @@ export class VaccinationsMap {
 				$("#vaccinations-map-wrapperInternal").css("display", "");
 				$("#vaccination-selection").css("visibility", "");
 				this.createLegend();
-			 } else {
-			// 	$("#vaccination-selection").css("visibility", "hidden");
-			 }
+			} else {
+				// 	$("#vaccination-selection").css("visibility", "hidden");
+			}
 
 			switch (`${view} ${metric}`) {
 				case "SVI fullyVaccinated":
@@ -1841,7 +1837,7 @@ export class VaccinationsMap {
 				$("#urbanRuralChartEquity").css("display", "none");
 				$("#dwnload-img-RuralUrban-chart").css("display", "none");
 				$("#view-selection-2").css("display", "none");
-        $("#view-selection-3").css("display", "none");
+				$("#view-selection-3").css("display", "none");
 				$('[data-class="Table"]').css("display", "none");
 				$("#SummaryTable").css("display", "none");
 				$("#category-select").css("display", "none");
@@ -1856,7 +1852,7 @@ export class VaccinationsMap {
 				$("#urbanRuralChartEquity").css("display", "none");
 				$("#dwnload-img-RuralUrban-chart").css("display", "none");
 				$("#view-selection-2").css("display", "none");
-        $("#view-selection-3").css("display", "none");
+				$("#view-selection-3").css("display", "none");
 				$("#category-select").css("display", "none");
 
 				$("#dwnload-img-vaccination-equity-maps").css("display", "");
@@ -1875,7 +1871,7 @@ export class VaccinationsMap {
 
 			$("#urbanRuralChartEquity").css("display", "");
 			$("#view-selection-2").css("display", "");
-      $("#view-selection-3").css("display", "");
+			$("#view-selection-3").css("display", "");
 			$("#dwnload-img-RuralUrban-chart").css("display", "");
 			$('[data-class="Table"]').css("display", "none");
 			this.setCurrentCategoriesValues();
@@ -2054,29 +2050,29 @@ export class VaccinationsMap {
 		});
 
 		const locationDropdownList = _.uniqBy(locationList, "name", true);
-    // let locationDropdownList = this.selectUsOrStateData;
-    
+		// let locationDropdownList = this.selectUsOrStateData;
+
 		// Find the index by property title, that should equal name "Unknown".
 		let unknownKey = _.findIndex(locationDropdownList, ["name", "United States"]);
 		if (unknownKey !== -1) {
 			// Clone the value to the bottom of the array.
 			locationDropdownList.unshift(locationDropdownList[unknownKey]);
 			// Remove the original key.
-      //ran twice to remove United States for some reson it does not work just running it once TODO: find a fix
+			//ran twice to remove United States for some reson it does not work just running it once TODO: find a fix
 			locationDropdownList.splice(unknownKey, 1);
-      locationDropdownList.splice(unknownKey, 1);
+			locationDropdownList.splice(unknownKey, 1);
 		}
 		$("#location-select").dropdown({
 			values: locationDropdownList,
 		});
-    let classificationSelectValues =[
-      {name: "NCHS Urban/Rural Classification(2013)", 
-        value: "NCHS",
-      },{
-        name:"Metro vs Non-Metro",
-        value:"Metro",
-        selected:true
-      }]
+		let classificationSelectValues = [
+			{ name: "NCHS Urban/Rural Classification(2013)", value: "NCHS" },
+			{
+				name: "Metro vs Non-Metro",
+				value: "Metro",
+				selected: true,
+			},
+		];
 
 		$("#classification-select").dropdown({
 			values: classificationSelectValues,
@@ -2091,12 +2087,12 @@ export class VaccinationsMap {
 
 	renderChart() {
 		const _self = this;
-    let metric = $("input[name='vaccination-radio']:checked").val();
+		let metric = $("input[name='vaccination-radio']:checked").val();
 		const flattenedData = this.getFlattenedFilteredData();
 		const chartBaseProps = this.getChartBaseProps(metric);
 		const props = getAllChartProps(flattenedData, chartBaseProps);
-    	_self.updateTitleAndTooltip();
-    
+		_self.updateTitleAndTooltip();
+
 		$(`#${props.vizId}`).empty();
 		this.chartConfig = props;
 		const genChart = new GenChart(props);
@@ -2104,25 +2100,25 @@ export class VaccinationsMap {
 		renderSlider(genChart.render(), getCurrentSettingSliderDomain());
 	}
 
-  renderURDataTable(){
-    const _self = this;
-    const flattenedTableData = this.getFlattenedFilteredTableData();
-    let { currentLocation } = _self;
+	renderURDataTable() {
+		const _self = this;
+		const flattenedTableData = this.getFlattenedFilteredTableData();
+		let { currentLocation } = _self;
 		if (currentLocation === "") {
 			currentLocation = "US";
-		};
-    let metric = $("input[name='vaccination-radio']:checked").val();
-    const DataTable = new UrbanRuralDataTable({
+		}
+		let metric = $("input[name='vaccination-radio']:checked").val();
+		const DataTable = new UrbanRuralDataTable({
 			flattenedTableData,
 			currentLocation,
-      metric
+			metric,
 		});
-    DataTable.render();
-  }
+		DataTable.render();
+	}
 
 	getFlattenedFilteredData() {
 		const _self = this;
-		let classifiedData = this.getEquityTrendsInitialData
+		let classifiedData = this.getEquityTrendsInitialData;
 		const noLocationNamedData = [...classifiedData];
 
 		const stateData = noLocationNamedData
@@ -2141,21 +2137,20 @@ export class VaccinationsMap {
 		return [...sortedstateData];
 	}
 
-  getFlattenedFilteredTableData() {
+	getFlattenedFilteredTableData() {
 		const _self = this;
 		let classifiedData = this.getEquityTrendsInitialData;
 		const noLocationNamedData = [...classifiedData];
 
-		const stateData = noLocationNamedData
-			.map((d) => ({
-				...d,
-				date: new Date(`${d.Date}T00:00:00`),
-				Classification: d.Classification,
-				location: d.LongName,
-				subLine: config.getCategoryName2.get(d.NCHS_Category),
-				NCHS_txt:
-					"<b>% Population in " + config.getCategoryName2.get(d.NCHS_Category) + ":</b> " + d.NCHS_Pct + "%",
-			}));
+		const stateData = noLocationNamedData.map((d) => ({
+			...d,
+			date: new Date(`${d.Date}T00:00:00`),
+			Classification: d.Classification,
+			location: d.LongName,
+			subLine: config.getCategoryName2.get(d.NCHS_Category),
+			NCHS_txt:
+				"<b>% Population in " + config.getCategoryName2.get(d.NCHS_Category) + ":</b> " + d.NCHS_Pct + "%",
+		}));
 
 		let sortedTableData = _.sortBy(stateData, "NCHS_Category");
 		return [...sortedTableData];
@@ -2179,8 +2174,7 @@ export class VaccinationsMap {
 				_self.updateLocation(this.currentLocation);
 			}
 		});
-    
-    
+
 		_self.renderChart();
 		_self.setCategoriesSelect(this.getEquityTrendsInitialData);
 	}
@@ -2188,120 +2182,119 @@ export class VaccinationsMap {
 	getChartBaseProps(metric) {
 		let chartValueProperty = "Avg_Series_Complete_Pop_Pct";
 		let yAxisTitle = "Percent";
-    let chartTitle;
-    let vizId = "urbanRuralChartEquity";
+		let chartTitle;
+		let vizId = "urbanRuralChartEquity";
 
-    if(metric === "boosterDose"){
-      chartValueProperty = "Avg_Booster_Pop_Pct";
-      vizId = "urbanRuralChartEquityBooster";
-      // yAxisTitle = "Average % of total pop fully vaccinated with a 1st booster dose" ;
-    }
-    let classification = $("#classification-select").dropdown("get value");
-    let selectedMetric = $("input[name='vaccination-radio']:checked").val();
-    switch (`${selectedMetric} ${classification}`) {
-      case "fullyVaccinated NCHS":
-        chartTitle = `Average Percentages of Fully Vaccinated Population in ${stateAbbrToFull(
-          this.currentLocation
-        )}, by  County Urbanicity `;
-        break;
-      case "fullyVaccinated Metro":
-        chartTitle = `Average Percentages of Fully Vaccinated Population in ${stateAbbrToFull(
-          this.currentLocation
-        )},  by Metro/Non-Metro Status `;
-        break;
-      case "boosterDose NCHS":
-        chartTitle = `Average Percentages of Fully Vaccinated Population with a First Booster Dose in ${stateAbbrToFull(
-          this.currentLocation
-        )},  by County Urbanicity`;
-        break;
-      case "boosterDose Metro":
-        chartTitle = `Average Percentages of Fully Vaccinated Population with a First Booster Dose in ${stateAbbrToFull(
-          this.currentLocation
-        )}, by Metro/Non-Metro Status`;
-        break;        
-      default:
-        break;
-    }
-		return { chartValueProperty, yAxisTitle,chartTitle,vizId };
+		if (metric === "boosterDose") {
+			chartValueProperty = "Avg_Booster_Pop_Pct";
+			vizId = "urbanRuralChartEquityBooster";
+			// yAxisTitle = "Average % of total pop fully vaccinated with a 1st booster dose" ;
+		}
+		let classification = $("#classification-select").dropdown("get value");
+		let selectedMetric = $("input[name='vaccination-radio']:checked").val();
+		switch (`${selectedMetric} ${classification}`) {
+			case "fullyVaccinated NCHS":
+				chartTitle = `Average Percentages of Fully Vaccinated Population in ${stateAbbrToFull(
+					this.currentLocation
+				)}, by  County Urbanicity `;
+				break;
+			case "fullyVaccinated Metro":
+				chartTitle = `Average Percentages of Fully Vaccinated Population in ${stateAbbrToFull(
+					this.currentLocation
+				)},  by Metro/Non-Metro Status `;
+				break;
+			case "boosterDose NCHS":
+				chartTitle = `Average Percentages of Fully Vaccinated Population with a First Booster Dose in ${stateAbbrToFull(
+					this.currentLocation
+				)},  by County Urbanicity`;
+				break;
+			case "boosterDose Metro":
+				chartTitle = `Average Percentages of Fully Vaccinated Population with a First Booster Dose in ${stateAbbrToFull(
+					this.currentLocation
+				)}, by Metro/Non-Metro Status`;
+				break;
+			default:
+				break;
+		}
+		return { chartValueProperty, yAxisTitle, chartTitle, vizId };
 	}
 
 	setCategoriesSelect = () => {
-    console.log({currentLocation:this.currentLocation})
-		const categoriesList = this.getEquityTrendsInitialData.filter((d) => this.currentCategories.includes(d.NCHS_Category))
-    .map((x) => {
-			return { name: config.getCategoryName2.get(x.NCHS_Category), value: x.NCHS_Category, selected: true };
-		});
-    
-		const locationDropdownList = _.uniqBy(categoriesList, "name", true).filter(x => x.name  !== undefined);
+		console.log({ currentLocation: this.currentLocation });
+		const categoriesList = this.getEquityTrendsInitialData
+			.filter((d) => this.currentCategories.includes(d.NCHS_Category))
+			.map((x) => {
+				return { name: config.getCategoryName2.get(x.NCHS_Category), value: x.NCHS_Category, selected: true };
+			});
+
+		const locationDropdownList = _.uniqBy(categoriesList, "name", true).filter((x) => x.name !== undefined);
 		$("#category-select").dropdown({
 			values: locationDropdownList.reverse(),
 		});
 	};
 
-  updateTitleAndTooltip = () =>{
-    let textBox = $("#metric_callout_box");
-    let classification = $("#classification-select").dropdown("get value");
-    let metric = $("input[name='vaccination-radio']:checked").val();
-    switch (`${metric} ${classification}`) {
-      case "fullyVaccinated NCHS":
-        textBox.text(
-          `This chart shows trends in the average percentage of the fully vaccinated population by urbanicity at national and jurisdictional levels.`
-        );
-        break;
-      case "fullyVaccinated Metro":
-        textBox.text(
-          `This chart shows trends in the average percentage of the fully vaccinated population by metro vs. non-metro classification type at national and jurisdictional levels.`
-        );        
-        break;
-      case "boosterDose NCHS":
-        textBox.text(
-          `This chart shows trends in the average percentage of the fully vaccinated population with a first booster dose by urbanicity at national and jurisdictional levels.`
-        );
-        break;
-      case "boosterDose Metro":
-        textBox.text(
-          `This chart shows trends in the average percentage of the fully vaccinated population with a first booster dose by metro vs. non-metro classification type at national and jurisdictional levels.`
-        );
-        break;        
-      default:
-        textBox.text(
-          `This chart shows trends in the average percentage of the fully vaccinated population by urbanicity at national and jurisdictional levels.`
-        );
-        break;
-    }
-  }
+	updateTitleAndTooltip = () => {
+		let textBox = $("#metric_callout_box");
+		let classification = $("#classification-select").dropdown("get value");
+		let metric = $("input[name='vaccination-radio']:checked").val();
+		switch (`${metric} ${classification}`) {
+			case "fullyVaccinated NCHS":
+				textBox.text(
+					`This chart shows trends in the average percentage of the fully vaccinated population by urbanicity at national and jurisdictional levels.`
+				);
+				break;
+			case "fullyVaccinated Metro":
+				textBox.text(
+					`This chart shows trends in the average percentage of the fully vaccinated population by metro vs. non-metro classification type at national and jurisdictional levels.`
+				);
+				break;
+			case "boosterDose NCHS":
+				textBox.text(
+					`This chart shows trends in the average percentage of the fully vaccinated population with a first booster dose by urbanicity at national and jurisdictional levels.`
+				);
+				break;
+			case "boosterDose Metro":
+				textBox.text(
+					`This chart shows trends in the average percentage of the fully vaccinated population with a first booster dose by metro vs. non-metro classification type at national and jurisdictional levels.`
+				);
+				break;
+			default:
+				textBox.text(
+					`This chart shows trends in the average percentage of the fully vaccinated population by urbanicity at national and jurisdictional levels.`
+				);
+				break;
+		}
+	};
 
 	async updateLocation(currentLocation) {
 		const _self = this;
 		this.currentLocation = currentLocation;
-    await _self.getNewLocationData();
-    console.log({updateLocation:this.getEquityTrendsInitialData})
-    _self.setCurrentCategoriesValues();
+		await _self.getNewLocationData();
+		console.log({ updateLocation: this.getEquityTrendsInitialData });
+		_self.setCurrentCategoriesValues();
 		_self.renderChart();
-    this.renderURDataTable();
-		_self.setCategoriesSelect(this.getEquityTrendsInitialData,this.currentLocation);
+		this.renderURDataTable();
+		_self.setCategoriesSelect(this.getEquityTrendsInitialData, this.currentLocation);
 	}
-  getNewLocationData(){
-    
-    let dataPromise = Utils.getAPI(`${process.env.API_URL}equity_trends_${this.currentLocation}`, 10 * 10000);
-    Promise.resolve(dataPromise).then(x =>{
-        this.getEquityTrendsInitialData =  x.equity_trends;
-      }
-    )
-  }
-  setCurrentCategoriesValues(){
-    switch ($("#classification-select").dropdown("get value")) {
-      case "NCHS":
-        this.currentCategories = [1, 2, 3, 4, 5, 6];
-        break;
-      case "Metro":
-        this.currentCategories = [7, 8];
-        break;
-      default:
-        this.currentCategories = [1, 2, 3, 4, 5, 6];
-        break;
-    }
-  }
+	getNewLocationData() {
+		let dataPromise = Utils.getAPI(`${process.env.API_URL}equity_trends_${this.currentLocation}`, 10 * 10000);
+		Promise.resolve(dataPromise).then((x) => {
+			this.getEquityTrendsInitialData = x.equity_trends;
+		});
+	}
+	setCurrentCategoriesValues() {
+		switch ($("#classification-select").dropdown("get value")) {
+			case "NCHS":
+				this.currentCategories = [1, 2, 3, 4, 5, 6];
+				break;
+			case "Metro":
+				this.currentCategories = [7, 8];
+				break;
+			default:
+				this.currentCategories = [1, 2, 3, 4, 5, 6];
+				break;
+		}
+	}
 
 	removeCategory(category) {
 		let helper;
@@ -2317,8 +2310,6 @@ export class VaccinationsMap {
 		this.currentCategories.sort();
 		this.renderChart();
 	}
-
-
 }
 
 /* export function setCurrentSliderDomain(sd) {

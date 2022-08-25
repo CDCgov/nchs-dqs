@@ -221,6 +221,7 @@ export class LandingPage {
 		} else this.renderChart();
 		this.renderDataTable();
 		hashTab.writeHashToUrl();
+		$(".dimmer").removeClass("active");
 	};
 
 	getFlattenedFilteredData() {
@@ -519,6 +520,7 @@ export class LandingPage {
 	}
 
 	updateDataTopic(dataTopic) {
+		$(".dimmer").addClass("active");
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
