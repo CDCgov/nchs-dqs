@@ -904,7 +904,8 @@ export class GenChart {
 						if (nd.values[0].dontDraw === false) {
 							lines[i]
 								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
+								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+								.curve(d3.curveCatmullRom);
 
 							// #### Show confidence interval #####
 							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
@@ -922,6 +923,7 @@ export class GenChart {
 											.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 											.y0((d) => yScaleLeft(d.estimate_lci))
 											.y1((d) => yScaleLeft(d.estimate_uci))
+											.curve(d3.curveCatmullRom)
 									);
 							}
 
@@ -984,7 +986,8 @@ export class GenChart {
 
 				leftLine1
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+					.curve(d3.curveCatmullRom);
 
 				if (p.usesLeftLine1 && !p.usesMultiLineLeftAxis) {
 					let leftLine1Data;
@@ -1027,7 +1030,8 @@ export class GenChart {
 
 				leftLine2
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]));
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]))
+					.curve(d3.curveCatmullRom);
 
 				if (p.usesLeftLine2) {
 					let leftLine2Data;
@@ -1071,7 +1075,8 @@ export class GenChart {
 				if (p.usesLeftLine3) {
 					leftLine3
 						.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]));
+						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]))
+						.curve(d3.curveCatmullRom);
 
 					if (p.usesLeftLine3) {
 						let leftLine3Data;
@@ -1115,7 +1120,8 @@ export class GenChart {
 
 				rightLine
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleRight(d[p.chartProperties.yRight]));
+					.y((d) => yScaleRight(d[p.chartProperties.yRight]))
+					.curve(d3.curveCatmullRom);
 
 				if (p.usesRightLine) {
 					let rightLineData;
