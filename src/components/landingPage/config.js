@@ -128,6 +128,9 @@ export const tabContent = `
 
 	<!-- Tabs navs -->
 	<div id="tabs">
+		<div class="ui inverted dimmer">
+			<div class="ui text loader">Loading</div>
+		</div>
 		<ul>
 			<li id="mapTab-li"><a href="#map-tab"><i class="fas fa-map fa-fw me-2"></i> Map</a></li>
 			<li><a href="#chart-tab"><i class="fas fa-chart-line fa-fw me-2"></i> Chart</a></li>
