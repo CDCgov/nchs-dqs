@@ -1,5 +1,3 @@
-import { DataCache } from "../../utils/datacache";
-
 export const tabContent = `
 	<!-- TOP SELECTORS -->
 	<div class="row">
@@ -17,7 +15,6 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
 				<select name="data-topic-select" id="data-topic-select" form="select-view-options">
-					<optgroup style="font-size: 12px">
 						<option value="obesity-child" selected>Obesity among Children</option>
 						<option value="obesity-adult">Obesity among Adults</option>
 						<option value="suicide">Death Rates for Suicide</option>
@@ -27,7 +24,6 @@ export const tabContent = `
 						<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
 						<option value="drug-overdose">Deaths from drug overdose</option>
 						<option value="ambulatory-care">Ambulatory Care Visits</option>
-					</optgroup>
 				</select>
 			</div>
 		</div>
@@ -45,12 +41,6 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
 				<select name="panel-num-select" id="panel-num-select" form="select-view-options">
-					<optgroup>
-						<option value="1" selected>2-19 years</option>
-						<option value="2">2-5 years</option>
-						<option value="3">6-11 years</option>
-						<option value="4">12-19 years</option>
-					</optgroup>
 				</select>						
 			</div>
 		</div>
@@ -67,15 +57,8 @@ export const tabContent = `
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="panel-num-select" id="panel-num-select" form="select-view-options">
-					<optgroup>
-						<option value="0" selected>Total</option>
-						<option value="1">Sex</option>
-						<option value="3">Race and Hispanic origin</option>
-						<option value="4">Sex and race and Hispanic origin</option>
-						<option value="5">Percent of poverty level</option>
-					</optgroup>
-				</select>						
+				<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options">
+				</select>
 			</div>
 		</div>
 		<div id="timePeriodsSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">

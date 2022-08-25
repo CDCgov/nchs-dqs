@@ -171,7 +171,6 @@ export class LandingPage {
 	};
 
 	getFlattenedFilteredData() {
-		if (this.dataTopic === "injury") this.stubNameNum++;
 		let selectedPanelData = this.socrataData.filter(
 			(d) =>
 				parseInt(d.unit_num, 10) === parseInt(this.config.unitNum, 10) &&
