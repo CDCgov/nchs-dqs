@@ -52,32 +52,6 @@ export const addHtmlTooltips = () => {
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
 
-export const alignSelectorDropDowns = () => {
-	const topicDropdown = $("#data-topic-select");
-	const subtopicDropdown = $("#panel-num-select");
-	const characteristicDropdown = $("#stub-name-num-select");
-	const startPeriodDropdown = $("#year-start-select");
-
-	const topicDropdownTop = topicDropdown[0].getBoundingClientRect().top;
-	const characteristicDropdownTop = characteristicDropdown[0].getBoundingClientRect().top;
-	const startPeriodDropdownTop = startPeriodDropdown[0].getBoundingClientRect().top;
-
-	const topicSelectorGroupLeft = $("#topicSelectorGroup")[0].getBoundingClientRect().left;
-	const characteristicSelectorGroupLeft = $("#characteristicSelectorGroup")[0].getBoundingClientRect().left;
-	const timePeriodsSelectorGroupLeft = $("#timePeriodsSelectorGroup")[0].getBoundingClientRect().left;
-
-	if (topicSelectorGroupLeft === timePeriodsSelectorGroupLeft) return;
-	if (topicSelectorGroupLeft === characteristicSelectorGroupLeft) {
-		characteristicDropdown.css("transform", `translateY(${startPeriodDropdownTop - characteristicDropdownTop}px)`);
-		return;
-	}
-
-	topicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
-	topicDropdown.css("backface-visibility", "hidden");
-	subtopicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
-	characteristicDropdown.css("transform", `translateY(${startPeriodDropdownTop - topicDropdownTop}px)`);
-};
-
 const getTooltipConstructor = (vizId, chartValueProperty) => {
 	const propertyLookup = {
 		// list properties needed in tooltip body and give their line titles and datum types
