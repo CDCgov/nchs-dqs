@@ -15,6 +15,66 @@ const saveCanvasAs = (uri, filename) => {
 	}
 };
 
+export const downLoadMap2 = function () {
+	let mapImageContainer = document.getElementById("us-map-container");
+	let imageHeightContainer = document.getElementById("us-map-container");
+	//let imageTargetName = document.getElementById("maptitle").textContent;
+	let downloadButton = document.getElementById("dwn-chart-img");
+	let downloadButtonContent = document.getElementById("dwn-chart-img");
+	downloadButtonContent.innerHTML = 'Downloading <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>';
+	downloadButtonContent.classList.add("disabled");
+	const updateSVG = (clone) => {
+		const svgHeight = clone.getElementById("us-map-container").clientHeight;
+
+		let chart = clone.getElementById("svgviz005_uscases");
+
+		const heightShift = appState.currentDeviceType !== "desktop" ? -200 : 0;
+		chart.setAttribute("height", svgHeight);
+		chart.setAttribute("width", window.innerWidth - 300);
+		let viewBox = chart.getAttribute("viewBox").split(", ");
+		chart.setAttribute(
+			"viewBox",
+			`-200, ${heightShift}, ${parseInt(viewBox[2]) + 350}, ${parseInt(viewBox[3]) + 40}`
+		);
+		chart.setAttribute("height", svgHeight);
+		chart.setAttribute("width", window.innerWidth - 300);
+	};
+
+	if (appState.currentDeviceType !== "desktop") {
+		scrollTo(0, 0);
+	}
+
+	setTimeout(() => {
+		console.log(mapImageContainer);
+		html2canvas(mapImageContainer, {
+			// scrollY: -window.pageYOffset + 500,
+			// scrollX: -50,
+			// scale: 2,
+			// height: imageHeightContainer.clientHeight,
+			// width: imageHeightContainer.clientWidth,
+			// width: window.innerWidth - 650,
+			//onclone: (clone) => updateSVG(clone),
+
+			onclone: (clone) => {
+				let titleChart = clone.getElementById("chart-title").textContent;
+				clone.getElementById("mapDownloadTitle").innerHTML =
+					"<div style='line-height: 46.7057px; font-size: 42.4597px;'>" + titleChart + "</div>";
+			},
+		}).then((canvas) => {
+			// let titleChart = document.getElementById("chart-title").textContent;
+			// document.getElementById("us-map-container").innerHTML = "<div>" + titleChart + "<br />" + "Test</div>";
+			let titleChart = document.getElementById("chart-title").textContent;
+			let imgName = `${titleChart}.png`;
+			saveCanvasAs(canvas.toDataURL(), imgName);
+			downloadButton.innerHTML = "Download Image";
+			downloadButton.classList.remove("disabled");
+			downloadButtonContent.classList.remove("fa-circle-notch", "fa-spin");
+			// let interaction = `Download Image > ${imageTargetName}`;
+			// Analytics.triggerOmnitureInteractions(interaction);
+		});
+	}, 100);
+};
+
 export const downLoadGenChart = (params) => {
 	// console.log("params", params);
 	//if (params.needToShowHide) $("#chart-container").show();
