@@ -120,7 +120,7 @@ export const MainEvents = {
 		$(document).on("click", "#home-btn-reset", (event) => {
 			event.stopPropagation();
 			console.log("*** reset Button clicked: event.target", event.target);
-			$("#timePeriodContainer").css("display", "flex");
+			$(".timePeriodContainer").css("display", "flex");
 			appState.ACTIVE_TAB.resetSelections();
 			event.preventDefault();
 		});
@@ -138,13 +138,13 @@ export const MainEvents = {
 		$(document).on("click", "a[href='#map-tab']", () => {
 			if (!$("#show-one-period-checkbox").prop("checked")) $("#show-one-period-checkbox").click();
 
-			$("#timePeriodContainer").css("display", "none");
+			$(".timePeriodContainer").css("display", "none");
 			$("#show-one-period-checkbox").prop("disabled", true);
 		});
 
 		$(document).on("click", "a[href='#chart-tab'], a[href='#table-tab']", () => {
 			stopAnimation();
-			$("#timePeriodContainer").css("display", "flex");
+			$(".timePeriodContainer").css("display", "flex");
 			$("#show-one-period-checkbox").prop("disabled", false);
 		});
 

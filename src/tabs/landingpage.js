@@ -5,8 +5,8 @@ import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downloadCSV } from "../utils/downloadCSV";
-import { HtmlTooltip } from "../components/general/htmlTooltip";
-import * as config from "../config";
+import * as config from "../components/landingPage/config";
+import * as functions from "../components/landingPage/functions";
 
 export class LandingPage {
 	constructor() {
@@ -33,24 +33,6 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/State_Territory_FluView1.json"));
 
-	// this is the function that cleans up Socrata data
-	addMissingProps = (cols, rows) => {
-		let newArray = [];
-		rows.forEach((row) => {
-			const keys = Object.keys(row);
-			const difference = cols.filter((col) => !keys.includes(col));
-			if (difference.length > 0) {
-				difference.forEach((item) => {
-					row[item] = null;
-				});
-				newArray.push(row);
-			} else {
-				newArray.push(row);
-			}
-		});
-		return newArray;
-	};
-
 	getSelectedSocrataData = async (config) => {
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
@@ -71,7 +53,7 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 
-			nchsData = this.addMissingProps(columns, JSON.parse(jsonData));
+			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
 			DataCache[`data-${config.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
@@ -80,42 +62,10 @@ export class LandingPage {
 		}
 	};
 
-	addHtmlTooltips = () => {
-		const resetInfoTooltip = new HtmlTooltip({
-			h3: "Reset all selections except for Topic selection.",
-			containerId: "resetInfoContainer",
-		});
-		resetInfoTooltip.render();
-
-		$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
-		$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
-		$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
-
-		const addFiltersTooltip = new HtmlTooltip({
-			h3: "This feature is a work in progress.",
-			containerId: "resetInfoContainer",
-		});
-		addFiltersTooltip.render();
-
-		$("#addFiltersTextContainer").mouseover((e) => addFiltersTooltip.mouseover(e));
-		$("#addFiltersTextContainer").mousemove((e) => addFiltersTooltip.mousemove(e));
-		$("#addFiltersTextContainer").mouseleave((e) => addFiltersTooltip.mouseout(e));
-
-		const editFiltersTooltip = new HtmlTooltip({
-			h3: "This feature is a work in progress.",
-			containerId: "resetInfoContainer",
-		});
-		editFiltersTooltip.render();
-
-		$("#editFiltersTextContainer").mouseover((e) => editFiltersTooltip.mouseover(e));
-		$("#editFiltersTextContainer").mousemove((e) => editFiltersTooltip.mousemove(e));
-		$("#editFiltersTextContainer").mouseleave((e) => editFiltersTooltip.mouseout(e));
-	};
-
 	renderTab() {
-		document.getElementById("maincontent").innerHTML = config.tabContent;
+		$("#maincontent").html(config.tabContent);
 		MainEvents.registerEvents(); // add any click events inside here
-		this.addHtmlTooltips();
+		functions.addHtmlTooltips();
 
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
@@ -140,8 +90,6 @@ export class LandingPage {
 		if (this.selections) this.dataTopic = this.selections.topic;
 		this.updateDataTopic(this.dataTopic); // this gets Socrata data and renders chart/map/datatable;
 	}
-
-	getYear = (period) => parseInt(period.split("-")[0], 10);
 
 	renderMap() {
 		let panelText = $("#panel-num-select option:selected").text();
@@ -192,8 +140,7 @@ export class LandingPage {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 
-		this.chartConfig = this.getChartBaseProps();
-		this.chartConfig = this.getAllChartProps(flattenedData, this.chartConfig);
+		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config.enableCI);
 		this.chartConfig.chartTitle = ""; // dont use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
@@ -221,10 +168,10 @@ export class LandingPage {
 		} else this.renderChart();
 		this.renderDataTable();
 		hashTab.writeHashToUrl();
+		$(".dimmer").removeClass("active");
 	};
 
 	getFlattenedFilteredData() {
-		if (this.dataTopic === "injury") this.stubNameNum++;
 		let selectedPanelData = this.socrataData.filter(
 			(d) =>
 				parseInt(d.unit_num, 10) === parseInt(this.config.unitNum, 10) &&
@@ -290,179 +237,6 @@ export class LandingPage {
 			: filteredData;
 	}
 
-	getChartBaseProps = () => {
-		const chartValueProperty = "estimate";
-		let xAxisTitle;
-
-		// X Axis Title is the "Characteristic" selected
-		xAxisTitle = $("#stub-name-num-select option:selected").text();
-		return { chartValueProperty, xAxisTitle };
-	};
-
-	getAllChartProps = (data, chartBaseProps) => {
-		const { chartValueProperty, xAxisTitle } = chartBaseProps;
-		const vizId = "chart-container";
-		// figure out legend placement
-		let legendCoordPercents = [0.4, 0.58];
-		switch (this.stubNameNum) {
-			case 0:
-				legendCoordPercents = [0.38, 0.75];
-				break;
-			case 1:
-				legendCoordPercents = [0.4, 0.7];
-				break;
-			case 2:
-				legendCoordPercents = [0.4, 0.7];
-				break;
-			case 3:
-				legendCoordPercents = [0.25, 0.65];
-				break;
-			case 4:
-				legendCoordPercents = [0.25, 0.51];
-				break;
-			case 5:
-				legendCoordPercents = [0.38, 0.66];
-				break;
-			default:
-				legendCoordPercents = [0.4, 0.58];
-				break;
-		}
-		const scaleTimeIndicators = ["suicide", "Medicaid"];
-		const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-
-		return {
-			data,
-			chartProperties: {
-				yLeft1: this.showBarChart ? "stub_label" : chartValueProperty,
-				xAxis: this.showBarChart ? chartValueProperty : needsScaleTime ? "date" : "year",
-				bars: "estimate",
-			},
-			enableCI: this.config.enableCI,
-			usesLegend: true,
-			legendBottom: true,
-			usesDateDomainSlider: false,
-			usesBars: this.showBarChart,
-			usesHoverBars: this.showBarChart,
-			barLayout: this.showBarChart ? { horizontal: true, size: 60 } : { horizontal: false, size: null },
-			barColors: [
-				"#6a3d9a",
-				"#cab2d6",
-				"#ff7f00",
-				"#fdbf6f",
-				"#e31a1c",
-				"#fb9a99",
-				"#33a02c",
-				"#b2df8a",
-				"#1f78b4",
-				"#a6cee3",
-				"#A6A6A6",
-				"#fb9a99",
-				"#e31a1c",
-				"#cab2d6",
-				"#a6cee3",
-			],
-			marginRightMin: 20,
-			axisLabelFontScale: this.showBarChart ? 0.5 : 1,
-			usesChartTitle: true,
-			usesLeftAxis: true,
-			usesLeftAxisTitle: true,
-			usesBottomAxis: !this.showBarChart,
-			usesTopAxis: this.showBarChart,
-			usesXAxisTitle: true,
-			usesDateAsXAxis: !this.showBarChart,
-			needsScaleTime: !this.showBarChart && needsScaleTime,
-			yLeftLabelScale: this.showBarChart ? 10 : 2,
-			legendCoordinatePercents: legendCoordPercents,
-			bottomAxisTitle: xAxisTitle,
-			// leftAxisTitle: xAxisTitle,
-			formatXAxis: "string",
-			formatYAxisLeft: "magnitude",
-			usesMultiLineLeftAxis: !this.showBarChart,
-			multiLineColors: [
-				"#88419d",
-				"#1f78b4",
-				"#b2df8a",
-				"#33a02c",
-				"#0b84a5",
-				"#cc4c02",
-				"#690207",
-				"#e1ed3e",
-				"#7c7e82",
-				"#8dddd0",
-				"#A6A6A6",
-				"#fb9a99",
-				"#e31a1c",
-				"#cab2d6",
-				"#a6cee3",
-			],
-			multiLineLeftAxisKey: "subLine",
-			vizId,
-			genTooltipConstructor: this.getTooltipConstructor(vizId, chartValueProperty),
-		};
-	};
-
-	getTooltipConstructor = (vizId, chartValueProperty) => {
-		const propertyLookup = {
-			// list properties needed in tooltip body and give their line titles and datum types
-			year: {
-				title: "Time Period: ",
-				datumType: "string",
-			},
-			estimate: {
-				title: "Estimate: ",
-				datumType: "string",
-			},
-			indicator: {
-				title: "Indicator: ",
-				datumType: "string",
-			},
-			unit: {
-				title: "Unit: ",
-				datumType: "string",
-			},
-			panel: {
-				title: "Subtopic: ",
-				datumType: "string",
-			},
-			stub_name: {
-				title: "",
-				datumType: "string",
-			},
-			stub_label: {
-				title: "Stub Label: ",
-				datumType: "string",
-			},
-			age: {
-				title: "Age Group: ",
-				datumType: "string",
-			},
-			flag: {
-				title: "Flag: ",
-				datumType: "string",
-			},
-			estimate_lci: {
-				title: "95% confidence LCI: ",
-				datumType: "string",
-			},
-			estimate_uci: {
-				title: "95% confidence UCI: ",
-				datumType: "string",
-			},
-			"": { title: "", datumType: "empty" },
-		};
-
-		const headerProps = ["stub_name", "stub_label"];
-		const bodyProps = ["panel", "unit", chartValueProperty, "estimate_uci", "estimate_lci", "year", "age", "flag"];
-
-		return {
-			propertyLookup,
-			headerProps,
-			bodyProps,
-			svgId: `${vizId}-svg`,
-			vizId,
-		};
-	};
-
 	updateFootnotes(footnotesIdArray, dataTopic) {
 		let footnotesList;
 		let sourceList;
@@ -519,6 +293,7 @@ export class LandingPage {
 	}
 
 	updateDataTopic(dataTopic) {
+		$(".dimmer").addClass("active");
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
@@ -574,7 +349,7 @@ export class LandingPage {
 					.map((d) => ({
 						...d,
 						estimate: parseFloat(d.estimate),
-						year_pt: this.getYear(d.year),
+						year_pt: functions.getYear(d.year),
 						dontDraw: false,
 						assignedLegendColor: "#FFFFFF",
 					}));
@@ -768,7 +543,7 @@ export class LandingPage {
 		// Some characteristics have no data -> flag = "- - -"; so filter those years out.
 
 		const allYearsArray = [...new Set(this.getFilteredYearData().map((d) => d.year))];
-		const singleYearsArray = allYearsArray.map((d) => this.getYear(d)).sort((a, b) => a - b);
+		const singleYearsArray = allYearsArray.map((d) => functions.getYear(d)).sort((a, b) => a - b);
 
 		$("#year-start-select").empty();
 		$("#year-end-select").empty();
@@ -797,12 +572,12 @@ export class LandingPage {
 		$("#year-start-select").val(start);
 		const allYearsArray = this.getFilteredYearData().map((d) => d.year);
 		this.startPeriod = start;
-		this.startYear = this.getYear(start);
+		this.startYear = functions.getYear(start);
 		const currentEnd = $("#year-end-select :selected").text();
 		$("#year-end-select").empty();
 
 		allYearsArray.forEach((y) => {
-			if (this.getYear(y) > this.startYear) {
+			if (functions.getYear(y) > this.startYear) {
 				if (currentEnd === y) $("#year-end-select").append(`<option selected value="${y}">${y}</option>`);
 				else $("#year-end-select").append(`<option value="${y}">${y}</option>`);
 			}
@@ -812,7 +587,7 @@ export class LandingPage {
 
 	updateEndPeriod(end) {
 		this.endYear = end;
-		this.endPeriod = this.getYear(end);
+		this.endPeriod = functions.getYear(end);
 		this.renderChart();
 	}
 
@@ -895,7 +670,7 @@ export class LandingPage {
 
 		// reset and show time period start/end dropdowns
 		this.resetTimePeriods();
-		$("#timePeriodContainer").css("display", "flex");
+		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect(); // reset the unit
 		DataCache.activeLegendList = []; // clear the list of active legend items when stub name changes
@@ -969,10 +744,10 @@ export class LandingPage {
 				// group the <th> content so that the last word of the th is wrapped in a span with the sort icon
 				// so that the sort icon can be in a <span> with css of white-space: nowrap
 				const words = col.split(" ");
-				//console.log(`Words: ${words}`);
+				// console.log(`Words: ${words}`);
 				const lastWord = words.splice(-1);
-				//console.log(`Last word: ${lastWord}`);
-				//console.log(`Words: ${words}`);
+				// console.log(`Last word: ${lastWord}`);
+				// console.log(`Words: ${words}`);
 				let header = "<span>";
 				if (words.length) {
 					words.forEach((w) => (header += `${w} `));

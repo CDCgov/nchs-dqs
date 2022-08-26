@@ -2328,3 +2328,7 @@ button.disabled {
 .sortIconNoWrap {
 	white-space: nowrap;
 }
+
+.ui.dimmer {
+	background-color: rgba(85, 85, 85, 0.4) !important;
+}
