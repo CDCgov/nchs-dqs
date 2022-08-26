@@ -681,7 +681,7 @@ export class GenChart {
 					let maxReported = [...sortedXValues.slice(-1)][0];
 					minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
 					maxReported.setDate(maxReported.getDate() + 1);
-					xScale.domain([minReported, maxReported]); //.nice();
+					xScale.domain([minReported, maxReported]).nice();
 					//debugger;
 				} else if (p.barLayout.horizontal) {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
@@ -1179,7 +1179,6 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					//debugger;
 					if (p.needsScaleTime) xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
 						.ticks(d3.timeYear.every(2))
 						//Show all tick marks but labels every other tick
