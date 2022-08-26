@@ -2127,24 +2127,23 @@ ul#community-characteristics-list {
 	word-wrap: break-word;
 }
 
-
 /* (TT) ADDITIONS FOR NCHS */
 
 /* VARS */
-$open-sans: 'Open Sans', 'Helvetica', sans-serif;
+$open-sans: "Open Sans", "Helvetica", sans-serif;
 
 $darkNavy: #213140;
-$teal1: #66B3FB; // glow effect
-$teal2: #185EAA; //button color
+$teal1: #66b3fb; // glow effect
+$teal2: #185eaa; //button color
 $charcoal: #555555;
-$gold: #B6985A;
+$gold: #b6985a;
 
-$activeShadow: 0 0 10px rgba($teal1, .5);
+$activeShadow: 0 0 10px rgba($teal1, 0.5);
 
 /* MIXINS */
 @mixin focusOutline {
-	outline: dotted 1px #CCC;
-	outline-offset: .45rem;
+	outline: dotted 1px #ccc;
+	outline-offset: 0.45rem;
 }
 
 @mixin hideInput {
@@ -2157,13 +2156,11 @@ $activeShadow: 0 0 10px rgba($teal1, .5);
 @mixin breakpoint($point) {
 	@if $point ==1100 {
 		@media (max-width: 1100px) {
-			@content ;
+			@content;
 		}
-	}
-
-	@else if $point ==800 {
+	} @else if $point ==800 {
 		@media (max-width: 800px) {
-			@content ;
+			@content;
 		}
 	}
 }
@@ -2188,10 +2185,9 @@ fieldset {
 	box-sizing: border-box;
 	display: block;
 	border: none;
-	border: solid 1px #CCC;
+	border: solid 1px #ccc;
 	min-width: 0;
 	background-color: #b3d2ce;
-
 }
 
 body:not(:-moz-handler-blocked) fieldset {
@@ -2212,23 +2208,21 @@ body:not(:-moz-handler-blocked) fieldset {
 		@include hideInput;
 	}
 
-	input+label {
+	input + label {
 		margin: 0;
-		padding: .75rem 2rem;
+		padding: 0.75rem 2rem;
 		box-sizing: border-box;
 		position: relative;
 		display: inline-block;
-		border: solid 1px #DDD;
-		background-color: #FFF;
+		border: solid 1px #ddd;
+		background-color: #fff;
 		font-size: 1rem;
-		line-height: 70%;
+		line-height: 100%;
 		font-weight: 600;
 		text-align: center;
 		box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-		transition: border-color .15s ease-out,
-			color .25s ease-out,
-			background-color .15s ease-out,
-			box-shadow .15s ease-out;
+		transition: border-color 0.15s ease-out, color 0.25s ease-out, background-color 0.15s ease-out,
+			box-shadow 0.15s ease-out;
 
 		/* ADD THESE PROPERTIES TO SWITCH FROM AUTO WIDTH TO FULL WIDTH */
 		/*flex: 0 0 50%; display: flex; justify-content: center; align-items: center;*/
@@ -2245,25 +2239,25 @@ body:not(:-moz-handler-blocked) fieldset {
 		}
 	}
 
-	input:hover+label {
+	input:hover + label {
 		border-color: $darkNavy;
 	}
 
-	input:checked+label {
+	input:checked + label {
 		background-color: $teal2;
-		color: #FFF;
+		color: #fff;
 		box-shadow: $activeShadow;
 		border-color: $teal2;
 		z-index: 1;
 	}
 
-	input:focus+label {
+	input:focus + label {
 		@include focusOutline;
 	}
 
 	@include breakpoint(800) {
-		input+label {
-			padding: .55rem .25rem;
+		input + label {
+			padding: 0.55rem 0.25rem;
 			flex: 0 0 50%;
 			display: flex;
 			justify-content: center;

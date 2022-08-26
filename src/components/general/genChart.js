@@ -329,7 +329,11 @@ export class GenChart {
 			.ticks(p.rightTickCount)
 			.tickFormat((drawD) => genFormat(drawD, p.formatYAxisRight));
 
-		const svg = viz.append("svg").attr("id", svgId).attr("viewBox", [0, 0, svgWidth, svgHeight]);
+		const svg = viz
+			.append("svg")
+			.attr("id", svgId)
+			.attr("class", "general-chart")
+			.attr("viewBox", [0, 0, svgWidth, svgHeight]);
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
 		// - this could also be enabled or disabled from a PROP
@@ -1179,19 +1183,21 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					if (p.needsScaleTime) xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-						.ticks(d3.timeYear.every(2))
-						//Show all tick marks but labels every other tick
-						.tickFormat((d, i) => {
-							return i % 2 !== 0 ? " " : genFormat(d, "year");
-						})
-					else xAxis     // WHAT IS THIS tickValues for???  .tickValues(tickValues)
+					if (p.needsScaleTime)
+						xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							.ticks(d3.timeYear.every(2))
+							//Show all tick marks but labels every other tick
+							.tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : genFormat(d, "year");
+							});
+					else
+						xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
 							.ticks(tickValues.length)
-							.tickFormat((d,i) => {
-                  				return i%2 !== 0 ? " ": d;
-                 			});
+							.tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
+							});
 				}
-				
+
 				if (p.barLayout?.horizontal) {
 					leftAxisDraw.call(yAxisLeft);
 					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLinebreaks);
