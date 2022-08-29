@@ -138,38 +138,34 @@ export const tabContent = `
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="map-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
-				<div style="display: inline; float: left">
-					<div style="margin-left: 90px; margin-right: 50px; margin-bottom: 10px; width: auto; display: inline; float: left">
-						Adjust Unit<br />
-						<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
-							<option value="1" selected>Percent of population, crude</option>
-						</select>
-					</div>
-					<fieldset style="margin-left: 90px; margin-top: 12px">
-						<div class="btnToggle">
-							<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-							<label for="classNBreaks">Natural Breaks</label>
-							<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-							<label for="classQuartiles">Quartiles</label>
-						</div>
-					</fieldset>
+				<div class="adjustUnitContainer">
+					Adjust Unit<br />
+					<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
+						<option value="1" selected>Percent of population, crude</option>
+					</select>
 				</div>
-				<div id="us-map-container" class="general-map" style="margin-left: 50px; margin-right: 50px; align: left; background-color: #ffffff">
+				<fieldset class="breaksContainer">
+					<div class="btnToggle">
+						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
+						<label for="classNBreaks">Natural Breaks</label>
+						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
+						<label for="classQuartiles">Quartiles</label>
+					</div>
+				</fieldset>			
+				<div id="us-map-container">
 					<div id="mapDownloadTitle"></div>
-					<div id="us-map" class="general-map"></div>
+					<div id="us-map" class="general-chart"></div>
 					<div id="us-map-message" class="chart-title"></div>
-					<div id="us-map-time-slider" data-html2canvas-ignore></div>
-					<div id="us-map-legend"></div>
+					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
+					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
 				</div>
 				<br />
 				<div class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
 			</div>
-			<!-- end map wrapper -->
 		</div>
+		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
-			<div class="chart-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<!-- if you remove that 1px padding you lose all top spacing - dont know why (TT) -->
+			<div class="chart-wrapper" style="background-color: #b3d2ce;">
 				<div class="adjustUnitContainer">
 					Adjust Unit<br />
 					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
@@ -181,7 +177,7 @@ export const tabContent = `
 						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
 					</div>
 				</div>
-				<div id="chart-container" class="general-chart"></div>
+				<div id="chart-container"></div>
 				<br />
 				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is unavailable for selections chosen.</div>
 			</div>

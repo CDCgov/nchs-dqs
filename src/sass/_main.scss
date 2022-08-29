@@ -166,12 +166,15 @@ a {
 }
 
 .adjustUnitContainer {
-	margin-left: 4vw;
-	margin-right: 20px;
-	margin-bottom: 10px;
+	margin: 15px 20px 10px 4vw;
 	width: auto;
 	display: inline;
 	float: left;
+}
+
+.breaksContainer {
+	margin: 20px auto auto 10px;
+	display: inline;
 }
 
 #header {
@@ -2331,4 +2334,16 @@ button.disabled {
 
 .ui.dimmer {
 	background-color: rgba(85, 85, 85, 0.4) !important;
+}
+
+.da-maplegend-box,
+.mapAnimateAxisPoint {
+	font-size: 1em;
+	@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
+		font-size: 0.85em;
+	}
+
+	@media screen and (max-width: $mobile-max-width-2) {
+		font-size: 0.7em;
+	}
 }

@@ -39,8 +39,9 @@ export class GenMap {
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
 
-		let mapWidthRatio = 0.5;
-		if (fullSvgWidth <= 1050) mapWidthRatio = 0.8;
+		// let mapWidthRatio = 0.5;
+		// if (fullSvgWidth <= 1050) mapWidthRatio = 0.8;
+		let mapWidthRatio = 0.8;
 
 		const svgWidth = fullSvgWidth * mapWidthRatio;
 		const svgHeight = 110;
@@ -445,7 +446,8 @@ export class GenMap {
 
 		const path = d3.geoPath().projection(projection);
 
-		const usMap = svg.append("g").attr("width", width).attr("height", mapHeight);
+		// const usMap = svg.append("g").attr("width", width).attr("height", mapHeight);
+		const usMap = svg.append("g").attr("viewbox", [0, 0, width, mapHeight]);
 
 		console.log("all states data:", states);
 
@@ -590,18 +592,14 @@ export class GenMap {
 		console.log("filtered Territories:", filteredTerritories);
 
 		const numberOfTerritories = filteredTerritories.length + 1;
-		const territoryRectWidth = 60 * overallScale;
-		const territoryRectHeight = 25 * overallScale;
-		const territorySpaceBetween = 10 * overallScale;
-		const territoryTranslateLeft =
-			(overallScale *
-				(numberOfTerritories * territoryRectWidth + (numberOfTerritories - 1) * territorySpaceBetween)) /
-			2;
+		const territoryRectWidth = width / numberOfTerritories + 2;
+		const territoryRectHeight = Math.min(30, territoryRectWidth / 3);
+		const territorySpaceBetween = territoryRectWidth / 5;
 
 		const territoryGroup = svg
 			.append("g")
 			.attr("id", "territoryGroup")
-			.attr("transform", `translate(${width * 0.5 - territoryTranslateLeft}, ${mapHeight + territoriesHeight})`)
+			.attr("transform", `translate(${territoryRectWidth / 2}, ${mapHeight + territoriesHeight})`)
 			.attr("width", width)
 			.attr("height", territoriesHeight);
 
@@ -610,7 +608,7 @@ export class GenMap {
 			.data(filteredTerritories)
 			.enter()
 			.append("rect")
-			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween)
+			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween / 2)
 			.attr("width", territoryRectWidth * 0.8)
 			.attr("height", territoryRectHeight)
 			.attr("rx", 5 * overallScale)
@@ -624,9 +622,9 @@ export class GenMap {
 			.data(filteredTerritories)
 			.enter()
 			.append("text")
-			.attr("font-size", 18 * overallScale)
-			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween + 23 * overallScale)
-			.attr("y", 18 * overallScale)
+			.attr("font-size", territoryRectHeight * 0.7)
+			.attr("x", (d, i) => territoryRectWidth * i + territoryRectWidth * 0.4 + territorySpaceBetween / 2)
+			.attr("y", territoryRectHeight * 0.72)
 			.attr("text-anchor", "middle")
 			.attr("font-family", "arial,helvetica,sans-serif")
 			.attr("stroke", (d) => getFontColor(d.class))
@@ -691,26 +689,6 @@ export class GenMap {
 			}
 			return false;
 		}
-
-		// function isValueInActiveLegend(val) {
-		// 	var minVal;
-		// 	var maxVal;
-		// 	var splitVal;
-
-		// 	for (let i = 0; i < mActiveLegendItems.length; i += 1) {
-		// 		if (isNoDataOrSuppressedAndActive(mActiveLegendItems[i], val)) {
-		// 			return true;
-		// 		}
-		// 		splitVal = mActiveLegendItems[i].split("-");
-		// 		minVal = +splitVal[0];
-		// 		maxVal = +splitVal[1];
-		// 		if (+val >= minVal && +val <= maxVal) {
-		// 			return true;
-		// 		}
-		// 	}
-
-		// 	return false;
-		// }
 
 		function convertRGB(rgb) {
 			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
@@ -835,18 +813,6 @@ export class GenMap {
 			};
 			legendItems.push(legendItemObj);
 
-			// No Data Unreliable - THEY ASKED TO DISABLE UNRELIABLE FROM THE LEGEND
-			// - instead we just have cross hatching in the state or territory if flag = "*"
-			// (TT) - leaving this here in case they ask us to re-enable this
-			/* 			legendItemObj = {
-				ColorStyle:
-				"color:black !important; background-color:" + unreliableHexVal,
-				DisplayLabel: "Unreliable",
-				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
-				IsChecked: 1,  // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
-			};
-			legendItems.push(legendItemObj); */
-
 			let nullFlag = false;
 			if (mLegendData.length) {
 				for (i = 0; i < mLegendData.length; i += 1) {
@@ -885,14 +851,9 @@ export class GenMap {
 					//console.log("loadLegend item:", i, legendItemObj);
 				}
 
-				legendTemplateConfig = {
-					LegendDivID: "us-map-legend",
-					LegendItems: legendItems,
-				};
-
 				// Generate the HTML for the legend
 				legendGeneratedHTML =
-					"<div id='us-map-legend' class='d-flex justify-content-center da-map-legend mb-1'>";
+					"<div id='us-map-legend' style='margin-left: 5px; margin-right: 5px' class='d-flex justify-content-center da-map-legend mb-1'>";
 
 				legendItems.forEach((leg, i) => {
 					let isCheckedStr;
@@ -915,7 +876,7 @@ export class GenMap {
             			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;
 					}
 				});
-				legendGeneratedHTML += "</div>";
+				legendGeneratedHTML += "</div><br />";
 
 				// now add the legend to the map div
 				$("#us-map-legend").html(legendGeneratedHTML);
