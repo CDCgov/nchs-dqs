@@ -419,10 +419,11 @@ export class GenChart {
 				// if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
 			}
 
+			// some unit titles are too long for mobile
+			// -- but cant use insertLineBreaks because just need split text
+			// to draw on 2 lines only
 			const splitTitle = function (testString) {
-			
 				const maxLength = 24;
-
 				if (testString.length > maxLength) {
 					const center = testString.length / 2;
 					const allSpaceIndeces = [];
@@ -441,8 +442,6 @@ export class GenChart {
 						return Math.abs(curr - center) < Math.abs(prev - center) ? curr : prev;
 					});
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
-					// recursively call this function if still too long
-					//newSplit.forEach((ns) => splitIfTooLong(ns));
 					return newSplit;
 				} else return testString;
 
@@ -451,7 +450,14 @@ export class GenChart {
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
-				let splitText = splitTitle($("#unit-num-select-chart :selected").text());
+				let splitText=[];
+				if (appState.currentDeviceType === "mobile") {
+					splitText = splitTitle($("#unit-num-select-chart :selected").text());
+				} else {
+					// dont need to split
+					splitText = [$("#unit-num-select-chart :selected").text(),""];
+				}
+
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
