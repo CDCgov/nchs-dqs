@@ -784,7 +784,11 @@ export class LandingPage {
 				let columnHeader = cols[columnIndex];
 				let firstColumnVal = i[0].innerText;
 				if (columnIndex === 0) {
-					this.setAttribute("aria-label", `${columnHeader} ${column.value}`);
+					if (column.value === "N/A") {
+						this.setAttribute("aria-label", `${columnHeader} Not Available`);
+					} else {
+						this.setAttribute("aria-label", `${columnHeader} ${column.value}`);
+					}
 				} else if (column.value === null) {
 					this.setAttribute("aria-label", `${firstColumnVal} ${columnHeader} Not Available`);
 				} else {

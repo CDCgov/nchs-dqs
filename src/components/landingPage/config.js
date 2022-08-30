@@ -7,14 +7,14 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<div class="preSelText">Select a</div>
+					<label for="data-topic-select" class="preSelText" aria-label="Select a Topic">Select a</label>
 					<div class="mainSelText">Topic</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="data-topic-select" id="data-topic-select" form="select-view-options">
+				<select name="data-topic-select-box" id="data-topic-select" form="select-view-options">
 						<option value="obesity-child" selected>Obesity among Children</option>
 						<option value="obesity-adult">Obesity among Adults</option>
 						<option value="suicide">Death Rates for Suicide</option>
@@ -34,14 +34,14 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<div class="preSelText">Refine to a</div>
+					<label for="panel-num-select" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
 					<div class="mainSelText">Subtopic</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="panel-num-select" id="panel-num-select" form="select-view-options">
+				<select name="panel-num-select-box" id="panel-num-select" form="select-view-options">
 				</select>						
 			</div>
 		</div>
@@ -51,14 +51,14 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<div class="preSelText">View Data by</div>
+					<label for="stub-name-num-select" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
 					<div class="mainSelText">Characteristic</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="stub-name-num-select" id="stub-name-num-select" form="select-view-options">
+				<select name="stub-name-num-select-box" id="stub-name-num-select" form="select-view-options">
 				</select>
 			</div>
 		</div>
@@ -68,7 +68,7 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<div class="preSelText">Choose from available</div>
+					<div class="preSelText" aria-label="Choose from available time periods">Choose from available</div>
 					<div class="mainSelText">Time Periods</div>
 				</div>
 			</div>
@@ -82,14 +82,14 @@ export const tabContent = `
 			</div>
 			<div class="row timePeriodContainer">
 				<div id="startYearContainer" class="col-6" style="text-align: center">
-					<div class="label-style" id="year-start-label">Start Period</div>
+					<label for="year-start-select" class="label-style" id="year-start-label">Start Period</label>
 					<div class="styled-select">
 						<select name="year-start" id="year-start-select" form="select-view-options">
 						</select>
 					</div>
 				</div>
 				<div id="endYearContainer" class="col-6" style="text-align: center">
-					<div class="label-style" id="year-end-label">End Period</div>
+					<label for="year-end-select" class="label-style" id="year-end-label">End Period</label>
 					<div class="styled-select">
 						<select name="year-end" id="year-end-select" form="select-view-options">
 						</select>
@@ -104,11 +104,11 @@ export const tabContent = `
 		<div id="additionalFiltersContainer" class="col-lg-5 col-md-6 col-sm-6">
 			<div id="addFiltersTextContainer" class="col homeSmallIcon d-inline-block">
 				<i class="fas fa-caret-right"></i>
-				<span class="homeSmallText">View Additional Filters</span>
+				<span role="button" class="homeSmallText">View Additional Filters</span>
 			</div>
 			<div id="editFiltersTextContainer" class="col homeTinyIcon d-inline-block float-right">
 				<i class="fas fa-pen fa-xs"></i>
-				<span class="homeTinyText" style="text-decoration-line: underline">Edit Your Filters</span>
+				<span role="button" class="homeTinyText" style="text-decoration-line: underline">Edit Your Filters</span>
 			</div>
 		</div>
 
@@ -138,18 +138,20 @@ export const tabContent = `
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="map-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="adjustUnitContainer">
-					Adjust Unit<br />
-					<select name="unit-num-select-map" id="unit-num-select-map" form="select-view-options" class="custom-select">
+				
+				<div class="containerBoxes">
+					<label for="unit-num-select-map" class="adjustUnitContainer">Adjust Unit</label>
+					<br />
+					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 				</div>
 				<fieldset class="breaksContainer">
 					<div class="btnToggle">
 						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-						<label for="classNBreaks">Natural Breaks</label>
+						<label role="button" for="classNBreaks">Natural Breaks</label>
 						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-						<label for="classQuartiles">Quartiles</label>
+						<label role="button" for="classQuartiles">Quartiles</label>
 					</div>
 				</fieldset>			
 				<div id="us-map-container">
@@ -160,15 +162,16 @@ export const tabContent = `
 					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
 				</div>
 				<br />
-				<div class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
+				<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
 			</div>
 		</div>
 		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
 			<div class="chart-wrapper" style="background-color: #b3d2ce;">
-				<div class="adjustUnitContainer">
-					Adjust Unit<br />
-					<select name="unit-num-select-chart" id="unit-num-select-chart" form="select-view-options" class="custom-select">
+			<div class="containerBoxes">	
+					<label for="unit-num-select-chart" class="adjustUnitContainer">Adjust Unit </label>
+					<br />
+					<select name="unit-num-select-chart-box" id="unit-num-select-chart" form="select-view-options" class="custom-select">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 
@@ -179,17 +182,18 @@ export const tabContent = `
 				</div>
 				<div id="chart-container"></div>
 				<br />
-				<div class="source-text" id="source-text-chart"><b>Source</b>: Data is unavailable for selections chosen.</div>
+				<div tabindex="0" class="source-text" id="source-text-chart"><b>Source</b>: Data is unavailable for selections chosen.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div class="table-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="adjustUnitContainer">
-					Adjust Unit<br />
-					<select name="unit-num-select-table" id="unit-num-select-table" form="select-view-options" class="custom-select">
-						<option value="1" selected>Percent of population, crude</option>
-					</select>
+				<div class="containerBoxes">	
+					<label for="unit-num-select-table" class="adjustUnitContainer">Adjust Unit</label>
+						<br />
+						<select name="unit-num-select-table-box" id="unit-num-select-table" form="select-view-options" class="custom-select">
+							<option value="1" selected>Percent of population, crude</option>
+						</select>
 				</div>
 				<div id="nchs-table-container">
 					<div id="table-title" class="title"></div>
