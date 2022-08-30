@@ -160,18 +160,24 @@ export class GenChart {
 
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
-		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling often makes the label sizes too big
 		if (axisTitleFontSize > 14) {
 			// knock it back down
 			axisTitleFontSize = 14;
 		}
+		// if mobile knock it down some more
+/* 		if (appState.currentDeviceType !== "desktop" && appState.currentDeviceType !== "tablet") {
+			// mobile - reduce a little more
+			axisTitleFontSize = 12; // trying to fit "deaths per 100,000 resident population, age-adjusted"
+		}  */
 
+		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling often makes the label sizes too big
 		if (axisLabelFontSize > 14) {
 			// knock it back down
 			axisLabelFontSize = 12;
 		}
+
 
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
@@ -413,17 +419,61 @@ export class GenChart {
 				// if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
 			}
 
+			const splitTitle = function (testString) {
+			
+				const maxLength = 24;
+
+				if (testString.length > maxLength) {
+					const center = testString.length / 2;
+					const allSpaceIndeces = [];
+					let startIndex = testString.indexOf(" ");
+					if (startIndex === -1) {
+						finalListOfTspan.push(testString);
+						return;
+					}
+					while (startIndex !== -1) {
+						allSpaceIndeces.push(startIndex);
+						startIndex = testString.indexOf(" ", startIndex + 1);
+					}
+
+					// find the index of a space " " that is closest to the middle of the string
+					const closest = allSpaceIndeces.reduce(function (prev, curr) {
+						return Math.abs(curr - center) < Math.abs(prev - center) ? curr : prev;
+					});
+					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
+					// recursively call this function if still too long
+					//newSplit.forEach((ns) => splitIfTooLong(ns));
+					return newSplit;
+				} else return testString;
+
+			};
+
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
+				let splitText = splitTitle($("#unit-num-select-chart :selected").text());
 				svg.append("text")
-					.text(p.barLayout.horizontal ? "" : $("#unit-num-select-chart :selected").text())
+					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
+					.attr("id","leftAxisTitle")
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
 					.attr("fill", p.leftAxisColor);
+				// $("#leftAxisTitle").text().each(insertLinebreaks);
+				if (splitText.length > 1) {
+					svg.append("text")
+						.text(p.barLayout.horizontal ? "" : splitText[1])
+						.style("text-anchor", "middle")
+						.attr("transform", "rotate(-90)")
+						.attr("id","leftAxisTitle")
+						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
+						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // dist to edge
+						.attr("font-size", axisTitleFontSize)
+						.attr("fill", p.leftAxisColor);	
+				}
+				
 			}
 
 			// right yAxis
@@ -1184,18 +1234,53 @@ export class GenChart {
 
 				if (p.usesDateAsXAxis) {
 					if (p.needsScaleTime)
-						xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-							.ticks(d3.timeYear.every(2))
-							//Show all tick marks but labels every other tick
-							.tickFormat((d, i) => {
-								return i % 2 !== 0 ? " " : genFormat(d, "year");
-							});
-					else
-						xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
-							.ticks(tickValues.length)
-							.tickFormat((d, i) => {
-								return i % 2 !== 0 ? " " : d;
-							});
+						if (appState.currentDeviceType === "desktop") {
+							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+								.ticks(d3.timeYear.every(2))
+								//Show all tick marks but labels every other tick
+								.tickFormat((d, i) => {
+									return i % 2 !== 0 ? " " : genFormat(d, "year");
+								});
+						} else if (appState.currentDeviceType === "tablet") {
+							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+								.ticks(d3.timeYear.every(5))
+								//Show all tick marks but labels every other tick
+								.tickFormat((d, i) => {
+									return i % 2 !== 0 ? " " : genFormat(d, "year");
+								});
+						} else {
+							// mobile (TTT)
+							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+								.ticks(d3.timeYear.every(5))
+								//Show all tick marks but labels every other tick
+								.tickFormat((d, i) => {
+									return i % 5 !== 0 ? " " : genFormat(d, "year");
+								});
+						}
+					else {
+						// uses time periods
+						if (appState.currentDeviceType === "desktop") {
+							xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
+								.ticks(tickValues.length)
+								.tickFormat((d, i) => {
+									return i % 2 !== 0 ? " " : d;
+								});
+						} else if (appState.currentDeviceType === "tablet") {
+							xAxis 
+								.ticks(tickValues.length)
+								.tickFormat((d, i) => {
+									return i % 2 !== 0 ? " " : d;
+								});
+						} else {
+							// mobile (TTT)
+							xAxis
+								.ticks(tickValues.length)
+								.tickFormat((d, i) => {
+									return i % 4 !== 0 ? " " : d;
+								});
+						}
+					}
+
 				}
 
 				if (p.barLayout?.horizontal) {
