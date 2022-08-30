@@ -165,11 +165,6 @@ export class GenChart {
 			// knock it back down
 			axisTitleFontSize = 14;
 		}
-		// if mobile knock it down some more
-/* 		if (appState.currentDeviceType !== "desktop" && appState.currentDeviceType !== "tablet") {
-			// mobile - reduce a little more
-			axisTitleFontSize = 12; // trying to fit "deaths per 100,000 resident population, age-adjusted"
-		}  */
 
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling often makes the label sizes too big
@@ -1239,7 +1234,7 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					if (p.needsScaleTime)
+					if (p.needsScaleTime) {
 						if (appState.currentDeviceType === "desktop") {
 							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
 								.ticks(d3.timeYear.every(2))
@@ -1255,7 +1250,7 @@ export class GenChart {
 									return i % 2 !== 0 ? " " : genFormat(d, "year");
 								});
 						} else {
-							// mobile (TTT)
+							// mobile
 							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
 								.ticks(d3.timeYear.every(5))
 								//Show all tick marks but labels every other tick
@@ -1263,7 +1258,7 @@ export class GenChart {
 									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
 						}
-					else {
+					} else {
 						// uses time periods
 						if (appState.currentDeviceType === "desktop") {
 							xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
