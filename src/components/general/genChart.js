@@ -1418,6 +1418,7 @@ export class GenChart {
 						.attr("stroke-dasharray", d.dashArrayScale);
 				}
 
+				// draw the check box using unicode
 				legendItem
 					.append("g")
 					.append("text")
@@ -1434,20 +1435,23 @@ export class GenChart {
 						}
 					});
 
+				// now draw the legend item text last
 				legendItem
 					.append("g")
 					.append("text")
 					.attr("x", 67) // this moves the text to the right
 					.attr("y", axisLabelFontSize * 0.5) // up and down
 					.text(d.text)
+					.attr("overflow", "hidden")
 					.attr("font-size", axisLabelFontSize);
 			});
 
 			// get all legend items and find the longest then set the legend container size
-			const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+			const legendItems = document.querySelectorAll(`.${svgId}-legendItem text`);
+			debugger;
 			const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
 			const newWidth = d3.max(legendWidths) ?? 0;
-			legendContainer.attr("width", newWidth + 56);
+			legendContainer.attr("width", newWidth + 110); // was + 56 which had some exceeding the box
 
 			// Now center the legend container
 			legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
@@ -1471,10 +1475,10 @@ export class GenChart {
 					.append("text")
 					.attr("id", "selectTenTxt")
 					.attr("x", -80)
-					.attr("y", -12)
+					.attr("y", -6)
 					.attr("data-html2canvas-ignore", "")
 					.style("fill", "black")
-					.style("font-size", "17px")
+					.style("font-size", "14px")
 					.text("Select up to 10 groups");
 			}
 		}
