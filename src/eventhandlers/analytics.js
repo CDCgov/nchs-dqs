@@ -17,8 +17,8 @@ export const Analytics = {
 			// Get the name of the selected tab from the hash value of the current URL.
 			let currentUrl = str || window.location.href;
 			let tabName = "";
-			const skipLinks = ["titleSection", "pageFooter", "viewHistoricLink", "topOfTable", "bottomOfTable"];
-/* 			if (currentUrl.indexOf("#") > 0) {
+			const skipLinks = ["titleSection", "pageFooter", "viewHistoricLink", "bottomOfTable"];
+			/* 			if (currentUrl.indexOf("#") > 0) {
 				let liveURL = currentUrl.split("#")[1];
 				let isAllowed = allowedURL.includes(liveURL);
 				let checkLinks = skipLinks.includes(liveURL);
