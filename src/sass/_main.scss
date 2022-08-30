@@ -152,8 +152,15 @@ a {
 
 .adjustUnitContainer {
 	margin: 15px 20px 10px 4vw;
-	// width: auto;
-	// display: blc;
+	width: auto;
+	display: inline;
+	float: left;
+}
+
+#unit-num-select-chart {
+	@media screen and (max-width: $mobile-max-width-2) {
+		width: 100%;
+	}
 }
 
 .breaksContainer {
