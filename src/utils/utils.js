@@ -1,7 +1,4 @@
 ﻿import "core-js/es/promise";
-import { DataCache } from "./datacache";
-//import { externalViews } from "./externalViews";
-//import { Analytics } from "../eventhandlers/analytics";
 
 export const Utils = {
 	getJsonFile(fname) {
@@ -60,157 +57,6 @@ export const Utils = {
 			if (isitthere.indexOf(0) != -1) return false;
 			return true;
 		}
-	},
-	getNotes(pageid) {
-		return this.searchJSONArray(DataCache.Notes.notes, { pageid });
-	},
-	getPanelNotes(vizid) {
-		return this.searchJSONArray(DataCache.PanelNotes.panel_notes, {
-			vizid,
-		});
-	},
-	applyFootnotes(tabid) {
-		const footnotes = this.searchJSONArray(DataCache.TabNotes.tab_notes, {
-			tabid,
-		});
-
-		if (footnotes.length > 0) {
-			$("#pageFooter").html(footnotes[0].page_note);
-		} else
-			$(`#pageFooter`).html(
-				"<p>There was an error pulling footnotes. Try refreshing your browser to see them.</p>"
-			);
-	},
-	getTabNotes(tabid) {
-		const footnotes = this.searchJSONArray(DataCache.TabNotes.tab_notes, {
-			tabid,
-		});
-
-		if (footnotes.length > 0) return footnotes[0].page_note;
-		return `<p>There was an error pulling footnotes. Try refreshing your browser to see them.</p>`;
-	},
-	getAPI(url, maxResponseTime = 2000) {
-		console.info(`getAPI >>  id: ${url.split("=")[1]}, maxResponseTime: ${maxResponseTime}`);
-		const controller = new AbortController();
-		const config = { signal: controller.signal };
-		setTimeout(() => {
-			controller.abort();
-		}, maxResponseTime);
-		return window
-			.fetch(url, config)
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(`${response.status} - ${response.statusText}`);
-				}
-				return response.json();
-			})
-			.then((data) => {
-				return data;
-			})
-			.catch((err) => {
-				if (err.name === "AbortError") {
-					console.error("Response timed out");
-					return err;
-				}
-				console.error("Request failed:", err.message);
-				return err;
-			});
-	},
-	getErrorMessage() {
-		const errorHtml = `<div class="ui negative message">
-                <div class="header">There was an error loading this page</div>
-                <p>Required data resources were not retrieved</p>
-                <div class="ui buttons" style="width: 100%;">
-                <button class="ui button" type="button" onClick="window.location.reload()">Try Again</button>
-                <div class="or"></div>
-                <button class="ui button" type="button" onClick="!history.length ? location.hash='cases' : history.back()">Previous Page</button>
-                </div>
-            </div>`;
-		document.getElementById("content-container").innerHTML = errorHtml;
-	},
-/* 	updateLocationHash(hashString) {
-		let isHashChanged = true;
-
-		if (Object.keys(externalViews).includes(hashString)) {
-			let tab = externalViews[hashString];
-			let interaction = `external tab view > ${tab.name}`;
-			Analytics.triggerOmnitureInteractions(interaction);
-			isHashChanged = false;
-			tab.view();
-			return;
-		}
-
-		location.hash = isHashChanged ? hashString : appState.CURRENT_TAB;
-	}, */
-	hideCommonPageElements() {
-		if (appState.NAV_ITEM === "nchs-home") {
-			$("#status-bar-container").hide();
-//			$(".navContainer").hide();
-		} else {
-			$("#status-bar-container").show();
-//			$(".navContainer").show();
-		}
-
-		$("#titleSection").hide();
-		$("#mainContent_Title").hide();
-		$("#mainContent_SubTitle").hide();
-		$(".cvi_footer").hide();
-		$(".viewFootnotesBtn").remove();
-		$(".viewFootnotes").remove();
-		$("#dynamic-anchors-and-json-dates").remove();
-		$(".historic-data-container").empty().hide();
-		$(".genericDataContainer").empty().hide();
-		$("#pageFooterTable").hide();
-		$("#footer-link").hide();
-	},
-	showCommonPageElements(elements) {
-		// close any data tables and footnotes that may have been open
-		$(".table-toggle").addClass("closed");
-		$(".data-table").addClass("closed");
-		$(".table-toggle-icon > i").removeClass("fa-minus").addClass("fa-plus");
-
-		// show elements selected in tabevents
-		elements.forEach((e) => {
-			switch (e) {
-				case "title":
-					$("#mainContent_Title").show();
-					$("#titleSection").show();
-					break;
-				case "subTitle":
-					$("#mainContent_SubTitle").show();
-					$("#titleSection").show();
-					break;
-				case "footnotes":
-					$("#pageFooterTable").show();
-					break;
-				case "footerLink":
-					$("#footer-link").show();
-					break;
-				case "dataTable":
-					$(".genericDataContainer").show();
-					break;
-				case "dataButton": // this one is not needed when createHistoricDataContainer() is called
-					$(".historic-data-container").show();
-					break;
-				default:
-			}
-
-			// show parent elements of selected elements to show
-			switch (e) {
-				case "title":
-				case "subTitle":
-					$("#titleSection").show();
-					break;
-				case "footnotes":
-				case "footerLink":
-				case "dataTable":
-				case "dataButton":
-				case "crossLinks":
-					$(".cvi_footer").show();
-					break;
-				default:
-			}
-		});
 	},
 	isDevice_iOS() {
 		return (
@@ -420,12 +266,5 @@ export const Utils = {
 		endIndex += 20;
 		for (let i = startIndex; i <= endIndex; i++) outputArray.push(tensArray[i]);
 		return outputArray;
-	},
-	createHistoricDataContainer(links) {
-		let html = "";
-		links.forEach((l) => {
-			html += `<a class="btn bor-rad" href=${l.url} target="_blank" rel="noopener noreferrer">${l.text}</a>`;
-		});
-		$(".historic-data-container").html(html);
 	},
 };

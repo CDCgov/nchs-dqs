@@ -38,11 +38,7 @@ export class GenMap {
 
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
-
-		// let mapWidthRatio = 0.5;
-		// if (fullSvgWidth <= 1050) mapWidthRatio = 0.8;
-		let mapWidthRatio = 0.8;
-
+		const mapWidthRatio = 0.8;
 		const svgWidth = fullSvgWidth * mapWidthRatio;
 		const svgHeight = 110;
 
@@ -53,8 +49,6 @@ export class GenMap {
 		let xScale = d3
 			.scalePoint()
 			.range([0, chartWidth])
-			// .paddingInner(0.1)
-			// .paddingOuter(0.1)
 			.domain(this.allDates.map((d) => d));
 
 		// set up axes
@@ -167,25 +161,15 @@ export class GenMap {
 	render(topoJson) {
 		const { geometries } = topoJson.objects.State_Territory_FluView1;
 		let mLegendData;
-		// let mEstimateByStateID = {};
-		// let mStateNameByStateID = {};
 		let mActiveLegendItems = [];
 		let mActiveLegendItemColors = [];
 		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
-		// const mInActiveFlagID = -3;
-		// let mInActiveColor = "#FFFFFF";
 		let noDataColorHexVal = "#dee2e6";
 		const svgId = `${this.mapVizId}-svg`;
 
 		// Need to clear out the last map that was generated
 		$(`#${this.mapVizId}`).empty();
-
-		// const MapSvgDefs = `<defs>
-		// 			<pattern id="crossHatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-		// 				<rect width="4" height="8" transform="translate(0,0)" fill="#bbb"></rect>
-		// 			</pattern>
-		// 		</defs>`;
 
 		function getTooltipConstructor(vizId) {
 			const propertyLookup = {
@@ -199,16 +183,8 @@ export class GenMap {
 			const bodyProps = ["estimate", "flag"];
 			return { propertyLookup, headerProps, bodyProps, svgId, vizId };
 		}
+
 		const genTooltip = new GenTooltip(getTooltipConstructor(this.mapVizId));
-
-		// console.log("###genMAP incoming geometries:", geometries);
-		// console.log("###genMAP incoming data:", this.data);
-
-		// CLASSIFY THE DATA
-		//   METHODS  \\
-		// STANDARD BREAKS  = 1 -> pass 4 to do 4 quartiles
-		// NATURAL BREAKS   = 2
-		// EQUAL INTERVAL   = 3
 
 		let ClassifiedDataObj;
 
@@ -328,30 +304,30 @@ export class GenMap {
 
 		// join the data of STATES with the incoming data topic data
 		geometries.forEach((g) => {
-			//let estimateRange = this.data.filter((d) => d.stub_label_num === g.properties.STATE_FIPS)[0]?.estimate;
+			// let estimateRange = this.data.filter((d) => d.stub_label_num === g.properties.STATE_FIPS)[0]?.estimate;
 			let estimateMatch = this.data.filter(function (d) {
 				// for debugging specific states only - can set the territory code to investigate
-				if (parseInt(d.stub_label_num) === 72 && parseInt(g.properties.STATE_FIPS) === 72) {
+				if (parseInt(d.stub_label_num, 10) === 72 && parseInt(g.properties.STATE_FIPS, 10) === 72) {
 					console.log("STATES: d , d.bin, d.flag, g", d, d.class, d.flag, g);
 				}
-				//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				// console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num, 10) === parseInt(g.properties.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
 					return d.estimate ? d.estimate : null;
 				}
 			});
 
 			let classBin = this.data.filter(function (d) {
-				//console.log("d , d.bin:", d, d.class);
-				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				// console.log("d , d.bin:", d, d.class);
+				if (parseInt(d.stub_label_num, 10) === parseInt(g.properties.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
 					return d.class ? d.class : null;
 				}
 			});
 
 			let theFlag = this.data.filter(function (d) {
-				if (parseInt(d.stub_label_num) === parseInt(g.properties.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num, 10) === parseInt(g.properties.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
 					return d.flag ? d.flag : null;
 				}
 			});
@@ -360,8 +336,6 @@ export class GenMap {
 			} else {
 				theFlag = "none";
 			}
-
-			// console.log("STATES FLAG:", g.properties.STATE_FIPS, theFlag);
 
 			if (estimateMatch.length > 0) {
 				estimateMatch = estimateMatch[0].estimate;
@@ -374,10 +348,9 @@ export class GenMap {
 					g.properties = {
 						...g.properties,
 						estimate: parseFloat(estimateMatch),
-						class: parseInt(classBin[0].class),
+						class: parseInt(classBin[0].class, 10),
 						active: 1, // default initial to all checked
 						flag: theFlag,
-						//bgcolor: getColor(parseInt(classBin[0].class), theFlag), // STORE THE COLOR so that legend clicks retain color
 						crosshatch: 0,
 					};
 				} else {
@@ -411,7 +384,7 @@ export class GenMap {
 				copyG.properties = {
 					...copyG.properties,
 					estimate: estimateMatch,
-					class: parseInt(classBin[0].class),
+					class: parseInt(classBin[0].class, 10),
 					active: 1,
 					flag: "*",
 					crosshatch: 1, // set special code so getColor returns crosshatch
@@ -478,14 +451,6 @@ export class GenMap {
 				abbr: "AS",
 				STATE_FIPS: "60",
 			},
-			/* 			{   Puerto Rico is in the States data for some reason bc it's an island
-							in the geometries
-			
-							STATE_NAME: "Puerto Rico",
-							desiredAbbr: "PR",
-							abbr: "PR",
-							STATE_FIPS: "72", 
-						}, */
 			{
 				STATE_NAME: "Guam",
 				desiredAbbr: "GU",
@@ -498,16 +463,6 @@ export class GenMap {
 				abbr: "MP",
 				STATE_FIPS: "69",
 			},
-			/* 			{
-							STATE_NAME: "Palau", desiredAbbr: "PW", abbr: "PW",
-							STATE_FIPS: "78",
-						}, */
-			/* 			{
-							STATE_NAME: "Republic of the Marshall Islands",
-							desiredAbbr: "RMI",
-							abbr: "RMI",
-							STATE_FIPS: "78",
-						}, */
 			{
 				STATE_NAME: "Virgin Islands",
 				desiredAbbr: "VI",
@@ -518,30 +473,24 @@ export class GenMap {
 		let filteredTerritories = [];
 		territories.forEach((t) => {
 			let estimateMatch = this.data.filter(function (d) {
-				//console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
-				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				// console.log("for stub state:", d.stub_label_num, " G FIPS is:", g.properties.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num, 10) === parseInt(t.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", g.properties.STATE_FIPS, " estimate:", d.estimate);
 					return d.estimate ? d.estimate : null;
 				}
 			});
 
 			let classBin = this.data.filter(function (d) {
-				// for debugging specific territories only - can set the territory code to investigate
-				if (parseInt(t.STATE_FIPS) === 60) {
-					//console.log("TERRITORIES: d , d.bin, t", d, d.class, t);
-				}
-				////////////////////////////////////////////
-
 				// this code is needed for the app, not for debugging
-				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num, 10) === parseInt(t.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
 					return d.class ? d.class : null;
 				}
 			});
 
 			let theFlag = this.data.filter(function (d) {
-				if (parseInt(d.stub_label_num) === parseInt(t.STATE_FIPS)) {
-					//console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
+				if (parseInt(d.stub_label_num, 10) === parseInt(t.STATE_FIPS, 10)) {
+					// console.log("### FIPS code MATCH:", t.STATE_FIPS, " estimate:", d.estimate);
 					return d.flag ? d.flag : null;
 				}
 			});
@@ -551,8 +500,6 @@ export class GenMap {
 				theFlag = "none";
 			}
 
-			//console.log("---- FOR G FIPS:", g.properties.STATE_FIPS," estimateMatch:", estimateMatch);
-
 			if (estimateMatch.length > 0) {
 				estimateMatch = estimateMatch[0].estimate;
 			} else {
@@ -561,11 +508,11 @@ export class GenMap {
 
 			if (classBin[0] !== undefined) {
 				if (classBin[0].hasOwnProperty("class")) {
-					//console.log("### TERRITORY classBin has REAL class!", classBin[0].class);
+					// console.log("### TERRITORY classBin has REAL class!", classBin[0].class);
 					filteredTerritories.push({
 						...t,
 						estimate: estimateMatch,
-						class: parseInt(classBin[0].class),
+						class: parseInt(classBin[0].class, 10),
 						flag: theFlag,
 					});
 				} else {
@@ -585,8 +532,6 @@ export class GenMap {
 					flag: theFlag,
 				});
 			}
-
-			// NEED THE FLAG in the territories because data and class can be null, but there are 2 flags "- - -" and "*"
 		});
 
 		console.log("filtered Territories:", filteredTerritories);
@@ -647,10 +592,9 @@ export class GenMap {
 
 		// call this in click event handler when legend is being clicked on and off
 		function updateMap() {
-			let t = d3.transition().duration(250);
 			// update the colors for STATES
 			d3.selectAll("#states path").style("fill", function (d) {
-				let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d); //.properties.class,d.properties.flag)
+				let zColor = d.properties.bgcolor ? d.properties.bgcolor : getColorFromDProps(d); // .properties.class,d.properties.flag)
 				if (d.properties.STATE_FIPS === 30) {
 					console.log("updateMap STATE color for d=", d, zColor); // Montana
 				}
@@ -659,7 +603,7 @@ export class GenMap {
 
 			// update the colors for TERRITORIES - separate bc the territory data format is DIFFERENT
 			d3.selectAll("#territoryGroup rect").style("fill", function (d) {
-				//console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
+				// console.log("updateMap TERRITORY color from class d=", d); // did this func just to debug coloring
 				return getColorFromD(d);
 			});
 		}
@@ -668,43 +612,30 @@ export class GenMap {
 		// - it does not do any filtering yet
 		// - this just starts off the active legend list
 		function getDefaultActiveLegendItems() {
-			var activeLegendItems;
-			activeLegendItems = [];
+			let activeLegendItems = [];
 			activeLegendItems.push(String(mNoDataFlagID)); // No Data = 0th item always
-			//activeLegendItems.push(String(mSuppressedFlagID)); // Suppressed
 
 			for (let i = 0; i < mLegendData.length; i += 1) {
 				activeLegendItems.push(mLegendData[i].min + " - " + mLegendData[i].max);
 			}
-
 			return activeLegendItems;
-		}
-
-		function isNoDataOrSuppressedAndActive(activeLegendItem, val) {
-			if (
-				(activeLegendItem === String(mNoDataFlagID) || activeLegendItem === String(mSuppressedFlagID)) &&
-				String(val) === activeLegendItem
-			) {
-				return true;
-			}
-			return false;
 		}
 
 		function convertRGB(rgb) {
 			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
-			var separator = rgb.indexOf(",") > -1 ? "," : " ";
+			const separator = rgb.indexOf(",") > -1 ? "," : " ";
 
 			// This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString
-			rgb = rgb.substr(4).split(")")[0].split(separator);
+			const cleanedRgb = rgb.substr(4).split(")")[0].split(separator);
 
 			// Here we will convert the decimal values to hexadecimal using toString(16)
-			var r = (+rgb[0]).toString(16),
-				g = (+rgb[1]).toString(16),
-				b = (+rgb[2]).toString(16);
+			let r = (+cleanedRgb[0]).toString(16);
+			let g = (+cleanedRgb[1]).toString(16);
+			let b = (+cleanedRgb[2]).toString(16);
 
-			if (r.length == 1) r = "0" + r;
-			if (g.length == 1) g = "0" + g;
-			if (b.length == 1) b = "0" + b;
+			if (r.length === 1) r = "0" + r;
+			if (g.length === 1) g = "0" + g;
+			if (b.length === 1) b = "0" + b;
 
 			// The return value is a concatenation of "#" plus the rgb values which will give you your hex
 			return "#" + r + g + b;
@@ -752,8 +683,8 @@ export class GenMap {
 			}
 			index = mActiveLegendItems.indexOf(itemLabel);
 
-			//console.log("legend Item CLICKED:",index, itemLabel, evt);
-			//console.log("Active Legend items BEFORE:", mActiveLegendItems);
+			// console.log("legend Item CLICKED:",index, itemLabel, evt);
+			// console.log("Active Legend items BEFORE:", mActiveLegendItems);
 			if (index > -1) {
 				// ITEM FOUND
 				// remove it from the list
@@ -771,33 +702,19 @@ export class GenMap {
 		}
 
 		function addEventListeners() {
-			//removeEventListeners();
 			$(document).off("click", "#us-map-legend > div > input");
 			$(document).on("click", "#us-map-legend > div > input", legendClickHandler);
-
-			// TO DO: Add back in listener to see if they resize browser
-			// and if they do then resize map all over again
-			/* 			window.addEventListener("resize", createMap);
-			publicAPI["on" + mConfig.ChangeEventTypesList.Viz1ContainerResizedEvent] =
-			function () {
-				createMap();
-			}; */
 		}
 
 		// create and load the map legend
 		function loadMapLegend() {
-			var i;
-			var legendTemplateConfig;
-			var legendItems = [];
-			var legendItemObj;
-			var displayLabel;
-			var colorHexVal;
-			var colorStyle;
-			//var noDataColorHexVal;
-			var suppressedDataColorHexVal;
-			var legendCompiledTemplateHTML;
-			var legendGeneratedHTML;
-			var legendItemVal; // 11Apr2019
+			let i;
+			let legendItems = [];
+			let legendItemObj;
+			let displayLabel;
+			let colorStyle;
+			let legendGeneratedHTML;
+			let legendItemVal; // 11Apr2019
 			let bgColor;
 			let fontColor;
 			let isActive;
@@ -818,7 +735,6 @@ export class GenMap {
 				for (i = 0; i < mLegendData.length; i += 1) {
 					displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
 					legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
-					//colorHexVal = mLegendData[i].color_hexval;
 
 					if (displayLabel.match("null")) {
 						// then skip adding that as a legend item
@@ -845,10 +761,9 @@ export class GenMap {
 						DisplayLabel: displayLabel,
 						ItemValue: legendItemVal,
 						IsChecked: isActive,
-						//IsChecked: mActiveLegendItems.indexOf(displayLabel) > -1
 					};
 					legendItems.push(legendItemObj);
-					//console.log("loadLegend item:", i, legendItemObj);
+					// console.log("loadLegend item:", i, legendItemObj);
 				}
 
 				// Generate the HTML for the legend
@@ -857,7 +772,6 @@ export class GenMap {
 
 				legendItems.forEach((leg, i) => {
 					let isCheckedStr;
-					//let seeLeg = leg;
 					if (leg.IsChecked === 1) {
 						isCheckedStr = "checked";
 					} else {

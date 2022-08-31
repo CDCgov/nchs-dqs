@@ -44,10 +44,10 @@ export class LandingPage {
 			[metaData, jsonData] = await Promise.all([
 				//t is Socrata ID, m is metadata and p is private
 				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&&m=1&&p=${config.private}`
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`
 				).then((res) => res.text()),
 				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&&m=0&&p=${config.private}`
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
 				).then((res) => res.text()),
 			]);
 
@@ -141,7 +141,7 @@ export class LandingPage {
 		this.flattenedFilteredData = flattenedData;
 
 		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config.enableCI);
-		this.chartConfig.chartTitle = ""; // dont use the built in chart title
+		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
 		const genChart = new GenChart(this.chartConfig);
@@ -805,8 +805,6 @@ export class LandingPage {
 				}
 			});
 
-		const numberCells = $(".wtable td ~ td");
-		numberCells.wrapInner("<div class='number-cells'></div>");
 		$(`#${tableId}`).tablesort();
 		$("thead  .date-sort").data("sortBy", (th, td) => {
 			return new Date(td[0].textContent);

@@ -2,24 +2,14 @@
 @import "./mixins/";
 
 // Imports
-@import "./helpers";
 @import "./colors";
-@import "./widget";
-@import "./widget_skeleton";
-@import "./tables";
 @import "./map";
-@import "./customSelect";
-@import "./chart";
-@import "./hcw";
-@import "./statereportprofile";
 @import "./main";
 @import "./cdc";
-@import "./status_bar";
-@import "./vacTooltip.scss";
 @import "./modals";
 @import "./iesupportpage";
-@import "../sass/historic-vax-links";
-@import "./_general.scss";
+@import "./tables";
+@import "./general";
 
 // Vendor
 @import "../css/fontello.css";

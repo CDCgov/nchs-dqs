@@ -209,25 +209,6 @@ export const stateToAbbr = (state) => {
 
 export const crossLinks = (tabname) => {};
 
-export const formatNumber = (num) => {
-	return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-};
-
-export const abbreviateNumber = (value, fixedValue) => {
-	// if set the fixed value to 0 it rounds up, need to figure out a way to stop that
-
-	// Nine Zeroes for Billions
-	return Math.abs(Number(value)) >= 1.0e9
-		? `${(Math.abs(Number(value)) / 1.0e9).toFixed(fixedValue)}B`
-		: // Six Zeroes for Millions
-		Math.abs(Number(value)) >= 1.0e6
-		? `${(Math.abs(Number(value)) / 1.0e6).toFixed(fixedValue)}M`
-		: // Three Zeroes for Thousands
-		Math.abs(Number(value)) >= 1.0e3
-		? `${(Math.abs(Number(value)) / 1.0e3).toFixed(fixedValue)}k`
-		: Math.abs(Number(value));
-};
-
 const mapOrder = (a, order, key) => {
 	const map = order.reduce((r, v, i) => ((r[v] = i), r), {});
 	return a.sort((a, b) => map[a[key]] - map[b[key]]);
