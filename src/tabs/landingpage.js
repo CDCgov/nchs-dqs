@@ -44,10 +44,10 @@ export class LandingPage {
 			[metaData, jsonData] = await Promise.all([
 				//t is Socrata ID, m is metadata and p is private
 				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&&m=1&&p=${config.private}`
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`
 				).then((res) => res.text()),
 				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&&m=0&&p=${config.private}`
+					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
 				).then((res) => res.text()),
 			]);
 
@@ -141,7 +141,7 @@ export class LandingPage {
 		this.flattenedFilteredData = flattenedData;
 
 		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config.enableCI);
-		this.chartConfig.chartTitle = ""; // dont use the built in chart title
+		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
 		const genChart = new GenChart(this.chartConfig);
@@ -294,11 +294,24 @@ export class LandingPage {
 
 	updateDataTopic(dataTopic) {
 		$(".dimmer").addClass("active");
+
+		// always reset to full range of time periods
+		$("#show-one-period-checkbox").prop("checked", false);
+		$("#startYearContainer").removeClass("offset-3");
+		$("#endYearContainer").show();
+		this.showBarChart = false;
+
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
+
+		// if not on Chart tab, switch to it
+		if (this.activeTabNumber !== 1) {
+			$("a[href='#chart-tab']").click();
+		}
+
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
 
 		// clear the list of active legend items
@@ -312,7 +325,7 @@ export class LandingPage {
 			this.showBarChart = true;
 		}
 
-		$("#enable-CI-checkbox-wrapper").toggle(this.config.enableCI); // toggle is show/hide depending on boolean
+		$("#enable-CI-checkbox-wrapper").toggle(this.config.hasCI); // toggle is show/hide depending on boolean
 		this.config.enableCI = false;
 		$("#enable-CI-checkbox").prop("checked", false);
 
@@ -792,8 +805,6 @@ export class LandingPage {
 				}
 			});
 
-		const numberCells = $(".wtable td ~ td");
-		numberCells.wrapInner("<div class='number-cells'></div>");
 		$(`#${tableId}`).tablesort();
 		$("thead  .date-sort").data("sortBy", (th, td) => {
 			return new Date(td[0].textContent);

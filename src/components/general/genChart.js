@@ -226,8 +226,8 @@ export class GenChart {
 				.append("div")
 				.style("line-height", chartTitleSize * 1.1 + "px")
 				.style("font-size", chartTitleSize + "px")
-				.style("width", svgWidth + "px")
-				.style("margin", "0 auto")
+				.style("width", chartWidth + "px")
+				.style("text-align", "center")
 				.attr("id", `${p.vizId}-chartTitle`)
 				.text(p.chartTitle);
 
