@@ -312,7 +312,7 @@ export class LandingPage {
 			this.showBarChart = true;
 		}
 
-		$("#enable-CI-checkbox-wrapper").toggle(this.config.enableCI); // toggle is show/hide depending on boolean
+		$("#enable-CI-checkbox-wrapper").toggle(this.config.hasCI); // toggle is show/hide depending on boolean
 		this.config.enableCI = false;
 		$("#enable-CI-checkbox").prop("checked", false);
 
