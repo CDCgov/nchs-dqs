@@ -420,7 +420,7 @@ export class GenChart {
 			// -- but cant use insertLineBreaks because just need split text
 			// to draw on 2 lines only
 			const splitTitle = function (testString) {
-				const maxLength = 24;
+				const maxLength = 27;
 				if (testString.length > maxLength) {
 					const center = testString.length / 2;
 					const allSpaceIndeces = [];
@@ -440,8 +440,7 @@ export class GenChart {
 					});
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
 					return newSplit;
-				} else return testString;
-
+				} else return [testString,""];
 			};
 
 			// left yAxis
