@@ -371,6 +371,7 @@ export class GenChart {
 				xAxisDraw = svg
 					.append("g")
 					.attr("class", "axis bottom")
+					.attr("id", "xaxis")
 					.attr(
 						"transform",
 						`translate(${margin.left}, ${p.barLayout?.horizontal ? margin.top : margin.top + chartHeight})`
@@ -1575,7 +1576,8 @@ export class GenChart {
 			let newWidth = d3.max(legendWidths) + 115 ?? 0; // was + 56 which had some exceeding the box
 			let widthGreaterThanAxis = false;
 			if (appState.currentDeviceType === "mobile") {
-				if (newWidth > (svg.select("#whitebox").attr("width") - 6)) {
+				if (newWidth > (svg.select("#xaxis").attr("width"))) {
+				//if (newWidth > (svg.selectAll(".axis bottom").attr("width"))) {
 					// then cap it
 					newWidth = svg.select("#whitebox").attr("width") - 6;
 					widthGreaterThanAxis = true;
