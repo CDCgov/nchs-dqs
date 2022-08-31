@@ -205,7 +205,6 @@ export class LandingPage {
 			);
 
 			const current = selectedPanelData[0];
-			// debugger;
 			const filteredDataGroups = [...new Set(selectedPanelData.map((d) => d.stub_label))];
 			const excludedGroups = allDataGroups.filter((d) => !filteredDataGroups.includes(d));
 			excludedGroups.forEach((d) =>
@@ -215,6 +214,9 @@ export class LandingPage {
 					stub_name: current.stub_name,
 					year: current.year,
 					age: current.age,
+					flag: current.flag,
+					estimate_lci: null,
+					estimate_uci: null,
 					stub_label: d,
 					estimate: null,
 				})
