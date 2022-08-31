@@ -1572,21 +1572,29 @@ export class GenChart {
 			// get all legend items and find the longest then set the legend container size
 			const legendItems = document.querySelectorAll(`.${svgId}-legendItem text`);
 			const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-			let newWidth = d3.max(legendWidths) + 106 ?? 0; // was + 56 which had some exceeding the box
+			let newWidth = d3.max(legendWidths) + 115 ?? 0; // was + 56 which had some exceeding the box
+			let widthGreaterThanAxis = false;
 			if (appState.currentDeviceType === "mobile") {
 				if (newWidth > (svg.select("#whitebox").attr("width") - 6)) {
+					// then cap it
 					newWidth = svg.select("#whitebox").attr("width") - 6;
+					widthGreaterThanAxis = true;
 				} // else leave it at the max calc
-				
 			} 
 			legendContainer.attr("width", newWidth); 
 
 			let mobileAdjustLeft = 26;
 			if (appState.currentDeviceType === "mobile") {
-				// cant center... need it close to flush left
-				//legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft );
-				legendContainer.attr("x", svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 6);
-				mobileAdjustLeft += 13;
+				if (widthGreaterThanAxis) {
+					// center it in the whitebox
+					legendContainer.attr("x", svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 6);
+					mobileAdjustLeft += 13;
+				} else {
+					// center it on the axis
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2 );
+					mobileAdjustLeft = 0;
+				}
+
 			} else {
 				// Now center the legend container
 				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
