@@ -138,11 +138,10 @@ export const tabContent = `
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="map-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				
-				<div class="containerBoxes">
-					<label for="unit-num-select-map" class="adjustUnitContainer">Adjust Unit</label>
-					<br />
-					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options" class="custom-select">
+				<div class="adjustUnitContainer">
+					<label for="unit-num-select-map" aria-label="Adjust Unit">Adjust Unit</label>
+                    <br />
+					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 				</div>
@@ -168,10 +167,10 @@ export const tabContent = `
 		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
 			<div class="chart-wrapper" style="background-color: #b3d2ce;">
-			<div class="containerBoxes">	
-					<label for="unit-num-select-chart" class="adjustUnitContainer">Adjust Unit </label>
-					<br />
-					<select name="unit-num-select-chart-box" id="unit-num-select-chart" form="select-view-options" class="custom-select">
+				<div class="adjustUnitContainer">
+					<label for="unit-num-select-chart" aria-label="Adjust Unit">Adjust Unit</label>
+                    <br />
+					<select name="unit-num-select-chart-box" id="unit-num-select-chart" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 
@@ -188,17 +187,17 @@ export const tabContent = `
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div class="table-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="containerBoxes">	
-					<label for="unit-num-select-table" class="adjustUnitContainer">Adjust Unit</label>
-						<br />
-						<select name="unit-num-select-table-box" id="unit-num-select-table" form="select-view-options" class="custom-select">
-							<option value="1" selected>Percent of population, crude</option>
-						</select>
+				<div class="adjustUnitContainer">
+					<label for="unit-num-select-table" aria-label="Adjust Unit">Adjust Unit</label>
+                    <br />
+					<select name="unit-num-select-table-box" id="unit-num-select-table" form="select-view-options">
+						<option value="1" selected>Percent of population, crude</option>
+					</select>
 				</div>
 				<div id="nchs-table-container">
 					<div id="table-title" class="title"></div>
 				</div>
-				<div id="topOfTable" class="scrolling-table-container">
+				<div class="scrolling-table-container">
 					<table id="nchs-table" class="expanded-data-table"></table>
 				</div>
 				<br />
@@ -229,25 +228,7 @@ export const tabContent = `
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-plus"></i></div>
 		</div>
 		<div id="pageFooter" class="data-table closed"></div>
-	</div>
-
-	<div id="data-table-container" class="data-table closed" tabindex="0" aria-label="Data table">
-		<div class="table-info">
-			<div tabindex="0" class="general_note" style="margin-top: 10px" id="table-note"></div>
-			<button
-				id="btnCompareTrendsTableExport"
-				class="btn data-download-btn"
-				tabindex="0"
-				aria-label="Download Data for Data Table for Seven-day moving average of new cases"
-			>
-				Download Data <i class="fas fa-download" aria-hidden="true"></i>
-			</button>
-		</div>
-		<div tabindex="0" id="skipTableLink" class="skipOptions"><a href="#viewHistoricLink">Skip Table</a></div>
-		<div id="topOfTable" class="scrolling-table-container">
-			<table tabindex="0" id="compare-trends-table" class="expanded-data-table"></table>
-		</div>
-	</div>
+	</div>	
 `;
 
 export const topicLookup = {
@@ -259,20 +240,20 @@ export const topicLookup = {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
 		private: "1",
-		chartTitle: "Obesity Among Children and Adolescents",
+		chartTitle: "Obesity among Children",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
 		socrataId: "23va-ejrn",
 		private: "1",
-		chartTitle: "Obesity Among Adults",
+		chartTitle: "Obesity among Adults",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 	suicide: {
@@ -282,27 +263,27 @@ export const topicLookup = {
 		chartTitle: "Death Rates for Suicide",
 		panelNum: 1,
 		unitNum: 2,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: false,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
 		socrataId: "k99r-jkp7",
 		private: "1",
-		chartTitle: "Injury-related Visits to Hospital Emergency Departments",
+		chartTitle: "Initial injury-related visits to hospital emergency departments",
 		panelNum: 1,
 		unitNum: 2,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: false,
 	},
 	birthweight: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
 		socrataId: "3p8z-99bn",
 		private: "1",
-		chartTitle: "Low Birthweight Live Births",
+		chartTitle: "Low birthweight live births",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
 	},
@@ -313,7 +294,7 @@ export const topicLookup = {
 		chartTitle: "Infant Mortality",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
 	},
@@ -321,20 +302,20 @@ export const topicLookup = {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
 		socrataId: "2g8y-scu5",
 		private: "0",
-		chartTitle: "Medicaid Coverage Among Persons Under Age 65",
+		chartTitle: "Medicaid coverage among persons under age 65",
 		panelNum: "NA",
 		unitNum: 2,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: false,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/52ij-h8yw",
 		socrataId: "52ij-h8yw",
 		private: "1",
-		chartTitle: "Drug Overdose Death Rates",
+		chartTitle: "Deaths from drug overdose",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	access: {
@@ -344,7 +325,7 @@ export const topicLookup = {
 		chartTitle: "",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	visits: {
@@ -354,7 +335,7 @@ export const topicLookup = {
 		chartTitle: "",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	"ambulatory-care": {
@@ -364,7 +345,7 @@ export const topicLookup = {
 		chartTitle: "Ambulatory Care Visits",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	"access-care": {
@@ -374,7 +355,7 @@ export const topicLookup = {
 		chartTitle: "Access to Care",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 };

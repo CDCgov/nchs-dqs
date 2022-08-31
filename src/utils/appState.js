@@ -13,6 +13,5 @@ const setDeviceIndicator = () => {
 };
 
 export function setupAppStateVars() {
-	appState.statusBarClick = false;
 	appState.currentDeviceType = setDeviceIndicator();
 }
