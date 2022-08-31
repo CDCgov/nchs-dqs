@@ -173,7 +173,6 @@ export class GenChart {
 			axisLabelFontSize = 12;
 		}
 
-
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
 		// but not always titles
@@ -439,25 +438,24 @@ export class GenChart {
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
 					return newSplit;
 				} else return testString;
-
 			};
 
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
-				let splitText=[];
+				let splitText = [];
 				if (appState.currentDeviceType === "mobile") {
 					splitText = splitTitle($("#unit-num-select-chart :selected").text());
 				} else {
 					// dont need to split
-					splitText = [$("#unit-num-select-chart :selected").text(),""];
+					splitText = [$("#unit-num-select-chart :selected").text(), ""];
 				}
 
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("id","leftAxisTitle")
+					.attr("id", "leftAxisTitle")
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
@@ -468,13 +466,12 @@ export class GenChart {
 						.text(p.barLayout.horizontal ? "" : splitText[1])
 						.style("text-anchor", "middle")
 						.attr("transform", "rotate(-90)")
-						.attr("id","leftAxisTitle")
+						.attr("id", "leftAxisTitle")
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // dist to edge
 						.attr("font-size", axisTitleFontSize)
-						.attr("fill", p.leftAxisColor);	
+						.attr("fill", p.leftAxisColor);
 				}
-				
 			}
 
 			// right yAxis
@@ -1236,28 +1233,27 @@ export class GenChart {
 				if (p.usesDateAsXAxis) {
 					if (p.needsScaleTime) {
 						if (appState.currentDeviceType === "desktop") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							xAxis // .tickValues(tickValues)   // dont limit the ticks .ticks(7)
 								.ticks(d3.timeYear.every(2))
-								//Show all tick marks but labels every other tick
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : genFormat(d, "year");
-								});
-						} else if (appState.currentDeviceType === "tablet") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-								.ticks(d3.timeYear.every(5))
-								//Show all tick marks but labels every other tick
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : genFormat(d, "year");
-								});
-						} else {
-							// mobile
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-								.ticks(d3.timeYear.every(5))
-								//Show all tick marks but labels every other tick
-								.tickFormat((d, i) => {
-									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
 						}
+						if (appState.currentDeviceType === "tablet") {
+							xAxis // .tickValues(tickValues)   // dont limit the ticks .ticks(7)
+								.ticks(d3.timeYear.every(5))
+								// Show all tick marks but labels every other tick
+								.tickFormat((d, i) => {
+									return i % 2 !== 0 ? " " : genFormat(d, "year");
+								});
+						} // mobile
+						xAxis // .tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							.ticks(d3.timeYear.every(5))
+							// Show all tick marks but labels every other tick
+							.tickFormat((d, i) => {
+								return i % 5 !== 0 ? " " : genFormat(d, "year");
+							});
 					} else {
 						// uses time periods
 						if (appState.currentDeviceType === "desktop") {
@@ -1266,22 +1262,17 @@ export class GenChart {
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : d;
 								});
-						} else if (appState.currentDeviceType === "tablet") {
-							xAxis 
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : d;
-								});
-						} else {
-							// mobile (TTT)
-							xAxis
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 4 !== 0 ? " " : d;
-								});
 						}
+						if (appState.currentDeviceType === "tablet") {
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
+							});
+						}
+						// mobile (TTT)
+						xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+							return i % 4 !== 0 ? " " : d;
+						});
 					}
-
 				}
 
 				if (p.barLayout?.horizontal) {
@@ -1406,9 +1397,10 @@ export class GenChart {
 			} else if (p.usesBars) {
 				allIncomingData = allIncomingData.map((d) => ({
 					...d,
-					assignedLegendColor: d.dontDraw
-						? ""
-						: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
+					assignedLegendColor:
+						d.dontDraw || !d.estimate
+							? ""
+							: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
 				}));
 
 				allIncomingData.forEach((d, i) => {
