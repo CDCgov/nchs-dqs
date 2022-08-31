@@ -240,7 +240,7 @@ export const topicLookup = {
 		chartTitle: "Obesity among Children",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 	"obesity-adult": {
@@ -250,7 +250,7 @@ export const topicLookup = {
 		chartTitle: "Obesity among Adults",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 	suicide: {
@@ -260,7 +260,7 @@ export const topicLookup = {
 		chartTitle: "Death Rates for Suicide",
 		panelNum: 1,
 		unitNum: 2,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: false,
 	},
 	injury: {
@@ -270,7 +270,7 @@ export const topicLookup = {
 		chartTitle: "Initial injury-related visits to hospital emergency departments",
 		panelNum: 1,
 		unitNum: 2,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: false,
 	},
 	birthweight: {
@@ -280,7 +280,7 @@ export const topicLookup = {
 		chartTitle: "Low birthweight live births",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
 	},
@@ -291,7 +291,7 @@ export const topicLookup = {
 		chartTitle: "Infant Mortality",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
 	},
@@ -302,7 +302,7 @@ export const topicLookup = {
 		chartTitle: "Medicaid coverage among persons under age 65",
 		panelNum: "NA",
 		unitNum: 2,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: false,
 	},
 	"drug-overdose": {
@@ -312,7 +312,7 @@ export const topicLookup = {
 		chartTitle: "Deaths from drug overdose",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	access: {
@@ -322,7 +322,7 @@ export const topicLookup = {
 		chartTitle: "",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	visits: {
@@ -332,7 +332,7 @@ export const topicLookup = {
 		chartTitle: "",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	"ambulatory-care": {
@@ -342,7 +342,7 @@ export const topicLookup = {
 		chartTitle: "Ambulatory Care Visits",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: false,
+		hasCI: false,
 		hasSubtopic: true,
 	},
 	"access-care": {
@@ -352,7 +352,7 @@ export const topicLookup = {
 		chartTitle: "Access to Care",
 		panelNum: 1,
 		unitNum: 1,
-		enableCI: true,
+		hasCI: true,
 		hasSubtopic: true,
 	},
 };
