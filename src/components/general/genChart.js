@@ -1501,6 +1501,8 @@ export class GenChart {
 					.append("text")
 					.attr("class", "far far-legendItem")
 					.attr("tabindex", "0")
+					.attr("aria-label", d.text + " " + "checkbox")
+					.attr("role", "checkbox")
 					.attr("data-html2canvas-ignore", "")
 					.attr("font-size", axisLabelFontSize * 1.1)
 					.attr("x", 45)
