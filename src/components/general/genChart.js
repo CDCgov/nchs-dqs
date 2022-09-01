@@ -501,6 +501,14 @@ export class GenChart {
 					.attr("transform", `translate(${margin.left}, ${margin.top})`);
 			}
 
+			let noDataTextGroup;
+			if (p.usesBars && p.barLayout.horizontal) {
+				noDataTextGroup = svg
+					.append("g")
+					.attr("transform", `translate(${margin.left}, ${margin.top})`)
+					.attr("pointer-events", "none");
+			}
+
 			let stackedBars;
 			if (p.usesStackedBars) {
 				stackedBars = svg
@@ -882,6 +890,43 @@ export class GenChart {
 								.attr("stroke", "black")
 								.attr("stroke-width", 3);
 						});
+					}
+
+					if (p.barLayout.horizontal) {
+						noDataTextGroup
+							.selectAll("noDataText1")
+							.data(p.data)
+							.enter()
+							.append("text")
+							.text((d) => (d[p.chartProperties.bars] === null ? "No data available" : ""))
+							.attr("fill", "black")
+							.attr("font-size", axisLabelFontSize)
+							.attr("x", xScale(xScale.domain().slice(-1) / 2))
+							.attr(
+								"y",
+								(d) =>
+									yScaleLeft(d[p.chartProperties.yLeft1]) +
+									p.barLayout.size / 2 -
+									axisLabelFontSize * 0.6
+							)
+							.attr("text-anchor", "middle");
+						noDataTextGroup
+							.selectAll("noDataText2")
+							.data(p.data)
+							.enter()
+							.append("text")
+							.text((d) => (d[p.chartProperties.bars] === null ? "for current selections" : ""))
+							.attr("fill", "black")
+							.attr("font-size", axisLabelFontSize)
+							.attr("x", xScale(xScale.domain().slice(-1) / 2))
+							.attr(
+								"y",
+								(d) =>
+									yScaleLeft(d[p.chartProperties.yLeft1]) +
+									p.barLayout.size / 2 +
+									axisLabelFontSize * 0.6
+							)
+							.attr("text-anchor", "middle");
 					}
 				}
 
