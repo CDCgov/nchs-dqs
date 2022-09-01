@@ -125,6 +125,18 @@ export const MainEvents = {
 			event.preventDefault();
 		});
 
+		$(document).on("keyup", ".far-legendItem", (event) => {
+			var code = event.key; // recommended to use e.key, it's normalized across devices and languages
+			if (code === "Enter" || code === "Space") {
+				event.stopPropagation();
+				// get the unique id of the legend item
+				let legItem = event.target.parentNode.parentNode.id;
+				console.log("legItem", legItem);
+				console.log("*** legendItem clicked: event.target,item", event.target, legItem);
+				appState.ACTIVE_TAB.toggleLegendItem(legItem);
+				event.preventDefault();
+			}
+		});
 		$(document).on("click", ".chart-container-svg-legendItem", (event) => {
 			event.stopPropagation();
 			// get the unique id of the legend item
