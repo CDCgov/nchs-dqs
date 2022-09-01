@@ -52,7 +52,7 @@ export const addHtmlTooltips = () => {
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
 
-const getTooltipConstructor = (vizId, chartValueProperty) => {
+const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 	const propertyLookup = {
 		// list properties needed in tooltip body and give their line titles and datum types
 		year: {
@@ -103,7 +103,9 @@ const getTooltipConstructor = (vizId, chartValueProperty) => {
 	};
 
 	const headerProps = ["stub_name", "stub_label"];
-	const bodyProps = ["panel", "unit", chartValueProperty, "estimate_uci", "estimate_lci", "year", "age", "flag"];
+	let bodyProps = ["panel", "unit", chartValueProperty];
+	if (hasCI) bodyProps.push("estimate_uci", "estimate_lci");
+	bodyProps.push("year", "age", "flag");
 
 	return {
 		propertyLookup,
@@ -114,7 +116,7 @@ const getTooltipConstructor = (vizId, chartValueProperty) => {
 	};
 };
 
-export const getAllChartProps = (data, showBarChart, enableCI) => {
+export const getAllChartProps = (data, showBarChart, config) => {
 	const chartValueProperty = "estimate";
 	const xAxisTitle = $("#stub-name-num-select option:selected").text(); // X Axis Title is the "Characteristic" selected
 	const vizId = "chart-container";
@@ -128,7 +130,7 @@ export const getAllChartProps = (data, showBarChart, enableCI) => {
 			xAxis: showBarChart ? chartValueProperty : needsScaleTime ? "date" : "year",
 			bars: "estimate",
 		},
-		enableCI,
+		enableCI: config.enableCI,
 		usesLegend: true,
 		legendBottom: true,
 		usesDateDomainSlider: false,
@@ -186,6 +188,6 @@ export const getAllChartProps = (data, showBarChart, enableCI) => {
 		],
 		multiLineLeftAxisKey: "subLine",
 		vizId,
-		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty),
+		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty, config.hasCI),
 	};
 };

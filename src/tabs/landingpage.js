@@ -140,7 +140,7 @@ export class LandingPage {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 
-		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config.enableCI);
+		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
