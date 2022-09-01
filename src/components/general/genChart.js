@@ -161,9 +161,9 @@ export class GenChart {
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
 		// this scaling often makes the title sizes too big on Mobile
 		if (appState.currentDeviceType === "mobile") {
-			if (axisTitleFontSize > 16) {
+			if (axisTitleFontSize > 12) {
 				// knock it back down
-				axisTitleFontSize = 16;
+				axisTitleFontSize = 12;
 			}
 		}
 
@@ -343,7 +343,8 @@ export class GenChart {
 			.attr("id", "whitebox") // give it a white box background
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
-			.attr("width", svgWidth);
+			.attr("width", svgWidth)
+			.attr("overflow", "auto");
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -1469,7 +1470,8 @@ export class GenChart {
 				.attr("fill", "#F2F2F2")
 				.attr("rx", "5")
 				.attr("ry", "5")
-				.attr("stroke", "black");
+				.attr("stroke", "black")
+				.attr("overflow", "auto");
 
 			legendData.forEach((d, i) => {
 				const legendId = d.text.replace(/ /g, "_");
@@ -1543,7 +1545,7 @@ export class GenChart {
 					.append("text")
 					// .attr("x", 60 - lineXLeft)
 					.attr("x", function () {
-						// this moves the text to the right
+						// this moves the text to the right or left
 						if (appState.currentDeviceType === "mobile") {
 							return 60 - lineXLeft - 6;
 						}
@@ -1552,6 +1554,7 @@ export class GenChart {
 					.attr("y", axisLabelFontSize * 0.5) // up and down
 					.text(d.text)
 					.attr("overflow", "hidden")
+					.attr("overflow-x", "scroll")
 					.attr("font-size", axisLabelFontSize);
 			});
 
@@ -1563,7 +1566,7 @@ export class GenChart {
 			if (appState.currentDeviceType === "mobile") {
 				if (newWidth > svg.select("#xaxis").attr("width")) {
 					// then cap it
-					newWidth = svg.select("#whitebox").attr("width") - 6;
+					newWidth = svg.select("#whitebox").attr("width") - 1;
 					widthGreaterThanAxis = true;
 				} // else leave it at the max calc
 			}
@@ -1575,7 +1578,7 @@ export class GenChart {
 					// center it in the whitebox
 					legendContainer.attr(
 						"x",
-						svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 6
+						svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 3
 					);
 					mobileAdjustLeft += 13;
 				} else {
