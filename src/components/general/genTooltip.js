@@ -139,9 +139,7 @@ export class GenTooltip {
 		this.incomingElement = element;
 		const { sides, leftBounds } = getWhichSvgSides(this.svgId);
 		// States need .properties but Territories dont
-		// - so the following statement picks off whichever is available
 		let data = element.data()[0].properties ? element.data()[0].properties : element.data()[0];
-		//debugger;
 		if (additionalProperties) data = data[additionalProperties[0]];
 
 		const bodyData = [];
@@ -153,6 +151,8 @@ export class GenTooltip {
 				bodyData.push([title, values.join(" ")]);
 			} else {
 				prop = this.propertyLookup[bp];
+				if (prop.datumType === "string" && data[bp] === null)
+					data[bp] = "No data available for current selections";
 				bodyData.push([prop.title, genFormat(data[bp], prop.datumType)]);
 			}
 		});
@@ -162,7 +162,7 @@ export class GenTooltip {
 			for (let i = 0; i < additionalProperties.length; i++) {
 				bodyData.push(additionalProperties[i]);
 			}
-		} 
+		}
 
 		this.incomingOpacity = element.style("opacity");
 		this.incomingStrokeWidth = element.style("stroke-width");
@@ -170,33 +170,7 @@ export class GenTooltip {
 		if (element.node().classList[0] === "hover-bar") {
 			element.style("opacity", 0.05);
 		} else {
-			// here is where hover point is made visible
-			// try to shrink the size???
-
-			// (TT) I was able to scale the point but then
-			// it would MOVE on the graph... dont know why
-			// try to get x,y BEFORE transform to restore
-			// AFTER transform and could not get it to work
-			//
-			// PLAN B: I'm going to draw dot circles on the points
-			// and leave the HOVER big but always hidden
-			// --- that way someone can see where the points are 
-			//
-			//console.log("element", element);
-			// get x position
-			//var bboxHover = element.getBBox();
-			//let currentX = element.attr("cx");
-			//console.log("element x,y BEFORE", currentX);
-			//element.style("fill", "red");
-			//element.style("opacity", 1);  // TURN OFF VIEWING THE HOVER
 			element.style("stroke-width", 3);
-			// undue skew in ellipse in x
-			//element.attr("transform", "scale(0.4,1)");
-			// now check cx AFTER scale
-			//currentX = element.attr("cx");
-			//console.log("element x,y AFTER", currentX);
-			// now shrink it in half
-			//element.attr("transform", "scale(0.3)");
 		}
 
 		const tip = d3.select(`#${this.vizId} .tooltip`);
