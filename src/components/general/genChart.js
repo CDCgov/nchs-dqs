@@ -165,7 +165,7 @@ export class GenChart {
 				// knock it back down
 				axisTitleFontSize = 16;
 			}
-		}		
+		}
 
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling makes the label sizes too big
@@ -196,7 +196,7 @@ export class GenChart {
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			left: d3.max([leftTitleSize * 2 + leftAxisSize, p.marginLeftMin + 15]),
-		};  // (TT) doubled the space for leftTitleSize because we are splitting into 2 lines
+		}; // (TT) doubled the space for leftTitleSize because we are splitting into 2 lines
 
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -440,28 +440,23 @@ export class GenChart {
 					});
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
 					return newSplit;
-				} else return [testString,""];
+				}
+				return [testString, ""];
 			};
 
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
-				let splitText=[];
-/* 				if (appState.currentDeviceType === "mobile") {
-					splitText = splitTitle($("#unit-num-select-chart :selected").text());
-				} else {
-					// dont need to split
-					splitText = [$("#unit-num-select-chart :selected").text(),""];
-				} */
+				let splitText = [];
 
 				// with bigger font size - always split the left axis title
 				splitText = splitTitle($("#unit-num-select-chart :selected").text());
-				
+
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("id","leftAxisTitle")
+					.attr("id", "leftAxisTitle")
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
@@ -473,14 +468,13 @@ export class GenChart {
 						.text(p.barLayout.horizontal ? "" : splitText[1])
 						.style("text-anchor", "middle")
 						.attr("transform", "rotate(-90)")
-						.attr("id","leftAxisTitle")
+						.attr("id", "leftAxisTitle")
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
 						.attr("font-weight", 700)
-						.attr("fill", p.leftAxisColor);	
+						.attr("fill", p.leftAxisColor);
 				}
-				
 			}
 
 			// right yAxis
@@ -547,7 +541,6 @@ export class GenChart {
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			let lineCount = 0;
-			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
 				// need the legend Nests from ALL incoming data
@@ -610,7 +603,7 @@ export class GenChart {
 						) {
 							// it is on the list
 							// so dont push it
-							//console.log("ALREADY on the list",d.values[0].stub_label);
+							// console.log("ALREADY on the list",d.values[0].stub_label);
 						} else {
 							// not on there so push it 8/2/2022
 
@@ -1015,9 +1008,8 @@ export class GenChart {
 											.style("fill", function (d) {
 												if (d.flag === "*") {
 													return "white"; // creates circle that appears "empty" for "*" flag
-												} else {
-													return multiLineColors(i); // fills in the dot with line color
 												}
+												return multiLineColors(i); // fills in the dot with line color
 											})
 											.style("stroke", function (d) {
 												if (d.flag !== undefined) {
@@ -1242,24 +1234,24 @@ export class GenChart {
 					if (p.needsScaleTime) {
 						// uses single years
 						if (appState.currentDeviceType === "desktop") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							xAxis
 								.ticks(d3.timeYear.every(1))
-								//Show all tick marks but labels every other tick
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
 						} else if (appState.currentDeviceType === "tablet") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							xAxis
 								.ticks(d3.timeYear.every(2))
-								//Show all tick marks but labels every other tick
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : genFormat(d, "year");
 								});
 						} else {
 							// mobile
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
+							xAxis
 								.ticks(d3.timeYear.every(2))
-								//Show all tick marks but labels every other tick
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
@@ -1272,22 +1264,18 @@ export class GenChart {
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : d;
 								});
-						} else if (appState.currentDeviceType === "tablet") {
-							xAxis 
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : d;
-								});
+						}
+						if (appState.currentDeviceType === "tablet") {
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
+							});
 						} else {
-							// mobile (TTT)
-							xAxis
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 4 !== 0 ? " " : d;
-								});
+							// mobile
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 4 !== 0 ? " " : d;
+							});
 						}
 					}
-
 				}
 
 				if (p.barLayout?.horizontal) {
@@ -1390,7 +1378,7 @@ export class GenChart {
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {
-					//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
+					// console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
 					legendData[i] = {
 						stroke: d.values[0].assignedLegendColor,
 						dashArrayScale: p.left1DashArrayScale,
@@ -1538,31 +1526,29 @@ export class GenChart {
 					.attr("x", function () {
 						if (appState.currentDeviceType === "mobile") {
 							return 45 - lineXLeft - 9;
-						} else {
-							return 45 - lineXLeft; //not mobile
 						}
-					}) 
+						return 45 - lineXLeft; // not mobile
+					})
 					.attr("y", axisLabelFontSize * 0.5)
 					.text(function () {
 						if (d.dontDraw === true) {
 							return "\uf0c8"; // square unicode [&#xf0c8;]
-						} else {
-							return "\uf14a"; // check square unicode
 						}
+						return "\uf14a"; // check square unicode
 					});
 
 				// now draw the legend item text last
 				legendItem
 					.append("g")
 					.append("text")
-					//.attr("x", 60 - lineXLeft) 
-					.attr("x", function () { // this moves the text to the right
+					// .attr("x", 60 - lineXLeft)
+					.attr("x", function () {
+						// this moves the text to the right
 						if (appState.currentDeviceType === "mobile") {
 							return 60 - lineXLeft - 6;
-						} else {
-							return 60 - lineXLeft; //not mobile
 						}
-					}) 
+						return 60 - lineXLeft; // not mobile
+					})
 					.attr("y", axisLabelFontSize * 0.5) // up and down
 					.text(d.text)
 					.attr("overflow", "hidden")
@@ -1575,27 +1561,28 @@ export class GenChart {
 			let newWidth = d3.max(legendWidths) + 115 ?? 0; // was + 56 which had some exceeding the box
 			let widthGreaterThanAxis = false;
 			if (appState.currentDeviceType === "mobile") {
-				if (newWidth > (svg.select("#xaxis").attr("width"))) {
-				//if (newWidth > (svg.selectAll(".axis bottom").attr("width"))) {
+				if (newWidth > svg.select("#xaxis").attr("width")) {
 					// then cap it
 					newWidth = svg.select("#whitebox").attr("width") - 6;
 					widthGreaterThanAxis = true;
 				} // else leave it at the max calc
-			} 
-			legendContainer.attr("width", newWidth); 
+			}
+			legendContainer.attr("width", newWidth);
 
 			let mobileAdjustLeft = 26;
 			if (appState.currentDeviceType === "mobile") {
 				if (widthGreaterThanAxis) {
 					// center it in the whitebox
-					legendContainer.attr("x", svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 6);
+					legendContainer.attr(
+						"x",
+						svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 6
+					);
 					mobileAdjustLeft += 13;
 				} else {
 					// center it on the axis
-					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2 );
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
 					mobileAdjustLeft = 0;
 				}
-
 			} else {
 				// Now center the legend container
 				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
@@ -1608,7 +1595,7 @@ export class GenChart {
 			const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
 			legendElementG.forEach((text) => {
 				d3.select(text).attr("transform", () => {
-					adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2 - mobileAdjustLeft ;
+					adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2 - mobileAdjustLeft;
 					adjustY = text.transform.animVal[0].matrix.f;
 					let newTransform = `translate(${adjustX}, ${adjustY})`;
 					return newTransform;
