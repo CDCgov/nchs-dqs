@@ -173,7 +173,6 @@ export class GenChart {
 			axisLabelFontSize = 12;
 		}
 
-
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
 		// but not always titles
@@ -439,25 +438,24 @@ export class GenChart {
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
 					return newSplit;
 				} else return testString;
-
 			};
 
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
-				let splitText=[];
+				let splitText = [];
 				if (appState.currentDeviceType === "mobile") {
 					splitText = splitTitle($("#unit-num-select-chart :selected").text());
 				} else {
 					// dont need to split
-					splitText = [$("#unit-num-select-chart :selected").text(),""];
+					splitText = [$("#unit-num-select-chart :selected").text(), ""];
 				}
 
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
 					.attr("transform", "rotate(-90)")
-					.attr("id","leftAxisTitle")
+					.attr("id", "leftAxisTitle")
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
@@ -468,13 +466,12 @@ export class GenChart {
 						.text(p.barLayout.horizontal ? "" : splitText[1])
 						.style("text-anchor", "middle")
 						.attr("transform", "rotate(-90)")
-						.attr("id","leftAxisTitle")
+						.attr("id", "leftAxisTitle")
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // dist to edge
 						.attr("font-size", axisTitleFontSize)
-						.attr("fill", p.leftAxisColor);	
+						.attr("fill", p.leftAxisColor);
 				}
-				
 			}
 
 			// right yAxis
@@ -1267,21 +1264,16 @@ export class GenChart {
 									return i % 2 !== 0 ? " " : d;
 								});
 						} else if (appState.currentDeviceType === "tablet") {
-							xAxis 
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : d;
-								});
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
+							});
 						} else {
 							// mobile (TTT)
-							xAxis
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 4 !== 0 ? " " : d;
-								});
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 4 !== 0 ? " " : d;
+							});
 						}
 					}
-
 				}
 
 				if (p.barLayout?.horizontal) {
@@ -1507,7 +1499,10 @@ export class GenChart {
 				legendItem
 					.append("g")
 					.append("text")
-					.attr("class", "far")
+					.attr("class", "far far-legendItem")
+					.attr("tabindex", "0")
+					.attr("aria-label", d.text + " " + "checkbox")
+					.attr("role", "checkbox")
 					.attr("data-html2canvas-ignore", "")
 					.attr("font-size", axisLabelFontSize * 1.1)
 					.attr("x", 45)
