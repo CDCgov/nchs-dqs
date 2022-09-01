@@ -39,7 +39,6 @@ export class GenChart {
 		if (!p.usesBars) {
 			multiLineColors = d3.scaleOrdinal(p.multiLineColors);
 		}
-		//console.log("multilinecolors TOP:", multiLineColors);
 		let fullNestedData;
 
 		let allIncomingData = p.data.filter((d) => !Number.isNaN(d.estimate)); // this has to be used for the LEGENDS
@@ -160,17 +159,19 @@ export class GenChart {
 
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
-		// this scaling often makes the label sizes too big
-		if (axisTitleFontSize > 14) {
-			// knock it back down
-			axisTitleFontSize = 14;
+		// this scaling often makes the title sizes too big on Mobile
+		if (appState.currentDeviceType === "mobile") {
+			if (axisTitleFontSize > 12) {
+				// knock it back down
+				axisTitleFontSize = 12;
+			}
 		}
 
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
-		// this scaling often makes the label sizes too big
+		// this scaling makes the label sizes too big
 		if (axisLabelFontSize > 14) {
 			// knock it back down
-			axisLabelFontSize = 12;
+			axisLabelFontSize = 14;
 		}
 
 		// setup chart labels and title sizes
@@ -194,8 +195,8 @@ export class GenChart {
 			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
-			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
-		};
+			left: d3.max([leftTitleSize * 2 + leftAxisSize, p.marginLeftMin + 15]),
+		}; // (TT) doubled the space for leftTitleSize because we are splitting into 2 lines
 
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -342,7 +343,8 @@ export class GenChart {
 			.attr("id", "whitebox") // give it a white box background
 			.attr("fill", "#FFFFFF")
 			.attr("height", svgHeight)
-			.attr("width", svgWidth);
+			.attr("width", svgWidth)
+			.attr("overflow", "auto");
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -370,6 +372,7 @@ export class GenChart {
 				xAxisDraw = svg
 					.append("g")
 					.attr("class", "axis bottom")
+					.attr("id", "xaxis")
 					.attr(
 						"transform",
 						`translate(${margin.left}, ${p.barLayout?.horizontal ? margin.top : margin.top + chartHeight})`
@@ -402,6 +405,7 @@ export class GenChart {
 					.text(p.barLayout.horizontal ? $("#unit-num-select-chart :selected").text() : p.bottomAxisTitle)
 					.attr("text-anchor", "middle")
 					.attr("font-size", axisTitleFontSize)
+					.attr("font-weight", 700) // make axis title bold
 					.attr("x", chartCenterX)
 					.attr(
 						"y",
@@ -417,7 +421,7 @@ export class GenChart {
 			// -- but cant use insertLineBreaks because just need split text
 			// to draw on 2 lines only
 			const splitTitle = function (testString) {
-				const maxLength = 24;
+				const maxLength = 27;
 				if (testString.length > maxLength) {
 					const center = testString.length / 2;
 					const allSpaceIndeces = [];
@@ -437,19 +441,17 @@ export class GenChart {
 					});
 					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
 					return newSplit;
-				} else return testString;
+				}
+				return [testString, ""];
 			};
 
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
 				let splitText = [];
-				if (appState.currentDeviceType === "mobile") {
-					splitText = splitTitle($("#unit-num-select-chart :selected").text());
-				} else {
-					// dont need to split
-					splitText = [$("#unit-num-select-chart :selected").text(), ""];
-				}
+
+				// with bigger font size - always split the left axis title
+				splitText = splitTitle($("#unit-num-select-chart :selected").text());
 
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
@@ -459,8 +461,9 @@ export class GenChart {
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
+					.attr("font-weight", 700) // make titles bold
 					.attr("fill", p.leftAxisColor);
-				// $("#leftAxisTitle").text().each(insertLinebreaks);
+
 				if (splitText.length > 1) {
 					svg.append("text")
 						.text(p.barLayout.horizontal ? "" : splitText[1])
@@ -468,8 +471,9 @@ export class GenChart {
 						.attr("transform", "rotate(-90)")
 						.attr("id", "leftAxisTitle")
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
-						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // dist to edge
+						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
+						.attr("font-weight", 700)
 						.attr("fill", p.leftAxisColor);
 				}
 			}
@@ -538,7 +542,6 @@ export class GenChart {
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			let lineCount = 0;
-			let maxLineCount = 10;
 			if (p.usesMultiLineLeftAxis) {
 				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
 				// need the legend Nests from ALL incoming data
@@ -601,7 +604,7 @@ export class GenChart {
 						) {
 							// it is on the list
 							// so dont push it
-							//console.log("ALREADY on the list",d.values[0].stub_label);
+							// console.log("ALREADY on the list",d.values[0].stub_label);
 						} else {
 							// not on there so push it 8/2/2022
 
@@ -734,7 +737,6 @@ export class GenChart {
 					minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
 					maxReported.setDate(maxReported.getDate() + 1);
 					xScale.domain([minReported, maxReported]).nice();
-					//debugger;
 				} else if (p.barLayout.horizontal) {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
 				} else xScale.domain(sortedXValues.map((d) => d));
@@ -1007,9 +1009,8 @@ export class GenChart {
 											.style("fill", function (d) {
 												if (d.flag === "*") {
 													return "white"; // creates circle that appears "empty" for "*" flag
-												} else {
-													return multiLineColors(i); // fills in the dot with line color
 												}
+												return multiLineColors(i); // fills in the dot with line color
 											})
 											.style("stroke", function (d) {
 												if (d.flag !== undefined) {
@@ -1232,25 +1233,26 @@ export class GenChart {
 
 				if (p.usesDateAsXAxis) {
 					if (p.needsScaleTime) {
+						// uses single years
 						if (appState.currentDeviceType === "desktop") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-								.ticks(d3.timeYear.every(2))
-								//Show all tick marks but labels every other tick
+							xAxis
+								.ticks(d3.timeYear.every(1))
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : genFormat(d, "year");
+									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
 						} else if (appState.currentDeviceType === "tablet") {
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-								.ticks(d3.timeYear.every(5))
-								//Show all tick marks but labels every other tick
+							xAxis
+								.ticks(d3.timeYear.every(2))
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : genFormat(d, "year");
 								});
 						} else {
 							// mobile
-							xAxis //.tickValues(tickValues)   // dont limit the ticks .ticks(7)
-								.ticks(d3.timeYear.every(5))
-								//Show all tick marks but labels every other tick
+							xAxis
+								.ticks(d3.timeYear.every(2))
+								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
 									return i % 5 !== 0 ? " " : genFormat(d, "year");
 								});
@@ -1263,12 +1265,13 @@ export class GenChart {
 								.tickFormat((d, i) => {
 									return i % 2 !== 0 ? " " : d;
 								});
-						} else if (appState.currentDeviceType === "tablet") {
+						}
+						if (appState.currentDeviceType === "tablet") {
 							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
 								return i % 2 !== 0 ? " " : d;
 							});
 						} else {
-							// mobile (TTT)
+							// mobile
 							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
 								return i % 4 !== 0 ? " " : d;
 							});
@@ -1376,7 +1379,7 @@ export class GenChart {
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {
-					//console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
+					// console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
 					legendData[i] = {
 						stroke: d.values[0].assignedLegendColor,
 						dashArrayScale: p.left1DashArrayScale,
@@ -1467,7 +1470,8 @@ export class GenChart {
 				.attr("fill", "#F2F2F2")
 				.attr("rx", "5")
 				.attr("ry", "5")
-				.attr("stroke", "black");
+				.attr("stroke", "black")
+				.attr("overflow", "auto");
 
 			legendData.forEach((d, i) => {
 				const legendId = d.text.replace(/ /g, "_");
@@ -1484,18 +1488,37 @@ export class GenChart {
 					);
 
 				// only draw color line if data is drawn
+				let lineWidth;
+				let lineXLeft;
 				if (!d.dontDraw) {
+					if (appState.currentDeviceType === "mobile") {
+						lineXLeft = 6;
+						lineWidth = 25;
+					} else {
+						lineXLeft = 0;
+						lineWidth = 40;
+					}
 					legendItem
 						.append("line")
-						.attr("x1", 0)
+						.attr("x1", lineXLeft)
 						.attr("y1", 0)
-						.attr("x2", 40)
+						.attr("x2", lineWidth)
 						.attr("y2", 0)
 						.attr("stroke", d.stroke)
 						.attr("stroke-width", 4)
 						.attr("stroke-dasharray", d.dashArrayScale);
+				} else {
+					// have to adjust the placement of the ones not drawn as well
+					if (appState.currentDeviceType === "mobile") {
+						lineXLeft = 6;
+						lineWidth = 25;
+					} else {
+						lineXLeft = 0;
+						lineWidth = 40;
+					}
 				}
 
+				// draw the check box using unicode
 				legendItem
 					.append("g")
 					.append("text")
@@ -1505,33 +1528,72 @@ export class GenChart {
 					.attr("role", "checkbox")
 					.attr("data-html2canvas-ignore", "")
 					.attr("font-size", axisLabelFontSize * 1.1)
-					.attr("x", 45)
+					.attr("x", function () {
+						if (appState.currentDeviceType === "mobile") {
+							return 45 - lineXLeft - 9;
+						}
+						return 45 - lineXLeft; // not mobile
+					})
 					.attr("y", axisLabelFontSize * 0.5)
 					.text(function () {
 						if (d.dontDraw === true) {
 							return "\uf0c8"; // square unicode [&#xf0c8;]
-						} else {
-							return "\uf14a"; // check square unicode
 						}
+						return "\uf14a"; // check square unicode
 					});
 
+				// now draw the legend item text last
 				legendItem
 					.append("g")
 					.append("text")
-					.attr("x", 67) // this moves the text to the right
+					// .attr("x", 60 - lineXLeft)
+					.attr("x", function () {
+						// this moves the text to the right or left
+						if (appState.currentDeviceType === "mobile") {
+							return 60 - lineXLeft - 6;
+						}
+						return 60 - lineXLeft; // not mobile
+					})
 					.attr("y", axisLabelFontSize * 0.5) // up and down
 					.text(d.text)
+					.attr("overflow", "hidden")
+					.attr("overflow-x", "scroll")
 					.attr("font-size", axisLabelFontSize);
 			});
 
 			// get all legend items and find the longest then set the legend container size
-			const legendItems = document.querySelectorAll(`.${svgId}-legendItem`);
+			const legendItems = document.querySelectorAll(`.${svgId}-legendItem text`);
 			const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-			const newWidth = d3.max(legendWidths) ?? 0;
-			legendContainer.attr("width", newWidth + 56);
+			let newWidth = d3.max(legendWidths) + 115 ?? 0; // was + 56 which had some exceeding the box
+			let widthGreaterThanAxis = false;
+			if (appState.currentDeviceType === "mobile") {
+				if (newWidth > svg.select("#xaxis").attr("width")) {
+					// then cap it
+					newWidth = svg.select("#whitebox").attr("width") - 1;
+					widthGreaterThanAxis = true;
+				} // else leave it at the max calc
+			}
+			legendContainer.attr("width", newWidth);
 
-			// Now center the legend container
-			legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
+			let mobileAdjustLeft = 26;
+			if (appState.currentDeviceType === "mobile") {
+				if (widthGreaterThanAxis) {
+					// center it in the whitebox
+					legendContainer.attr(
+						"x",
+						svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 3
+					);
+					mobileAdjustLeft += 13;
+				} else {
+					// center it on the axis
+					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
+					mobileAdjustLeft = 0;
+				}
+			} else {
+				// Now center the legend container
+				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
+				mobileAdjustLeft = 0; // dont need to adjust
+			}
 
 			// Now get each legend Item Line and move those to the left
 			let adjustX;
@@ -1539,7 +1601,7 @@ export class GenChart {
 			const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
 			legendElementG.forEach((text) => {
 				d3.select(text).attr("transform", () => {
-					adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2;
+					adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2 - mobileAdjustLeft;
 					adjustY = text.transform.animVal[0].matrix.f;
 					let newTransform = `translate(${adjustX}, ${adjustY})`;
 					return newTransform;
@@ -1552,10 +1614,10 @@ export class GenChart {
 					.append("text")
 					.attr("id", "selectTenTxt")
 					.attr("x", -80)
-					.attr("y", -12)
+					.attr("y", -6)
 					.attr("data-html2canvas-ignore", "")
 					.style("fill", "black")
-					.style("font-size", "17px")
+					.style("font-size", "14px")
 					.text("Select up to 10 groups");
 			}
 		}
