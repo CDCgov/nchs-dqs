@@ -382,59 +382,6 @@ export const vizConfig = {
 	},
 };
 
-const getPropertyLookup = () => {
-	const propertyLookup = {
-		statename: { title: "", datumType: "string" },
-		date: { title: "Date: ", datumType: "longDate" },
-		"": { title: "", datumType: "" },
-	};
-
-	Object.values(vizConfig).forEach((value) => {
-		propertyLookup[value.ySelect] = {
-			title: `${value.tooltipLabel}: `,
-			datumType: "number",
-		};
-	});
-	return propertyLookup;
-};
-
-const getGenTooltipConstructor = (props) => {
-	return {
-		propertyLookup: getPropertyLookup(),
-		headerProps: ["statename", ""],
-		bodyProps: [vizConfig[props.vizKey].ySelect, "date"],
-		vizId: props.vizId,
-		svgId: `${props.vizId}-svg`,
-	};
-};
-
-export const getGenChartConfig = (props) => {
-	return {
-		data: props.data,
-		vizId: props.vizId,
-		chartProperties: {
-			yLeft1: props.ySelect,
-			xAxis: "date",
-		},
-		genTooltipConstructor: getGenTooltipConstructor(props),
-		usesLegend: true,
-		usesDateDomainSlider: true,
-		usesLeftAxis: true,
-		usesLeftAxisTitle: true,
-		usesBottomAxis: true,
-		usesBottomAxisTitle: false,
-		usesDateAsXAxis: true,
-		usesMultiLineLeftAxis: true,
-		legendCoordinatePercents: [0.1, 0.01],
-		leftAxisTitle: vizConfig[props.vizKey].yLabel,
-		multiLineLeftAxisKey: "statename",
-		multiLineColors: ["#88419d", "#57b452", "#0570b0", "#cc4c02", "#690207", "#e1ed3e", "#7c7e82"],
-		formatXAxis: "shortDate",
-		formatYAxisLeft: "magnitude",
-		leftDomainOverageScale: 1.1,
-	};
-};
-
 export const hashLookup = {
 	"data-topic-select": [
 		{

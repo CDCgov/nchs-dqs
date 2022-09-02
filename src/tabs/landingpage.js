@@ -88,7 +88,7 @@ export class LandingPage {
 
 		this.selections = hashTab.getSelections();
 		if (this.selections) this.dataTopic = this.selections.topic;
-		this.updateDataTopic(this.dataTopic); // this gets Socrata data and renders chart/map/datatable;
+		this.updateDataTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
 	}
 
 	renderMap() {
@@ -140,7 +140,7 @@ export class LandingPage {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 
-		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config.enableCI);
+		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
@@ -197,9 +197,29 @@ export class LandingPage {
 		selectedPanelData.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
 
 		if (this.showBarChart) {
+			const allDataGroups = [...new Set(selectedPanelData.map((d) => d.stub_label))];
+
 			// filter to just the start year
 			selectedPanelData = selectedPanelData.filter(
 				(d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10)
+			);
+
+			const current = selectedPanelData[0];
+			const filteredDataGroups = [...new Set(selectedPanelData.map((d) => d.stub_label))];
+			const excludedGroups = allDataGroups.filter((d) => !filteredDataGroups.includes(d));
+			excludedGroups.forEach((d) =>
+				selectedPanelData.push({
+					panel: current.panel,
+					unit: current.unit,
+					stub_name: current.stub_name,
+					year: current.year,
+					age: current.age,
+					flag: current.flag,
+					estimate_lci: null,
+					estimate_uci: null,
+					stub_label: d,
+					estimate: null,
+				})
 			);
 		} else {
 			// set up for line chart
@@ -292,15 +312,16 @@ export class LandingPage {
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 	}
 
-	updateDataTopic(dataTopic) {
+	updateDataTopic(dataTopic, topicChange = true) {
 		$(".dimmer").addClass("active");
 
-		// always reset to full range of time periods
-		$("#show-one-period-checkbox").prop("checked", false);
-		$("#startYearContainer").removeClass("offset-3");
-		$("#endYearContainer").show();
-		this.showBarChart = false;
-
+		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
+		if (topicChange) {
+			$("#show-one-period-checkbox").prop("checked", false);
+			$("#startYearContainer").removeClass("offset-3");
+			$("#endYearContainer").show();
+			this.showBarChart = false;
+		}
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
@@ -377,7 +398,12 @@ export class LandingPage {
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
-				// Set dropdowns and filter data (set this.flattenedFilteredData). Picks up unit num
+				if (!topicChange && this.showBarChart) {
+					// have to run the selects setup twice for a reload of barcharts
+					this.showBarChart = false;
+					this.setAllSelectDropdowns();
+					this.showBarChart = true;
+				}
 				this.setAllSelectDropdowns(); // includes time periods
 
 				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
