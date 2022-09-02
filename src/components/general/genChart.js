@@ -506,7 +506,8 @@ export class GenChart {
 				noDataTextGroup = svg
 					.append("g")
 					.attr("transform", `translate(${margin.left}, ${margin.top})`)
-					.attr("pointer-events", "none");
+					.attr("pointer-events", "none")
+					.attr("text-anchor", "left");
 			}
 
 			let stackedBars;
@@ -901,15 +902,15 @@ export class GenChart {
 							.text((d) => (d[p.chartProperties.bars] === null ? "No data available" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
-							.attr("x", xScale(xScale.domain().slice(-1) / 2))
+							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
 							.attr(
 								"y",
 								(d) =>
 									yScaleLeft(d[p.chartProperties.yLeft1]) +
 									p.barLayout.size / 2 -
 									axisLabelFontSize * 0.6
-							)
-							.attr("text-anchor", "middle");
+							);
+
 						noDataTextGroup
 							.selectAll("noDataText2")
 							.data(p.data)
@@ -918,15 +919,14 @@ export class GenChart {
 							.text((d) => (d[p.chartProperties.bars] === null ? "for current selections" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
-							.attr("x", xScale(xScale.domain().slice(-1) / 2))
+							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
 							.attr(
 								"y",
 								(d) =>
 									yScaleLeft(d[p.chartProperties.yLeft1]) +
 									p.barLayout.size / 2 +
 									axisLabelFontSize * 0.6
-							)
-							.attr("text-anchor", "middle");
+							);
 					}
 				}
 

@@ -322,7 +322,6 @@ export class LandingPage {
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 		}
-
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
@@ -399,7 +398,12 @@ export class LandingPage {
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
-				// Set dropdowns and filter data (set this.flattenedFilteredData). Picks up unit num
+				if (!topicChange && this.showBarChart) {
+					// have to run the selects setup twice for a reload of barcharts
+					this.showBarChart = false;
+					this.setAllSelectDropdowns();
+					this.showBarChart = true;
+				}
 				this.setAllSelectDropdowns(); // includes time periods
 
 				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
