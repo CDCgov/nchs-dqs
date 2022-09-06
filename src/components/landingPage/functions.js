@@ -191,3 +191,18 @@ export const getAllChartProps = (data, showBarChart, config) => {
 		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty, config.hasCI),
 	};
 };
+
+export const linkify = (t) => {
+	const m = t.match(/(\b(https?|http|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi);
+	if (!m) return t;
+	const a = [];
+	m.forEach((x) => {
+		const [t1, ...t2] = t.split(x);
+		a.push(t1);
+		t = t2.join(x);
+		const y = (!x.match(/(http(s?)|ftp):\/\//) ? "https://" : "") + x;
+		a.push('<a href="' + y + '" target="_blank" rel="noreferrer" noopener>' + y.split("/")[2] + "</a>");
+	});
+	a.push(t);
+	return a.join("");
+};
