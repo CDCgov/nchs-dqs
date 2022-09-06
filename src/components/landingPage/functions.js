@@ -164,7 +164,7 @@ export const getAllChartProps = (data, showBarChart, config) => {
 		usesXAxisTitle: true,
 		usesDateAsXAxis: !showBarChart,
 		needsScaleTime: !showBarChart && needsScaleTime,
-		yLeftLabelScale: showBarChart ? 10 : 2,
+		yLeftLabelScale: showBarChart ? 10 : 3,
 		bottomAxisTitle: xAxisTitle,
 		formatXAxis: "string",
 		formatYAxisLeft: "magnitude",

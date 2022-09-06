@@ -195,8 +195,8 @@ export class GenChart {
 			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
-			left: d3.max([leftTitleSize * 2 + leftAxisSize, p.marginLeftMin + 15]),
-		}; // (TT) doubled the space for leftTitleSize because we are splitting into 2 lines
+			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
+		};
 
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
