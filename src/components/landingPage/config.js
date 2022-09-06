@@ -382,511 +382,575 @@ export const vizConfig = {
 	},
 };
 
-export const hashLookup = {
-	"data-topic-select": [
-		{
-			hash: "obesity-children",
-			value: "obesity-child",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "sex",
-					value: "1",
-				},
-				{
-					hash: "age",
-					value: "2",
-				},
-				{
-					hash: "race-and-hispanic-origin",
-					value: "3",
-				},
-				{
-					hash: "sex-and-race-and-hispanic-origin",
-					value: "4",
-				},
-				{
-					hash: "percent-of-poverty-level",
-					value: "5",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "2-19",
-					value: "1",
-				},
-				{
-					hash: "2-5",
-					value: "2",
-				},
-				{
-					hash: "6-11",
-					value: "3",
-				},
-				{
-					hash: "12-19",
-					value: "4",
-				},
-			],
-		},
-		{
-			hash: "obesity-adults",
-			value: "obesity-adult",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "sex",
-					value: "1",
-				},
-				{
-					hash: "race-and-hispanic-origin",
-					value: "3",
-				},
-				{
-					hash: "sex-and-race-and-hispanic-origin",
-					value: "4",
-				},
-				{
-					hash: "percent-of-poverty-level",
-					value: "5",
-				},
-				{
-					hash: "sex-and-age",
-					value: "6",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "BMI-from-18.5-to-24.9",
-					value: "1",
-				},
-				{
-					hash: "BMI-greater-than-or-equal-to-25.0",
-					value: "2",
-				},
-				{
-					hash: "BMI-greater-than-or-equal-to-30.0",
-					value: "3",
-				},
-				{
-					hash: "BMI-from-30.0-to-34.9",
-					value: "4",
-				},
-				{
-					hash: "BMI-from-35.0-to-39.9",
-					value: "5",
-				},
-				{
-					hash: "BMI-greater-than-or-equal-to-40.0",
-					value: "6",
-				},
-			],
-		},
-		{
-			hash: "suicide-mortality",
-			value: "suicide",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "age",
-					value: "1",
-				},
-				{
-					hash: "sex",
-					value: "2",
-				},
-				{
-					hash: "sex-and-age",
-					value: "3",
-				},
-				{
-					hash: "sex-and-race",
-					value: "4",
-				},
-				{
-					hash: "sex-age-and-race",
-					value: "5",
-				},
-				{
-					hash: "sex-and-race-and-hispanic-origin",
-					value: "6",
-				},
-				{
-					hash: "sex-age-and-race-and-hispanic-origin",
-					value: "7",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "NA",
-					value: "NA",
-				},
-				{
-					hash: "NA",
-					value: "0",
-				},
-			],
-		},
-		{
-			hash: "injury-ed-visits",
-			value: "injury",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "1",
-				},
-				{
-					hash: "intent-and-mechanism-of-injury",
-					value: "2",
-				},
-				{
-					hash: "sex",
-					value: "3",
-				},
-				{
-					hash: "sex-intent-and-mechanism-of-injury",
-					value: "4",
-				},
-				{
-					hash: "sex-and-age",
-					value: "5",
-				},
-				{
-					hash: "sex-age-intent-and-mechanism-of-injury",
-					value: "6",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "NA",
-					value: "0",
-				},
-			],
-		},
-		{
-			hash: "infant-mortality",
-			value: "infant-mortality",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "state-or-territory",
-					value: "1",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "All-races",
-					value: "1",
-				},
-				{
-					hash: "Not-Hispanic-or-Latina_White",
-					value: "2",
-				},
-				{
-					hash: "Not-Hispanic-or-Latina_Black-or-African-American",
-					value: "3",
-				},
-				{
-					hash: "Hispanic-or-Latina_All-races",
-					value: "4",
-				},
-				{
-					hash: "American-Indian-or-Alaska-Native",
-					value: "5",
-				},
-				{
-					hash: "Asian-or-Pacific-Islander",
-					value: "6",
-				},
-			],
-		},
-		{
-			hash: "low-birthweight",
-			value: "birthweight",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "state-or-territory",
-					value: "1",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "All-races",
-					value: "1",
-				},
-				{
-					hash: "Not-Hispanic-or-Latina_White",
-					value: "2",
-				},
-				{
-					hash: "Not-Hispanic-or-Latina_Black-or-African-American",
-					value: "3",
-				},
-				{
-					hash: "Hispanic-or-Latina_All-races",
-					value: "4",
-				},
-				{
-					hash: "American-Indian-or-Alaska-Native",
-					value: "5",
-				},
-				{
-					hash: "Asian-or-Pacific-Islander",
-					value: "6",
-				},
-			],
-		},
-		{
-			hash: "medicaid-coverage-under-65",
-			value: "medicaidU65",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "age",
-					value: "1",
-				},
-				{
-					hash: "sex",
-					value: "2",
-				},
-				{
-					hash: "sex-and-marital-status",
-					value: "3",
-				},
-				{
-					hash: "race",
-					value: "4",
-				},
-				{
-					hash: "hispanic-origin-and-race",
-					value: "5",
-				},
-				{
-					hash: "age-and-percent-of-poverty-level",
-					value: "6",
-				},
-				{
-					hash: "level-of-difficulty",
-					value: "7",
-				},
-				{
-					hash: "geographic-region",
-					value: "8",
-				},
-				{
-					hash: "location-of-residence",
-					value: "9",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "NA",
-					value: "NA",
-				},
-				{
-					hash: "NA",
-					value: "0",
-				},
-			],
-		},
-		{
-			hash: "drug-overdose",
-			value: "drug-overdose",
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "age",
-					value: "1",
-				},
-				{
-					hash: "sex",
-					value: "2",
-				},
-				{
-					hash: "sex-and-age",
-					value: "3",
-				},
-				{
-					hash: "sex-and-race",
-					value: "4",
-				},
-				{
-					hash: "sex-and-race-and-hispanic-origin",
-					value: "5",
-				},
-			],
-			"panel-num-select": [
-				{
-					hash: "all-drug-overdose-deaths",
-					value: "1",
-				},
-				{
-					hash: "drug-overdose-deaths-any-opioid",
-					value: "2",
-				},
-				{
-					hash: "drug-overdose-deaths-natural-and-semisynthetic-opioids",
-					value: "3",
-				},
-				{
-					hash: "drug-overdose-deaths-methadone",
-					value: "4",
-				},
-				{
-					hash: "drug-overdose-deaths-synthetic-opioids",
-					value: "5",
-				},
-				{
-					hash: "drug-overdose-deaths-heroin",
-					value: "6",
-				},
-			],
-		},
-		{
-			hash: "ambulatory-care",
-			value: "ambulatory-care",
-			"panel-num-select": [
-				{
-					hash: "all-places",
-					value: "1",
-				},
-				{
-					hash: "physician-offices",
-					value: "2",
-				},
-				{
-					hash: "hospital-outpatient",
-					value: "3",
-				},
-				{
-					hash: "hospital-emergency",
-					value: "4",
-				},
-			],
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "age",
-					value: "1",
-				},
-				{
-					hash: "sex",
-					value: "2",
-				},
-				{
-					hash: "sex-and-age",
-					value: "3",
-				},
-				{
-					hash: "race",
-					value: "4",
-				},
-				{
-					hash: "race-and-age",
-					value: "5",
-				},
-			],
-		},
-		{
-			hash: "access-care",
-			value: "access-care",
-			"panel-num-select": [
-				{
-					hash: "nonreceipt-medical-care",
-					value: "1",
-				},
-				{
-					hash: "nonreceipt-drugs",
-					value: "2",
-				},
-				{
-					hash: "nonreceipt-dental-care",
-					value: "3",
-				},
-			],
-			"stub-name-num-select": [
-				{
-					hash: "total",
-					value: "0",
-				},
-				{
-					hash: "age",
-					value: "1",
-				},
-				{
-					hash: "sex",
-					value: "2",
-				},
-				{
-					hash: "race",
-					value: "3",
-				},
-				{
-					hash: "hispanic-origin-and-race",
-					value: "4",
-				},
-				{
-					hash: "education",
-					value: "5",
-				},
-				{
-					hash: "percent-of_poverty_level",
-					value: "6",
-				},
-				{
-					hash: "hispanic-origin-race-and-percent-of_poverty_level",
-					value: "7",
-				},
-				{
-					hash: "health-insurance-status-at-interview",
-					value: "8",
-				},
-				{
-					hash: "health-insurance-status-prior-to-interview",
-					value: "9",
-				},
-				{
-					hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
-					value: "10",
-				},
-				{
-					hash: "level-of-difficulty",
-					value: "11",
-				},
-				{
-					hash: "geographic-region",
-					value: "12",
-				},
-				{
-					hash: "location-of-residence",
-					value: "13",
-				},
-			],
-		},
-	],
-};
+export const hashLookup = [
+	{
+		hash: "obesity-children",
+		value: "obesity-child",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 3.5],
+			},
+			{
+				hash: "sex",
+				value: "1",
+				chartLeftMargin: [2, 3],
+			},
+			{
+				hash: "age",
+				value: "2",
+				chartLeftMargin: [2, 3.4],
+			},
+			{
+				hash: "race-and-hispanic-origin",
+				value: "3",
+				chartLeftMargin: [2, 8.5],
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "4",
+				chartLeftMargin: [2, 8.5],
+			},
+			{
+				hash: "percent-of-poverty-level",
+				value: "5",
+				chartLeftMargin: [2, 5],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "2-19",
+				value: "1",
+			},
+			{
+				hash: "2-5",
+				value: "2",
+			},
+			{
+				hash: "6-11",
+				value: "3",
+			},
+			{
+				hash: "12-19",
+				value: "4",
+			},
+		],
+	},
+	{
+		hash: "obesity-adults",
+		value: "obesity-adult",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "1",
+				chartLeftMargin: [2, 7],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [2, 3],
+			},
+			{
+				hash: "race-and-hispanic-origin",
+				value: "3",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "4",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "percent-of-poverty-level",
+				value: "5",
+				chartLeftMargin: [2, 5.5],
+			},
+			{
+				hash: "sex-and-age",
+				value: "6",
+				chartLeftMargin: [2, 7],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "BMI-from-18.5-to-24.9",
+				value: "1",
+			},
+			{
+				hash: "BMI-greater-than-or-equal-to-25.0",
+				value: "2",
+			},
+			{
+				hash: "BMI-greater-than-or-equal-to-30.0",
+				value: "3",
+			},
+			{
+				hash: "BMI-from-30.0-to-34.9",
+				value: "4",
+			},
+			{
+				hash: "BMI-from-35.0-to-39.9",
+				value: "5",
+			},
+			{
+				hash: "BMI-greater-than-or-equal-to-40.0",
+				value: "6",
+			},
+		],
+	},
+	{
+		hash: "suicide-mortality",
+		value: "suicide",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 4],
+			},
+			{
+				hash: "age",
+				value: "1",
+				chartLeftMargin: [2, 5],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [2, 3],
+			},
+			{
+				hash: "sex-and-age",
+				value: "3",
+				chartLeftMargin: [2, 5],
+			},
+			{
+				hash: "sex-and-race",
+				value: "4",
+				chartLeftMargin: [2, 6.5],
+			},
+			{
+				hash: "sex-age-and-race",
+				value: "5",
+				chartLeftMargin: [2, 7],
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "6",
+				chartLeftMargin: [2, 8.5],
+			},
+			{
+				hash: "sex-age-and-race-and-hispanic-origin",
+				value: "7",
+				chartLeftMargin: [2, 8.5],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "NA",
+				value: "NA",
+			},
+			{
+				hash: "NA",
+				value: "0",
+			},
+		],
+	},
+	{
+		hash: "injury-ed-visits",
+		value: "injury",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "1",
+				chartLeftMargin: [2.5, 5],
+			},
+			{
+				hash: "intent-and-mechanism-of-injury",
+				value: "2",
+				chartLeftMargin: [2.5, 8],
+			},
+			{
+				hash: "sex",
+				value: "3",
+				chartLeftMargin: [2.5, 3],
+			},
+			{
+				hash: "sex-intent-and-mechanism-of-injury",
+				value: "4",
+				chartLeftMargin: [2.5, 8],
+			},
+			{
+				hash: "sex-and-age",
+				value: "5",
+				chartLeftMargin: [2.5, 7],
+			},
+			{
+				hash: "sex-age-intent-and-mechanism-of-injury",
+				value: "6",
+				chartLeftMargin: [2.5, 8],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "NA",
+				value: "0",
+			},
+		],
+	},
+	{
+		hash: "infant-mortality",
+		value: "infant-mortality",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 5],
+			},
+			{
+				hash: "state-or-territory",
+				value: "1",
+				chartLeftMargin: [2, 8],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "All-races",
+				value: "1",
+			},
+			{
+				hash: "Not-Hispanic-or-Latina_White",
+				value: "2",
+			},
+			{
+				hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+				value: "3",
+			},
+			{
+				hash: "Hispanic-or-Latina_All-races",
+				value: "4",
+			},
+			{
+				hash: "American-Indian-or-Alaska-Native",
+				value: "5",
+			},
+			{
+				hash: "Asian-or-Pacific-Islander",
+				value: "6",
+			},
+		],
+	},
+	{
+		hash: "low-birthweight",
+		value: "birthweight",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 5],
+			},
+			{
+				hash: "state-or-territory",
+				value: "1",
+				chartLeftMargin: [2, 8],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "All-races",
+				value: "1",
+			},
+			{
+				hash: "Not-Hispanic-or-Latina_White",
+				value: "2",
+			},
+			{
+				hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+				value: "3",
+			},
+			{
+				hash: "Hispanic-or-Latina_All-races",
+				value: "4",
+			},
+			{
+				hash: "American-Indian-or-Alaska-Native",
+				value: "5",
+			},
+			{
+				hash: "Asian-or-Pacific-Islander",
+				value: "6",
+			},
+		],
+	},
+	{
+		hash: "medicaid-coverage-under-65",
+		value: "medicaidU65",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 6],
+			},
+			{
+				hash: "age",
+				value: "1",
+				chartLeftMargin: [2, 6],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [2, 3],
+			},
+			{
+				hash: "sex-and-marital-status",
+				value: "3",
+				chartLeftMargin: [2, 8],
+			},
+			{
+				hash: "race",
+				value: "4",
+				chartLeftMargin: [2, 9.5],
+			},
+			{
+				hash: "hispanic-origin-and-race",
+				value: "5",
+				chartLeftMargin: [2, 8.5],
+			},
+			{
+				hash: "age-and-percent-of-poverty-level",
+				value: "6",
+				chartLeftMargin: [2, 6],
+			},
+			{
+				hash: "level-of-difficulty",
+				value: "7",
+				chartLeftMargin: [2, 7],
+			},
+			{
+				hash: "geographic-region",
+				value: "8",
+				chartLeftMargin: [2, 4],
+			},
+			{
+				hash: "location-of-residence",
+				value: "9",
+				chartLeftMargin: [2, 4.5],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "NA",
+				value: "NA",
+			},
+			{
+				hash: "NA",
+				value: "0",
+			},
+		],
+	},
+	{
+		hash: "drug-overdose",
+		value: "drug-overdose",
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 4],
+			},
+			{
+				hash: "age",
+				value: "1",
+				chartLeftMargin: [2, 7],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [2, 3],
+			},
+			{
+				hash: "sex-and-age",
+				value: "3",
+				chartLeftMargin: [2, 7],
+			},
+			{
+				hash: "sex-and-race",
+				value: "4",
+				chartLeftMargin: [2, 6.5],
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "5",
+				chartLeftMargin: [2, 8.5],
+			},
+		],
+		"panel-num-select": [
+			{
+				hash: "all-drug-overdose-deaths",
+				value: "1",
+			},
+			{
+				hash: "drug-overdose-deaths-any-opioid",
+				value: "2",
+			},
+			{
+				hash: "drug-overdose-deaths-natural-and-semisynthetic-opioids",
+				value: "3",
+			},
+			{
+				hash: "drug-overdose-deaths-methadone",
+				value: "4",
+			},
+			{
+				hash: "drug-overdose-deaths-synthetic-opioids",
+				value: "5",
+			},
+			{
+				hash: "drug-overdose-deaths-heroin",
+				value: "6",
+			},
+		],
+	},
+	{
+		hash: "ambulatory-care",
+		value: "ambulatory-care",
+		"panel-num-select": [
+			{
+				hash: "all-places",
+				value: "1",
+			},
+			{
+				hash: "physician-offices",
+				value: "2",
+			},
+			{
+				hash: "hospital-outpatient",
+				value: "3",
+			},
+			{
+				hash: "hospital-emergency",
+				value: "4",
+			},
+		],
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [3, 4],
+			},
+			{
+				hash: "age",
+				value: "1",
+				chartLeftMargin: [3, 7],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [3, 3],
+			},
+			{
+				hash: "sex-and-age",
+				value: "3",
+				chartLeftMargin: [3, 7],
+			},
+			{
+				hash: "race",
+				value: "4",
+				chartLeftMargin: [3, 6],
+			},
+			{
+				hash: "race-and-age",
+				value: "5",
+				chartLeftMargin: [3, 7],
+			},
+		],
+	},
+	{
+		hash: "access-care",
+		value: "access-care",
+		"panel-num-select": [
+			{
+				hash: "nonreceipt-medical-care",
+				value: "1",
+			},
+			{
+				hash: "nonreceipt-drugs",
+				value: "2",
+			},
+			{
+				hash: "nonreceipt-dental-care",
+				value: "3",
+			},
+		],
+		"stub-name-num-select": [
+			{
+				hash: "total",
+				value: "0",
+				chartLeftMargin: [2, 5],
+			},
+			{
+				hash: "age",
+				value: "1",
+				chartLeftMargin: [2, 6],
+			},
+			{
+				hash: "sex",
+				value: "2",
+				chartLeftMargin: [2, 3.5],
+			},
+			{
+				hash: "race",
+				value: "3",
+				chartLeftMargin: [2, 10],
+			},
+			{
+				hash: "hispanic-origin-and-race",
+				value: "4",
+				chartLeftMargin: [2, 8.5],
+			},
+			{
+				hash: "education",
+				value: "5",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "percent-of_poverty_level",
+				value: "6",
+				chartLeftMargin: [2, 5.5],
+			},
+			{
+				hash: "hispanic-origin-race-and-percent-of_poverty_level",
+				value: "7",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "health-insurance-status-at-interview",
+				value: "8",
+				chartLeftMargin: [2, 4],
+			},
+			{
+				hash: "health-insurance-status-prior-to-interview",
+				value: "9",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
+				value: "10",
+				chartLeftMargin: [2, 9],
+			},
+			{
+				hash: "level-of-difficulty",
+				value: "11",
+				chartLeftMargin: [2, 6.5],
+			},
+			{
+				hash: "geographic-region",
+				value: "12",
+				chartLeftMargin: [2, 4],
+			},
+			{
+				hash: "location-of-residence",
+				value: "13",
+				chartLeftMargin: [2, 5.5],
+			},
+		],
+	},
+];
