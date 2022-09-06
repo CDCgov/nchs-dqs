@@ -220,13 +220,15 @@ export class GenTooltip {
 	}
 
 	mouseout() {
-		this.incomingElement.style("opacity", this.incomingOpacity);
-		this.incomingElement.style("stroke-width", this.incomingStrokeWidth);
+		if (this.incomingElement) {
+			this.incomingElement.style("opacity", this.incomingOpacity);
+			this.incomingElement.style("stroke-width", this.incomingStrokeWidth);
 
-		d3.select(`#${this.vizId} .tooltip`)
-			.transition()
-			.duration(150)
-			.style("visibility", "hidden")
-			.style("opacity", 0);
+			d3.select(`#${this.vizId} .tooltip`)
+				.transition()
+				.duration(150)
+				.style("visibility", "hidden")
+				.style("opacity", 0);
+		}
 	}
 }
