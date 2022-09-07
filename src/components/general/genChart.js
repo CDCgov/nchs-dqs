@@ -210,15 +210,14 @@ export class GenChart {
 			axisLabelFontSize = 14;
 		}
 
-		if (p.barLayout.horizontal) p.data.map((d) => d[p.chartProperties.yLeft1]).forEach((d) => insertLineBreaks(d));
-		else {
-			p.data
-				.map((d) => genFormat(d[p.chartProperties.yLeft1], p.formatYAxisLeft))
-				.forEach((d) => insertLineBreaks(d));
-		}
+		// loop through all y-axis tick labels to find the longest string
+		// this works whether we need to consider splitting the string to multiple lines (bar chart) or not (line chart)
+		p.data
+			.map((d) => genFormat(d[p.chartProperties.yLeft1], p.formatYAxisLeft))
+			.forEach((d) => insertLineBreaks(d));
 
 		p.yLeftLabelScale = (9.5 * longestLabelSegment) / maxLabelLength;
-		measured = true;
+		measured = true; // setting this to true allows the insertLineBreaks function to ignore trying to create tspans until after the tick labels are created
 
 		let splitText = [];
 		let leftTitleScale = 1;
