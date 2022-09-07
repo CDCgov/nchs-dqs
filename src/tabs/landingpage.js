@@ -163,11 +163,11 @@ export class LandingPage {
 	}
 
 	renderDataVisualizations = () => {
-		this.config.chartLeftMargin = hashTab.writeHashToUrl();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap();
 		} else this.renderChart();
 		this.renderDataTable();
+		hashTab.writeHashToUrl();
 		$(".dimmer").removeClass("active");
 	};
 
@@ -651,8 +651,8 @@ export class LandingPage {
 	updateShowBarChart(value) {
 		this.showBarChart = value;
 		if (value === 0) this.resetTimePeriods();
-		this.config.chartLeftMargin = hashTab.writeHashToUrl();
 		this.renderChart();
+		hashTab.writeHashToUrl();
 	}
 
 	updateEnableCI(value) {
@@ -714,10 +714,10 @@ export class LandingPage {
 		this.setVerticalUnitAxisSelect(); // reset the unit
 		DataCache.activeLegendList = []; // clear the list of active legend items when stub name changes
 
-		this.config.chartLeftMargin = hashTab.writeHashToUrl();
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 1) this.renderChart();
 		else $("a[href='#chart-tab']").click();
+		hashTab.writeHashToUrl();
 	}
 
 	renderDataTable() {

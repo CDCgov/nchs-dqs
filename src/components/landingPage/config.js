@@ -390,32 +390,26 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 3.5],
 			},
 			{
 				hash: "sex",
 				value: "1",
-				chartLeftMargin: [2, 3],
 			},
 			{
 				hash: "age",
 				value: "2",
-				chartLeftMargin: [2, 3.4],
 			},
 			{
 				hash: "race-and-hispanic-origin",
 				value: "3",
-				chartLeftMargin: [2, 8.5],
 			},
 			{
 				hash: "sex-and-race-and-hispanic-origin",
 				value: "4",
-				chartLeftMargin: [2, 8.5],
 			},
 			{
 				hash: "percent-of-poverty-level",
 				value: "5",
-				chartLeftMargin: [2, 5],
 			},
 		],
 		"panel-num-select": [
@@ -444,32 +438,26 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "1",
-				chartLeftMargin: [2, 7],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [2, 3],
 			},
 			{
 				hash: "race-and-hispanic-origin",
 				value: "3",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "sex-and-race-and-hispanic-origin",
 				value: "4",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "percent-of-poverty-level",
 				value: "5",
-				chartLeftMargin: [2, 5.5],
 			},
 			{
 				hash: "sex-and-age",
 				value: "6",
-				chartLeftMargin: [2, 7],
 			},
 		],
 		"panel-num-select": [
@@ -506,42 +494,34 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 4],
 			},
 			{
 				hash: "age",
 				value: "1",
-				chartLeftMargin: [2, 5],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [2, 3],
 			},
 			{
 				hash: "sex-and-age",
 				value: "3",
-				chartLeftMargin: [2, 5],
 			},
 			{
 				hash: "sex-and-race",
 				value: "4",
-				chartLeftMargin: [2, 6.5],
 			},
 			{
 				hash: "sex-age-and-race",
 				value: "5",
-				chartLeftMargin: [2, 7],
 			},
 			{
 				hash: "sex-and-race-and-hispanic-origin",
 				value: "6",
-				chartLeftMargin: [2, 8.5],
 			},
 			{
 				hash: "sex-age-and-race-and-hispanic-origin",
 				value: "7",
-				chartLeftMargin: [2, 8.5],
 			},
 		],
 		"panel-num-select": [
@@ -562,32 +542,26 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "1",
-				chartLeftMargin: [2.5, 5],
 			},
 			{
 				hash: "intent-and-mechanism-of-injury",
 				value: "2",
-				chartLeftMargin: [2.5, 8],
 			},
 			{
 				hash: "sex",
 				value: "3",
-				chartLeftMargin: [2.5, 3],
 			},
 			{
 				hash: "sex-intent-and-mechanism-of-injury",
 				value: "4",
-				chartLeftMargin: [2.5, 8],
 			},
 			{
 				hash: "sex-and-age",
 				value: "5",
-				chartLeftMargin: [2.5, 7],
 			},
 			{
 				hash: "sex-age-intent-and-mechanism-of-injury",
 				value: "6",
-				chartLeftMargin: [2.5, 8],
 			},
 		],
 		"panel-num-select": [
@@ -604,12 +578,10 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 5],
 			},
 			{
 				hash: "state-or-territory",
 				value: "1",
-				chartLeftMargin: [2, 8],
 			},
 		],
 		"panel-num-select": [
@@ -646,12 +618,10 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 5],
 			},
 			{
 				hash: "state-or-territory",
 				value: "1",
-				chartLeftMargin: [2, 8],
 			},
 		],
 		"panel-num-select": [
@@ -688,52 +658,42 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 6],
 			},
 			{
 				hash: "age",
 				value: "1",
-				chartLeftMargin: [2, 6],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [2, 3],
 			},
 			{
 				hash: "sex-and-marital-status",
 				value: "3",
-				chartLeftMargin: [2, 8],
 			},
 			{
 				hash: "race",
 				value: "4",
-				chartLeftMargin: [2, 9.5],
 			},
 			{
 				hash: "hispanic-origin-and-race",
 				value: "5",
-				chartLeftMargin: [2, 8.5],
 			},
 			{
 				hash: "age-and-percent-of-poverty-level",
 				value: "6",
-				chartLeftMargin: [2, 6],
 			},
 			{
 				hash: "level-of-difficulty",
 				value: "7",
-				chartLeftMargin: [2, 7],
 			},
 			{
 				hash: "geographic-region",
 				value: "8",
-				chartLeftMargin: [2, 4],
 			},
 			{
 				hash: "location-of-residence",
 				value: "9",
-				chartLeftMargin: [2, 4.5],
 			},
 		],
 		"panel-num-select": [
@@ -754,32 +714,26 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 4],
 			},
 			{
 				hash: "age",
 				value: "1",
-				chartLeftMargin: [2, 7],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [2, 3],
 			},
 			{
 				hash: "sex-and-age",
 				value: "3",
-				chartLeftMargin: [2, 7],
 			},
 			{
 				hash: "sex-and-race",
 				value: "4",
-				chartLeftMargin: [2, 6.5],
 			},
 			{
 				hash: "sex-and-race-and-hispanic-origin",
 				value: "5",
-				chartLeftMargin: [2, 8.5],
 			},
 		],
 		"panel-num-select": [
@@ -834,32 +788,26 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [3, 4],
 			},
 			{
 				hash: "age",
 				value: "1",
-				chartLeftMargin: [3, 7],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [3, 3],
 			},
 			{
 				hash: "sex-and-age",
 				value: "3",
-				chartLeftMargin: [3, 7],
 			},
 			{
 				hash: "race",
 				value: "4",
-				chartLeftMargin: [3, 6],
 			},
 			{
 				hash: "race-and-age",
 				value: "5",
-				chartLeftMargin: [3, 7],
 			},
 		],
 	},
@@ -884,72 +832,58 @@ export const hashLookup = [
 			{
 				hash: "total",
 				value: "0",
-				chartLeftMargin: [2, 5],
 			},
 			{
 				hash: "age",
 				value: "1",
-				chartLeftMargin: [2, 6],
 			},
 			{
 				hash: "sex",
 				value: "2",
-				chartLeftMargin: [2, 3.5],
 			},
 			{
 				hash: "race",
 				value: "3",
-				chartLeftMargin: [2, 10],
 			},
 			{
 				hash: "hispanic-origin-and-race",
 				value: "4",
-				chartLeftMargin: [2, 8.5],
 			},
 			{
 				hash: "education",
 				value: "5",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "percent-of_poverty_level",
 				value: "6",
-				chartLeftMargin: [2, 5.5],
 			},
 			{
 				hash: "hispanic-origin-race-and-percent-of_poverty_level",
 				value: "7",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "health-insurance-status-at-interview",
 				value: "8",
-				chartLeftMargin: [2, 4],
 			},
 			{
 				hash: "health-insurance-status-prior-to-interview",
 				value: "9",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
 				value: "10",
-				chartLeftMargin: [2, 9],
 			},
 			{
 				hash: "level-of-difficulty",
 				value: "11",
-				chartLeftMargin: [2, 6.5],
 			},
 			{
 				hash: "geographic-region",
 				value: "12",
-				chartLeftMargin: [2, 4],
 			},
 			{
 				hash: "location-of-residence",
 				value: "13",
-				chartLeftMargin: [2, 5.5],
 			},
 		],
 	},

@@ -14,13 +14,6 @@ export const writeHashToUrl = () => {
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
-	//////////  leave for debug of new hashLookup object ///////////////////////////////////////////////////////////////
-	// debugger;
-	// hashLookup.find((l) => l.value === topic).hash;
-	// hashLookup.find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash;
-	// hashLookup.find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash;
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	try {
 		const topicHash = hashLookup.find((l) => l.value === topic).hash;
 
@@ -28,17 +21,16 @@ export const writeHashToUrl = () => {
 			.find((l) => l.value === topic)
 			[subTopicId].find((s) => s.value === subTopic).hash;
 
-		const characteristicConfig = hashLookup
+		const characteristicHash = hashLookup
 			.find((l) => l.value === topic)
-			[characteristicId].find((c) => c.value === characteristic);
+			[characteristicId].find((c) => c.value === characteristic).hash;
 
-		window.location.hash = `${hashPrefix.replace("#", "")}_${topicHash}/${subtopicHash}/${
-			characteristicConfig.hash
-		}/${singlePeriod}`;
-
-		return characteristicConfig.chartLeftMargin;
+		window.location.hash = `${hashPrefix.replace(
+			"#",
+			""
+		)}_${topicHash}/${subtopicHash}/${characteristicHash}/${singlePeriod}`;
 	} catch {
-		return [3, 10];
+		/* do nothing */
 	}
 };
 

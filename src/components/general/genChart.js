@@ -95,14 +95,16 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		const insertLinebreaks = function (d) {
+		let longestLabelSegment = 0;
+		let measured = false;
+		const maxLabelLength = 24;
+		const insertLineBreaks = function (d) {
 			const splitOnColon = d.split(":").map((s) => s.trim());
-			const maxLength = 24;
 			const finalListOfTspan = [];
 
 			// recursive split until string is not too long
 			const splitIfTooLong = (testString) => {
-				if (testString.length > maxLength) {
+				if (testString.length > maxLabelLength) {
 					const center = testString.length / 2;
 					const allSpaceIndeces = [];
 					let startIndex = testString.indexOf(" ");
@@ -129,25 +131,30 @@ export class GenChart {
 				splitIfTooLong(s);
 			});
 
-			let el = d3.select(this);
-			el.text("")
-				.attr("dy", 0) // dy was set by d3 when creating the axis label, set it to 0
-				.attr(
-					"transform",
-					`translate(-5, ${-(finalListOfTspan.length / 2 + 0.3) * p.labelPaddingScale * axisLabelFontSize})`
-				);
+			if (measured) {
+				let el = d3.select(this);
+				el.text("")
+					.attr("dy", 0) // dy was set by d3 when creating the axis label, set it to 0
+					.attr(
+						"transform",
+						`translate(-5, ${
+							-(finalListOfTspan.length / 2 + 0.3) * p.labelPaddingScale * axisLabelFontSize
+						})`
+					);
 
-			finalListOfTspan.forEach((ts, i) => {
-				el.append("tspan")
-					.text(ts)
-					.attr("x", 0)
-					.attr("y", (i + 1) * p.labelPaddingScale * axisLabelFontSize);
-			});
+				finalListOfTspan.forEach((ts, i) => {
+					el.append("tspan")
+						.text(ts)
+						.attr("x", 0)
+						.attr("y", (i + 1) * p.labelPaddingScale * axisLabelFontSize);
+				});
+				return;
+			}
+
+			longestLabelSegment = Math.max(longestLabelSegment, Math.max(...finalListOfTspan.map((f) => f.length)));
 		};
 
-		// some unit titles are too long for mobile
-		// -- but cant use insertLineBreaks because just need split text
-		// to draw on 2 lines only
+		// some unit titles are too long for mobile ... split text to draw on 2 lines only when yAxis space is too small to fit on one line
 		const splitTitle = function (testString, height, fontSize) {
 			// estimate does not account for non mono-spaced font
 			const estimatedStringLength = testString.length * fontSize;
@@ -202,6 +209,16 @@ export class GenChart {
 			// knock it back down
 			axisLabelFontSize = 14;
 		}
+
+		if (p.barLayout.horizontal) p.data.map((d) => d[p.chartProperties.yLeft1]).forEach((d) => insertLineBreaks(d));
+		else {
+			p.data
+				.map((d) => genFormat(d[p.chartProperties.yLeft1], p.formatYAxisLeft))
+				.forEach((d) => insertLineBreaks(d));
+		}
+
+		p.yLeftLabelScale = (9.5 * longestLabelSegment) / maxLabelLength;
+		measured = true;
 
 		let splitText = [];
 		let leftTitleScale = 1;
@@ -1335,7 +1352,7 @@ export class GenChart {
 
 				if (p.barLayout?.horizontal) {
 					leftAxisDraw.call(yAxisLeft);
-					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLinebreaks);
+					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLineBreaks);
 				}
 
 				xAxisDraw.call(xAxis);
