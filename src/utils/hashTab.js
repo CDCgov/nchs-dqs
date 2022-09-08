@@ -14,21 +14,21 @@ export const writeHashToUrl = () => {
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
-	//////////  leave for debug of new hashLookup object ///////////////////////////////////////////////////////////////
-	// debugger;
-	// hashLookup[topicId].find((l) => l.value === topic).hash;
-	// hashLookup[topicId].find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash;
-	// hashLookup[topicId].find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash;
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	try {
-		window.location.hash = `
-		${hashPrefix.replace("#", "")}_
-		${hashLookup[topicId].find((l) => l.value === topic).hash}/
-		${hashLookup[topicId].find((l) => l.value === topic)[subTopicId].find((s) => s.value === subTopic).hash}/
-		${hashLookup[topicId].find((l) => l.value === topic)[characteristicId].find((c) => c.value === characteristic).hash}/
-		${singlePeriod}		
-	`;
+		const topicHash = hashLookup.find((l) => l.value === topic).hash;
+
+		const subtopicHash = hashLookup
+			.find((l) => l.value === topic)
+			[subTopicId].find((s) => s.value === subTopic).hash;
+
+		const characteristicHash = hashLookup
+			.find((l) => l.value === topic)
+			[characteristicId].find((c) => c.value === characteristic).hash;
+
+		window.location.hash = `${hashPrefix.replace(
+			"#",
+			""
+		)}_${topicHash}/${subtopicHash}/${characteristicHash}/${singlePeriod}`;
 	} catch {
 		/* do nothing */
 	}
@@ -41,11 +41,11 @@ export const getSelections = () => {
 		if (selections.length <= 1) return null;
 
 		selections = selections[1].split("/");
-		const topic = hashLookup[topicId].find((l) => l.hash === selections[0]).value;
-		const subTopic = hashLookup[topicId]
+		const topic = hashLookup.find((l) => l.hash === selections[0]).value;
+		const subTopic = hashLookup
 			.find((l) => l.hash === selections[0])
 			[subTopicId].find((s) => s.hash === selections[1]).value;
-		const characteristic = hashLookup[topicId]
+		const characteristic = hashLookup
 			.find((l) => l.hash === selections[0])
 			[characteristicId].find((c) => c.hash === selections[2]).value;
 		const viewSinglePeriod = selections[3] === "single-time-period";

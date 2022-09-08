@@ -95,14 +95,19 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		const insertLinebreaks = function (d) {
-			const splitOnColon = d.split(":").map((s) => s.trim());
-			const maxLength = 24;
+		let longestLabelSegmentLength = 0;
+		let measured = false;
+		const maxLabelLength = 24;
+		const insertLineBreaks = function (d) {
+			const splitOnColon = d
+				.toString()
+				.split(":")
+				.map((s) => s.trim());
 			const finalListOfTspan = [];
 
 			// recursive split until string is not too long
 			const splitIfTooLong = (testString) => {
-				if (testString.length > maxLength) {
+				if (testString.length > maxLabelLength) {
 					const center = testString.length / 2;
 					const allSpaceIndeces = [];
 					let startIndex = testString.indexOf(" ");
@@ -129,20 +134,57 @@ export class GenChart {
 				splitIfTooLong(s);
 			});
 
-			let el = d3.select(this);
-			el.text("")
-				.attr("dy", 0) // dy was set by d3 when creating the axis label, set it to 0
-				.attr(
-					"transform",
-					`translate(-5, ${-(finalListOfTspan.length / 2 + 0.3) * p.labelPaddingScale * axisLabelFontSize})`
-				);
+			if (measured) {
+				let el = d3.select(this);
+				el.text("")
+					.attr("dy", 0) // dy was set by d3 when creating the axis label, set it to 0
+					.attr(
+						"transform",
+						`translate(-5, ${
+							-(finalListOfTspan.length / 2 + 0.3) * p.labelPaddingScale * axisLabelFontSize
+						})`
+					);
 
-			finalListOfTspan.forEach((ts, i) => {
-				el.append("tspan")
-					.text(ts)
-					.attr("x", 0)
-					.attr("y", (i + 1) * p.labelPaddingScale * axisLabelFontSize);
-			});
+				finalListOfTspan.forEach((ts, i) => {
+					el.append("tspan")
+						.text(ts)
+						.attr("x", 0)
+						.attr("y", (i + 1) * p.labelPaddingScale * axisLabelFontSize);
+				});
+				return;
+			}
+
+			longestLabelSegmentLength = Math.max(
+				longestLabelSegmentLength,
+				Math.max(...finalListOfTspan.map((f) => f.length))
+			);
+		};
+
+		// some unit titles are too long for mobile ... split text to draw on 2 lines only when yAxis space is too small to fit on one line
+		const splitTitle = function (testString, height, fontSize) {
+			// estimate does not account for non mono-spaced font
+			const estimatedStringLength = testString.length * fontSize;
+			if (estimatedStringLength > 0.9 * height) {
+				const center = testString.length / 2;
+				const allSpaceIndeces = [];
+				let startIndex = testString.indexOf(" ");
+				if (startIndex === -1) {
+					finalListOfTspan.push(testString);
+					return;
+				}
+				while (startIndex !== -1) {
+					allSpaceIndeces.push(startIndex);
+					startIndex = testString.indexOf(" ", startIndex + 1);
+				}
+
+				// find the index of a space " " that is closest to the middle of the string
+				const closest = allSpaceIndeces.reduce(function (prev, curr) {
+					return Math.abs(curr - center) < Math.abs(prev - center) ? curr : prev;
+				});
+				const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
+				return newSplit;
+			}
+			return [testString, ""];
 		};
 
 		const svgId = `${p.vizId}-svg`;
@@ -174,19 +216,40 @@ export class GenChart {
 			axisLabelFontSize = 14;
 		}
 
+		// loop through all y-axis tick labels to find the longest string
+		// this works whether we need to consider splitting the string to multiple lines (bar chart) or not (line chart)
+		// rendering the values by two-sig-fig magnitude format seems to work fine for strings too
+		// scaling the length by power of 0.75 seems to make short and long segments get appropriate margin space
+		p.data.map((d) => genFormat(d[p.chartProperties.yLeft1], "magnitudeTwoSF")).forEach((d) => insertLineBreaks(d));
+
+		p.yLeftLabelScale = longestLabelSegmentLength ** 0.75; // scaling the
+		measured = true; // setting this to true allows the insertLineBreaks function to ignore trying to create tspans until after the tick labels are created
+
+		let splitText = [];
+		let leftTitleScale = 1;
+		if (p.usesLeftAxisTitle) {
+			// with bigger font size - always split the left axis title
+			splitText = splitTitle(
+				$("#unit-num-select-chart :selected").text(),
+				fullSvgWidth * svgHeightRatio,
+				axisLabelFontSize
+			);
+			if (splitText[1]) leftTitleScale = 2;
+		}
+
 		// setup chart labels and title sizes
 		// assumption is made that there are always left and bottom axis labels
 		// but not always titles
 
 		const chartTitleSize = p.usesChartTitle * p.labelPaddingScale * chartTitleFontSize;
 
-		const axisTitleSize = p.labelPaddingScale * axisTitleFontSize; //
-		const axisSize = p.labelPaddingScale * axisLabelFontSize; //
-		const rightTitleSize = p.usesRightAxisTitle * axisTitleSize; //
-		const leftAxisSize = p.usesLeftAxis * axisSize * p.yLeftLabelScale; //
-		const rightAxisSize = p.usesRightAxis * axisSize * p.yRightLabelScale; //
-		const leftTitleSize = p.usesLeftAxisTitle * axisTitleSize; //
-		const xAxisTitleSize = p.usesXAxisTitle * axisTitleSize; //
+		const axisTitleSize = p.labelPaddingScale * axisTitleFontSize;
+		const axisSize = p.labelPaddingScale * axisLabelFontSize;
+		const rightTitleSize = p.usesRightAxisTitle * axisTitleSize;
+		const leftAxisSize = p.usesLeftAxis * axisSize * p.yLeftLabelScale;
+		const rightAxisSize = p.usesRightAxis * axisSize * p.yRightLabelScale;
+		const leftTitleSize = p.usesLeftAxisTitle * axisTitleSize * leftTitleScale;
+		const xAxisTitleSize = p.usesXAxisTitle * axisTitleSize;
 		const bottomAxisScale = p.usesTwoLineXAxisLabels && svgHeightRatio !== 0.5 ? 2 : 1;
 
 		// setup margins, widths, and heights
@@ -195,7 +258,7 @@ export class GenChart {
 			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
-			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin + 15]),
+			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
 		};
 
 		const xMargin = margin.left + margin.right;
@@ -417,42 +480,9 @@ export class GenChart {
 				// if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
 			}
 
-			// some unit titles are too long for mobile
-			// -- but cant use insertLineBreaks because just need split text
-			// to draw on 2 lines only
-			const splitTitle = function (testString) {
-				const maxLength = 27;
-				if (testString.length > maxLength) {
-					const center = testString.length / 2;
-					const allSpaceIndeces = [];
-					let startIndex = testString.indexOf(" ");
-					if (startIndex === -1) {
-						finalListOfTspan.push(testString);
-						return;
-					}
-					while (startIndex !== -1) {
-						allSpaceIndeces.push(startIndex);
-						startIndex = testString.indexOf(" ", startIndex + 1);
-					}
-
-					// find the index of a space " " that is closest to the middle of the string
-					const closest = allSpaceIndeces.reduce(function (prev, curr) {
-						return Math.abs(curr - center) < Math.abs(prev - center) ? curr : prev;
-					});
-					const newSplit = [testString.substring(0, closest).trim(), testString.substring(closest).trim()];
-					return newSplit;
-				}
-				return [testString, ""];
-			};
-
 			// left yAxis
 			// for LINE chart
 			if (p.usesLeftAxisTitle) {
-				let splitText = [];
-
-				// with bigger font size - always split the left axis title
-				splitText = splitTitle($("#unit-num-select-chart :selected").text());
-
 				svg.append("text")
 					.text(p.barLayout.horizontal ? "" : splitText[0])
 					.style("text-anchor", "middle")
@@ -464,7 +494,8 @@ export class GenChart {
 					.attr("font-weight", 700) // make titles bold
 					.attr("fill", p.leftAxisColor);
 
-				if (splitText.length > 1) {
+				// if the second item in splitText !== ""
+				if (splitText[1]) {
 					svg.append("text")
 						.text(p.barLayout.horizontal ? "" : splitText[1])
 						.style("text-anchor", "middle")
@@ -1326,7 +1357,7 @@ export class GenChart {
 
 				if (p.barLayout?.horizontal) {
 					leftAxisDraw.call(yAxisLeft);
-					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLinebreaks);
+					d3.selectAll(`#${svgId} .y.axis.left text`).each(insertLineBreaks);
 				}
 
 				xAxisDraw.call(xAxis);
