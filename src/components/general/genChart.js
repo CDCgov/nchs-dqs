@@ -95,7 +95,7 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		let longestLabelSegment = 4; // initialized to a 4 minimum so one or two character axis tick labels have a little buffer
+		let longestLabelSegmentLength = 0;
 		let measured = false;
 		const maxLabelLength = 24;
 		const insertLineBreaks = function (d) {
@@ -154,7 +154,10 @@ export class GenChart {
 				return;
 			}
 
-			longestLabelSegment = Math.max(longestLabelSegment, Math.max(...finalListOfTspan.map((f) => f.length)));
+			longestLabelSegmentLength = Math.max(
+				longestLabelSegmentLength,
+				Math.max(...finalListOfTspan.map((f) => f.length))
+			);
 		};
 
 		// some unit titles are too long for mobile ... split text to draw on 2 lines only when yAxis space is too small to fit on one line
@@ -215,11 +218,11 @@ export class GenChart {
 
 		// loop through all y-axis tick labels to find the longest string
 		// this works whether we need to consider splitting the string to multiple lines (bar chart) or not (line chart)
-		p.data
-			.map((d) => genFormat(d[p.chartProperties.yLeft1], p.formatYAxisLeft))
-			.forEach((d) => insertLineBreaks(d));
+		// rendering the values by two-sig-fig magnitude format seems to work fine for strings too
+		// scaling the length by power of 0.75 seems to make short and long segments get appropriate margin space
+		p.data.map((d) => genFormat(d[p.chartProperties.yLeft1], "magnitudeTwoSF")).forEach((d) => insertLineBreaks(d));
 
-		p.yLeftLabelScale = (9.5 * longestLabelSegment) / maxLabelLength;
+		p.yLeftLabelScale = longestLabelSegmentLength ** 0.75; // scaling the
 		measured = true; // setting this to true allows the insertLineBreaks function to ignore trying to create tspans until after the tick labels are created
 
 		let splitText = [];
