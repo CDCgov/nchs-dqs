@@ -95,11 +95,14 @@ export class GenChart {
 		}
 
 		// inserts line breaks where every : is in the Characteristic on the bar left axis
-		let longestLabelSegment = 0;
+		let longestLabelSegment = 4; // initialized to a 4 minimum so one or two character axis tick labels have a little buffer
 		let measured = false;
 		const maxLabelLength = 24;
 		const insertLineBreaks = function (d) {
-			const splitOnColon = d.split(":").map((s) => s.trim());
+			const splitOnColon = d
+				.toString()
+				.split(":")
+				.map((s) => s.trim());
 			const finalListOfTspan = [];
 
 			// recursive split until string is not too long
