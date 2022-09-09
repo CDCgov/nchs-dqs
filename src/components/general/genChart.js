@@ -379,14 +379,15 @@ export class GenChart {
 			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
 
-		let yAxisNumTicks = yScaleLeft.ticks().length;
+		let yAxisNumTicks = 10;
+		if (!p.usesBars) yAxisNumTicks = yScaleLeft.ticks().length;
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
 			.tickFormat((d, i) => {
 				if (appState.currentDeviceType === "mobile") {
-					if (yAxisNumTicks > 11) {
+					if (yAxisNumTicks > 10) {
 						// draw only every other label if large number of ticks
 						return i % 2 !== 0 ? " " : genFormat(d, p.formatYAxisLeft);
 					}
