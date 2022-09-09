@@ -379,11 +379,23 @@ export class GenChart {
 			.tickSizeInner(5)
 			.tickFormat((d) => genFormat(d, p.formatXAxis));
 
+		let yAxisNumTicks = yScaleLeft.ticks().length;
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
-			.tickFormat((d) => genFormat(d, p.formatYAxisLeft));
+			.tickFormat((d, i) => {
+				if (appState.currentDeviceType === "mobile") {
+					if (yAxisNumTicks > 11) {
+						// draw only every other label if large number of ticks
+						return i % 2 !== 0 ? " " : genFormat(d, p.formatYAxisLeft);
+					}
+					// draw every label
+					return genFormat(d, p.formatYAxisLeft);
+				}
+				// for desktop always draw every tick label
+				return genFormat(d, p.formatYAxisLeft);
+			});
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
 
@@ -1335,21 +1347,15 @@ export class GenChart {
 						}
 					} else {
 						// uses time periods
-						if (appState.currentDeviceType === "desktop") {
-							xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : d;
-								});
-						}
-						if (appState.currentDeviceType === "tablet") {
-							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
-								return i % 2 !== 0 ? " " : d;
-							});
-						} else {
+						if (appState.currentDeviceType === "mobile") {
 							// mobile
 							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
 								return i % 4 !== 0 ? " " : d;
+							});
+						} else {
+							// desktop and tablet
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
 							});
 						}
 					}
