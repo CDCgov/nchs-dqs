@@ -393,7 +393,7 @@ export const vizConfig = {
 // 3. "panel_num-select" uses rules #1 and #2 like above, but for the Subtopic dropdown
 // 4. "stub-name-num-select" uses rules #1 and #2 like above, but for the Characteristic dropdown
 //
-// For ease of getting the values, after creating the required topicLookup object (above in this code) and load the page.
+// For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
 // Once your new dataset successfully loads you can inspect the Subtopic and Characteristic dropdowns.
 export const hashLookup = [
 	{
