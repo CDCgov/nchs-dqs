@@ -10,7 +10,6 @@ export const writeHashToUrl = () => {
 	const subTopic = $(`#${subTopicId} :selected`)[0].value;
 	const characteristic = $(`#${characteristicId} :selected`)[0].value;
 	const singlePeriod = $(`#${showOnePeriodCheckboxId}`)[0].checked ? "single-time-period" : "all-time-periods";
-	// const view = $("a.nav-link.active").text().toLocaleLowerCase();
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
