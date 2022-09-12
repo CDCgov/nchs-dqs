@@ -255,11 +255,11 @@ export class GenChart {
 		// setup margins, widths, and heights
 		let marginTB = 20;
 		const margin = {
-			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
+			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize * 2) * p.labelPaddingScale : marginTB,
 			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
-		};
+		}; // top margin * 2 is to fit the split title onto 2 lines at top for bar charts
 
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
@@ -370,6 +370,7 @@ export class GenChart {
 		// set up axes
 		let xAxisType;
 
+		// if horizontal bar chart, move axis to top
 		if (p.barLayout?.horizontal) xAxisType = d3.axisTop(xScale);
 		else xAxisType = d3.axisBottom(xScale);
 
@@ -377,13 +378,31 @@ export class GenChart {
 			.tickSize(3)
 			.tickSizeOuter(5)
 			.tickSizeInner(5)
-			.tickFormat((d) => genFormat(d, p.formatXAxis));
+			.tickFormat((d, i) => {
+				if (appState.currentDeviceType === "mobile") {
+					return i % 2 !== 0 ? " " : genFormat(d, p.formatXAxis);
+				}
+				return genFormat(d, p.formatXAxis);
+			});
 
+		let yAxisNumTicks = 10;
+		if (!p.usesBars) yAxisNumTicks = yScaleLeft.ticks().length;
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
-			.tickFormat((d) => genFormat(d, p.formatYAxisLeft));
+			.tickFormat((d, i) => {
+				if (appState.currentDeviceType === "mobile") {
+					if (yAxisNumTicks > 10) {
+						// draw only every other label if large number of ticks
+						return i % 2 !== 0 ? " " : genFormat(d, p.formatYAxisLeft);
+					}
+					// draw every label
+					return genFormat(d, p.formatYAxisLeft);
+				}
+				// for desktop always draw every tick label
+				return genFormat(d, p.formatYAxisLeft);
+			});
 
 		if (p.left1ScaleType === "log") yAxisLeft.tickValues(yLeft1TickValues);
 
@@ -463,10 +482,24 @@ export class GenChart {
 			// append the axis titles
 			// xAxis
 			if (p.usesXAxisTitle) {
+				// if bar chart and MOBILE, then have to split it
+				let splitBarTitle = [];
+				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile") {
+					// with bigger font size - always split the left axis title
+					splitBarTitle = splitTitle(
+						$("#unit-num-select-chart :selected").text(),
+						fullSvgWidth * svgHeightRatio,
+						axisLabelFontSize
+					);
+				} else {
+					// not mobile
+					splitBarTitle[0] = p.bottomAxisTitle;
+				}
 				const axisTitle = svg
 					.append("text")
-					.text(p.barLayout.horizontal ? $("#unit-num-select-chart :selected").text() : p.bottomAxisTitle)
+					.text(p.barLayout.horizontal ? splitBarTitle[0] : p.bottomAxisTitle)
 					.attr("text-anchor", "middle")
+					.attr("id", "topAxisTitle0")
 					.attr("font-size", axisTitleFontSize)
 					.attr("font-weight", 700) // make axis title bold
 					.attr("x", chartCenterX)
@@ -477,7 +510,24 @@ export class GenChart {
 							: margin.top + chartHeight + (axisSize + xAxisTitleSize * 1.5)
 					);
 
-				// if (p.barLayout?.horizontal) axisTitle.attr("data-html2canvas-ignore", "");
+				// for bar chart and MOBILE, then draw 2nd line HERE
+				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile" && splitBarTitle[1]) {
+					svg.append("text")
+						.text(splitBarTitle[1])
+						.style("text-anchor", "middle")
+						.attr("id", "topAxisTitle1")
+						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
+						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
+						.attr("font-size", axisTitleFontSize)
+						.attr("font-weight", 700)
+						.attr("x", chartCenterX)
+						.attr(
+							"y",
+							!p.usesBottomAxis
+								? 2.5 * xAxisTitleSize
+								: margin.top + chartHeight + (axisSize + xAxisTitleSize * 1.5)
+						);
+				}
 			}
 
 			// left yAxis
@@ -1335,21 +1385,15 @@ export class GenChart {
 						}
 					} else {
 						// uses time periods
-						if (appState.currentDeviceType === "desktop") {
-							xAxis // WHAT IS THIS tickValues for???  .tickValues(tickValues)
-								.ticks(tickValues.length)
-								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : d;
-								});
-						}
-						if (appState.currentDeviceType === "tablet") {
-							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
-								return i % 2 !== 0 ? " " : d;
-							});
-						} else {
+						if (appState.currentDeviceType === "mobile") {
 							// mobile
 							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
 								return i % 4 !== 0 ? " " : d;
+							});
+						} else {
+							// desktop and tablet
+							xAxis.ticks(tickValues.length).tickFormat((d, i) => {
+								return i % 2 !== 0 ? " " : d;
 							});
 						}
 					}

@@ -388,7 +388,6 @@ export class LandingPage {
 						assignedLegendColor: "#FFFFFF",
 					}));
 
-				//???????????????????????????
 				// for line chart and bar chart, REMOVE the undefined data entirely
 				if (!this.config.hasMap) {
 					// remove flag = "- - -" data
@@ -447,7 +446,7 @@ export class LandingPage {
 
 		allPanelsArray.forEach((y) => {
 			// allow string to int equality with ==
-			if (this.config.panelNum == y.panel_num || y.panel === "N/A")
+			if (this.config.panelNum === y.panel_num || y.panel === "N/A")
 				$("#panel-num-select").append(
 					`<option value="${y.panel_num}" selected>${y.panel === "N/A" ? "Not Applicable" : y.panel}</option>`
 				);
