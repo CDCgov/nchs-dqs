@@ -382,6 +382,19 @@ export const vizConfig = {
 	},
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rules for creating a new hashLookup object
+// 1. top-level value must match the ID in the Topic dropdown's Options list
+// 2. hash can be any string closely related to the TEXT in Topic dropdown, with "-" replacing any spaces. Do not use "_" as this is reserved
+//    to split a tab-hash and the hash-values that follow. I hear you thinking 'hash, value, hash-value ... I'm confused'. Bottom line is,
+//    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
+//    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
+//    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
+// 3. "panel_num-select" uses rules #1 and #2 like above, but for the Subtopic dropdown
+// 4. "stub-name-num-select" uses rules #1 and #2 like above, but for the Characteristic dropdown
+//
+// For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
+// Once your new dataset successfully loads you can inspect the Subtopic and Characteristic dropdowns.
 export const hashLookup = [
 	{
 		hash: "obesity-children",
@@ -590,15 +603,15 @@ export const hashLookup = [
 				value: "1",
 			},
 			{
-				hash: "Not-Hispanic-or-Latina_White",
+				hash: "Not-Hispanic-or-Latina&White",
 				value: "2",
 			},
 			{
-				hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
 				value: "3",
 			},
 			{
-				hash: "Hispanic-or-Latina_All-races",
+				hash: "Hispanic-or-Latina&All-races",
 				value: "4",
 			},
 			{
@@ -630,15 +643,15 @@ export const hashLookup = [
 				value: "1",
 			},
 			{
-				hash: "Not-Hispanic-or-Latina_White",
+				hash: "Not-Hispanic-or-Latina&White",
 				value: "2",
 			},
 			{
-				hash: "Not-Hispanic-or-Latina_Black-or-African-American",
+				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
 				value: "3",
 			},
 			{
-				hash: "Hispanic-or-Latina_All-races",
+				hash: "Hispanic-or-Latina&All-races",
 				value: "4",
 			},
 			{
@@ -854,11 +867,11 @@ export const hashLookup = [
 				value: "5",
 			},
 			{
-				hash: "percent-of_poverty_level",
+				hash: "percent-of-poverty-level",
 				value: "6",
 			},
 			{
-				hash: "hispanic-origin-race-and-percent-of_poverty_level",
+				hash: "hispanic-origin-race-and-percent-of-poverty-level",
 				value: "7",
 			},
 			{
