@@ -272,7 +272,9 @@ export class LandingPage {
 			sourceList = footnotesList;
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
 			sourceList.forEach(
-				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+				(f) =>
+					(sourceText +=
+						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -281,7 +283,9 @@ export class LandingPage {
 			// foreach footnote ID, look it up in the tabnotes and ADD it to text
 			allFootnotesText = "";
 			footnotesList.forEach(
-				(f) => (allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>")
+				(f) =>
+					(allFootnotesText +=
+						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
 			);
 		} else if (footnotesIdArray[0]) {
 			// this includes every item in the footnotes
@@ -291,7 +295,9 @@ export class LandingPage {
 			sourceList = footnotesList;
 			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
 			sourceList.forEach(
-				(f) => (sourceText += "<div><b>Source</b>: " + f + ": " + this.footnoteMap[f] + "</div>")
+				(f) =>
+					(sourceText +=
+						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
 			);
 
 			// now remove the SC notes from footnotesList
@@ -300,7 +306,9 @@ export class LandingPage {
 			// foreach footnote ID, look it up in the tabnotes and ADD it to text
 			allFootnotesText = "";
 			footnotesList.forEach(
-				(f) => (allFootnotesText += "<p class='footnote-text'>" + f + ": " + this.footnoteMap[f] + "</p>")
+				(f) =>
+					(allFootnotesText +=
+						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
 			);
 		}
 		// update source text
