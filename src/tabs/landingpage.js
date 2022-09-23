@@ -701,6 +701,7 @@ export class LandingPage {
 
 	// call this when Reset Button is clicked
 	resetSelections() {
+		functions.resetTopicDropdownList();
 		// reset panel
 		this.setPanelSelect();
 

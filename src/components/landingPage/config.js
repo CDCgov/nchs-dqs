@@ -1,6 +1,9 @@
+import { modal } from "./modal";
+
 export const tabContent = `
+	${modal}
 	<!-- TOP SELECTORS -->
-	<div class="row">
+	<div id="dropdownSelectorGroup" class="row">
 		<div id="topicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
@@ -8,23 +11,34 @@ export const tabContent = `
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label for="data-topic-select" class="preSelText" aria-label="Select a Topic">Select a</label>
-					<div class="mainSelText">Topic</div>
+					<div class="mainSelText">
+						Topic
+						<span>
+							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none">
+								<i class="clearFiltersIcons fa fa-filter fa-stack-1x"></i>
+  								<i class="clearFiltersIcons fa fa-slash fa-stack-1x"></i>
+							</span>
+							<span id="editFiltersContainer" class="fa-stack callFiltersModal">
+								<i class="editFiltersIcon fa fa-filter fa-stack-1x"></i>
+							</span>
+						</span>						
+					</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
 				<select name="data-topic-select-box" id="data-topic-select" form="select-view-options">
-						<option value="obesity-child" selected>Obesity among Children</option>
-						<option value="obesity-adult">Obesity among Adults</option>
-						<option value="suicide">Death Rates for Suicide</option>
-						<option value="injury">Initial injury-related visits to hospital emergency departments</option>
-						<option value="infant-mortality">Infant Mortality</option>
-						<option value="birthweight">Low birthweight live births</option>
-						<option value="medicaidU65">Medicaid coverage among persons under age 65</option>
-						<option value="drug-overdose">Deaths from drug overdose</option>
-						<option value="ambulatory-care">Ambulatory Care Visits</option>
-						<option value="access-care">Access to Care</option>
+					<option value="obesity-child" selected data-filters="AsianPacific,Black,Children,Hispanic,Poverty,White">Obesity among Children</option>
+					<option value="obesity-adult" data-filters="Adults,Asian,Black,Hispanic,Poverty,White,Male,Female">Obesity among Adults</option>
+					<option value="suicide" data-filters="Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female">Death Rates for Suicide</option>
+					<option value="injury" data-filters="Adults,Older,Children,Male,Female">Initial injury-related visits to hospital emergency departments</option>
+					<option value="infant-mortality" data-filters="Infants,Indian,AsianPacific,Black,Children,Hispanic,White">Infant Mortality</option>
+					<option value="birthweight" data-filters="Infants,AsianPacific,Indian,Black,Children,Hispanic,White">Low birthweight live births</option>
+					<option value="medicaidU65" data-filters="Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White">Medicaid coverage among persons under age 65</option>
+					<option value="drug-overdose" data-filters="Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White">Deaths from drug overdose</option>
+					<option value="ambulatory-care" data-filters="Adults,Black,Children,Female,Male,Older,Region,White">Ambulatory Care Visits</option>
+					<option value="access-care" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Access to Care</option>
 				</select>
 			</div>
 		</div>
@@ -52,7 +66,18 @@ export const tabContent = `
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label for="stub-name-num-select" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
-					<div class="mainSelText">Characteristic</div>
+					<div class="mainSelText">
+						Characteristic
+						<!--<span>
+							<span class="fa-stack clearAllFilters" style="display: none">
+								<i class="fa fa-filter fa-stack-1x"></i>
+  								<i class="fa fa-slash fa-stack-1x"></i>
+							</span>
+							<span class="fa-stack callFiltersModal">
+								<i class="fa fa-filter fa-stack-1x"></i>  							
+							</span>
+						</span>-->
+					</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
@@ -99,26 +124,12 @@ export const tabContent = `
 		</div>
 	</div>
 
-	<!-- #b3d2ce -->
 	<div id="resetInfoContainer" class="row homeSmallGroup">
-		<div id="additionalFiltersContainer" class="col-lg-5 col-md-6 col-sm-6">
-			<div id="addFiltersTextContainer" class="col homeSmallIcon d-inline-block">
-				<i class="fas fa-caret-right"></i>
-				<span role="button" class="homeSmallText">View Additional Filters</span>
-			</div>
-			<div id="editFiltersTextContainer" class="col homeTinyIcon d-inline-block float-right">
-				<i class="fas fa-pen fa-xs"></i>
-				<span role="button" class="homeTinyText" style="text-decoration-line: underline">Edit Your Filters</span>
-			</div>
-		</div>
-
-		<div class="col col-lg-4 col-md-3 col-sm-6 align-self-end d-inline-block" style="text-align: right">
+		<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">
 			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
-
 			<button id="home-btn-reset" class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>
-
 	<br />
 
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center">
@@ -313,26 +324,6 @@ export const topicLookup = {
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		panelNum: 1,
-		unitNum: 1,
-		hasCI: false,
-		hasSubtopic: true,
-	},
-	access: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Delay-or-nonreceipt-of-needed-medical-care-pre/nt5r-ak33",
-		socrataId: "",
-		private: "1",
-		chartTitle: "",
-		panelNum: 1,
-		unitNum: 1,
-		hasCI: false,
-		hasSubtopic: true,
-	},
-	visits: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Visits-to-physician-offices-hospital-outpatien/tz8d-jy2e",
-		socrataId: "",
-		private: "1",
-		chartTitle: "",
 		panelNum: 1,
 		unitNum: 1,
 		hasCI: false,

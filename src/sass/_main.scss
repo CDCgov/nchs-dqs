@@ -38,30 +38,6 @@ a {
 	cursor: pointer;
 }
 
-#additionalFiltersContainer {
-	border-right: 2px solid lightgray;
-	@media screen and (max-width: $mobile-max-width-2) {
-		border-right: none;
-	}
-}
-
-.homeSmallIcon {
-	text-align: left;
-	align-self: center;
-	color: #0033a1;
-	margin: 0 !important;
-	width: auto;
-	i {
-		font-size: 1.2em;
-	}
-}
-
-.homeTinyIcon {
-	color: #0033a1;
-	font-family: Open Sans, sans-serif;
-	font-weight: 400;
-}
-
 .homeSmallGroup {
 	border: 1px solid lightgray;
 	padding-top: 2px;
@@ -86,19 +62,6 @@ a {
 	padding-top: 0.8vw;
 }
 
-.homeSmallText {
-	font-weight: 600;
-	text-align: left;
-}
-
-.homeTinyText {
-	font-size: 0.8em;
-	color: #0033a1;
-	font-family: Open Sans, sans-serif;
-	font-weight: 400;
-	text-align: left;
-}
-
 .homeSelectorText {
 	.preSelText {
 		font-size: 1vw;
@@ -119,6 +82,24 @@ a {
 	.mainSelText {
 		font-size: 1.5vw;
 		line-height: 1vw;
+
+		> span {
+			float: right;
+			height: 0;
+
+			.clearAllFilters {
+				transform: translateX(1em);
+
+				.fa-slash {
+					color: white;
+				}
+			}
+		}
+
+		i {
+			line-height: 0;
+			color: grey;
+		}
 
 		@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
 			font-size: 2.25vw;

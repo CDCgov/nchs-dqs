@@ -20,34 +20,37 @@ export const addMissingProps = (cols, rows) => {
 
 export const addHtmlTooltips = () => {
 	const resetInfoTooltip = new HtmlTooltip({
-		h3: "Reset all selections except for Topic selection.",
+		body: "Reset all selections except for Topic selection.",
 		containerId: "resetInfoContainer",
 	});
+
+	const editFiltersTooltip = new HtmlTooltip({
+		body: "Advanced filters to limit options in dropdown lists",
+		containerId: "dropdownSelectorGroup",
+	});
+
+	const removeFiltersTooltip = new HtmlTooltip({
+		body: "Clear advanced filters selections",
+		containerId: "dropdownSelectorGroup",
+	});
+
 	resetInfoTooltip.render();
+	editFiltersTooltip.render();
+	removeFiltersTooltip.render();
+
+	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
 	$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
 	$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
 	$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
 
-	const addFiltersTooltip = new HtmlTooltip({
-		h3: "This feature is a work in progress.",
-		containerId: "resetInfoContainer",
-	});
-	addFiltersTooltip.render();
+	$(".editFiltersIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
+	$(".editFiltersIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
+	$(".editFiltersIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
 
-	$("#addFiltersTextContainer").mouseover((e) => addFiltersTooltip.mouseover(e));
-	$("#addFiltersTextContainer").mousemove((e) => addFiltersTooltip.mousemove(e));
-	$("#addFiltersTextContainer").mouseleave((e) => addFiltersTooltip.mouseout(e));
-
-	const editFiltersTooltip = new HtmlTooltip({
-		h3: "This feature is a work in progress.",
-		containerId: "resetInfoContainer",
-	});
-	editFiltersTooltip.render();
-
-	$("#editFiltersTextContainer").mouseover((e) => editFiltersTooltip.mouseover(e));
-	$("#editFiltersTextContainer").mousemove((e) => editFiltersTooltip.mousemove(e));
-	$("#editFiltersTextContainer").mouseleave((e) => editFiltersTooltip.mouseout(e));
+	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
+	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
+	$(".clearFiltersIcons").mouseleave((e) => removeFiltersTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
@@ -204,4 +207,33 @@ export const linkify = (t) => {
 	});
 	a.push(t);
 	return a.join("");
+};
+
+export const resetTopicDropdownList = () => $("#data-topic-select > option").each((i, el) => $(el).show());
+
+export const updateTopicDropdownList = () => {
+	const selectedFilters = $(".filterCheckbox:checked")
+		.map((i, el) => el.id.replace("filter", ""))
+		.toArray();
+
+	let needToChangeSelected = false;
+	if (selectedFilters.length) {
+		let firstFiltered;
+		const currentSelected = $("#data-topic-select option:selected").val();
+		$("#data-topic-select > option").each((i, el) => {
+			const availableFilters = $(el).data("filters").split(",");
+			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
+				if (!firstFiltered) firstFiltered = el.value;
+				$(el).show();
+			} else {
+				$(el).hide();
+				if (el.value === currentSelected) {
+					needToChangeSelected = true;
+				}
+			}
+		});
+		if (needToChangeSelected) {
+			$("#data-topic-select").val(firstFiltered).trigger("change");
+		}
+	} else resetTopicDropdownList();
 };
