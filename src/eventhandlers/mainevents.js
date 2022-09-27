@@ -12,22 +12,22 @@ export const MainEvents = {
 			$("#mapPlayButtonContainer").hide();
 		};
 
-		$("#data-topic-select").on("change", (evt) => {
+		$("#data-topic-select").on("change", (e) => {
 			stopAnimation();
-			let dataTopic = evt.target.value;
+			let dataTopic = e.target.value;
 			appState.ACTIVE_TAB.selections = null;
 			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
 		});
 
-		$("#panel-num-select").on("change", (evt) => {
+		$("#panel-num-select").on("change", (e) => {
 			stopAnimation();
-			let panelNum = evt.target.value;
+			let panelNum = e.target.value;
 			appState.ACTIVE_TAB.updatePanelNum(panelNum);
 		});
 
-		$("#stub-name-num-select").on("change", (evt) => {
+		$("#stub-name-num-select").on("change", (e) => {
 			stopAnimation();
-			let stubNum = parseInt(evt.target.value, 10);
+			let stubNum = parseInt(e.target.value, 10);
 			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
 		});
 
@@ -64,38 +64,38 @@ export const MainEvents = {
 				appState.ACTIVE_TAB.updateStartPeriod(allYears[indexClicked].value);
 			});
 
-		$("#year-start-select").on("change", (evt) => {
-			const yrStart = evt.target.value;
+		$("#year-start-select").on("change", (e) => {
+			const yrStart = e.target.value;
 			appState.ACTIVE_TAB.updateStartPeriod(yrStart);
 			appState.ACTIVE_TAB.currentTimePeriodIndex = document.getElementById("year-start-select").selectedIndex;
 		});
 
-		$("#year-end-select").on("change", (evt) => {
-			const yrEnd = evt.target.value;
+		$("#year-end-select").on("change", (e) => {
+			const yrEnd = e.target.value;
 			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
 		});
 
 		// on the map tab
-		$("#unit-num-select-map").on("change", (evt) => {
-			const unitNum = parseInt(evt.target.value, 10);
+		$("#unit-num-select-map").on("change", (e) => {
+			const unitNum = parseInt(e.target.value, 10);
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 		});
 
 		// on the chart tab
-		$("#unit-num-select-chart").on("change", (evt) => {
-			const unitNum = parseInt(evt.target.value, 10);
+		$("#unit-num-select-chart").on("change", (e) => {
+			const unitNum = parseInt(e.target.value, 10);
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 		});
 
 		// on the table tab
-		$("#unit-num-select-table").on("change", (evt) => {
-			const unitNum = parseInt(evt.target.value, 10);
+		$("#unit-num-select-table").on("change", (e) => {
+			const unitNum = parseInt(e.target.value, 10);
 			appState.ACTIVE_TAB.updateUnitNum(unitNum);
 		});
 
-		$("#show-one-period-checkbox").on("change", (evt) => {
+		$("#show-one-period-checkbox").on("change", (e) => {
 			stopAnimation();
-			if (evt.target.checked) {
+			if (e.target.checked) {
 				// hide the ending period select dropdown and reposition start year container
 				$("#startYearContainer").addClass("offset-3");
 				$("#endYearContainer").hide();
@@ -111,45 +111,40 @@ export const MainEvents = {
 			}
 		});
 
-		$("#enable-CI-checkbox").on("change", (evt) => {
-			let isChecked = evt.target.checked;
+		$("#enable-CI-checkbox").on("change", (e) => {
+			let isChecked = e.target.checked;
 			if (isChecked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
 			else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 		});
 
-		$(document).on("click", "#home-btn-reset", (event) => {
-			event.stopPropagation();
-			console.log("*** reset Button clicked: event.target", event.target);
+		$(document).on("click", "#home-btn-reset", (e) => {
+			e.stopPropagation();
 			$(".timePeriodContainer").css("display", "flex");
 			appState.ACTIVE_TAB.resetSelections();
-			event.preventDefault();
+			e.preventDefault();
 		});
 
-		$(document).on("keyup", ".far-legendItem", (event) => {
-			var code = event.key; // recommended to use e.key, it's normalized across devices and languages
+		$(document).on("keyup", ".far-legendItem", (e) => {
+			const code = e.key; // recommended to use e.key, it's normalized across devices and languages
 			if (code === "Enter" || code === "Space") {
-				event.stopPropagation();
+				e.stopPropagation();
 				// get the unique id of the legend item
-				let legItem = event.target.parentNode.parentNode.id;
-				console.log("legItem", legItem);
-				console.log("*** legendItem clicked: event.target,item", event.target, legItem);
+				let legItem = e.target.parentNode.parentNode.id;
 				appState.ACTIVE_TAB.toggleLegendItem(legItem);
-				event.preventDefault();
+				e.preventDefault();
 			}
 		});
-		$(document).on("click", ".chart-container-svg-legendItem", (event) => {
-			event.stopPropagation();
+		$(document).on("click", ".far-legendItem", (e) => {
+			e.stopPropagation();
 			// get the unique id of the legend item
-			let legItem = event.target.parentNode.parentNode.id;
-			console.log("*** legendItem clicked: event.target,item", event.target, legItem);
+			const legItem = e.target.parentNode.parentNode.id;
 			appState.ACTIVE_TAB.toggleLegendItem(legItem);
-			event.preventDefault();
+			e.preventDefault();
 		});
 
 		// click Map then show Map
 		$(document).on("click", "a[href='#map-tab']", () => {
 			if (!$("#show-one-period-checkbox").prop("checked")) $("#show-one-period-checkbox").click();
-
 			$(".timePeriodContainer").css("display", "none");
 			$("#show-one-period-checkbox").prop("disabled", true);
 		});
@@ -160,27 +155,18 @@ export const MainEvents = {
 			$("#show-one-period-checkbox").prop("disabled", false);
 		});
 
-		$(document).on("click", "#classNBreaks", (event) => {
-			let classifyBy = event.target.value;
-			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
-			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
-		});
-
-		$(document).on("click", "#classQuartiles", (event) => {
-			let classifyBy = event.target.value;
-			console.log("radio clicked: event.target,classifyBy", event.target, classifyBy);
-			appState.ACTIVE_TAB.updateClassifyType(classifyBy);
-		});
+		$(document).on("click", "#classNBreaks", (e) => appState.ACTIVE_TAB.updateClassifyType(e.target.value));
+		$(document).on("click", "#classQuartiles", (e) => appState.ACTIVE_TAB.updateClassifyType(e.target.value));
 
 		$(document)
 			.off("click", "#dwn-chart-img")
 			.on("click", "#dwn-chart-img", () => {
-				let titleChart = document.getElementById("chart-title").textContent;
+				const chartTitle = document.getElementById("chart-title").textContent;
 				if (appState.ACTIVE_TAB.activeTabNumber === 1) {
 					const params = {
 						contentContainer: "chart-container",
 						downloadButton: "dwn-chart-img",
-						imageSaveName: titleChart,
+						imageSaveName: chartTitle,
 					};
 					downLoadGenChart(params);
 				} else if (appState.ACTIVE_TAB.activeTabNumber === 0) {
@@ -192,7 +178,7 @@ export const MainEvents = {
 	},
 
 	setDownloadAriaLabel() {
-		let tableText = $("#pop-factors-table-title").text();
+		const tableText = $("#pop-factors-table-title").text();
 		$("#btnPopFactorsExport").attr("aria-label", `Download Data for ${tableText}`);
 	},
 };
