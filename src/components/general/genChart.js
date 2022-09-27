@@ -161,10 +161,10 @@ export class GenChart {
 		};
 
 		// some unit titles are too long for mobile ... split text to draw on 2 lines only when yAxis space is too small to fit on one line
-		const splitTitle = function (testString, height, fontSize) {
+		const splitTitle = function (testString, spaceAvailable, fontSize) {
 			// estimate does not account for non mono-spaced font
 			const estimatedStringLength = testString.length * fontSize;
-			if (estimatedStringLength > 0.9 * height) {
+			if (estimatedStringLength > 0.9 * spaceAvailable) {
 				const center = testString.length / 2;
 				const allSpaceIndeces = [];
 				let startIndex = testString.indexOf(" ");
@@ -482,26 +482,18 @@ export class GenChart {
 			// append the axis titles
 			// xAxis
 			if (p.usesXAxisTitle) {
-				// if bar chart and MOBILE, then have to split it
 				let splitBarTitle = [];
-				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile") {
-					// with bigger font size - always split the left axis title
-					splitBarTitle = splitTitle(
-						$("#unit-num-select-chart :selected").text(),
-						fullSvgWidth * svgHeightRatio,
-						axisLabelFontSize
-					);
-				} else {
-					// not mobile
-					splitBarTitle[0] = p.bottomAxisTitle;
-				}
-				const axisTitle = svg
-					.append("text")
-					.text(p.barLayout.horizontal ? splitBarTitle[0] : p.bottomAxisTitle)
+				const title = p.barLayout.horizontal ? $("#unit-num-select-chart :selected").text() : p.bottomAxisTitle;
+
+				// split the title, based on title length vs space available
+				splitBarTitle = splitTitle(title, chartWidth, axisLabelFontSize);
+
+				svg.append("text")
+					.text(splitBarTitle[0])
 					.attr("text-anchor", "middle")
 					.attr("id", "topAxisTitle0")
 					.attr("font-size", axisTitleFontSize)
-					.attr("font-weight", 700) // make axis title bold
+					.attr("font-weight", 600) // make axis title bold
 					.attr("x", chartCenterX)
 					.attr(
 						"y",
@@ -511,22 +503,21 @@ export class GenChart {
 					);
 
 				// for bar chart and MOBILE, then draw 2nd line HERE
-				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile" && splitBarTitle[1]) {
+				if (splitBarTitle[1]) {
 					svg.append("text")
 						.text(splitBarTitle[1])
 						.style("text-anchor", "middle")
 						.attr("id", "topAxisTitle1")
-						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
-						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
-						.attr("font-weight", 700)
+						.attr("font-weight", 600)
 						.attr("x", chartCenterX)
 						.attr(
 							"y",
 							!p.usesBottomAxis
 								? 2.5 * xAxisTitleSize
-								: margin.top + chartHeight + (axisSize + xAxisTitleSize * 1.5)
+								: margin.top + chartHeight + (axisSize + xAxisTitleSize * 2.5)
 						);
+					svgHeight += xAxisTitleSize;
 				}
 			}
 
@@ -541,7 +532,7 @@ export class GenChart {
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
-					.attr("font-weight", 700) // make titles bold
+					.attr("font-weight", 600) // make titles bold
 					.attr("fill", p.leftAxisColor);
 
 				// if the second item in splitText !== ""
@@ -554,7 +545,7 @@ export class GenChart {
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
-						.attr("font-weight", 700)
+						.attr("font-weight", 600)
 						.attr("fill", p.leftAxisColor);
 				}
 			}
