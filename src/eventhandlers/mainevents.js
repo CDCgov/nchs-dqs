@@ -206,7 +206,9 @@ export const MainEvents = {
 			updateTopicDropdownList();
 		});
 
-		$("#clearCurrentFilters, .clearAllFilters").click(resetTopics());
+		$("#clearCurrentFilters, .clearAllFilters").click(() => {
+			resetTopics();
+		});
 
 		ExportEvents.registerEvents();
 	},
