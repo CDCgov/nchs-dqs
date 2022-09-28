@@ -1679,15 +1679,30 @@ export class GenChart {
 			// get all legend items and find the longest then set the legend container size
 			const legendElements = $(`.${svgId}-legendItem`);
 			const rightmostLegendEdge = d3.max([...legendElements].map((el) => el.getBoundingClientRect().right));
-			const chartDimensions = $("#chart-container")[0].getBoundingClientRect();
+			const chartDimensions = $("#chart-container-svg")[0].getBoundingClientRect();
 			const chartRight = chartDimensions.right;
 			const maxLegendRight = chartDimensions.left + 0.98 * chartDimensions.width;
+			const minLegendLeft = chartDimensions.left + 0.02 * chartDimensions.width;
 			let offSetCorrection =
 				rightmostLegendEdge <= maxLegendRight
 					? (chartRight - rightmostLegendEdge) / 2
 					: chartDimensions.width * 0.02;
 
-			const updateLegendItemPosition = (offSetCorrection) => {
+			const updateLegendItemPosition = (offSetCorrection, drag = false) => {
+				if (drag) {
+					if (
+						(offSetCorrection > 0 &&
+							$(`.${svgId}-legendItem`)
+								.toArray()
+								.some((d) => d.getBoundingClientRect().left >= minLegendLeft - 1)) ||
+						(offSetCorrection < 0 &&
+							$(`.${svgId}-legendItem`)
+								.toArray()
+								.every((d) => d.getBoundingClientRect().right <= maxLegendRight + 1))
+					)
+						return;
+				}
+
 				$(`.${svgId}-legendItem`).each(function () {
 					const [x, y] = $(this)[0]
 						.getAttribute("transform")
@@ -1711,7 +1726,7 @@ export class GenChart {
 					},
 					drag: (e) => {
 						const moveDifference = e.clientX - legendMoveStart;
-						updateLegendItemPosition(moveDifference);
+						updateLegendItemPosition(moveDifference, true);
 						legendMoveStart = e.clientX;
 					},
 				});
@@ -1722,7 +1737,7 @@ export class GenChart {
 					})
 					.on("touchmove", () => {
 						const moveDifference = d3.event.touches[0].clientX - legendMoveStart;
-						updateLegendItemPosition(moveDifference);
+						updateLegendItemPosition(moveDifference, true);
 						legendMoveStart = d3.event.touches[0].clientX;
 					});
 			}
