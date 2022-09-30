@@ -161,10 +161,10 @@ export class GenChart {
 		};
 
 		// some unit titles are too long for mobile ... split text to draw on 2 lines only when yAxis space is too small to fit on one line
-		const splitTitle = function (testString, height, fontSize) {
+		const splitTitle = function (testString, spaceAvailable, fontSize) {
 			// estimate does not account for non mono-spaced font
 			const estimatedStringLength = testString.length * fontSize;
-			if (estimatedStringLength > 0.9 * height) {
+			if (estimatedStringLength > 0.9 * spaceAvailable) {
 				const center = testString.length / 2;
 				const allSpaceIndeces = [];
 				let startIndex = testString.indexOf(" ");
@@ -203,17 +203,17 @@ export class GenChart {
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
 		// this scaling often makes the title sizes too big on Mobile
 		if (appState.currentDeviceType === "mobile") {
-			if (axisTitleFontSize > 12) {
+			if (axisTitleFontSize > 14) {
 				// knock it back down
-				axisTitleFontSize = 12;
+				axisTitleFontSize = 14;
 			}
 		}
 
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling makes the label sizes too big
-		if (axisLabelFontSize > 14) {
+		if (axisLabelFontSize > 12) {
 			// knock it back down
-			axisLabelFontSize = 14;
+			axisLabelFontSize = 12;
 		}
 
 		// loop through all y-axis tick labels to find the longest string
@@ -420,13 +420,14 @@ export class GenChart {
 
 		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
 		// - this could also be enabled or disabled from a PROP
-		svg.append("g")
+		let legendHeight = 0;
+		const whiteBox = svg
+			.append("g")
 			.append("rect")
 			.attr("id", "whitebox") // give it a white box background
 			.attr("fill", "#FFFFFF")
-			.attr("height", svgHeight)
-			.attr("width", svgWidth)
-			.attr("overflow", "auto");
+			.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
+
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -482,26 +483,18 @@ export class GenChart {
 			// append the axis titles
 			// xAxis
 			if (p.usesXAxisTitle) {
-				// if bar chart and MOBILE, then have to split it
 				let splitBarTitle = [];
-				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile") {
-					// with bigger font size - always split the left axis title
-					splitBarTitle = splitTitle(
-						$("#unit-num-select-chart :selected").text(),
-						fullSvgWidth * svgHeightRatio,
-						axisLabelFontSize
-					);
-				} else {
-					// not mobile
-					splitBarTitle[0] = p.bottomAxisTitle;
-				}
-				const axisTitle = svg
-					.append("text")
-					.text(p.barLayout.horizontal ? splitBarTitle[0] : p.bottomAxisTitle)
+				const title = p.barLayout.horizontal ? $("#unit-num-select-chart :selected").text() : p.bottomAxisTitle;
+
+				// split the title, based on title length vs space available
+				splitBarTitle = splitTitle(title, chartWidth, axisLabelFontSize);
+
+				svg.append("text")
+					.text(splitBarTitle[0])
 					.attr("text-anchor", "middle")
 					.attr("id", "topAxisTitle0")
 					.attr("font-size", axisTitleFontSize)
-					.attr("font-weight", 700) // make axis title bold
+					.attr("font-weight", 600) // make axis title bold
 					.attr("x", chartCenterX)
 					.attr(
 						"y",
@@ -511,22 +504,21 @@ export class GenChart {
 					);
 
 				// for bar chart and MOBILE, then draw 2nd line HERE
-				if (p.barLayout.horizontal && appState.currentDeviceType === "mobile" && splitBarTitle[1]) {
+				if (splitBarTitle[1]) {
 					svg.append("text")
 						.text(splitBarTitle[1])
 						.style("text-anchor", "middle")
 						.attr("id", "topAxisTitle1")
-						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
-						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
-						.attr("font-weight", 700)
+						.attr("font-weight", 600)
 						.attr("x", chartCenterX)
 						.attr(
 							"y",
 							!p.usesBottomAxis
 								? 2.5 * xAxisTitleSize
-								: margin.top + chartHeight + (axisSize + xAxisTitleSize * 1.5)
+								: margin.top + chartHeight + (axisSize + xAxisTitleSize * 2.5)
 						);
+					svgHeight += xAxisTitleSize;
 				}
 			}
 
@@ -541,7 +533,7 @@ export class GenChart {
 					.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 					.attr("y", axisTitleSize / p.labelPaddingScale + 2) // dist to edge
 					.attr("font-size", axisTitleFontSize)
-					.attr("font-weight", 700) // make titles bold
+					.attr("font-weight", 600) // make titles bold
 					.attr("fill", p.leftAxisColor);
 
 				// if the second item in splitText !== ""
@@ -554,7 +546,7 @@ export class GenChart {
 						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
-						.attr("font-weight", 700)
+						.attr("font-weight", 600)
 						.attr("fill", p.leftAxisColor);
 				}
 			}
@@ -1572,13 +1564,13 @@ export class GenChart {
 			}
 
 			// need height first
-			const legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
+			legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
 			svg.attr("viewBox", [0, 0, svgWidth, svgHeight + legendHeight + 30]);
-			svg.select("#whitebox").attr("height", svgHeight + legendHeight + 30);
 
 			// start the left-edge translation of everything in the legend at the center of the chart area
 			// it will be moved, once drawn, by setting 'x' after
-			const legendTx = (svgWidth + margin.left) / 2;
+			// const legendTx = (svgWidth + margin.left) / 2;
+			const legendTx = 0;
 			const legendTy = legendData.length > 10 ? svgHeight + 20 : svgHeight;
 
 			const legendContainer = svg
@@ -1586,58 +1578,62 @@ export class GenChart {
 				.attr("transform", `translate(${legendTx}, ${legendTy})`)
 				.append("rect")
 				.attr("id", `${svgId}-chart-legend`)
-				// .attr("data-html2canvas-ignore", "")
 				.attr("height", legendHeight)
 				.attr("fill", "#F2F2F2")
+				// .attr("fill", "none")
 				.attr("rx", "5")
 				.attr("ry", "5")
 				.attr("stroke", "black")
+				// .attr("stroke", "none")
 				.attr("overflow", "auto");
+
+			// get the px size needed for the longest legend label and use that to evenly position legend items
+
+			const longestLegendTextLength = d3.max([...legendData].map((ld) => ld.text.length));
+			svg.append("g")
+				.attr("id", "longestLegendItem")
+				.append("text")
+				.attr("font-size", axisLabelFontSize)
+				.text(legendData.filter((l) => l.text.length === longestLegendTextLength)[0].text);
+			const longestLegendLabel = document.getElementById("longestLegendItem").getBoundingClientRect().width + 30; // 30 extra for checkbox
+			document.getElementById("longestLegendItem").remove();
+
+			let legendRow = 1;
+			let itemsOnRowIndex = 0;
+			let currentLegendRowLength = 0;
+			const unit = axisLabelFontSize;
+			const spacing = 5 * unit + longestLegendLabel;
 
 			legendData.forEach((d, i) => {
 				const legendId = d.text.replace(/ /g, "_");
 				const legendItem = svg
 					.append("g")
-					.attr("class", `${svgId}-legendItem ${d.text.replace(/[\W_]+/g, "")}`)
-					.attr("style", "cursor: default")
+					.attr("class", `${svgId}-legendItem`)
 					.attr("id", legendId)
-					// .attr("data-html2canvas-ignore", "")
-					.attr(
-						"transform",
-						`translate(${legendTx + axisLabelFontSize / 2},
-								${legendTy + 1.1 * axisLabelFontSize * (i + 1)})`
-					);
+					.attr("transform", () => {
+						const tx = `translate(${itemsOnRowIndex * spacing + legendTx}, ${
+							legendTy + 1.1 * unit * legendRow
+						})`;
+						currentLegendRowLength += spacing;
+						itemsOnRowIndex++;
+						if (currentLegendRowLength + spacing > chartWidth + xMargin) {
+							legendRow++;
+							itemsOnRowIndex = 0;
+							currentLegendRowLength = 0;
+						}
+						return tx;
+					});
 
-				// only draw color line if data is drawn
-				let lineWidth;
-				let lineXLeft;
-				if (!d.dontDraw) {
-					if (appState.currentDeviceType === "mobile") {
-						lineXLeft = 6;
-						lineWidth = 25;
-					} else {
-						lineXLeft = 0;
-						lineWidth = 40;
-					}
-					legendItem
-						.append("line")
-						.attr("x1", lineXLeft)
-						.attr("y1", 0)
-						.attr("x2", lineWidth)
-						.attr("y2", 0)
-						.attr("stroke", d.stroke)
-						.attr("stroke-width", 4)
-						.attr("stroke-dasharray", d.dashArrayScale);
-				} else {
-					// have to adjust the placement of the ones not drawn as well
-					if (appState.currentDeviceType === "mobile") {
-						lineXLeft = 6;
-						lineWidth = 25;
-					} else {
-						lineXLeft = 0;
-						lineWidth = 40;
-					}
-				}
+				legendItem
+					.append("line")
+					.attr("x1", 0)
+					.attr("y1", 0)
+					.attr("x2", 2 * unit)
+					.attr("y2", 0)
+					.attr("stroke", d.stroke)
+					.attr("stroke-width", unit / 5)
+					.attr("stroke-dasharray", d.dashArrayScale)
+					.attr("cursor", "default");
 
 				// draw the check box using unicode
 				legendItem
@@ -1648,99 +1644,119 @@ export class GenChart {
 					.attr("aria-label", d.text + " " + "checkbox")
 					.attr("role", "checkbox")
 					.attr("data-html2canvas-ignore", "")
-					.attr("font-size", axisLabelFontSize * 1.1)
-					.attr("x", function () {
-						if (appState.currentDeviceType === "mobile") {
-							return 45 - lineXLeft - 9;
-						}
-						return 45 - lineXLeft; // not mobile
-					})
-					.attr("y", axisLabelFontSize * 0.5)
-					.text(function () {
-						if (d.dontDraw === true) {
-							return "\uf0c8"; // square unicode [&#xf0c8;]
-						}
-						return "\uf14a"; // check square unicode
-					});
+					.attr("font-size", axisLabelFontSize)
+					.attr("x", 2.5 * unit)
+					.attr("y", unit * 0.4)
+					.attr("cursor", "pointer")
+
+					.text(
+						() =>
+							d.dontDraw
+								? "\uf0c8" // square unicode [&#xf0c8;]
+								: "\uf14a" // check square unicode
+					);
 
 				// now draw the legend item text last
 				legendItem
 					.append("g")
 					.append("text")
-					// .attr("x", 60 - lineXLeft)
-					.attr("x", function () {
-						// this moves the text to the right or left
-						if (appState.currentDeviceType === "mobile") {
-							return 60 - lineXLeft - 6;
-						}
-						return 60 - lineXLeft; // not mobile
-					})
-					.attr("y", axisLabelFontSize * 0.5) // up and down
+					.attr("class", "legendText")
+					.attr("x", 2.5 * unit + 20)
+					.attr("y", unit * 0.4)
 					.text(d.text)
-					.attr("overflow", "hidden")
-					.attr("overflow-x", "scroll")
-					.attr("font-size", axisLabelFontSize);
+					.attr("font-size", axisLabelFontSize)
+					.attr("cursor", "default");
 			});
 
 			// get all legend items and find the longest then set the legend container size
-			const legendItems = document.querySelectorAll(`.${svgId}-legendItem text`);
-			const legendWidths = [...legendItems].map((l) => l.getBoundingClientRect().width);
-			let newWidth = d3.max(legendWidths) + 115 ?? 0; // was + 56 which had some exceeding the box
-			let widthGreaterThanAxis = false;
-			if (appState.currentDeviceType === "mobile") {
-				if (newWidth > svg.select("#xaxis").attr("width")) {
-					// then cap it
-					newWidth = svg.select("#whitebox").attr("width") - 1;
-					widthGreaterThanAxis = true;
-				} // else leave it at the max calc
-			}
-			legendContainer.attr("width", newWidth);
+			const legendElements = $(`.${svgId}-legendItem`);
+			const rightmostLegendEdge = d3.max([...legendElements].map((el) => el.getBoundingClientRect().right));
+			const chartDimensions = $("#chart-container-svg")[0].getBoundingClientRect();
+			const chartRight = chartDimensions.right;
+			const maxLegendRight = chartDimensions.left + 0.98 * chartDimensions.width;
+			const minLegendLeft = chartDimensions.left + 0.02 * chartDimensions.width;
+			let offSetCorrection =
+				rightmostLegendEdge <= maxLegendRight
+					? (chartRight - rightmostLegendEdge) / 2
+					: chartDimensions.width * 0.02;
 
-			let mobileAdjustLeft = 26;
-			if (appState.currentDeviceType === "mobile") {
-				if (widthGreaterThanAxis) {
-					// center it in the whitebox
-					legendContainer.attr(
-						"x",
-						svg.select("#whitebox").attr("x") - legendContainer.attr("width") / 2 - mobileAdjustLeft - 3
-					);
-					mobileAdjustLeft += 13;
-				} else {
-					// center it on the axis
-					legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
-					mobileAdjustLeft = 0;
+			const updateLegendItemPosition = (offSetCorrection, drag = false) => {
+				if (drag) {
+					if (
+						(offSetCorrection > 0 &&
+							$(`.${svgId}-legendItem`)
+								.toArray()
+								.some((d) => d.getBoundingClientRect().left >= minLegendLeft - 1)) ||
+						(offSetCorrection < 0 &&
+							$(`.${svgId}-legendItem`)
+								.toArray()
+								.every((d) => d.getBoundingClientRect().right <= maxLegendRight + 1))
+					)
+						return;
 				}
-			} else {
-				// Now center the legend container
-				legendContainer.attr("x", legendContainer.attr("x") - legendContainer.attr("width") / 2);
-				mobileAdjustLeft = 0; // dont need to adjust
+
+				$(`.${svgId}-legendItem`).each(function () {
+					const [x, y] = $(this)[0]
+						.getAttribute("transform")
+						.replace("translate(", "")
+						.replace(")", "")
+						.split(",");
+
+					$(this)[0].setAttribute(
+						"transform",
+						`translate(${parseInt(x, 10) + offSetCorrection}, ${parseInt(y, 10)})`
+					);
+				});
+			};
+			updateLegendItemPosition(offSetCorrection);
+
+			if (rightmostLegendEdge > maxLegendRight) {
+				let legendMoveStart;
+				$(`.${svgId}-legendItem`).draggable({
+					start: (e) => {
+						legendMoveStart = e.clientX;
+					},
+					drag: (e) => {
+						const moveDifference = e.clientX - legendMoveStart;
+						updateLegendItemPosition(moveDifference, true);
+						legendMoveStart = e.clientX;
+					},
+				});
+
+				d3.selectAll(`.${svgId}-legendItem`)
+					.on("touchstart", () => {
+						legendMoveStart = d3.event.touches[0].clientX;
+					})
+					.on("touchmove", () => {
+						const moveDifference = d3.event.touches[0].clientX - legendMoveStart;
+						updateLegendItemPosition(moveDifference, true);
+						legendMoveStart = d3.event.touches[0].clientX;
+					});
+
+				d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "all-scroll");
 			}
 
-			// Now get each legend Item Line and move those to the left
-			let adjustX;
-			let adjustY;
-			const legendElementG = d3.selectAll(`.${svgId}-legendItem`).nodes();
-			legendElementG.forEach((text) => {
-				d3.select(text).attr("transform", () => {
-					adjustX = text.transform.animVal[0].matrix.e - legendContainer.attr("width") / 2 - mobileAdjustLeft;
-					adjustY = text.transform.animVal[0].matrix.f;
-					let newTransform = `translate(${adjustX}, ${adjustY})`;
-					return newTransform;
-				});
-			});
+			legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
 
 			if (legendData.length > 10) {
 				svg.append("g")
-					.attr("transform", `translate(${legendTx}, ${legendTy})`)
+					.attr("transform", `translate(${svgWidth / 2}, ${legendTy})`)
 					.append("text")
 					.attr("id", "selectTenTxt")
-					.attr("x", -80)
+					.attr("x", 0)
 					.attr("y", -6)
 					.attr("data-html2canvas-ignore", "")
+					.attr("text-anchor", "middle")
 					.style("fill", "black")
 					.style("font-size", "14px")
 					.text("Select up to 10 groups");
+
+				legendHeight += 20;
 			}
+
+			legendContainer.attr("height", legendHeight);
+			svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
+			whiteBox.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
 		}
 
 		return {
