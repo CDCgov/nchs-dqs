@@ -72,6 +72,7 @@ export class HtmlTooltip {
 
 		if (!this.h3 && !this.h4) tip.select(`#${this.containerId} .tip-header`).style("display", "none");
 		if (!this.body) tip.select(".tip-header").style("border-bottom", "none");
+		d3.select(`#${this.containerId} .tooltip`).transition().duration(150).style("visibility", "visible");
 	}
 
 	mousemove(event) {

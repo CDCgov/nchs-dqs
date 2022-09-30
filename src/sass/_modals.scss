@@ -6,32 +6,23 @@
 
 .padding-descrp {
 	padding: 1.3rem;
+	padding-bottom: 0;
+	font-size: 0.8em;
+
+	label {
+		margin-bottom: 10px;
+	}
 }
 
-// proper semantics to use button vs anchor | https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#onclick_events
-
-// Sass placeholder also gives global control over declared styles with option to override as needed
-// base styles are not copied in like mixins are
-// placeholder for anchor
-%anchorify {
-	background-color: transparent;
-	border: none;
-	text-decoration: underline;
-	color: #075290 !important;
-	padding-left: 0;
-}
-
-//increase fontsize and use anchor styles
-#call-vaccination-modal {
-	@extend %anchorify;
-	font-size: 1.01rem;
-}
-
-//modal overides there are conlficts with ".modal" class Semantic UI and the bootstrap .modal class
-#vaccination-modal {
+#filtersModal {
 	top: auto !important;
 	height: auto !important;
 	left: auto !important;
+}
+
+#filterModalFooter {
+	text-align: right;
+	margin: 20px;
 }
 
 //action close btn will show if not hidden

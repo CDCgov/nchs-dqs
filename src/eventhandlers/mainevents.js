@@ -1,5 +1,6 @@
 import { ExportEvents } from "./exportevents";
 import { downLoadGenChart, downLoadMap2 } from "../utils/downloadimg";
+import { resetTopicDropdownList, updateTopicDropdownList } from "../components/landingPage/functions";
 
 export const MainEvents = {
 	registerEvents() {
@@ -117,8 +118,15 @@ export const MainEvents = {
 			else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 		});
 
-		$(document).on("click", "#home-btn-reset", (e) => {
-			e.stopPropagation();
+		const resetTopics = () => {
+			$(".filterCheckbox").prop("checked", false);
+			$(".clearAllFilters").hide();
+			resetTopicDropdownList();
+		};
+
+		$(document).on("click", "#home-btn-reset", (event) => {
+			event.stopPropagation();
+			resetTopics();
 			$(".timePeriodContainer").css("display", "flex");
 			appState.ACTIVE_TAB.resetSelections();
 			e.preventDefault();
@@ -173,6 +181,24 @@ export const MainEvents = {
 					downLoadMap2();
 				}
 			});
+
+		$(".callFiltersModal").click(() => {
+			$("#filtersModal").modal("show");
+		});
+
+		$("#submitFilters").click(() => {
+			if ($(".filterCheckbox:checkbox:checked").length) {
+				$(".clearAllFilters").show();
+				$(".callFiltersModal").hide();
+			} else $(".clearAllFilters").hide();
+			$("#filtersModal").modal("hide");
+			updateTopicDropdownList();
+		});
+
+		$("#clearCurrentFilters, .clearAllFilters").click(() => {
+			resetTopics();
+			$(".callFiltersModal").show();
+		});
 
 		ExportEvents.registerEvents();
 	},
