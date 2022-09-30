@@ -200,14 +200,17 @@ export const MainEvents = {
 		});
 
 		$("#submitFilters").click(() => {
-			if ($(".filterCheckbox:checkbox:checked").length) $(".clearAllFilters").show();
-			else $(".clearAllFilters").hide();
+			if ($(".filterCheckbox:checkbox:checked").length) {
+				$(".clearAllFilters").show();
+				$(".callFiltersModal").hide();
+			} else $(".clearAllFilters").hide();
 			$("#filtersModal").modal("hide");
 			updateTopicDropdownList();
 		});
 
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {
 			resetTopics();
+			$(".callFiltersModal").show();
 		});
 
 		ExportEvents.registerEvents();
