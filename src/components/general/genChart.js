@@ -1669,6 +1669,7 @@ export class GenChart {
 				legendItem
 					.append("g")
 					.append("text")
+					.attr("class", "legendText")
 					.attr("x", 2.5 * unit + 20)
 					.attr("y", unit * 0.4)
 					.text(d.text)
@@ -1740,6 +1741,11 @@ export class GenChart {
 						updateLegendItemPosition(moveDifference, true);
 						legendMoveStart = d3.event.touches[0].clientX;
 					});
+
+				// d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "ew-resize");
+				d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "all-scroll");
+				// d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "move");
+				// d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "col-resize");
 			}
 
 			legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
