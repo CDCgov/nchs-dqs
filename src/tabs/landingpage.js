@@ -6,11 +6,13 @@ import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
+import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
+		this.nhisData = null;
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
@@ -33,9 +35,51 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/State_Territory_FluView1.json"));
 
+	getNhisData = (id) => {
+		const dataId = id.split("nhis-")[1];
+		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+		const filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		const returnData = [];
+		filteredToIndicator.forEach((f) => {
+			const group = nhisGroups[f.group];
+			if (group) {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				const percent =
+					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" ? f.percentage : null;
+				returnData.push({
+					estimate: percent,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: null,
+					footnote_id_list: "",
+					footnote_list: null,
+					indicator: f.outcome_or_indicator,
+					panel: group.panel,
+					panel_num: group.panelNum,
+					se: null,
+					stub_label: f.group,
+					stub_name: group.stubName,
+					stub_name_num: group.stubNameNum,
+					unit: "Percent of population",
+					unit_num: 1,
+					year: f.year,
+					year_num: "",
+					age: group.stubName.includes("Age Group") ? f.group : "N/A",
+				});
+			}
+		});
+
+		DataCache[`data-${dataId}`] = returnData;
+		return returnData;
+	};
+
 	getSelectedSocrataData = async (config) => {
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
+
+		if (config.socrataId.startsWith("nhis")) {
+			return this.getNhisData(config.socrataId);
+		}
 
 		try {
 			let [metaData, jsonData] = [];
@@ -54,6 +98,7 @@ export class LandingPage {
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
+
 			DataCache[`data-${config.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
@@ -336,11 +381,6 @@ export class LandingPage {
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
-		// if not on Chart tab, switch to it
-		if (this.activeTabNumber !== 1) {
-			$("a[href='#chart-tab']").click();
-		}
-
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
 
 		// clear the list of active legend items
@@ -366,7 +406,17 @@ export class LandingPage {
 
 		DataCache.activeLegendList = [];
 
-		// this loads the obesity-childhood data as the INITIAL data load
+		if (this.config.socrataId.startsWith("nhis") && !this.nhisData) {
+			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
+				this.nhisData = data;
+				this.getData(topicChange);
+			});
+		} else {
+			this.getData(topicChange);
+		}
+	}
+
+	getData = (topicChange) => {
 		Promise.all([
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
@@ -428,9 +478,16 @@ export class LandingPage {
 
 				this.showBarChart = this.selections?.viewSinglePeriod;
 				this.renderDataVisualizations();
+
+				// Not all Topics have a US Map. If on Map, switch to the Chart tab.
+				// Also, switching from a Topic with a Map to another, with a Map, fails to load the map correctly so just switch to Chart
+				if (this.activeTabNumber === 0 && topicChange) {
+					$("a[href='#chart-tab']").trigger("click");
+				}
 			})
 			.catch((err) => console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`));
-	}
+		return "";
+	};
 
 	setAllSelectDropdowns() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
@@ -480,11 +537,10 @@ export class LandingPage {
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
 		// filter by panel selection if applicable
-		if (
-			this.dataTopic === "obesity-child" ||
-			this.dataTopic === "obesity-adult" ||
-			this.dataTopic === "birthweight"
-		) {
+		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
+			nhisTopics.map((t) => t.id)
+		);
+		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
 			allStubsArray = this.socrataData.filter(
 				(item) => parseInt(item.panel_num, 10) === parseInt(this.config.panelNum, 10)
 			);
@@ -567,6 +623,8 @@ export class LandingPage {
 		this.config.panelNum = parseInt(panelNum, 10);
 		console.log("new panel num: ", this.config.panelNum);
 		this.setStubNameSelect();
+		DataCache.activeLegendList = [];
+
 		this.renderDataVisualizations();
 	}
 
@@ -735,15 +793,9 @@ export class LandingPage {
 		let cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error"];
 		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
 
-		switch ($("#data-topic-select").val()) {
-			case "obesity-child":
-			case "obesity-adult":
-			case "medicaidU65":
-				cols.push("Lower Confidence Interval", "Upper Confidence Interval");
-				keys.push("estimate_lci", "estimate_uci");
-				break;
-			default:
-				break;
+		if (this.config.hasCI) {
+			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
+			keys.push("estimate_lci", "estimate_uci");
 		}
 
 		cols.push("Flag");

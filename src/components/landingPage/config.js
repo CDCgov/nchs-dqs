@@ -1,4 +1,5 @@
 import { modal } from "./modal";
+import { nhisHash, nhisTopics } from "./nhis";
 
 export const tabContent = `
 	${modal}
@@ -39,6 +40,60 @@ export const tabContent = `
 					<option value="drug-overdose" data-filters="Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White">Deaths from drug overdose</option>
 					<option value="ambulatory-care" data-filters="Adults,Black,Children,Female,Male,Older,Region,White">Ambulatory Care Visits</option>
 					<option value="access-care" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Access to Care</option>
+					<option value="angina-pectoris" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Angina/angina pectoris</option>
+					<option value="any-skin-cancer" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Any skin cancer</option>
+					<option value="any-type-of-cancer" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Any type of cancer</option>
+					<option value="arthritis-diagnosis" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Arthritis diagnosis</option>
+					<option value="asthma-episode-attack" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Asthma episode/attack</option>
+					<option value="blood-pressure-check" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Blood pressure check</option>
+					<option value="breast-cancer" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Breast cancer</option>
+					<option value="cervical-cancer" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Cervical cancer</option>
+					<option value="COPD-emphysema-chronic-bronchitis" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">COPD, emphysema, chronic bronchitis</option>
+					<option value="coronary-heart-disease" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Coronary Heart Disease</option>
+					<option value="counseled-by-a-mental-health-professional" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Counseled by a mental health professional</option>
+					<option value="current-asthma" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Current asthma</option>
+					<option value="current-cigarette-smoking" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Current cigarette smoking</option>
+					<option value="current-electronic-cigarette-use" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Current electronic cigarette use</option>
+					<option value="delayed-getting-medical-care-due-to-cost" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Delayed getting medical care due to cost</option>
+					<option value="dental-exam-or-cleaning" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Dental exam or cleaning</option>
+					<option value="diagnosed-diabetes" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Diagnosed diabetes</option>
+					<option value="diagnosed-hypertension" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Diagnosed hypertension</option>
+					<option value="did-not-get-needed-medical-care-due-to-cost" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Did not get needed medical care due to cost</option>
+					<option value="did-not-get-needed-mental-health-care-due-to-cost" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Did not get needed mental health care due to cost</option>
+					<option value="did-not-take-medication-as-prescribed-to-save-money" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Did not take medication as prescribed to save money</option>
+					<option value="difficulty-communicating" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty communicating</option>
+					<option value="difficulty-hearing" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty hearing</option>
+					<option value="difficulty-remembering-or-concentrating" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty remembering or concentrating</option>
+					<option value="difficulty-seeing" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty seeing</option>
+					<option value="difficulty-walking-or-climbing-steps" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty walking or climbing steps</option>
+					<option value="difficulty-with-self-care" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Difficulty with self care</option>
+					<option value="disability-status-(composite)" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Disability status (composite)</option>
+					<option value="doctor-visit" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Doctor visit</option>
+					<option value="ever-received-a-pneumococcal-vaccination" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Ever received a pneumococcal vaccination</option>
+					<option value="exchange-based-coverage-coverage-at-time-of-interview" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Exchange-based coverage coverage at time of interview</option>
+					<option value="fair-or-Less-than-100%-FPL-health-status" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Fair or Less than 100% FPL health status</option>
+					<option value="fair-or-poor-health-status" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Fair or poor health status</option>
+					<option value="has-a-usual-place-of-care" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Has a usual place of care</option>
+					<option value="heart-attack-myocardial-infarction" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Heart attack/myocardial infarction</option>
+					<option value="high-cholesterol" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">High cholesterol</option>
+					<option value="hospital-emergency-department-visit" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Hospital emergency department visit</option>
+					<option value="obesity" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Obesity</option>
+					<option value="prescription-medication-use" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Prescription medication use</option>
+					<option value="private-health-insurance-coverage-at-time-of-interview" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Private health insurance coverage at time of interview</option>
+					<option value="prostate-cancer" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Prostate cancer</option>
+					<option value="public-health-plan-coverage-at-time-of-interview" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Public health plan coverage at time of interview</option>
+					<option value="receipt-of-influenza-vaccination" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Receipt of influenza vaccination</option>
+					<option value="regularly-experienced-chronic-pain" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Regularly experienced chronic pain</option>
+					<option value="regularly-had-feelings-of-depression" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Regularly had feelings of depression</option>
+					<option value="regularly-had-feelings-of-worry-nervousness-or-anxiety" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Regularly had feelings of worry, nervousness, or anxiety</option>
+					<option value="six-or-more-workdays-missed-due-to-illness-injury-or-disability" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Six or more workdays missed due to illness, injury, or disability</option>
+					<option value="taking-prescription-medication-for-feelings-of-depression" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Taking prescription medication for feelings of depression</option>
+					<option value="taking-prescription-medication-for-feelings-of-worry-nervousness-or-anxiety" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Taking prescription medication for feelings of worry, nervousness, or anxiety</option>
+					<option value="uninsured-at-time-of-interview" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Uninsured at time of interview</option>
+					<option value="uninsured-for-at-least-part-of-the-past-year" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Uninsured for at least part of the past year</option>
+					<option value="uninsured-for-more-than-one-year" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Uninsured for more than one year</option>
+					<option value="urgent-care-center-or-retail-health-clinic-visit" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Urgent care center or retail health clinic visit</option>
+					<option value="wellness-visit" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Wellness visit</option>
 				</select>
 			</div>
 		</div>
@@ -247,6 +302,11 @@ export const topicLookup = {
 		socrataId: "m6mz-p2ij",
 		private: "1",
 	},
+	nhis: {
+		socrataId: "25m4-6qqq",
+		private: "0",
+	},
+
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -350,6 +410,19 @@ export const topicLookup = {
 		hasSubtopic: true,
 	},
 };
+
+nhisTopics.forEach((t) => {
+	topicLookup[t.id] = {
+		dataUrl: "https://data.cdc.gov/NCHS/",
+		socrataId: `nhis-${t.text}`,
+		isNhisData: true,
+		chartTitle: t.text,
+		panelNum: 1,
+		unitNum: 1,
+		hasCI: true,
+		hasSubtopic: true,
+	};
+});
 
 export const vizConfig = {
 	caseObesity: {
@@ -892,3 +965,14 @@ export const hashLookup = [
 		],
 	},
 ];
+// add all NHIS topic to hashLookup
+nhisTopics
+	.map((t) => t.id)
+	.forEach((id) => {
+		hashLookup.push({
+			hash: id,
+			value: id,
+			"stub-name-num-select": nhisHash["stub-name-num-select"],
+			"panel-num-select": nhisHash["panel-num-select"],
+		});
+	});
