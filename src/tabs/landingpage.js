@@ -137,8 +137,8 @@ export class LandingPage {
 	}
 
 	renderMap() {
-		let panelText = $("#subtopicSelect option:selected").text();
-		this.chartSubTitle = "Subtopic: " + panelText;
+		let subtopicText = $("#subtopicSelect option:selected").text();
+		this.chartSubTitle = "Subtopic: " + subtopicText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 
 		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
@@ -202,8 +202,8 @@ export class LandingPage {
 				indicatorText + " by " + stubText + " from " + this.startPeriod + " to " + this.endPeriod;
 		}
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		let panelText = $("#subtopicSelect option:selected").text();
-		this.chartSubTitle = "Subtopic: " + panelText;
+		let subtopicText = $("#subtopicSelect option:selected").text();
+		this.chartSubTitle = "Subtopic: " + subtopicText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 	}
 
@@ -217,7 +217,7 @@ export class LandingPage {
 	};
 
 	getFlattenedFilteredData() {
-		let selectedPanelData = this.socrataData.filter(
+		let selectedSubtopicData = this.socrataData.filter(
 			(d) =>
 				parseInt(d.unit_num, 10) === parseInt(this.config.yAxisUnitId, 10) &&
 				parseInt(d.stub_name_num, 10) === parseInt(this.characteristicId, 10) &&
@@ -226,11 +226,11 @@ export class LandingPage {
 		);
 
 		if (this.config.hasSubtopic)
-			selectedPanelData = selectedPanelData.filter(
+			selectedSubtopicData = selectedSubtopicData.filter(
 				(d) => parseInt(d.panel_num, 10) === parseInt(this.config.panelNum, 10)
 			);
 
-		if (selectedPanelData[0]?.hasOwnProperty("estimate_uci")) {
+		if (selectedSubtopicData[0]?.hasOwnProperty("estimate_uci")) {
 			// enable the CI checkbox
 			$("#enable-CI-checkbox").prop("disabled", false);
 		} else {
@@ -239,21 +239,21 @@ export class LandingPage {
 			$("#enable-CI-checkbox").prop("checked", false);
 		}
 
-		selectedPanelData.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
+		selectedSubtopicData.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
 
 		if (this.showBarChart) {
-			const allDataGroups = [...new Set(selectedPanelData.map((d) => d.stub_label))];
+			const allDataGroups = [...new Set(selectedSubtopicData.map((d) => d.stub_label))];
 
 			// filter to just the start year
-			selectedPanelData = selectedPanelData.filter(
+			selectedSubtopicData = selectedSubtopicData.filter(
 				(d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10)
 			);
 
-			const current = selectedPanelData[0];
-			const filteredDataGroups = [...new Set(selectedPanelData.map((d) => d.stub_label))];
+			const current = selectedSubtopicData[0];
+			const filteredDataGroups = [...new Set(selectedSubtopicData.map((d) => d.stub_label))];
 			const excludedGroups = allDataGroups.filter((d) => !filteredDataGroups.includes(d));
 			excludedGroups.forEach((d) =>
-				selectedPanelData.push({
+				selectedSubtopicData.push({
 					panel: current.panel,
 					unit: current.unit,
 					stub_name: current.stub_name,
@@ -268,26 +268,26 @@ export class LandingPage {
 			);
 		} else {
 			// set up for line chart
-			selectedPanelData = selectedPanelData.map((d) => ({
+			selectedSubtopicData = selectedSubtopicData.map((d) => ({
 				...d,
 				subLine: d.stub_label,
 			}));
 		}
 
-		let allFootnoteIdsArray = selectedPanelData.map((d) => d.footnote_id_list);
+		let allFootnoteIdsArray = selectedSubtopicData.map((d) => d.footnote_id_list);
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
-			return [...selectedPanelData].map((d) => ({
+			return [...selectedSubtopicData].map((d) => ({
 				...d,
 				date: new Date(`${d.year}-01-01T00:00:00`),
 			}));
 
-		return [...selectedPanelData];
+		return [...selectedSubtopicData];
 	}
 
-	// Pull all the available years, filtering by panel, unit, and stubname
+	// Pull all the available years, filtering by subtopic, unit, and characteristic
 	getFilteredYearData() {
 		this.config.panelNum = $("#subtopicSelect option:selected").val();
 
@@ -491,25 +491,25 @@ export class LandingPage {
 
 	setAllSelectDropdowns() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
-		this.setPanelSelect();
-		this.setStubNameSelect();
+		this.setSubtopic();
+		this.setCharacteristic();
 		this.setVerticalUnitAxisSelect();
 		this.resetTimePeriods();
 	}
 
 	// Subtopic
-	setPanelSelect() {
+	setSubtopic() {
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 
-		let allPanelsArray = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
+		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
 		// now sort them in id order
-		allPanelsArray.sort((a, b) => {
+		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
 		// console.log("allPanelsArray", allPanelsArray);
 		$("#subtopicSelect").empty();
 
-		allPanelsArray.forEach((y) => {
+		allTopics.forEach((y) => {
 			// allow string to int equality with ==
 			if (this.config.panelNum == y.panel_num || y.panel == "N/A")
 				$("#subtopicSelect").append(
@@ -525,7 +525,7 @@ export class LandingPage {
 		}
 	}
 
-	setStubNameSelect() {
+	setCharacteristic() {
 		let allCharacteristicIds;
 
 		if (this.flattenedFilteredData) {
@@ -536,7 +536,7 @@ export class LandingPage {
 
 		// MAY NEED TO CHANGE TO SWITCH STATEMENT AS WE ADD DATA SETS
 		// try this BEFORE getting the unique options
-		// filter by panel selection if applicable
+		// filter by subtopic selection if applicable
 		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			nhisTopics.map((t) => t.id)
 		);
@@ -619,10 +619,10 @@ export class LandingPage {
 		}
 	}
 
-	updatePanelNum(panelNum) {
+	updateSubtopic(panelNum) {
 		this.config.panelNum = parseInt(panelNum, 10);
-		console.log("new panel num: ", this.config.panelNum);
-		this.setStubNameSelect();
+		console.log("new subtopic num: ", this.config.panelNum);
+		this.setCharacteristic();
 		DataCache.activeLegendList = [];
 
 		this.renderDataVisualizations();
@@ -697,7 +697,7 @@ export class LandingPage {
 
 	updateYAxisUnitId(yAxisUnitId) {
 		this.config.yAxisUnitId = parseInt(yAxisUnitId, 10);
-		this.setStubNameSelect();
+		this.setCharacteristic();
 
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
@@ -761,11 +761,11 @@ export class LandingPage {
 	resetSelections() {
 		functions.resetTopicDropdownList();
 		// reset panel
-		this.setPanelSelect();
+		this.setSubtopic();
 
 		// reset Characteristic
 		this.characteristicId = 0; // should always be TOTAL in every data set!!!
-		this.setStubNameSelect();
+		this.setCharacteristic();
 
 		// remove "View Single Period" if it is set
 		$("#show-one-period-checkbox").prop("checked", false);

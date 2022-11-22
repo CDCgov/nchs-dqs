@@ -22,8 +22,8 @@ export const MainEvents = {
 
 		$("#subtopicSelect").on("change", (e) => {
 			stopAnimation();
-			let panelNum = e.target.value;
-			appState.ACTIVE_TAB.updatePanelNum(panelNum);
+			let subtopicId = e.target.value;
+			appState.ACTIVE_TAB.updateSubtopic(subtopicId);
 		});
 
 		$("#characteristicSelect").on("change", (e) => {
