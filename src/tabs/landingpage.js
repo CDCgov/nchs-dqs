@@ -54,8 +54,8 @@ export class LandingPage {
 					footnote_id_list: "",
 					footnote_list: null,
 					indicator: f.outcome_or_indicator,
-					panel: group.panel,
-					panel_num: group.panelNum,
+					panel: group.subtopic,
+					panel_num: group.subtopicId,
 					se: null,
 					stub_label: f.group,
 					stub_name: group.characteristic,
@@ -193,13 +193,13 @@ export class LandingPage {
 		genChart.render();
 
 		// set the title - easier to do it all here based on selectors
-		let indicatorText = $("#data-topic-select option:selected").text();
-		let stubText = $("#characteristicSelect option:selected").text();
+		let topic = $("#topic option:selected").text();
+		let characteristic = $("#characteristicSelect option:selected").text();
 		if (this.showBarChart) {
-			this.config.chartTitle = indicatorText + " by " + stubText + " in " + this.startPeriod;
+			this.config.chartTitle = topic + " by " + characteristic + " in " + this.startPeriod;
 		} else {
 			this.config.chartTitle =
-				indicatorText + " by " + stubText + " from " + this.startPeriod + " to " + this.endPeriod;
+				topic + " by " + characteristic + " from " + this.startPeriod + " to " + this.endPeriod;
 		}
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		let subtopicText = $("#subtopicSelect option:selected").text();
@@ -227,10 +227,10 @@ export class LandingPage {
 
 		if (this.config.hasSubtopic)
 			selectedSubtopicData = selectedSubtopicData.filter(
-				(d) => parseInt(d.panel_num, 10) === parseInt(this.config.panelNum, 10)
+				(d) => parseInt(d.panel_num, 10) === parseInt(this.config.subtopicId, 10)
 			);
 
-		if (selectedSubtopicData[0]?.hasOwnProperty("estimate_uci")) {
+		if (selectedSubtopicData[0]?.estimate_uci) {
 			// enable the CI checkbox
 			$("#enable-CI-checkbox").prop("disabled", false);
 		} else {
@@ -289,7 +289,7 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by subtopic, unit, and characteristic
 	getFilteredYearData() {
-		this.config.panelNum = $("#subtopicSelect option:selected").val();
+		this.config.subtopicId = $("#subtopicSelect option:selected").val();
 
 		const filteredData = this.socrataData.filter(
 			(d) =>
@@ -298,7 +298,7 @@ export class LandingPage {
 		);
 
 		return this.config.hasSubtopic
-			? filteredData.filter((d) => parseInt(d.panel_num, 10) === parseInt(this.config.panelNum, 10))
+			? filteredData.filter((d) => parseInt(d.panel_num, 10) === parseInt(this.config.subtopicId, 10))
 			: filteredData;
 	}
 
@@ -377,7 +377,7 @@ export class LandingPage {
 		}
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
-		if (this.selections) this.config.panelNum = parseInt(this.selections.subTopic, 10);
+		if (this.selections) this.config.subtopicId = parseInt(this.selections.subTopic, 10);
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
@@ -506,12 +506,11 @@ export class LandingPage {
 		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
-		// console.log("allPanelsArray", allPanelsArray);
-		$("#subtopicSelect").empty();
 
+		$("#subtopicSelect").empty();
 		allTopics.forEach((y) => {
 			// allow string to int equality with ==
-			if (this.config.panelNum == y.panel_num || y.panel == "N/A")
+			if (this.config.subtopicId == y.panel_num || y.panel == "N/A")
 				$("#subtopicSelect").append(
 					`<option value="${y.panel_num}" selected>${y.panel === "N/A" ? "Not Applicable" : y.panel}</option>`
 				);
@@ -521,7 +520,7 @@ export class LandingPage {
 		if (!this.selections) {
 			const firstVal = $("#subtopicSelect option:first").val();
 			$("#subtopicSelect").val(firstVal);
-			this.config.panelNum = firstVal;
+			this.config.subtopicId = firstVal;
 		}
 	}
 
@@ -542,7 +541,7 @@ export class LandingPage {
 		);
 		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
 			allCharacteristicIds = this.socrataData.filter(
-				(item) => parseInt(item.panel_num, 10) === parseInt(this.config.panelNum, 10)
+				(item) => parseInt(item.panel_num, 10) === parseInt(this.config.subtopicId, 10)
 			);
 		} else {
 			allCharacteristicIds = this.socrataData;
@@ -559,10 +558,8 @@ export class LandingPage {
 
 		$("#characteristicSelect").empty();
 
-		// reload the stubs but if new list has match for current selection
-		// then - keep current selected
+		// reload the characteristics but if new list has match for current selection then - keep current selected
 		let foundUnit = false;
-
 		allCharacteristicIds.forEach((y) => {
 			if (this.characteristicId === parseInt(y.stub_name_num, 10)) {
 				$("#characteristicSelect").append(
@@ -575,7 +572,7 @@ export class LandingPage {
 		});
 
 		if (foundUnit === false) {
-			// now update the stubname num to the first on the list
+			// now update the characteristic num to the first on the list
 			this.characteristicId = $("#characteristicSelect option:first").val();
 		}
 	}
@@ -619,9 +616,9 @@ export class LandingPage {
 		}
 	}
 
-	updateSubtopic(panelNum) {
-		this.config.panelNum = parseInt(panelNum, 10);
-		console.log("new subtopic num: ", this.config.panelNum);
+	updateSubtopic(subtopicId) {
+		this.config.subtopicId = parseInt(subtopicId, 10);
+		console.log("new subtopic num: ", this.config.subtopicId);
 		this.setCharacteristic();
 		DataCache.activeLegendList = [];
 
@@ -630,20 +627,16 @@ export class LandingPage {
 
 	updateCharacteristic(characteristicId, updateTimePeriods = true) {
 		this.characteristicId = characteristicId;
-
-		// have to update UNIT bc some stubs dont have all units
 		this.setVerticalUnitAxisSelect();
 
-		// have to update START TIME PERIOD select bc some stubs for same data have different years that are valid data
 		if (updateTimePeriods) this.resetTimePeriods();
 
-		// clear the list of active legend items when stub name changes
 		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();
 	}
 
 	resetTimePeriods() {
-		// When "stubname" (Characteristic) changes, update the time period selects dropdowns.
+		// When characteristic changes, update the time period selects dropdowns.
 		// Some characteristics have no data -> flag = "- - -"; so filter those years out.
 
 		const allYearsArray = [...new Set(this.getFilteredYearData().map((d) => d.year))];
@@ -753,18 +746,14 @@ export class LandingPage {
 		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
 		else return;
 
-		// console.log("ACtiveLegend List after click:", DataCache.activeLegendList);
 		this.renderChart();
 	}
 
 	// call this when Reset Button is clicked
 	resetSelections() {
 		functions.resetTopicDropdownList();
-		// reset panel
 		this.setSubtopic();
-
-		// reset Characteristic
-		this.characteristicId = 0; // should always be TOTAL in every data set!!!
+		this.characteristicId = 0;
 		this.setCharacteristic();
 
 		// remove "View Single Period" if it is set
@@ -777,12 +766,12 @@ export class LandingPage {
 		this.resetTimePeriods();
 		$(".timePeriodContainer").css("display", "flex");
 
-		this.setVerticalUnitAxisSelect(); // reset the unit
-		DataCache.activeLegendList = []; // clear the list of active legend items when stub name changes
+		this.setVerticalUnitAxisSelect();
+		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 1) this.renderChart();
-		else $("a[href='#chart-tab']").click();
+		else $("a[href='#chart-tab']").trigger("click");
 		hashTab.writeHashToUrl();
 	}
 

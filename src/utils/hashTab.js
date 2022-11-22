@@ -1,6 +1,6 @@
 import { hashLookup } from "../components/landingPage/config";
 
-const topicId = "data-topic-select";
+const topicId = "topic";
 const subTopicId = "subtopicSelect";
 const subtopicOptions = "subtopicOptions";
 const characteristicId = "characteristicSelect";

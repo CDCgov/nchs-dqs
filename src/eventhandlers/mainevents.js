@@ -13,7 +13,7 @@ export const MainEvents = {
 			$("#mapPlayButtonContainer").hide();
 		};
 
-		$("#data-topic-select").on("change", (e) => {
+		$("#topic").on("change", (e) => {
 			stopAnimation();
 			let dataTopic = e.target.value;
 			appState.ACTIVE_TAB.selections = null;

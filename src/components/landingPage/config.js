@@ -11,7 +11,7 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="data-topic-select" class="preSelText" aria-label="Select a Topic">Select a</label>
+					<label for="topic" class="preSelText" aria-label="Select a Topic">Select a</label>
 					<div class="mainSelText">
 						Topic
 						<span>
@@ -29,7 +29,7 @@ export const tabContent = `
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="data-topic-select-box" id="data-topic-select" form="select-view-options">
+				<select name="topic select" id="topic" form="select-view-options">
 					<option value="obesity-child" selected data-filters="AsianPacific,Black,Children,Hispanic,Poverty,White">Obesity among Children</option>
 					<option value="obesity-adult" data-filters="Adults,Asian,Black,Hispanic,Poverty,White,Male,Female">Obesity among Adults</option>
 					<option value="suicide" data-filters="Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female">Death Rates for Suicide</option>
@@ -311,7 +311,7 @@ export const topicLookup = {
 		socrataId: "64sz-mcbq",
 		private: "1",
 		chartTitle: "Obesity among Children",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
@@ -321,7 +321,7 @@ export const topicLookup = {
 		socrataId: "23va-ejrn",
 		private: "1",
 		chartTitle: "Obesity among Adults",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
@@ -331,7 +331,7 @@ export const topicLookup = {
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasSubtopic: false,
@@ -341,7 +341,7 @@ export const topicLookup = {
 		socrataId: "k99r-jkp7",
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasSubtopic: false,
@@ -351,7 +351,7 @@ export const topicLookup = {
 		socrataId: "3p8z-99bn",
 		private: "1",
 		chartTitle: "Low birthweight live births",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
@@ -362,7 +362,7 @@ export const topicLookup = {
 		socrataId: "bzax-vvbx",
 		private: "1",
 		chartTitle: "Infant Mortality",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
@@ -373,7 +373,7 @@ export const topicLookup = {
 		socrataId: "2g8y-scu5",
 		private: "0",
 		chartTitle: "Medicaid coverage among persons under age 65",
-		panelNum: "NA",
+		subtopicId: "NA",
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasSubtopic: false,
@@ -383,7 +383,7 @@ export const topicLookup = {
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasSubtopic: true,
@@ -393,7 +393,7 @@ export const topicLookup = {
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasSubtopic: true,
@@ -403,7 +403,7 @@ export const topicLookup = {
 		socrataId: "nt5r-ak33",
 		private: "1",
 		chartTitle: "Access to Care",
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
@@ -416,7 +416,7 @@ nhisTopics.forEach((t) => {
 		socrataId: `nhis-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
-		panelNum: 1,
+		subtopicId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
