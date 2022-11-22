@@ -97,29 +97,29 @@ export const tabContent = `
 				</select>
 			</div>
 		</div>
-		<div id="subtopicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div id="subtopicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="subtopicSelect" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
+					<label for="subtopic" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
 					<div class="mainSelText">Subtopic</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="subtopic select" id="subtopicSelect" form="select-view-options"></select>						
+				<select name="subtopic select" id="subtopic" form="select-view-options"></select>						
 			</div>
 		</div>
-		<div id="characteristicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div id="characteristicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="characteristicSelect" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
+					<label for="characteristic" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
 					<div class="mainSelText">
 						Characteristic
 						<!--<span>
@@ -137,7 +137,7 @@ export const tabContent = `
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="characteristic select" id="characteristicSelect" form="select-view-options">
+				<select name="characteristic select" id="characteristic" form="select-view-options">
 				</select>
 			</div>
 		</div>

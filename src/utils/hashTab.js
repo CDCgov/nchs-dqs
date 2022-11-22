@@ -1,9 +1,9 @@
 import { hashLookup } from "../components/landingPage/config";
 
 const topicId = "topic";
-const subTopicId = "subtopicSelect";
+const subTopicId = "subtopic";
 const subtopicOptions = "subtopicOptions";
-const characteristicId = "characteristicSelect";
+const characteristicId = "characteristic";
 const characteristicOptions = "characteristicOptions";
 const showOnePeriodCheckboxId = "show-one-period-checkbox";
 

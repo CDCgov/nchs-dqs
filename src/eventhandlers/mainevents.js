@@ -20,13 +20,13 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateTopic(dataTopic);
 		});
 
-		$("#subtopicSelect").on("change", (e) => {
+		$("#subtopic").on("change", (e) => {
 			stopAnimation();
 			let subtopicId = e.target.value;
 			appState.ACTIVE_TAB.updateSubtopic(subtopicId);
 		});
 
-		$("#characteristicSelect").on("change", (e) => {
+		$("#characteristic").on("change", (e) => {
 			stopAnimation();
 			let stubNum = parseInt(e.target.value, 10);
 			appState.ACTIVE_TAB.updateCharacteristic(stubNum);

@@ -119,7 +119,7 @@ export class LandingPage {
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateCharacteristic(1, false);
-						$("#characteristicSelect").val(1);
+						$("#characteristic").val(1);
 						this.renderMap();
 						break;
 					case 1:
@@ -137,7 +137,7 @@ export class LandingPage {
 	}
 
 	renderMap() {
-		let subtopicText = $("#subtopicSelect option:selected").text();
+		let subtopicText = $("#subtopic option:selected").text();
 		this.chartSubTitle = "Subtopic: " + subtopicText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 
@@ -194,7 +194,7 @@ export class LandingPage {
 
 		// set the title - easier to do it all here based on selectors
 		let topic = $("#topic option:selected").text();
-		let characteristic = $("#characteristicSelect option:selected").text();
+		let characteristic = $("#characteristic option:selected").text();
 		if (this.showBarChart) {
 			this.config.chartTitle = topic + " by " + characteristic + " in " + this.startPeriod;
 		} else {
@@ -202,7 +202,7 @@ export class LandingPage {
 				topic + " by " + characteristic + " from " + this.startPeriod + " to " + this.endPeriod;
 		}
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		let subtopicText = $("#subtopicSelect option:selected").text();
+		let subtopicText = $("#subtopic option:selected").text();
 		this.chartSubTitle = "Subtopic: " + subtopicText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 	}
@@ -289,7 +289,7 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by subtopic, unit, and characteristic
 	getFilteredYearData() {
-		this.config.subtopicId = $("#subtopicSelect option:selected").val();
+		this.config.subtopicId = $("#subtopic option:selected").val();
 
 		const filteredData = this.socrataData.filter(
 			(d) =>
@@ -507,19 +507,19 @@ export class LandingPage {
 			return a.panel_num - b.panel_num;
 		});
 
-		$("#subtopicSelect").empty();
+		$("#subtopic").empty();
 		allTopics.forEach((y) => {
 			// allow string to int equality with ==
 			if (this.config.subtopicId == y.panel_num || y.panel == "N/A")
-				$("#subtopicSelect").append(
+				$("#subtopic").append(
 					`<option value="${y.panel_num}" selected>${y.panel === "N/A" ? "Not Applicable" : y.panel}</option>`
 				);
-			else $("#subtopicSelect").append(`<option value="${y.panel_num}">${y.panel}</option>`);
+			else $("#subtopic").append(`<option value="${y.panel_num}">${y.panel}</option>`);
 		});
 
 		if (!this.selections) {
-			const firstVal = $("#subtopicSelect option:first").val();
-			$("#subtopicSelect").val(firstVal);
+			const firstVal = $("#subtopic option:first").val();
+			$("#subtopic").val(firstVal);
 			this.config.subtopicId = firstVal;
 		}
 	}
@@ -556,24 +556,22 @@ export class LandingPage {
 			return a.stub_name_num - b.stub_name_num;
 		});
 
-		$("#characteristicSelect").empty();
+		$("#characteristic").empty();
 
 		// reload the characteristics but if new list has match for current selection then - keep current selected
 		let foundUnit = false;
 		allCharacteristicIds.forEach((y) => {
 			if (this.characteristicId === parseInt(y.stub_name_num, 10)) {
-				$("#characteristicSelect").append(
-					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
-				);
+				$("#characteristic").append(`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`);
 				foundUnit = true;
 			} else {
-				$("#characteristicSelect").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+				$("#characteristic").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 			}
 		});
 
 		if (foundUnit === false) {
 			// now update the characteristic num to the first on the list
-			this.characteristicId = $("#characteristicSelect option:first").val();
+			this.characteristicId = $("#characteristic option:first").val();
 		}
 	}
 
