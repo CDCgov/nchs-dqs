@@ -33,7 +33,7 @@ export class LandingPage {
 		this.activeTabNumber = 1; // the chart tab number, 0 indexed
 	}
 
-	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/State_Territory_FluView1.json"));
+	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (id) => {
 		const dataId = id.split("nhis-")[1];
