@@ -58,13 +58,13 @@ export class LandingPage {
 					panel_num: group.panelNum,
 					se: null,
 					stub_label: f.group,
-					stub_name: group.stubName,
-					stub_name_num: group.stubNameNum,
+					stub_name: group.characteristic,
+					stub_name_num: group.characteristicId,
 					unit: "Percent of population",
 					unit_num: 1,
 					year: f.year,
 					year_num: "",
-					age: group.stubName.includes("Age Group") ? f.group : "N/A",
+					age: group.characteristic.includes("Age Group") ? f.group : "N/A",
 				});
 			}
 		});
@@ -118,7 +118,7 @@ export class LandingPage {
 				this.activeTabNumber = parseInt(e.currentTarget.id.split("-")[2], 10) - 1;
 				switch (this.activeTabNumber) {
 					case 0:
-						this.updateStubNameNum(1, false);
+						this.updateCharacteristic(1, false);
 						$("#characteristicSelect").val(1);
 						this.renderMap();
 						break;
@@ -133,7 +133,7 @@ export class LandingPage {
 
 		this.selections = hashTab.getSelections();
 		if (this.selections) this.dataTopic = this.selections.topic;
-		this.updateDataTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
+		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
 	}
 
 	renderMap() {
@@ -365,7 +365,7 @@ export class LandingPage {
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 	}
 
-	updateDataTopic(dataTopic, topicChange = true) {
+	updateTopic(dataTopic, topicChange = true) {
 		$(".dimmer").addClass("active");
 
 		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
@@ -628,8 +628,8 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateStubNameNum(stubNameNum, updateTimePeriods = true) {
-		this.characteristicId = stubNameNum;
+	updateCharacteristic(characteristicId, updateTimePeriods = true) {
+		this.characteristicId = characteristicId;
 
 		// have to update UNIT bc some stubs dont have all units
 		this.setVerticalUnitAxisSelect();

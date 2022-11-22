@@ -17,7 +17,7 @@ export const MainEvents = {
 			stopAnimation();
 			let dataTopic = e.target.value;
 			appState.ACTIVE_TAB.selections = null;
-			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
+			appState.ACTIVE_TAB.updateTopic(dataTopic);
 		});
 
 		$("#subtopicSelect").on("change", (e) => {
@@ -29,7 +29,7 @@ export const MainEvents = {
 		$("#characteristicSelect").on("change", (e) => {
 			stopAnimation();
 			let stubNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
+			appState.ACTIVE_TAB.updateCharacteristic(stubNum);
 		});
 
 		$(document)
