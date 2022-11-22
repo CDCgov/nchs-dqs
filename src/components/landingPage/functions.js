@@ -121,7 +121,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 
 export const getAllChartProps = (data, showBarChart, config) => {
 	const chartValueProperty = "estimate";
-	const xAxisTitle = $("#stub-name-num-select option:selected").text(); // X Axis Title is the "Characteristic" selected
+	const xAxisTitle = $("#characteristicSelect option:selected").text(); // X Axis Title is the "Characteristic" selected
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
 	const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));

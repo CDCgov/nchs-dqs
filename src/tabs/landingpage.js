@@ -119,7 +119,7 @@ export class LandingPage {
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateStubNameNum(1, false);
-						$("#stub-name-num-select").val(1);
+						$("#characteristicSelect").val(1);
 						this.renderMap();
 						break;
 					case 1:
@@ -137,7 +137,7 @@ export class LandingPage {
 	}
 
 	renderMap() {
-		let panelText = $("#panel-num-select option:selected").text();
+		let panelText = $("#subtopicSelect option:selected").text();
 		this.chartSubTitle = "Subtopic: " + panelText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 
@@ -194,7 +194,7 @@ export class LandingPage {
 
 		// set the title - easier to do it all here based on selectors
 		let indicatorText = $("#data-topic-select option:selected").text();
-		let stubText = $("#stub-name-num-select option:selected").text();
+		let stubText = $("#characteristicSelect option:selected").text();
 		if (this.showBarChart) {
 			this.config.chartTitle = indicatorText + " by " + stubText + " in " + this.startPeriod;
 		} else {
@@ -202,7 +202,7 @@ export class LandingPage {
 				indicatorText + " by " + stubText + " from " + this.startPeriod + " to " + this.endPeriod;
 		}
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		let panelText = $("#panel-num-select option:selected").text();
+		let panelText = $("#subtopicSelect option:selected").text();
 		this.chartSubTitle = "Subtopic: " + panelText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 	}
@@ -289,7 +289,7 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by panel, unit, and stubname
 	getFilteredYearData() {
-		this.config.panelNum = $("#panel-num-select option:selected").val();
+		this.config.panelNum = $("#subtopicSelect option:selected").val();
 
 		const filteredData = this.socrataData.filter(
 			(d) =>
@@ -507,20 +507,20 @@ export class LandingPage {
 			return a.panel_num - b.panel_num;
 		});
 		// console.log("allPanelsArray", allPanelsArray);
-		$("#panel-num-select").empty();
+		$("#subtopicSelect").empty();
 
 		allPanelsArray.forEach((y) => {
 			// allow string to int equality with ==
 			if (this.config.panelNum == y.panel_num || y.panel == "N/A")
-				$("#panel-num-select").append(
+				$("#subtopicSelect").append(
 					`<option value="${y.panel_num}" selected>${y.panel === "N/A" ? "Not Applicable" : y.panel}</option>`
 				);
-			else $("#panel-num-select").append(`<option value="${y.panel_num}">${y.panel}</option>`);
+			else $("#subtopicSelect").append(`<option value="${y.panel_num}">${y.panel}</option>`);
 		});
 
 		if (!this.selections) {
-			const firstVal = $("#panel-num-select option:first").val();
-			$("#panel-num-select").val(firstVal);
+			const firstVal = $("#subtopicSelect option:first").val();
+			$("#subtopicSelect").val(firstVal);
 			this.config.panelNum = firstVal;
 		}
 	}
@@ -557,7 +557,7 @@ export class LandingPage {
 			return a.stub_name_num - b.stub_name_num;
 		});
 
-		$("#stub-name-num-select").empty();
+		$("#characteristicSelect").empty();
 
 		// reload the stubs but if new list has match for current selection
 		// then - keep current selected
@@ -565,18 +565,18 @@ export class LandingPage {
 
 		allStubsArray.forEach((y) => {
 			if (this.stubNameNum === parseInt(y.stub_name_num, 10)) {
-				$("#stub-name-num-select").append(
+				$("#characteristicSelect").append(
 					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
 				);
 				foundUnit = true;
 			} else {
-				$("#stub-name-num-select").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
+				$("#characteristicSelect").append(`<option value="${y.stub_name_num}">${y.stub_name}</option>`);
 			}
 		});
 
 		if (foundUnit === false) {
 			// now update the stubname num to the first on the list
-			this.stubNameNum = $("#stub-name-num-select option:first").val();
+			this.stubNameNum = $("#characteristicSelect option:first").val();
 		}
 	}
 

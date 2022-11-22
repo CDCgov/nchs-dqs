@@ -458,7 +458,7 @@ export const nhisGroups = {
 };
 
 export const nhisHash = {
-	"stub-name-num-select": [
+	characteristicOptions: [
 		{
 			hash: "total",
 			value: "0",
@@ -540,7 +540,7 @@ export const nhisHash = {
 			value: "19",
 		},
 	],
-	"panel-num-select": [
+	subtopicOptions: [
 		{
 			hash: "demographics",
 			value: "0",
