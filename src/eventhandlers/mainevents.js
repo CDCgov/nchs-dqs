@@ -78,20 +78,20 @@ export const MainEvents = {
 
 		// on the map tab
 		$("#unit-num-select-map").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		// on the chart tab
 		$("#unit-num-select-chart").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		// on the table tab
 		$("#unit-num-select-table").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		$("#show-one-period-checkbox").on("change", (e) => {

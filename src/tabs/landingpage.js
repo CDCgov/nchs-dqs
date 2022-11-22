@@ -17,7 +17,7 @@ export class LandingPage {
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
 		this.dataTopic = "obesity-child"; // default
-		this.stubNameNum = 0;
+		this.characteristicId = 0;
 		this.startPeriod = "1988-1994";
 		this.startYear = "1988"; // first year of the first period
 		this.endPeriod = "2013-2016";
@@ -145,7 +145,7 @@ export class LandingPage {
 		$("#us-map-container").show();
 
 		// If TOTAL is selected we CANNOT DRAW THE MAP, so show a message
-		if (this.stubNameNum === 0) {
+		if (this.characteristicId === 0) {
 			// need to SHOW A MESSAGE
 			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
 			$("#us-map-legend").hide();
@@ -219,8 +219,8 @@ export class LandingPage {
 	getFlattenedFilteredData() {
 		let selectedPanelData = this.socrataData.filter(
 			(d) =>
-				parseInt(d.unit_num, 10) === parseInt(this.config.unitNum, 10) &&
-				parseInt(d.stub_name_num, 10) === parseInt(this.stubNameNum, 10) &&
+				parseInt(d.unit_num, 10) === parseInt(this.config.yAxisUnitId, 10) &&
+				parseInt(d.stub_name_num, 10) === parseInt(this.characteristicId, 10) &&
 				parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10) &&
 				parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10)
 		);
@@ -293,8 +293,8 @@ export class LandingPage {
 
 		const filteredData = this.socrataData.filter(
 			(d) =>
-				parseInt(d.unit_num, 10) === parseInt(this.config.unitNum, 10) &&
-				parseInt(d.stub_name_num, 10) === parseInt(this.stubNameNum, 10)
+				parseInt(d.unit_num, 10) === parseInt(this.config.yAxisUnitId, 10) &&
+				parseInt(d.stub_name_num, 10) === parseInt(this.characteristicId, 10)
 		);
 
 		return this.config.hasSubtopic
@@ -398,8 +398,8 @@ export class LandingPage {
 		this.config.enableCI = false;
 		$("#enable-CI-checkbox").prop("checked", false);
 
-		if (this.selections) this.stubNameNum = parseInt(this.selections.characteristic, 10);
-		else this.stubNameNum = 0;
+		if (this.selections) this.characteristicId = parseInt(this.selections.characteristic, 10);
+		else this.characteristicId = 0;
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
@@ -526,7 +526,7 @@ export class LandingPage {
 	}
 
 	setStubNameSelect() {
-		let allStubsArray;
+		let allCharacteristicIds;
 
 		if (this.flattenedFilteredData) {
 			if (this.flattenedFilteredData.length === 0) {
@@ -541,19 +541,19 @@ export class LandingPage {
 			nhisTopics.map((t) => t.id)
 		);
 		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
-			allStubsArray = this.socrataData.filter(
+			allCharacteristicIds = this.socrataData.filter(
 				(item) => parseInt(item.panel_num, 10) === parseInt(this.config.panelNum, 10)
 			);
 		} else {
-			allStubsArray = this.socrataData;
+			allCharacteristicIds = this.socrataData;
 		}
 
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
-		allStubsArray = [...new Map(allStubsArray.map((item) => [item.stub_name, item])).values()];
+		allCharacteristicIds = [...new Map(allCharacteristicIds.map((item) => [item.stub_name, item])).values()];
 
 		// now sort them in id order
-		allStubsArray.sort((a, b) => {
+		allCharacteristicIds.sort((a, b) => {
 			return a.stub_name_num - b.stub_name_num;
 		});
 
@@ -563,8 +563,8 @@ export class LandingPage {
 		// then - keep current selected
 		let foundUnit = false;
 
-		allStubsArray.forEach((y) => {
-			if (this.stubNameNum === parseInt(y.stub_name_num, 10)) {
+		allCharacteristicIds.forEach((y) => {
+			if (this.characteristicId === parseInt(y.stub_name_num, 10)) {
 				$("#characteristicSelect").append(
 					`<option value="${y.stub_name_num}" selected>${y.stub_name}</option>`
 				);
@@ -576,13 +576,13 @@ export class LandingPage {
 
 		if (foundUnit === false) {
 			// now update the stubname num to the first on the list
-			this.stubNameNum = $("#characteristicSelect option:first").val();
+			this.characteristicId = $("#characteristicSelect option:first").val();
 		}
 	}
 
 	setVerticalUnitAxisSelect() {
 		let allUnitsArray = this.socrataData.filter(
-			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.stubNameNum, 10)
+			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.characteristicId, 10)
 		);
 
 		// Creates an array of objects with unique "name" property values.
@@ -602,7 +602,7 @@ export class LandingPage {
 		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
-			if (this.config.unitNum === parseInt(y.unit_num, 10)) {
+			if (this.config.yAxisUnitId === parseInt(y.unit_num, 10)) {
 				$("#unit-num-select-map").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$("#unit-num-select-chart").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$("#unit-num-select-table").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
@@ -615,7 +615,7 @@ export class LandingPage {
 		});
 		if (foundUnit === false) {
 			// have to set to a valid unit num or data will error out
-			this.config.unitNum = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
+			this.config.yAxisUnitId = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
 		}
 	}
 
@@ -629,7 +629,7 @@ export class LandingPage {
 	}
 
 	updateStubNameNum(stubNameNum, updateTimePeriods = true) {
-		this.stubNameNum = stubNameNum;
+		this.characteristicId = stubNameNum;
 
 		// have to update UNIT bc some stubs dont have all units
 		this.setVerticalUnitAxisSelect();
@@ -695,8 +695,8 @@ export class LandingPage {
 		this.renderChart();
 	}
 
-	updateUnitNum(unitNum) {
-		this.config.unitNum = parseInt(unitNum, 10);
+	updateYAxisUnitId(yAxisUnitId) {
+		this.config.yAxisUnitId = parseInt(yAxisUnitId, 10);
 		this.setStubNameSelect();
 
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
@@ -764,7 +764,7 @@ export class LandingPage {
 		this.setPanelSelect();
 
 		// reset Characteristic
-		this.stubNameNum = 0; // should always be TOTAL in every data set!!!
+		this.characteristicId = 0; // should always be TOTAL in every data set!!!
 		this.setStubNameSelect();
 
 		// remove "View Single Period" if it is set
