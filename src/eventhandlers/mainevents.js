@@ -13,23 +13,23 @@ export const MainEvents = {
 			$("#mapPlayButtonContainer").hide();
 		};
 
-		$("#data-topic-select").on("change", (e) => {
+		$("#topic").on("change", (e) => {
 			stopAnimation();
 			let dataTopic = e.target.value;
 			appState.ACTIVE_TAB.selections = null;
-			appState.ACTIVE_TAB.updateDataTopic(dataTopic);
+			appState.ACTIVE_TAB.updateTopic(dataTopic);
 		});
 
-		$("#panel-num-select").on("change", (e) => {
+		$("#subtopic").on("change", (e) => {
 			stopAnimation();
-			let panelNum = e.target.value;
-			appState.ACTIVE_TAB.updatePanelNum(panelNum);
+			let subtopicId = e.target.value;
+			appState.ACTIVE_TAB.updateSubtopic(subtopicId);
 		});
 
-		$("#stub-name-num-select").on("change", (e) => {
+		$("#characteristic").on("change", (e) => {
 			stopAnimation();
 			let stubNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateStubNameNum(stubNum);
+			appState.ACTIVE_TAB.updateCharacteristic(stubNum);
 		});
 
 		$(document)
@@ -78,20 +78,20 @@ export const MainEvents = {
 
 		// on the map tab
 		$("#unit-num-select-map").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		// on the chart tab
 		$("#unit-num-select-chart").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		// on the table tab
 		$("#unit-num-select-table").on("change", (e) => {
-			const unitNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateUnitNum(unitNum);
+			const yAxisUnitId = parseInt(e.target.value, 10);
+			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
 		});
 
 		$("#show-one-period-checkbox").on("change", (e) => {

@@ -159,7 +159,7 @@ export class GenMap {
 	}
 
 	render(topoJson) {
-		const { geometries } = topoJson.objects.State_Territory_FluView1;
+		const { geometries } = topoJson.objects.StatesAndTerritories;
 		let mLegendData;
 		let mActiveLegendItems = [];
 		let mActiveLegendItemColors = [];

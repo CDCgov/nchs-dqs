@@ -1,8 +1,10 @@
 import { hashLookup } from "../components/landingPage/config";
 
-const topicId = "data-topic-select";
-const subTopicId = "panel-num-select";
-const characteristicId = "stub-name-num-select";
+const topicId = "topic";
+const subTopicId = "subtopic";
+const subtopicOptions = "subtopicOptions";
+const characteristicId = "characteristic";
+const characteristicOptions = "characteristicOptions";
 const showOnePeriodCheckboxId = "show-one-period-checkbox";
 
 export const writeHashToUrl = () => {
@@ -18,11 +20,11 @@ export const writeHashToUrl = () => {
 
 		const subtopicHash = hashLookup
 			.find((l) => l.value === topic)
-			[subTopicId].find((s) => s.value === subTopic).hash;
+			[subtopicOptions].find((s) => s.value === subTopic).hash;
 
 		const characteristicHash = hashLookup
 			.find((l) => l.value === topic)
-			[characteristicId].find((c) => c.value === characteristic).hash;
+			[characteristicOptions].find((c) => c.value === characteristic).hash;
 
 		window.location.hash = `${hashPrefix.replace(
 			"#",
@@ -43,10 +45,10 @@ export const getSelections = () => {
 		const topic = hashLookup.find((l) => l.hash === selections[0]).value;
 		const subTopic = hashLookup
 			.find((l) => l.hash === selections[0])
-			[subTopicId].find((s) => s.hash === selections[1]).value;
+			[subtopicOptions].find((s) => s.hash === selections[1]).value;
 		const characteristic = hashLookup
 			.find((l) => l.hash === selections[0])
-			[characteristicId].find((c) => c.hash === selections[2]).value;
+			[characteristicOptions].find((c) => c.hash === selections[2]).value;
 		const viewSinglePeriod = selections[3] === "single-time-period";
 
 		$(`#${topicId}`).val(topic);

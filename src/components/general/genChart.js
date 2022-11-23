@@ -51,12 +51,12 @@ export class GenChart {
 			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
 			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
 			let barsAdded = 0;
-			let stubLabels = DataCache.activeLegendList.map((d) => d.stub_label);
-			p.data = allIncomingData.filter((d) => stubLabels.includes(d.stub_label));
+			let characteristicGroups = DataCache.activeLegendList.map((d) => d.stub_label);
+			p.data = allIncomingData.filter((d) => characteristicGroups.includes(d.stub_label));
 
 			barsAdded = p.data.length;
 			if (barsAdded < barsToDraw) {
-				const filteredIncoming = allIncomingData.filter((d) => !stubLabels.includes(d.stub_label));
+				const filteredIncoming = allIncomingData.filter((d) => !characteristicGroups.includes(d.stub_label));
 				for (let i = 0; i < filteredIncoming.length; i++) {
 					if (barsAdded < barsToDraw) {
 						p.data.push(filteredIncoming[i]);
@@ -71,10 +71,10 @@ export class GenChart {
 			}));
 			DataCache.activeLegendList = p.data;
 
-			stubLabels = p.data.map((d) => d.stub_label);
+			characteristicGroups = p.data.map((d) => d.stub_label);
 			allIncomingData = allIncomingData.map((d) => ({
 				...d,
-				dontDraw: !stubLabels.includes(d.stub_label),
+				dontDraw: !characteristicGroups.includes(d.stub_label),
 			}));
 
 			// console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
@@ -674,23 +674,13 @@ export class GenChart {
 				}
 
 				// NOW WE CAN deal with the legend and whether the lines are drawn
-				fullNestedData.forEach((d, i) => {
+				fullNestedData.forEach((d) => {
 					if (d.values[0].dontDraw === false && lineCount < numLinesToDraw) {
 						lineCount++; // increment barCount
 
-						// PUSH only if not already on the list
-						if (
-							DataCache.activeLegendList.filter(function (e) {
-								return e.stub_label === d.values[0].stub_label;
-							}).length > 0
-						) {
-							// it is on the list
-							// so dont push it
-							// console.log("ALREADY on the list",d.values[0].stub_label);
+						if (DataCache.activeLegendList.filter((e) => e.stub_label === d.values[0].stub_label).length) {
+							// it is on the list so do nothing
 						} else {
-							// not on there so push it 8/2/2022
-
-							// the line after this is pushing the wrong object
 							DataCache.activeLegendList.push(d.values[0]);
 						}
 					} else {
@@ -700,20 +690,10 @@ export class GenChart {
 						);
 						DataCache.activeLegendList = [];
 						DataCache.activeLegendList = tempList;
-
-						// then either dontDraw already true or needs to be set to true
-						// bc bar count is exceeded
 						d.values[0].dontDraw = true;
 					}
 
-					// CHANGE - if on the active list then set dontDraw = false
-					// - if not on the list set it to dontDraw = true
-					if (
-						DataCache.activeLegendList.filter(function (e) {
-							return e.stub_label === d.values[0].stub_label;
-						}).length > 0
-					) {
-						// it is on the list
+					if (DataCache.activeLegendList.filter((e) => e.stub_label === d.values[0].stub_label).length > 0) {
 						d.values[0].dontDraw = false;
 					} else {
 						d.values[0].dontDraw = true;
@@ -1475,19 +1455,8 @@ export class GenChart {
 			genTooltip.render();
 		}
 
-		// DRAW LEGEND FOR NON-ROTATED CHARTS
+		// DRAW LEGEND
 		if (p.usesLegend) {
-			// FOR ASSIGNED LEGEND COLOR TO WORK, LEGEND HAS TO BE DRAWN
-			// AFTER THE GRAPH HAS BEEN DRAWN WHETHER LINE OR BAR CHART
-			// - therefore all legend drawing must be moved to the END
-			// of this code
-
-			// ONLY SORT DATA PASSED INTO GENCHART - DONT SORT IN HERE
-			// now sort by stub_label_num
-			/* 				fullNestedData.sort((a, b) => {
-					return a.values[0].stub_label_num - b.values[0].stub_label_num;
-				}); */
-
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {

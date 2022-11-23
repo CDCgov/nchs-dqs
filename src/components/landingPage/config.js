@@ -11,7 +11,7 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="data-topic-select" class="preSelText" aria-label="Select a Topic">Select a</label>
+					<label for="topic" class="preSelText" aria-label="Select a Topic">Select a</label>
 					<div class="mainSelText">
 						Topic
 						<span>
@@ -29,7 +29,7 @@ export const tabContent = `
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="data-topic-select-box" id="data-topic-select" form="select-view-options">
+				<select name="topic select" id="topic" form="select-view-options">
 					<option value="obesity-child" selected data-filters="AsianPacific,Black,Children,Hispanic,Poverty,White">Obesity among Children</option>
 					<option value="obesity-adult" data-filters="Adults,Asian,Black,Hispanic,Poverty,White,Male,Female">Obesity among Adults</option>
 					<option value="suicide" data-filters="Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female">Death Rates for Suicide</option>
@@ -97,30 +97,29 @@ export const tabContent = `
 				</select>
 			</div>
 		</div>
-		<div id="subtopicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div id="subtopicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="panel-num-select" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
+					<label for="subtopic" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
 					<div class="mainSelText">Subtopic</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="panel-num-select-box" id="panel-num-select" form="select-view-options">
-				</select>						
+				<select name="subtopic select" id="subtopic" form="select-view-options"></select>						
 			</div>
 		</div>
-		<div id="characteristicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div id="characteristicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="stub-name-num-select" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
+					<label for="characteristic" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
 					<div class="mainSelText">
 						Characteristic
 						<!--<span>
@@ -138,7 +137,7 @@ export const tabContent = `
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div class="styled-select">
-				<select name="stub-name-num-select-box" id="stub-name-num-select" form="select-view-options">
+				<select name="characteristic select" id="characteristic" form="select-view-options">
 				</select>
 			</div>
 		</div>
@@ -312,8 +311,8 @@ export const topicLookup = {
 		socrataId: "64sz-mcbq",
 		private: "1",
 		chartTitle: "Obesity among Children",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
 	},
@@ -322,8 +321,8 @@ export const topicLookup = {
 		socrataId: "23va-ejrn",
 		private: "1",
 		chartTitle: "Obesity among Adults",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
 	},
@@ -332,8 +331,8 @@ export const topicLookup = {
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
-		panelNum: 1,
-		unitNum: 2,
+		subtopicId: 1,
+		yAxisUnitId: 2,
 		hasCI: false,
 		hasSubtopic: false,
 	},
@@ -342,8 +341,8 @@ export const topicLookup = {
 		socrataId: "k99r-jkp7",
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments",
-		panelNum: 1,
-		unitNum: 2,
+		subtopicId: 1,
+		yAxisUnitId: 2,
 		hasCI: false,
 		hasSubtopic: false,
 	},
@@ -352,8 +351,8 @@ export const topicLookup = {
 		socrataId: "3p8z-99bn",
 		private: "1",
 		chartTitle: "Low birthweight live births",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
@@ -363,8 +362,8 @@ export const topicLookup = {
 		socrataId: "bzax-vvbx",
 		private: "1",
 		chartTitle: "Infant Mortality",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
 		hasSubtopic: true,
@@ -374,8 +373,8 @@ export const topicLookup = {
 		socrataId: "2g8y-scu5",
 		private: "0",
 		chartTitle: "Medicaid coverage among persons under age 65",
-		panelNum: "NA",
-		unitNum: 2,
+		subtopicId: "NA",
+		yAxisUnitId: 2,
 		hasCI: true,
 		hasSubtopic: false,
 	},
@@ -384,8 +383,8 @@ export const topicLookup = {
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: false,
 		hasSubtopic: true,
 	},
@@ -394,8 +393,8 @@ export const topicLookup = {
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: false,
 		hasSubtopic: true,
 	},
@@ -404,8 +403,8 @@ export const topicLookup = {
 		socrataId: "nt5r-ak33",
 		private: "1",
 		chartTitle: "Access to Care",
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
 	},
@@ -417,8 +416,8 @@ nhisTopics.forEach((t) => {
 		socrataId: `nhis-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
-		panelNum: 1,
-		unitNum: 1,
+		subtopicId: 1,
+		yAxisUnitId: 1,
 		hasCI: true,
 		hasSubtopic: true,
 	};
@@ -454,8 +453,8 @@ export const vizConfig = {
 //    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
 //    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
 //    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
-// 3. "panel_num-select" uses rules #1 and #2 like above, but for the Subtopic dropdown
-// 4. "stub-name-num-select" uses rules #1 and #2 like above, but for the Characteristic dropdown
+// 3. "subtopicOptions" uses rules #1 and #2 like above, but for the Subtopic dropdown
+// 4. "characteristicOptions" uses rules #1 and #2 like above, but for the Characteristic dropdown
 //
 // For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
 // Once your new dataset successfully loads you can inspect the Subtopic and Characteristic dropdowns.
@@ -463,7 +462,7 @@ export const hashLookup = [
 	{
 		hash: "obesity-children",
 		value: "obesity-child",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -489,7 +488,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "2-19",
 				value: "1",
@@ -511,7 +510,7 @@ export const hashLookup = [
 	{
 		hash: "obesity-adults",
 		value: "obesity-adult",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -537,7 +536,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "BMI-from-18.5-to-24.9",
 				value: "1",
@@ -567,7 +566,7 @@ export const hashLookup = [
 	{
 		hash: "suicide-mortality",
 		value: "suicide",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -601,7 +600,7 @@ export const hashLookup = [
 				value: "7",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -615,7 +614,7 @@ export const hashLookup = [
 	{
 		hash: "injury-ed-visits",
 		value: "injury",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -641,7 +640,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "NA",
 				value: "0",
@@ -651,7 +650,7 @@ export const hashLookup = [
 	{
 		hash: "infant-mortality",
 		value: "infant-mortality",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -661,7 +660,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -691,7 +690,7 @@ export const hashLookup = [
 	{
 		hash: "low-birthweight",
 		value: "birthweight",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -701,7 +700,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -731,7 +730,7 @@ export const hashLookup = [
 	{
 		hash: "medicaid-coverage-under-65",
 		value: "medicaidU65",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -773,7 +772,7 @@ export const hashLookup = [
 				value: "9",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -787,7 +786,7 @@ export const hashLookup = [
 	{
 		hash: "drug-overdose",
 		value: "drug-overdose",
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -813,7 +812,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "all-drug-overdose-deaths",
 				value: "1",
@@ -843,7 +842,7 @@ export const hashLookup = [
 	{
 		hash: "ambulatory-care",
 		value: "ambulatory-care",
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "all-places",
 				value: "1",
@@ -861,7 +860,7 @@ export const hashLookup = [
 				value: "4",
 			},
 		],
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -891,7 +890,7 @@ export const hashLookup = [
 	{
 		hash: "access-care",
 		value: "access-care",
-		"panel-num-select": [
+		subtopicOptions: [
 			{
 				hash: "nonreceipt-medical-care",
 				value: "1",
@@ -905,7 +904,7 @@ export const hashLookup = [
 				value: "3",
 			},
 		],
-		"stub-name-num-select": [
+		characteristicOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -972,7 +971,7 @@ nhisTopics
 		hashLookup.push({
 			hash: id,
 			value: id,
-			"stub-name-num-select": nhisHash["stub-name-num-select"],
-			"panel-num-select": nhisHash["panel-num-select"],
+			characteristicOptions: nhisHash.characteristicOptions,
+			subtopicOptions: nhisHash.subtopicOptions,
 		});
 	});

@@ -121,7 +121,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 
 export const getAllChartProps = (data, showBarChart, config) => {
 	const chartValueProperty = "estimate";
-	const xAxisTitle = $("#stub-name-num-select option:selected").text(); // X Axis Title is the "Characteristic" selected
+	const xAxisTitle = $("#characteristic option:selected").text(); // X Axis Title is the "Characteristic" selected
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
 	const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
@@ -209,7 +209,7 @@ export const linkify = (t) => {
 	return a.join("");
 };
 
-export const resetTopicDropdownList = () => $("#data-topic-select > option").each((i, el) => $(el).show());
+export const resetTopicDropdownList = () => $("#topic > option").each((i, el) => $(el).show());
 
 export const updateTopicDropdownList = () => {
 	const selectedFilters = $(".filterCheckbox:checked")
@@ -219,8 +219,8 @@ export const updateTopicDropdownList = () => {
 	let needToChangeSelected = false;
 	if (selectedFilters.length) {
 		let firstFiltered;
-		const currentSelected = $("#data-topic-select option:selected").val();
-		$("#data-topic-select > option").each((i, el) => {
+		const currentSelected = $("#topic option:selected").val();
+		$("#topic > option").each((i, el) => {
 			const availableFilters = $(el).data("filters").split(",");
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = el.value;
@@ -233,7 +233,7 @@ export const updateTopicDropdownList = () => {
 			}
 		});
 		if (needToChangeSelected) {
-			$("#data-topic-select").val(firstFiltered).trigger("change");
+			$("#topic").val(firstFiltered).trigger("change");
 		}
 	} else resetTopicDropdownList();
 };
