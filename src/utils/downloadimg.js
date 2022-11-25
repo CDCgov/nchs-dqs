@@ -15,7 +15,7 @@ const saveCanvasAs = (uri, filename) => {
 	}
 };
 
-export const downLoadMap2 = function () {
+export const downLoadMap2 = () => {
 	let mapImageContainer = document.getElementById("us-map-container");
 	let downloadButton = document.getElementById("dwn-chart-img");
 	let downloadButtonContent = document.getElementById("dwn-chart-img");
@@ -73,16 +73,16 @@ export const downLoadGenChart = (params) => {
 			scrollY: -window.scrollY,
 			backgroundColor: "#ffffff",
 			onclone: (clone) => {
-				let titleChart = clone.getElementById("chart-title").textContent;
-				let subTitle = clone.getElementById("chart-subtitle").textContent;
+				const titleChart = clone.getElementById("chart-title").textContent;
+				const subTitle = clone.getElementById("chart-subtitle").textContent;
 				let target = clone.getElementById("chart-container-svg");
 				target.style.margin = 0;
 				const currViewBox = target.getAttribute("viewBox").split(",");
 				const leftMargin = $("#chart-container-svg").css("margin-left").replace("px", "");
 				target.setAttribute("viewBox", `${-leftMargin}, 0, ${currViewBox[2]}, ${currViewBox[3]}`);
 				clone.getElementById("chart-container-chartTitle").innerHTML = `
-					<div style='font-size: 33.66px'>${titleChart}</div>
-					<div style='font-size: 24px'>${subTitle}</div>
+					<div style='font-size: 33.66px;>${titleChart}</div>
+					<div style='font-size: 24px;>${subTitle}</div>
 				`;
 			},
 		}).then((canvas) => {

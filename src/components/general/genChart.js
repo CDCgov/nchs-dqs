@@ -289,12 +289,16 @@ export class GenChart {
 				.append("div")
 				.style("line-height", chartTitleSize * 1.1 + "px")
 				.style("font-size", chartTitleSize + "px")
-				.style("width", chartWidth + "px")
 				.style("text-align", "center")
+				.style("clear", "both")
 				.attr("id", `${p.vizId}-chartTitle`)
 				.text(p.chartTitle);
 
 			if ($(`#${p.vizId}-chartTitle`).height() > chartTitleSize * 1.1) title.style("text-align", "left");
+
+			const titleDims = $("#chart-container-chartTitle")[0].getBoundingClientRect();
+			const titleCenter = (titleDims.right - titleDims.left) / 2;
+			title.style("transform", `translateX(${chartCenterX - titleCenter}px`);
 		}
 
 		// setup scales
