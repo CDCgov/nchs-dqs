@@ -31,6 +31,7 @@ export class LandingPage {
 		this.animating = false;
 		this.config = null;
 		this.activeTabNumber = 1; // the chart tab number, 0 indexed
+		this.genChart = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -173,6 +174,7 @@ export class LandingPage {
 				allDates,
 				currentTimePeriodIndex: this.currentTimePeriodIndex,
 				animating: this.animating,
+				genTooltipConstructor: functions.getMapTooltipConstructor(this.genChart.props.genTooltipConstructor),
 			});
 
 			map.render(this.topoJson);
@@ -189,8 +191,8 @@ export class LandingPage {
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
-		const genChart = new GenChart(this.chartConfig);
-		genChart.render();
+		this.genChart = new GenChart(this.chartConfig);
+		this.genChart.render();
 
 		// set the title - easier to do it all here based on selectors
 		let topic = $("#topic option:selected").text();
