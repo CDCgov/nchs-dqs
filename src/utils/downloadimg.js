@@ -81,8 +81,8 @@ export const downLoadGenChart = (params) => {
 				const leftMargin = $("#chart-container-svg").css("margin-left").replace("px", "");
 				target.setAttribute("viewBox", `${-leftMargin}, 0, ${currViewBox[2]}, ${currViewBox[3]}`);
 				clone.getElementById("chart-container-chartTitle").innerHTML = `
-					<div style='font-size: 33.66px;>${titleChart}</div>
-					<div style='font-size: 24px;>${subTitle}</div>
+					<div style='font-size: 33.66px;'>${titleChart}</div>
+					<div style='font-size: 24px;'>${subTitle}</div>
 				`;
 			},
 		}).then((canvas) => {
