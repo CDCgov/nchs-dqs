@@ -151,7 +151,7 @@ export class GenTooltip {
 				bodyData.push([title, values.join(" ")]);
 			} else {
 				prop = this.propertyLookup[bp];
-				if (prop.datumType === "string" && data[bp] === null) data[bp] = "";
+				if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined) data[bp] = "N/A";
 				bodyData.push([prop.title, genFormat(data[bp], prop.datumType)]);
 			}
 		});

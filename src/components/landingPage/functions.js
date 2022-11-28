@@ -82,6 +82,10 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 			title: "",
 			datumType: "string",
 		},
+		STATE_NAME: {
+			title: "",
+			datumType: "string",
+		},
 		stub_label: {
 			title: "Stub Label: ",
 			datumType: "string",
@@ -117,6 +121,14 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 		svgId: `${vizId}-svg`,
 		vizId,
 	};
+};
+
+export const getMapTooltipConstructor = (chartConstructor) => {
+	const constructor = chartConstructor;
+	constructor.vizId = "us-map-container";
+	constructor.svgId = "us-map-svg";
+	constructor.headerProps = ["", "STATE_NAME"];
+	return constructor;
 };
 
 export const getAllChartProps = (data, showBarChart, config) => {

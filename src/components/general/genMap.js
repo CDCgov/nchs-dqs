@@ -13,6 +13,7 @@ export class GenMap {
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
 		this.animating = props.animating;
 		this.noDataColorHexVal = null;
+		this.tooltipConstructor = props.genTooltipConstructor;
 	}
 
 	renderTimeSeriesAxisSelector() {
@@ -171,20 +172,7 @@ export class GenMap {
 		// Need to clear out the last map that was generated
 		$(`#${this.mapVizId}`).empty();
 
-		function getTooltipConstructor(vizId) {
-			const propertyLookup = {
-				STATE_NAME: { title: "STATE: ", datumType: "string" },
-				estimate: { title: "Estimate: ", datumType: "string" },
-				flag: { title: "Flag: ", datumType: "string" },
-				"": { title: "", datumType: "empty" },
-			};
-
-			const headerProps = ["STATE_NAME", ""];
-			const bodyProps = ["estimate", "flag"];
-			return { propertyLookup, headerProps, bodyProps, svgId, vizId };
-		}
-
-		const genTooltip = new GenTooltip(getTooltipConstructor(this.mapVizId));
+		const genTooltip = new GenTooltip(this.tooltipConstructor);
 
 		let ClassifiedDataObj;
 
@@ -231,7 +219,7 @@ export class GenMap {
 		function getColor(bin, flag) {
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
 			if (flag === "*") return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "none") return noDataColorHexVal; // Set to no data color
+			if (flag === "N/A") return noDataColorHexVal; // Set to no data color
 
 			const binColor = bgColors[bin]; // this IS based on position of the bin to the color
 			const index = mActiveLegendItemColors.indexOf(binColor);
@@ -247,7 +235,7 @@ export class GenMap {
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
 			if ((flag === "*" && estimate === null) || crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
 			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "none" && estimate === null) return noDataColorHexVal; // no data record found
+			if (flag === "N/A" && estimate === null) return noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
 			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
@@ -261,7 +249,7 @@ export class GenMap {
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
 			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
 			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "none" && estimate === null) return noDataColorHexVal; // no data record found
+			if (flag === "N/A" && estimate === null) return noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
 			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
@@ -334,7 +322,7 @@ export class GenMap {
 			if (theFlag.length > 0) {
 				theFlag = theFlag[0].flag;
 			} else {
-				theFlag = "none";
+				theFlag = "N/A";
 			}
 
 			if (estimateMatch.length > 0) {
@@ -352,6 +340,9 @@ export class GenMap {
 						active: 1, // default initial to all checked
 						flag: theFlag,
 						crosshatch: 0,
+						panel: classBin[0].panel,
+						unit: classBin[0].unit,
+						year: classBin[0].year,
 					};
 				} else {
 					g.properties = {
@@ -497,7 +488,7 @@ export class GenMap {
 			if (theFlag.length > 0) {
 				theFlag = theFlag[0].flag;
 			} else {
-				theFlag = "none";
+				theFlag = "N/A";
 			}
 
 			if (estimateMatch.length > 0) {
