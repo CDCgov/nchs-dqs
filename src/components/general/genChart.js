@@ -422,16 +422,6 @@ export class GenChart {
 			.attr("class", "general-chart")
 			.attr("viewBox", [0, 0, svgWidth, svgHeight]);
 
-		// add a white box if you want a white box to show when chart is NOT on a white background (TT)
-		// - this could also be enabled or disabled from a PROP
-		let legendHeight = 0;
-		const whiteBox = svg
-			.append("g")
-			.append("rect")
-			.attr("id", "whitebox") // give it a white box background
-			.attr("fill", "#FFFFFF")
-			.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
-
 		if (!p.data.length) {
 			if (p.usesBars) {
 				svg.append("text")
@@ -1537,31 +1527,8 @@ export class GenChart {
 			}
 
 			// need height first
-			legendHeight = (legendData.length + 1) * axisLabelFontSize * 1.1;
-			svg.attr("viewBox", [0, 0, svgWidth, svgHeight + legendHeight + 30]);
-
-			// start the left-edge translation of everything in the legend at the center of the chart area
-			// it will be moved, once drawn, by setting 'x' after
-			// const legendTx = (svgWidth + margin.left) / 2;
-			const legendTx = 0;
-			const legendTy = legendData.length > 10 ? svgHeight + 20 : svgHeight;
-
-			const legendContainer = svg
-				.append("g")
-				.attr("transform", `translate(${legendTx}, ${legendTy})`)
-				.append("rect")
-				.attr("id", `${svgId}-chart-legend`)
-				.attr("height", legendHeight)
-				.attr("fill", "#F2F2F2")
-				// .attr("fill", "none")
-				.attr("rx", "5")
-				.attr("ry", "5")
-				.attr("stroke", "black")
-				// .attr("stroke", "none")
-				.attr("overflow", "auto");
 
 			// get the px size needed for the longest legend label and use that to evenly position legend items
-
 			const longestLegendTextLength = d3.max([...legendData].map((ld) => ld.text.length));
 			svg.append("g")
 				.attr("id", "longestLegendItem")
@@ -1576,6 +1543,17 @@ export class GenChart {
 			let currentLegendRowLength = 0;
 			const unit = axisLabelFontSize;
 			const spacing = 5 * unit + longestLegendLabel;
+
+			const neededLegendsWidth = longestLegendLabel * legendData.length + spacing * (legendData.length - 1);
+			let legendDimensions = $("#xaxis")[0].getBoundingClientRect();
+
+			let legendTx = margin.left;
+			if (legendDimensions.width < neededLegendsWidth) {
+				legendDimensions = $("#chart-container-svg")[0].getBoundingClientRect();
+				legendTx = 0;
+			}
+
+			const legendTy = legendData.length > 10 ? svgHeight + 20 : svgHeight;
 
 			legendData.forEach((d, i) => {
 				const legendId = d.text.replace(/ /g, "_");
@@ -1644,14 +1622,14 @@ export class GenChart {
 			// get all legend items and find the longest then set the legend container size
 			const legendElements = $(`.${svgId}-legendItem`);
 			const rightmostLegendEdge = d3.max([...legendElements].map((el) => el.getBoundingClientRect().right));
-			const chartDimensions = $("#chart-container-svg")[0].getBoundingClientRect();
-			const chartRight = chartDimensions.right;
-			const maxLegendRight = chartDimensions.left + 0.98 * chartDimensions.width;
-			const minLegendLeft = chartDimensions.left + 0.02 * chartDimensions.width;
+			const legendRight = legendDimensions.right;
+			const maxAllowedLegendRight = legendDimensions.left + 0.98 * legendDimensions.width;
+			const minAllowedLegendLeft = legendDimensions.left + 0.02 * legendDimensions.width;
+
 			let offSetCorrection =
-				rightmostLegendEdge <= maxLegendRight
-					? (chartRight - rightmostLegendEdge) / 2
-					: chartDimensions.width * 0.02;
+				rightmostLegendEdge <= maxAllowedLegendRight
+					? (legendRight - rightmostLegendEdge) / 2
+					: legendDimensions.width * 0.02;
 
 			const updateLegendItemPosition = (offSetCorrection, drag = false) => {
 				if (drag) {
@@ -1659,11 +1637,11 @@ export class GenChart {
 						(offSetCorrection > 0 &&
 							$(`.${svgId}-legendItem`)
 								.toArray()
-								.some((d) => d.getBoundingClientRect().left >= minLegendLeft - 1)) ||
+								.some((d) => d.getBoundingClientRect().left >= minAllowedLegendLeft - 1)) ||
 						(offSetCorrection < 0 &&
 							$(`.${svgId}-legendItem`)
 								.toArray()
-								.every((d) => d.getBoundingClientRect().right <= maxLegendRight + 1))
+								.every((d) => d.getBoundingClientRect().right <= maxAllowedLegendRight + 1))
 					)
 						return;
 				}
@@ -1683,7 +1661,7 @@ export class GenChart {
 			};
 			updateLegendItemPosition(offSetCorrection);
 
-			if (rightmostLegendEdge > maxLegendRight) {
+			if (rightmostLegendEdge > maxAllowedLegendRight) {
 				let legendMoveStart;
 				$(`.${svgId}-legendItem`).draggable({
 					start: (e) => {
@@ -1709,14 +1687,14 @@ export class GenChart {
 				d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "all-scroll");
 			}
 
-			legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
+			let legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
 
 			if (legendData.length > 10) {
 				svg.append("g")
-					.attr("transform", `translate(${svgWidth / 2}, ${legendTy})`)
+					.attr("transform", `translate(0, ${legendTy})`)
 					.append("text")
 					.attr("id", "selectTenTxt")
-					.attr("x", 0)
+					.attr("x", chartCenterX)
 					.attr("y", -6)
 					.attr("data-html2canvas-ignore", "")
 					.attr("text-anchor", "middle")
@@ -1727,9 +1705,7 @@ export class GenChart {
 				legendHeight += 20;
 			}
 
-			legendContainer.attr("height", legendHeight);
 			svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
-			whiteBox.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
 		}
 
 		return {

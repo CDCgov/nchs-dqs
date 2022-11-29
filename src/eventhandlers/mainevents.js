@@ -202,9 +202,4 @@ export const MainEvents = {
 
 		ExportEvents.registerEvents();
 	},
-
-	setDownloadAriaLabel() {
-		const tableText = $("#pop-factors-table-title").text();
-		$("#btnPopFactorsExport").attr("aria-label", `Download Data for ${tableText}`);
-	},
 };
