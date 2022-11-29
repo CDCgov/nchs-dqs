@@ -1526,9 +1526,8 @@ export class GenChart {
 				});
 			}
 
-			// need height first
-
-			// get the px size needed for the longest legend label and use that to evenly position legend items
+			// to get the px size needed for the longest legend label and use that to evenly position legend items
+			// we add a temporary element, query size, and then remove it
 			const longestLegendTextLength = d3.max([...legendData].map((ld) => ld.text.length));
 			svg.append("g")
 				.attr("id", "longestLegendItem")
@@ -1619,7 +1618,7 @@ export class GenChart {
 					.attr("cursor", "default");
 			});
 
-			// get all legend items and find the longest then set the legend container size
+			// get all legend items and find the longest then set each legend container's size to match
 			const legendElements = $(`.${svgId}-legendItem`);
 			const rightmostLegendEdge = d3.max([...legendElements].map((el) => el.getBoundingClientRect().right));
 			const legendRight = legendDimensions.right;
