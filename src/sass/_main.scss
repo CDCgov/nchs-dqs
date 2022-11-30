@@ -130,11 +130,28 @@ a {
 }
 
 .adjustUnitContainer {
-	margin: 15px 20px 10px 4vw;
+	margin: 15px 20px 10px 0;
 	width: auto;
 	display: inline;
 	float: left;
 	font-size: 0.8em;
+}
+
+.content-wrapper {
+	padding: 0 4vw;
+	background-color: #b3d2ce;
+}
+
+#us-map-container {
+	text-align: center;
+}
+
+#nchs-table-container {
+	clear: both;
+}
+
+.chart-container {
+	width: 100%;
 }
 
 #unit-num-select-chart {

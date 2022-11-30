@@ -202,7 +202,7 @@ export const tabContent = `
 			<li><a href="#table-tab"><i class="fas fa-table fa-fw me-2"></i> Table</a></li>
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="map-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
 				<div class="adjustUnitContainer">
 					<label for="unit-num-select-map" aria-label="Adjust Unit">Adjust Unit</label>
                     <br />
@@ -231,7 +231,7 @@ export const tabContent = `
 		</div>
 		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
-			<div class="chart-wrapper" style="background-color: #b3d2ce;">
+			<div class="content-wrapper">
 				<div class="adjustUnitContainer">
 					<label for="unit-num-select-chart" aria-label="Adjust Unit">Adjust Unit</label>
                     <br />
@@ -251,7 +251,7 @@ export const tabContent = `
 			<!-- end chart wrapper -->
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
-			<div class="table-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper">
 				<div class="adjustUnitContainer">
 					<label for="unit-num-select-table" aria-label="Adjust Unit">Adjust Unit</label>
                     <br />
@@ -259,10 +259,7 @@ export const tabContent = `
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
 				</div>
-				<div id="nchs-table-container">
-					<div id="table-title" class="title"></div>
-				</div>
-				<div class="scrolling-table-container">
+				<div id="nchs-table-container" class="scrolling-table-container">
 					<table id="nchs-table" class="expanded-data-table"></table>
 				</div>
 				<br />

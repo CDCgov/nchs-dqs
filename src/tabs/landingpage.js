@@ -776,7 +776,6 @@ export class LandingPage {
 	}
 
 	renderDataTable() {
-		// DATATABLE FUNCTION
 		const tableData = this.flattenedFilteredData;
 		let tableId = "nchs-table";
 		let cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error"];
