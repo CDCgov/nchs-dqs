@@ -22,7 +22,7 @@ export class LandingPage {
 		this.startYear = "1988"; // first year of the first period
 		this.endPeriod = "2013-2016";
 		this.endYear = "2013"; // first year of the last period
-		this.footnoteMap = {};
+		this.footnoteMap = null;
 		this.showBarChart = 0;
 		this.topoJson = null;
 		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
@@ -42,18 +42,22 @@ export class LandingPage {
 		const filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			const group = nhisGroups[f.group];
+			let group = nhisGroups[f.group];
+			if (group instanceof Map) {
+				group = group.get(f.group_byid);
+			}
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 				const percent =
-					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" ? f.percentage : null;
+					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
+						? f.percentage
+						: null;
 				returnData.push({
 					estimate: percent,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
 					flag: null,
-					footnote_id_list: "",
-					footnote_list: null,
+					footnote_id_list: f.footnote_id_list,
 					indicator: f.outcome_or_indicator,
 					panel: group.subtopic,
 					panel_num: group.subtopicId,
@@ -422,31 +426,38 @@ export class LandingPage {
 		Promise.all([
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
+			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, mapData] = data;
+				let [socrataData, footNotes, nhisFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
-				// build footnote map - but this needs to be done on EVERY data change
-				this.footnoteMap = {};
-				let i = null;
-				for (i = 0; footNotes.length > i; i += 1) {
-					this.footnoteMap[footNotes[i].fn_id] = footNotes[i].fn_text;
+				let allFootNotes = DataCache.Footnotes;
+				if (!allFootNotes) {
+					allFootNotes = [...footNotes, ...nhisFootnotes];
+					DataCache.Footnotes = allFootNotes;
+				}
+
+				if (!this.footnoteMap) {
+					this.footnoteMap = {};
+					let i = null;
+					for (i = 0; i < allFootNotes.length; i++) {
+						const text = allFootNotes[i]?.fn_text;
+						const id = allFootNotes[i].fn_id;
+						this.footnoteMap[id] = text;
+					}
 				}
 
 				// create a year_pt col from time period
-				this.socrataData = socrataData
-					// ONLY FOR US MAP - dont filter out "- - -"
-					// No need this data to draw as gray  -> .filter((d) => d.flag !== "- - -") // remove undefined data
-					.map((d) => ({
-						...d,
-						estimate: parseFloat(d.estimate),
-						year_pt: functions.getYear(d.year),
-						dontDraw: false,
-						assignedLegendColor: "#FFFFFF",
-					}));
+				this.socrataData = socrataData.map((d) => ({
+					...d,
+					estimate: parseFloat(d.estimate),
+					year_pt: functions.getYear(d.year),
+					dontDraw: false,
+					assignedLegendColor: "#FFFFFF",
+				}));
 
 				// for line chart and bar chart, REMOVE the undefined data entirely
 				if (!this.config.hasMap) {
