@@ -87,11 +87,7 @@ const modalTopics = [
 	},
 	{
 		id: "filterInterview",
-		text: "Health Interview Survey",
-	},
-	{
-		id: "filterNHIS",
-		text: "NHIS",
+		text: "National Health Interview Survey",
 	},
 ];
 const topicsHtml = () => {

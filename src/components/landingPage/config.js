@@ -1,7 +1,7 @@
 import { modal, allFilters } from "./modal";
 import { nhisHash, nhisTopics } from "./nhis";
 
-const nhisFilters = ["NHIS", "Interview", allFilters.filter((a) => a !== "Children" && a !== "Infants")];
+const nhisFilters = ["Interview", allFilters.filter((a) => a !== "Children" && a !== "Infants")];
 
 export const tabContent = `
 	${modal}
