@@ -789,7 +789,7 @@ export class LandingPage {
 	renderDataTable() {
 		const tableData = this.flattenedFilteredData;
 		let tableId = "nchs-table";
-		let cols = ["Subtopic", "Characteristic", "Group", "Year", "Age", "Estimate", "Standard Error"];
+		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
 		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
 
 		if (this.config.hasCI) {

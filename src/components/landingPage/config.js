@@ -104,9 +104,9 @@ export const tabContent = `
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText">
-					<label for="subtopic" class="preSelText" aria-label="Refine to a Subtopic">Refine to a</label>
-					<div class="mainSelText">Subtopic</div>
+				<div class="col-10 homeSelectorText" aria-label="refine by characteristic." tabindex="0">
+					<label for="subtopic" class="preSelText">Refine by</label>
+					<div class="mainSelText">Classification</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
@@ -120,10 +120,10 @@ export const tabContent = `
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText">
-					<label for="characteristic" class="preSelText" aria-label="View Data by Characteristic">View Data by</label>
+				<div class="col-10 homeSelectorText" aria-label="view data by group." tabindex="0">
+					<label for="characteristic" class="preSelText">View Data by</label>
 					<div class="mainSelText">
-						Characteristic
+						Group
 						<!--<span>
 							<span class="fa-stack clearAllFilters" style="display: none">
 								<i class="fa fa-filter fa-stack-1x"></i>
