@@ -209,63 +209,73 @@ export const nhisGroups = {
 		subtopic: "Socio-economic status",
 		subtopicId: 2,
 	},
-	Private: {
-		characteristic: "Health insurance coverage 65+",
-		characteristicId: 8,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
+	Private: new Map([
+		[
+			"20",
+			{
+				characteristic: "Health insurance coverage 65+",
+				characteristicId: 9,
+				subtopic: "Socio-economic status",
+				subtopicId: 2,
+			},
+		],
+		[
+			"19",
+			{
+				characteristic: "Health insurance coverage under 65",
+				characteristicId: 8,
+				subtopic: "Socio-economic status",
+				subtopicId: 2,
+			},
+		],
+	]),
 	"Medicare and Medicaid": {
 		characteristic: "Health insurance coverage 65+",
-		characteristicId: 8,
+		characteristicId: 9,
 		subtopic: "Socio-economic status",
 		subtopicId: 2,
 	},
 	"Medicare Advantage": {
 		characteristic: "Health insurance coverage 65+",
-		characteristicId: 8,
+		characteristicId: 9,
 		subtopic: "Socio-economic status",
 		subtopicId: 2,
 	},
 	"Medicare only (no Advantage)": {
 		characteristic: "Health insurance coverage 65+",
+		characteristicId: 9,
+		subtopic: "Socio-economic status",
+		subtopicId: 2,
+	},
+	"Other coverage": new Map([
+		[
+			"20",
+			{
+				characteristic: "Health insurance coverage 65+",
+				characteristicId: 9,
+				subtopic: "Socio-economic status",
+				subtopicId: 2,
+			},
+		],
+		[
+			"19",
+			{
+				characteristic: "Health insurance coverage under 65",
+				characteristicId: 8,
+				subtopic: "Socio-economic status",
+				subtopicId: 2,
+			},
+		],
+	]),
+	"Medicaid or other public": {
+		characteristic: "Health insurance coverage under 65",
 		characteristicId: 8,
 		subtopic: "Socio-economic status",
 		subtopicId: 2,
 	},
-	"Other coverage": {
-		characteristic: "Health insurance coverage 65+",
+	Uninsured: {
+		characteristic: "Health insurance coverage under 65",
 		characteristicId: 8,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
-	"Private-U65": {
-		characteristic: "Health insurance coverage under 65",
-		characteristicId: 9,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
-	"Medicare and Medicaid-U65": {
-		characteristic: "Health insurance coverage under 65",
-		characteristicId: 9,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
-	"Medicare Advantage-U65": {
-		characteristic: "Health insurance coverage under 65",
-		characteristicId: 9,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
-	"Medicare only (no Advantage)-U65": {
-		characteristic: "Health insurance coverage under 65",
-		characteristicId: 9,
-		subtopic: "Socio-economic status",
-		subtopicId: 2,
-	},
-	"Other coverage-U65": {
-		characteristic: "Health insurance coverage under 65",
-		characteristicId: 9,
 		subtopic: "Socio-economic status",
 		subtopicId: 2,
 	},
@@ -492,11 +502,11 @@ export const nhisHash = {
 			value: "7",
 		},
 		{
-			hash: "health-insurance-coverage-65+",
+			hash: "health-insurance-coverage-under-65",
 			value: "8",
 		},
 		{
-			hash: "health-insurance-coverage-under-65",
+			hash: "health-insurance-coverage-65+",
 			value: "9",
 		},
 		{
@@ -558,6 +568,12 @@ export const nhisHash = {
 
 export const nhisTopics = [
 	{ id: "angina-pectoris", text: "Angina/angina pectoris" },
+	{ id: "any-difficulty-communicating", text: "Any difficulty communicating" },
+	{ id: "any-difficulty-hearing", text: "Any difficulty hearing" },
+	{ id: "any-difficulty-remembering-or-concentrating", text: "Any difficulty remembering or concentrating" },
+	{ id: "any-difficulty-seeing", text: "Any difficulty seeing" },
+	{ id: "any-difficulty-walking-or-climbing-steps", text: "Any difficulty walking or climbing steps" },
+	{ id: "any-difficulty-with-self-care", text: "Any difficulty with self care" },
 	{ id: "any-skin-cancer", text: "Any skin cancer" },
 	{ id: "any-type-of-cancer", text: "Any type of cancer" },
 	{ id: "arthritis-diagnosis", text: "Arthritis diagnosis" },
@@ -584,12 +600,6 @@ export const nhisTopics = [
 		id: "did-not-take-medication-as-prescribed-to-save-money",
 		text: "Did not take medication as prescribed to save money",
 	},
-	{ id: "difficulty-communicating", text: "Difficulty communicating" },
-	{ id: "difficulty-hearing", text: "Difficulty hearing" },
-	{ id: "difficulty-remembering-or-concentrating", text: "Difficulty remembering or concentrating" },
-	{ id: "difficulty-seeing", text: "Difficulty seeing" },
-	{ id: "difficulty-walking-or-climbing-steps", text: "Difficulty walking or climbing steps" },
-	{ id: "difficulty-with-self-care", text: "Difficulty with self care" },
 	{ id: "disability-status-(composite)", text: "Disability status (composite)" },
 	{ id: "doctor-visit", text: "Doctor visit" },
 	{ id: "ever-received-a-pneumococcal-vaccination", text: "Ever received a pneumococcal vaccination" },
