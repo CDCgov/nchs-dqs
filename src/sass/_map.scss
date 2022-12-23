@@ -66,3 +66,12 @@ fieldset {
 		z-index: 1;
 	}
 }
+
+#us-map-time-slider {
+	display: flex !important;
+	justify-content: center !important;
+	svg {
+		flex-basis: 80%;
+		overflow-clip-margin: content-box;
+	}
+}
