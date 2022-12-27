@@ -177,6 +177,7 @@ export class LandingPage {
 			} else {
 				stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
 				classified = functions.binData(stateData, this.classifyType);
+				stateData = classified.classifiedData;
 			}
 
 			const mapVizId = "us-map";
