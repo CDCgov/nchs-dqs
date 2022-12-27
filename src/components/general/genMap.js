@@ -54,7 +54,7 @@ export class GenMap {
 
 		// set up axes
 		const xAxis = d3.axisBottom(xScale).tickSize(5);
-		const svg = viz.append("svg").attr("height", svgHeight).attr("width", svgWidth).attr("id", svgId);
+		const svg = viz.append("svg").attr("viewBox", [0, 0, svgWidth, svgHeight]).attr("id", svgId);
 
 		svg.append("g")
 			.attr("class", "axis bottom")
@@ -269,13 +269,7 @@ export class GenMap {
 		const mapHeight = width * mapHeightRatio;
 		const svgHeight = mapHeight + territoriesHeight * 2;
 
-		const svg = d3
-			.select(`#${this.mapVizId}`)
-			.append("svg")
-			.attr("height", svgHeight)
-			.attr("width", width)
-			.attr("id", svgId)
-			.attr("display", "inline-block");
+		const svg = d3.select(`#${this.mapVizId}`).append("svg").attr("id", svgId).attr("display", "inline-block");
 
 		svg.append("defs")
 			.append("pattern")
@@ -410,13 +404,11 @@ export class GenMap {
 
 		const path = d3.geoPath().projection(projection);
 
-		// const usMap = svg.append("g").attr("width", width).attr("height", mapHeight);
-		const usMap = svg.append("g").attr("viewbox", [0, 0, width, mapHeight]);
+		svg.attr("viewBox", [0, 0, width, svgHeight]);
 
 		console.log("all states data:", states);
 
-		usMap
-			.append("g")
+		svg.append("g")
 			.attr("id", "states")
 			.selectAll("path")
 			.data(states.features)
