@@ -1,3 +1,4 @@
+import { ClassifyData } from "../../utils/ClassifyDataNT";
 import { HtmlTooltip } from "../general/htmlTooltip";
 
 // this is the function that cleans up Socrata data
@@ -248,4 +249,9 @@ export const updateTopicDropdownList = () => {
 			$("#topic").val(firstFiltered).trigger("change");
 		}
 	} else resetTopicDropdownList();
+};
+
+export const binData = (data, type) => {
+	const bins = type === 1 ? 4 : 5;
+	return ClassifyData(data, "estimate", bins, type);
 };

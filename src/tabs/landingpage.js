@@ -32,6 +32,7 @@ export class LandingPage {
 		this.config = null;
 		this.activeTabNumber = 1; // the chart tab number, 0 indexed
 		this.genChart = null;
+		this.allMapData = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -166,12 +167,22 @@ export class LandingPage {
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
 			const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-			stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
-			this.flattenedFilteredData = stateData;
-			// this.currentTimePeriodIndex = document.getElementById("#year-start-select")?.selectedIndex ?? 0;
+
+			let classified;
+			if (true) {
+				classified = functions.binData(this.allMapData, this.classifyType);
+				stateData = classified.classifiedData.filter(
+					(d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10)
+				);
+			} else {
+				stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
+				classified = functions.binData(stateData, this.classifyType);
+			}
+
 			const mapVizId = "us-map";
 			let map = new GenMap({
-				mapData: stateData, // misCdata[3].Jurisdiction2,
+				mapData: stateData,
+				mLegendData: classified.legend,
 				vizId: mapVizId,
 				classifyType: this.classifyType,
 				startYear: parseInt(this.startYear, 10),
@@ -246,6 +257,7 @@ export class LandingPage {
 		}
 
 		selectedSubtopicData.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
+		this.allMapData = [...selectedSubtopicData];
 
 		if (this.showBarChart) {
 			const allDataGroups = [...new Set(selectedSubtopicData.map((d) => d.stub_label))];
