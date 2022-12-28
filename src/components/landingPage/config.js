@@ -260,10 +260,8 @@ export const tabContent = `
 					<select name="unit-num-select-table-box" id="unit-num-select-table" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
-				</div>
-				<div id="nchs-table-container" class="scrolling-table-container">
-					<table id="nchs-table" class="expanded-data-table"></table>
-				</div>
+				</div>				
+				<div class="expanded-data-table"></div>
 				<br />
 			</div>
 			<!-- end chart wrapper -->

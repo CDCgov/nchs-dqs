@@ -820,92 +820,25 @@ export class LandingPage {
 				item !== "date"
 		);
 
-		/* Table element manipulation and rendering */
-		let tableContainer = document.getElementById(`${tableId}-container`);
-		tableContainer.setAttribute("aria-label", `${this.config.chartTitle} table`);
-		tableContainer.setAttribute("aria-label", `${this.config.chartTitle} table`);
-		let table = d3.select(`#${tableId}`);
-		table.select("thead").remove();
-		table.select("tbody").remove();
-		let thead = table.append("thead");
+		$(".expanded-data-table").empty().html(`
+			<table id="nchs-table" class="table table-bordered table-striped">
+				<thead><tr></tr></thead>
+				<tbody></tbody>
+			</table>`);
 
-		thead
-			.append("tr")
-			.selectAll("th")
-			.data(cols)
-			.enter()
-			.append("th")
-			.attr("scope", "col")
-			.attr("tabindex", "0")
-			.attr("id", (col, i) => `${keys[i]}-th`)
-			.html((col, i) => {
-				// group the <th> content so that the last word of the th is wrapped in a span with the sort icon
-				// so that the sort icon can be in a <span> with css of white-space: nowrap
-				const words = col.split(" ");
-				// console.log(`Words: ${words}`);
-				const lastWord = words.splice(-1);
-				// console.log(`Last word: ${lastWord}`);
-				// console.log(`Words: ${words}`);
-				let header = "<span>";
-				if (words.length) {
-					words.forEach((w) => (header += `${w} `));
-					header += "</span>";
-				}
-				header += `<span class="sortIconNoWrap">${lastWord} <i id="${keys[i]}-icon" class="sort icon"></i></span>`;
-				return header;
-			});
+		const header = `#${tableId} > thead > tr`;
+		$(header).empty();
+		cols.forEach((c) => $(header).append(`<th>${c}</th>`));
 
-		let tbody = table.append("tbody");
-		let row = tbody.selectAll("tr").data(tableData);
-
-		row.enter()
-			.append("tr")
-			.selectAll("td")
-			.data((row) => {
-				return keys.map((column) => {
-					return {
-						column,
-						value: row[column],
-					};
-				});
-			})
-			.enter()
-			.append("td")
-			.attr("tabindex", "0")
-			.text(function (d, i) {
-				if (d.value == null) return "N/A";
-				return typeof i === "number" ? d.value : d.value; //.toLocaleString() <- this makes year have comma in it
-				// so I removed it - could further reduce this return code
-			})
-			.each(function (column, index, i) {
-				let columnIndex = index;
-				let columnHeader = cols[columnIndex];
-				let firstColumnVal = i[0].innerText;
-				if (columnIndex === 0) {
-					if (column.value === "N/A") {
-						this.setAttribute("aria-label", `${columnHeader} Not Available`);
-					} else {
-						this.setAttribute("aria-label", `${columnHeader} ${column.value}`);
-					}
-				} else if (column.value === null) {
-					this.setAttribute("aria-label", `${firstColumnVal} ${columnHeader} Not Available`);
-				} else {
-					this.setAttribute("aria-label", `${firstColumnVal} ${columnHeader} ${column.value}`);
-				}
-			});
-
-		$(`#${tableId}`).tablesort();
-		$("thead  .date-sort").data("sortBy", (th, td) => {
-			return new Date(td[0].textContent);
+		const body = `#${tableId} > tbody`;
+		$(body).empty();
+		tableData.forEach((d) => {
+			const row = document.createElement("tr");
+			keys.forEach((c) => $(row).append(`<td>${d[c] ?? "N/A"}</td>`));
+			$(body).append(row);
 		});
 
-		$("thead th.number-sort").data("sortBy", (th, td) => {
-			const cellValue = td.text();
-			if (cellValue === "N/A") {
-				return 1;
-			}
-			return -1 * parseFloat(cellValue.replace(/,/g, ""));
-		});
+		$("#nchs-table").DataTable();
 	}
 
 	exportCSV() {
