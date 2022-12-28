@@ -204,17 +204,13 @@ export const tabContent = `
 			<li><a href="#table-tab"><i class="fas fa-table fa-fw me-2"></i> Table</a></li>
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="adjustUnitContainer">
+			<div class="content-wrapper map">
+				<div class="adjustUnitContainer map">
 					<label for="unit-num-select-map" aria-label="Adjust Unit">Adjust Unit</label>
                     <br />
 					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
-				</div>				
-				<div class="adjustUnitContainer" id="staticBinningContainer">
-					<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">Static Binning</label>
-					<input id="staticTimePeriodsCheckbox" type="checkbox" checked />
 				</div>				
 				<fieldset class="breaksContainer">
 					<div class="btnToggle">
@@ -222,6 +218,10 @@ export const tabContent = `
 						<label role="button" for="classNBreaks">Natural Breaks</label>
 						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
 						<label role="button" for="classQuartiles">Quartiles</label>
+					</div>
+					<div id="staticBinningContainer">
+						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">Static Binning</label>
+						<input id="staticTimePeriodsCheckbox" type="checkbox" checked />
 					</div>
 				</fieldset>			
 				<div id="us-map-container">
