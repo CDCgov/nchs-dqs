@@ -261,10 +261,10 @@ export class GenMap {
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 50 * overallScale;
 
-		let mapWidthRatio = 0.7;
-		if (fullSvgWidth <= 1050) mapWidthRatio = 1;
+		// let mapWidthRatio = 0.6;
+		// if (fullSvgWidth <= 1050) mapWidthRatio = 1;
 
-		const width = mapWidthRatio * fullSvgWidth;
+		const width = fullSvgWidth;
 		const mapHeightRatio = 0.5;
 		const mapHeight = width * mapHeightRatio;
 		const svgHeight = mapHeight + territoriesHeight * 2;
