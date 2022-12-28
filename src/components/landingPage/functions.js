@@ -24,20 +24,25 @@ export const addHtmlTooltips = () => {
 		body: "Reset all selections except for Topic selection.",
 		containerId: "resetInfoContainer",
 	});
+	resetInfoTooltip.render();
 
 	const editFiltersTooltip = new HtmlTooltip({
 		body: "Advanced filters to limit options in dropdown lists",
 		containerId: "dropdownSelectorGroup",
 	});
+	editFiltersTooltip.render();
 
 	const removeFiltersTooltip = new HtmlTooltip({
 		body: "Clear advanced filters selections",
 		containerId: "dropdownSelectorGroup",
 	});
-
-	resetInfoTooltip.render();
-	editFiltersTooltip.render();
 	removeFiltersTooltip.render();
+
+	const staticBinningTooltip = new HtmlTooltip({
+		body: "Freeze data bin ranges for all time periods for ease of comparison",
+		containerId: "staticBinningContainer",
+	});
+	staticBinningTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
@@ -52,6 +57,10 @@ export const addHtmlTooltips = () => {
 	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
 	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
 	$(".clearFiltersIcons").mouseleave((e) => removeFiltersTooltip.mouseout(e));
+
+	$("#staticBinningLabel").mouseover((e) => staticBinningTooltip.mouseover(e));
+	$("#staticBinningLabel").mousemove((e) => staticBinningTooltip.mousemove(e));
+	$("#staticBinningLabel").mouseleave((e) => staticBinningTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);

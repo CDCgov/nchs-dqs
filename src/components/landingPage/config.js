@@ -211,7 +211,11 @@ export const tabContent = `
 					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
-				</div>
+				</div>				
+				<div class="adjustUnitContainer" id="staticBinningContainer">
+					<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">Static Binning</label>
+					<input id="staticTimePeriodsCheckbox" type="checkbox" checked />
+				</div>				
 				<fieldset class="breaksContainer">
 					<div class="btnToggle">
 						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />

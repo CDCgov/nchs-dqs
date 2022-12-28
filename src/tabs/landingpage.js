@@ -142,6 +142,13 @@ export class LandingPage {
 		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
 	}
 
+	mapBinningChanged() {
+		this.mapData = null;
+		this.resetTimePeriods();
+		this.currentTimePeriodIndex = 0;
+		this.renderMap();
+	}
+
 	renderMap() {
 		let subtopicText = $("#subtopic option:selected").text();
 		this.chartSubTitle = "Subtopic: " + subtopicText;
@@ -167,10 +174,10 @@ export class LandingPage {
 			let stateData = this.getFlattenedFilteredData();
 			// but need to narrow it to the selected time period
 			const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-
 			let classified;
-			if (true) {
-				classified = functions.binData(this.allMapData, this.classifyType);
+			this.mapData = this.mapData ?? this.allMapData;
+			if ($("#staticTimePeriodsCheckbox").is(":checked")) {
+				classified = functions.binData(this.mapData, this.classifyType);
 				stateData = classified.classifiedData.filter(
 					(d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10)
 				);
@@ -393,7 +400,10 @@ export class LandingPage {
 			$("#startYearContainer").removeClass("offset-3");
 			$("#endYearContainer").show();
 			this.showBarChart = false;
+			this.mapData = null;
+			this.currentTimePeriodIndex = 0;
 		}
+
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 		if (this.selections) this.config.subtopicId = parseInt(this.selections.subTopic, 10);
@@ -641,6 +651,9 @@ export class LandingPage {
 	}
 
 	updateSubtopic(subtopicId) {
+		this.mapData = null;
+		this.currentTimePeriodIndex = 0;
+		this.resetTimePeriods();
 		this.config.subtopicId = parseInt(subtopicId, 10);
 		console.log("new subtopic num: ", this.config.subtopicId);
 		this.setCharacteristic();

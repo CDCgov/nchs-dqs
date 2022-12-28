@@ -32,6 +32,8 @@ export const MainEvents = {
 			appState.ACTIVE_TAB.updateCharacteristic(stubNum);
 		});
 
+		$("#staticTimePeriodsCheckbox").on("change", () => appState.ACTIVE_TAB.mapBinningChanged());
+
 		$(document)
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
