@@ -52,7 +52,7 @@ export const MainEvents = {
 				};
 				appState.ACTIVE_TAB.animating = true;
 				moveNext();
-				animationInterval = setInterval(() => moveNext(), 2000);
+				animationInterval = setInterval(() => moveNext(), 1000);
 			});
 
 		$(document)
