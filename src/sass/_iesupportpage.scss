@@ -43,7 +43,6 @@ h2.warning-message {
 			margin-bottom: 0;
 		}
 	}
-
 }
 
 .input-container {
@@ -55,13 +54,12 @@ h2.warning-message {
 	& #url-link {
 		width: 40vw;
 	}
-	& button.theme-cyan.ui {
+	& button.theme-cyan {
 		background-color: #007c91 !important;
 		border-color: #007c91 !important;
 		color: #fff !important;
 		max-width: 450px !important;
-		box-shadow: 0 0 0 1px transparent inset,
-			0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+		box-shadow: 0 0 0 1px transparent inset, 0 0 0 0 rgba(34, 36, 38, 0.15) inset;
 		border-radius: 0px;
 		font-style: normal;
 		font-size: 16px !important;

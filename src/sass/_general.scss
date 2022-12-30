@@ -104,47 +104,67 @@ path.sliderHandles:active {
 	}
 }
 
-.modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	z-index: 1; /* Sit on top */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	overflow: auto; /* Enable scroll if needed */
-	background-color: rgb(0, 0, 0); /* Fallback color */
-	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-.modal-content {
-	background-color: #fefefe;
-	margin: 15% auto; /* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 95%; /* Could be more or less, depending on screen size */
-}
-
-.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-	color: black;
-	text-decoration: none;
-	cursor: pointer;
-}
-
 .genDropdown {
 	margin-bottom: 5px;
 	@include mobile-breakpoint {
 		width: 100% !important;
 		padding: 0 6px;
 		margin: 3px 0 !important;
+	}
+}
+
+.genLoader {
+	display: none;
+	position: absolute;
+	top: 0 !important;
+	left: 0 !important;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	vertical-align: middle;
+	padding: 1em;
+	background-color: rgba(85, 85, 85, 0.6);
+	opacity: 0;
+	line-height: 1;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	-webkit-animation-duration: 0.5s;
+	animation-duration: 0.5s;
+	-webkit-transition: background-color 0.5s linear;
+	transition: background-color 0.5s linear;
+	transition-property: background-color;
+	transition-duration: 0.5s;
+	transition-timing-function: linear;
+	transition-delay: 0s;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	will-change: opacity;
+	z-index: 1000;
+
+	&.active {
+		display: flex;
+		opacity: 1;
+	}
+
+	> * {
+		color: rgb(68, 68, 68);
+	}
+
+	div {
+		margin-top: 10px;
+		font-size: 0.5em;
 	}
 }
 

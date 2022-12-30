@@ -228,7 +228,7 @@ export class LandingPage {
 		} else this.renderChart();
 		this.renderDataTable();
 		hashTab.writeHashToUrl(this.dataTopic, this.config.subtopicId, this.characteristicId);
-		$(".dimmer").removeClass("active");
+		$(".genLoader").removeClass("active");
 	};
 
 	getFlattenedFilteredData() {
@@ -382,7 +382,7 @@ export class LandingPage {
 	};
 
 	updateTopic(dataTopic, topicChange = true) {
-		$(".dimmer").addClass("active");
+		$(".genLoader").addClass("active");
 
 		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
 		if (topicChange) {

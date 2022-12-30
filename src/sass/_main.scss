@@ -60,6 +60,23 @@ a {
 .homeSelectorGroup {
 	border: 1px solid lightgray;
 	padding-top: 0.8vw;
+	border-bottom: 0;
+}
+
+.homeSelectorGroup + .homeSelectorGroup {
+	border-left: 0;
+}
+
+.leftBorderMediumView {
+	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		border-left: 1px solid lightgray !important;
+	}
+}
+
+.leftBorderSmallView {
+	@media screen and (max-width: $tablet-min-width) {
+		border-left: 1px solid lightgray !important;
+	}
 }
 
 .homeSelectorText {
@@ -322,10 +339,6 @@ button.disabled {
 	@media screen and (max-width: $mobile-max-width-2) {
 		font-size: 0.7em;
 	}
-}
-
-.ui.dimmer {
-	background-color: rgba(85, 85, 85, 0.4) !important;
 }
 
 #loading {

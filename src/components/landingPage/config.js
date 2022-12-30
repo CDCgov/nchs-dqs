@@ -32,7 +32,7 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown"></div>			
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -46,7 +46,7 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div id="classificationDropdown" class="genDropdown"></div>
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -60,7 +60,7 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div id="groupDropdown" class="genDropdown"></div>
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -104,8 +104,9 @@ export const tabContent = `
 
 	<!-- Tabs navs -->
 	<div id="tabs">
-		<div class="ui inverted dimmer">
-			<div class="ui text loader">Loading</div>
+		<div class="fa-3x genLoader active">
+			<i class="fas fa-spinner fa-pulse"></i>
+			<div>LOADING</div>
 		</div>
 		<ul>
 			<li id="mapTab-li"><a href="#map-tab"><i class="fas fa-map fa-fw me-2"></i> Map</a></li>
@@ -181,15 +182,15 @@ export const tabContent = `
 
 	<div class="dwnl-img-container margin-spacer" style="display: flex; justify-content: space-between; text-align: center">
 		<span>
-			<a id="cdcDataGovButton" class="theme-cyan ui btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">
+			<a id="cdcDataGovButton" class="theme-cyan btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">
 				View Data on data.cdc.gov <i class="fas fa-download" aria-hidden="true"></i>
 			</a>
 		</span>
 		<span>
-			<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn" style="margin-right: 20px">
+			<button tabindex="0" id="dwn-chart-img" class="theme-cyan btn" style="margin-right: 20px">
 				Download Image <i class="fas fa-image" aria-hidden="true"></i>
 			</button>
-			<button id="btnTableExport" class="theme-cyan ui btn" tabindex="0" aria-label="Download Data">
+			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">
 				Download Data <i class="fas fa-download" aria-hidden="true"></i>
 			</button>
 		</span>
