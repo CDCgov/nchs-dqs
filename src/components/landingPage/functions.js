@@ -221,7 +221,7 @@ export const linkify = (t) => {
 	return a.join("");
 };
 
-export const resetTopicDropdownList = () => $("#topic > option").each((i, el) => $(el).show());
+export const resetTopicDropdownList = () => $("#topicDropdown-select .genDropdownOption").each((i, el) => $(el).show());
 
 export const updateTopicDropdownList = () => {
 	const selectedFilters = $(".filterCheckbox:checked")
@@ -231,21 +231,29 @@ export const updateTopicDropdownList = () => {
 	let needToChangeSelected = false;
 	if (selectedFilters.length) {
 		let firstFiltered;
-		const currentSelected = $("#topic option:selected").val();
-		$("#topic > option").each((i, el) => {
-			const availableFilters = $(el).data("filters").split(",");
+		const currentSelected = $("#topicDropdown-select .genOptionSelected").data("val");
+		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
+			const availableFilters = $(el).data("filter").split(",");
+			const value = $(el).data("val");
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
-				if (!firstFiltered) firstFiltered = el.value;
+				if (!firstFiltered) firstFiltered = value;
 				$(el).show();
 			} else {
 				$(el).hide();
-				if (el.value === currentSelected) {
+				if (value === currentSelected) {
 					needToChangeSelected = true;
+					$(el).removeClass("genOptionSelected");
 				}
 			}
 		});
 		if (needToChangeSelected) {
-			$("#topic").val(firstFiltered).trigger("change");
+			$("#topicDropdown .genDropdownOption").each((i, el) => {
+				if ($(el).css("display") === "block") {
+					$(el).addClass("genOptionSelected").trigger("click");
+					$("#topicDropdown-select").trigger("click");
+					return false;
+				}
+			});
 		}
 	} else resetTopicDropdownList();
 };

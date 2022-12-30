@@ -43,7 +43,6 @@ export const downLoadMap2 = () => {
 	}
 
 	setTimeout(() => {
-		console.log(mapImageContainer);
 		html2canvas(mapImageContainer, {
 			onclone: (clone) => {
 				let titleChart = clone.getElementById("chart-title").textContent;
