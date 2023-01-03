@@ -311,10 +311,12 @@ export class GenDropdown {
 				}
 			});
 		}
-		if (matchIndex === undefined)
+		if (matchIndex === undefined) {
 			$(`#${this.props.containerId}-select > a`).html(
 				`<span style="font-weight: bold;">${this.searchText}</span>`
 			);
+			$(`#${this.props.containerId}-select`).focus();
+		}
 	};
 
 	#hideFirst = () => {
