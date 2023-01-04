@@ -133,10 +133,11 @@ export class LandingPage {
 					case 0:
 						this.updateCharacteristic(1, false);
 						this.groupDropdown.value("1");
-						this.groupDropdown.disableValues(["0"]);
+						this.groupDropdown.disableDropdown();
 						this.renderMap();
 						break;
 					case 1:
+						this.groupDropdown.enableDropdown();
 						this.renderChart();
 						this.groupDropdown.enableValues("all");
 						break;
@@ -578,9 +579,7 @@ export class LandingPage {
 		}
 
 		if (options.length === 1) {
-			const value = this.classificationDropdown.value();
-			this.classificationDropdown.disableValues([value.toString()]);
-			this.classificationDropdown.value("", false); // this removes the active highlighting from the first dropdown item
+			this.classificationDropdown.disableDropdown();
 		}
 	}
 
@@ -612,11 +611,7 @@ export class LandingPage {
 			selectedValue: this.selections?.characteristic,
 		});
 		this.groupDropdown.render();
-
-		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.groupDropdown.value("1");
-			this.groupDropdown.disableValues(["0"]);
-		}
+		this.characteristicId = this.groupDropdown.value();
 	}
 
 	setVerticalUnitAxisSelect() {

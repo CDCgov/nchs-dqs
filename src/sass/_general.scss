@@ -185,6 +185,10 @@ div.genDropdownSelected {
 	border: 1px solid #ced4da;
 	border-radius: 0.25rem;
 
+	&.disabled {
+		color: rgb(150, 150, 150) !important;
+	}
+
 	> a {
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;

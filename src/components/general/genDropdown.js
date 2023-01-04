@@ -90,6 +90,7 @@ export class GenDropdown {
 		this.dropdownSection = `#${providedProps.containerId} .genDropdownOptions`;
 		this.listItems = `#${providedProps.containerId} .genDropdownOption`;
 		this.selectedOption = `#${providedProps.containerId} .genOptionSelected`;
+		this.disabled = false;
 	}
 
 	// ///////////////////////////////////////////// //
@@ -135,10 +136,12 @@ export class GenDropdown {
 			.off("click", `#${this.props.containerId} > a`)
 			.on("click", `#${this.props.containerId}-select > a`, () => $(`#${this.props.containerId}-select`).focus())
 			.on("click", `#${this.props.containerId}-select`, (e) => {
+				if (this.disabled) return;
 				e.stopPropagation();
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
+				if (this.disabled) return;
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (key === "Enter" || (key === " " && !open)) {
@@ -155,6 +158,7 @@ export class GenDropdown {
 				}
 			})
 			.on("keydown", `#${this.props.containerId}`, (e) => {
+				if (this.disabled) return;
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (key === "Backspace" && open) {
@@ -218,6 +222,16 @@ export class GenDropdown {
 					this.#handleSelectionMade();
 				}
 			});
+	};
+
+	disableDropdown = () => {
+		this.disabled = true;
+		$(`#${this.props.containerId} .genDropdownSelected`).addClass("disabled");
+	};
+
+	enableDropdown = () => {
+		this.disabled = false;
+		$(`#${this.props.containerId} .genDropdownSelected`).removeClass("disabled");
 	};
 
 	// Takes an array of string containing dropdown values to add the class "disabled" to
