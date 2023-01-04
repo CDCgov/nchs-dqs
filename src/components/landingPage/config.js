@@ -13,7 +13,7 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="topic" class="preSelText" aria-label="Select a Topic">Select a</label>
+					<label id="topicDropdown-label" for="topicDropdown-select" class="preSelText">Select a</label>
 					<div class="mainSelText">
 						Topic
 						<span>
@@ -37,8 +37,8 @@ export const tabContent = `
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText" aria-label="refine by characteristic." tabindex="0">
-					<label for="subtopic" class="preSelText">Refine by</label>
+				<div class="col-10 homeSelectorText">
+					<label id="classificationDropdown-label" for="classificationDropdown-select" class="preSelText">Refine by</label>
 					<div class="mainSelText">Classification</div>
 				</div>
 			</div>
@@ -51,8 +51,8 @@ export const tabContent = `
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText" aria-label="view data by group." tabindex="0">
-					<label for="characteristic" class="preSelText">View Data by</label>
+				<div class="col-10 homeSelectorText">
+					<label id="groupDropdown-label" for="groupDropdown-select" class="preSelText">View Data by</label>
 					<div class="mainSelText">Group</div>
 				</div>
 			</div>
@@ -80,10 +80,10 @@ export const tabContent = `
 			</div>
 			<div class="row timePeriodContainer">
 				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="startYearContainer-select" id="year-start-label">Start Period</label>
+					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
 				</div>
 				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="endYearContainer-select" class="label-style" id="year-end-label">End Period</label>					
+					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
 		</div>

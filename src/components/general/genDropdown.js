@@ -1,31 +1,68 @@
-/* *************************************************************************************
-  Author: Lincoln Bollschweiler
-  Email: rlv1@cdc.org
-  Date: Oct 2022
+/* ***************************************************************************************************************************************************************************
+	Author: Lincoln Bollschweiler
+	Email: rlv1@cdc.org
+	Date: Oct 2022
 
-  This component requires the following html to be in place in your template
+	WARNING: This is used on multiple tabs. For a new implementation of the genDropdown, changes are required in the clickHandlerLookup
+	object (ONLY). If you need to make other changes, or have any questions, please reach out to Lincoln via Teams or at the email
+	address provided above to liaise/consult.
 
-   <div id="[your choice of id, passed in with constructor as 'containerId']"></div>
+	REQUIRED html:
+		<div id="[your containerId]" class="genDropdown"></div>
 
-   DESCRIPTION FOR PROVIDED
-	props {
-		tabName: "you will have to add it to the tabSelectionHandlerLookup", REQUIRED
-		chartContainerId: "this is used to handle slider domain change registration", NOT REQUIRED
-		containerId "matching div in you html config where the dropdown gets rendered", REQUIRED
-		options: [ REQUIRED
+	OPTIONAL html (includes a label above the dropdown):
+		<div id="[your containerId]" class="genDropdown">
+			<label id="[your containerId]-label" for=[your containerId]-select">[Some Label]</label>
+		</div>
+		NOTE: <label> can be placed outside of dropdown container as well. As long as it has the id="" and for="",
+		as described above, it will get the correct aria-label read back by screen-reader software.
+		
+
+	CREATING A NEW DROPDOWN INSTANCE:
+		this.myDropdown = new GenDropdown({
+			containerId: [REQUIRED][your containerId, as described above, in your html],
+			chartContainerId: [OPTIONAL][id of a chart that has a date slider tied to dropdown changes],
+			ariaLabel: [REQUIRED][text describing what the dropdown changes],
+			options: [REQUIRED][array of objects with properties describing the text and value of dropdown options],
+			text: [OPTIONAL][property that describes the text of the dropdown options ... leave blank if property is "text"],
+			value: [OPTIONAL][property that describes the value of the dropdown options ... leave blank if property is "value"],
+			selectedValue: [OPTIONAL][the value of default selection ... leaving blanks assigns 'selected' to the first option],
+			firstOptObj: [OPTIONAL object][if used, the first option has a lighter font, indicating a selection has not yet been made; or was later deselected]
 			{
-				text: "what is displayed", REQUIRED
-				value: text or number which is applied "<option value='HERE' />",REQUIRED				
+				text: [REQUIRED][what to display in first option when no selection has yet been made],
+				returnValue: [REQUIRED][value of the first option],
+				returnText: [OPTIONAL][text that the dropdown option changes to after it has been selected ... if omitted, text does not change]
 			}
-		],
-		selectedValue: "the 'value' of default selection",
-		firstOptObj, // what to show in dropdown before a selection is made which disappears after selecting a dropdown item UNLESS it has a returnValue
-   }
+		});
+		this.myDropdown.render();
 
-   WARNING: This is used on multiple tabs. If you need to make changes and have any questions, please reach out to Lincoln
-   via Teams or at the email address provided above to liaise/consult.
+		If you don't need to use any public methods (as described below) you can simply instantiate like this: new GenDropdown({params}).render();
 
- ************************************************************************************* */
+	EVENT HANDLER [REQUIRED] ... ADD IT TO THE clickHandlerLookup{} OBJECT:
+		Your ACTIVE_TAB needs a function or function-pass-through describing what to do when a dropdown option is changed.
+		Add a handle from genDropdown.js to your ACTIVE_TAB like this:
+		[your containerId]: (value) => appState.ACTIVE_TAB.[function name found on your ACTIVE_TAB](value),
+
+
+	PUBLIC METHODS:
+		this.myDropdown.render(); wipes out any existing dropdown and creates a new one with provided props passed into the constructor
+		
+		this.myDropdown.value(); returns currently selected value
+		this.myDropdown.value([some-value]); dropdown is updated to [some-value] and triggers change event
+		this.myDropdown.value([some-value], false); dropdown is updated to [some-value] but does NOT trigger change event
+
+		this.myDropdown.text(); return text of currently selected value
+		
+		this.myDropdown.disableDropdown(); disables events from dropdown and shows currently selected value in lighter font
+		
+		this.myDropdown.enableDropdown(); enables events for dropdown and shows currently selected normal font
+
+		this.myDropdown.disableValues([array of values]); disables values; shows each value in the dropdown with lighter font, unselectable
+		
+		this.myDropdown.enableValues([array of values]); enables values; shows each value in the dropdown with normal font, selectable
+		this.myDropdown.enableValues("all"); enables all values
+
+ *************************************************************************************************************************************************************************** */
 import { getCurrentSliderDomain } from "./genTrendsSlider";
 
 const populate = (props) => {
@@ -292,6 +329,7 @@ export class GenDropdown {
 		const html = $(this.selectedOptionEl).find("a").html();
 		$(`#${this.props.containerId}-select > a`).html(html);
 		$(this.selectedOptionEl).addClass("genOptionSelected");
+		$(`#${this.props.containerId}-select`).focus();
 	};
 
 	#search = (c) => {

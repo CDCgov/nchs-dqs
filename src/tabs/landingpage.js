@@ -567,7 +567,7 @@ export class LandingPage {
 
 		this.classificationDropdown = new GenDropdown({
 			containerId: "classificationDropdown",
-			ariaLabel: "select a characteristic",
+			ariaLabel: "refine by classification",
 			options,
 			selectedValue: this.selections?.subTopic,
 		});
@@ -606,7 +606,7 @@ export class LandingPage {
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
-			ariaLabel: "select a group",
+			ariaLabel: "view data by group",
 			options,
 			selectedValue: this.selections?.characteristic,
 		});
