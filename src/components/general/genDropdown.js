@@ -122,7 +122,6 @@ export class GenDropdown {
 		this.updateSliderDomain = () =>
 			appState.ACTIVE_TAB.setCurrentSliderDomain(getCurrentSliderDomain(`#${providedProps.chartContainerId}`));
 		this.searchText = "";
-		this.selectedEl = null;
 		this.selectedOptionEl = null;
 		this.dropdownSection = `#${providedProps.containerId} .genDropdownOptions`;
 		this.listItems = `#${providedProps.containerId} .genDropdownOption`;
@@ -169,8 +168,9 @@ export class GenDropdown {
 
 		// EVENT HANDLERS
 		$(document)
-			.off("click keypress keydown", `#${this.props.containerId}-select`)
-			.off("click", `#${this.props.containerId} > a`)
+			.off("click", `#${this.props.containerId}-select`)
+			.off("click", `#${this.props.containerId}-select > a`)
+			.off("keypress keydown", `#${this.props.containerId}`)
 			.on("click", `#${this.props.containerId}-select > a`, () => $(`#${this.props.containerId}-select`).focus())
 			.on("click", `#${this.props.containerId}-select`, (e) => {
 				if (this.disabled) return;

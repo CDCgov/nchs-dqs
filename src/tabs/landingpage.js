@@ -302,8 +302,6 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by subtopic, unit, and characteristic
 	getFilteredYearData() {
-		this.config.subtopicId = this.classificationDropdown.value();
-
 		const filteredData = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.characteristicId
 		);
@@ -572,11 +570,7 @@ export class LandingPage {
 			selectedValue: this.selections?.subTopic,
 		});
 		this.classificationDropdown.render();
-
-		if (!this.selections) {
-			const firstVal = this.classificationDropdown.value();
-			this.config.subtopicId = firstVal;
-		}
+		this.config.subtopicId = this.classificationDropdown.value();
 
 		if (options.length === 1) {
 			this.classificationDropdown.disableDropdown();
