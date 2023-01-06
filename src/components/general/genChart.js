@@ -1699,7 +1699,7 @@ export class GenChart {
 					.attr("text-anchor", "middle")
 					.style("fill", "black")
 					.style("font-size", "14px")
-					.text("Select up to 10 groups");
+					.text("To change selections, first deselect others, for up to 10.");
 
 				legendHeight += 20;
 			}
