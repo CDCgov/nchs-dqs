@@ -566,7 +566,7 @@ export class GenChart {
 
 			let bars;
 			if (p.usesBars) {
-				const hatchSize = yScaleLeft.bandwidth() * 0.02;
+				const hatchSize = 10; // 8px of color, 2px of whitespace, rotated 30 degrees, as defined below.
 				p.barColors.forEach((c, i) => {
 					svg.append("defs")
 						.append("pattern")
