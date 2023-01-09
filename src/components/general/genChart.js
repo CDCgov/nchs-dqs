@@ -419,23 +419,14 @@ export class GenChart {
 			.attr("viewBox", [0, 0, svgWidth, svgHeight]);
 
 		if (!p.data.length) {
-			if (p.usesBars) {
-				svg.append("text")
-					.text(p.noDataMessage)
-					.attr("text-anchor", "middle")
-					.attr("font-size", axisTitleFontSize)
-					.attr("x", -chartCenterX - 20)
-					.attr("y", chartCenterY)
-					.attr("transform", `rotate(-${p.chartRotationPercent})`);
-			} else {
-				// line chart
-				svg.append("text")
-					.text(p.noDataMessage)
-					.attr("text-anchor", "middle")
-					.attr("font-size", axisTitleFontSize)
-					.attr("x", chartCenterX)
-					.attr("y", chartCenterY);
-			}
+			// line chart
+			svg.append("text")
+				.text(p.noDataMessage)
+				.attr("text-anchor", "middle")
+				.attr("font-size", axisTitleFontSize)
+				.attr("x", chartCenterX)
+				.attr("y", p.usesBars ? chartCenterY - 20 : chartCenterY);
+
 			// note if we have no data, genChart still tries to build the bar chart legend
 		} else {
 			// append the axes
