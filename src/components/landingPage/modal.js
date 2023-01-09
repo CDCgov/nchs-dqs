@@ -105,22 +105,24 @@ const topicsHtml = () => {
 };
 
 export const modal = `
-	<div id="filtersModal" class="ui modal">
-		<div class="header" style="text-align: center">
-			Advanced Filter for Topic
-	        <div class="actions" style="float: right">
-				<div class="ui cancel" aria-label="Close" aria-hidden="true"><i class="fa fa-times"></i></div>
-			</div>
+	<div class="modal fade" id="filtersModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header text-center d-block">
+	                <h4 id="modalLabel">Advanced Filter for Topic</h4>
+	                <button type="button" class="close" data-bs-dismiss="modal" aria-label="close"><span aria-hidden="true">&times;</span></button>
+	            </div>
+	            <div class="modal-body">
+					<div class="row">
+						${topicsHtml()}
+					</div>
+	            </div>
+				<div class="modal-footer text-center d-block">
+					<button id="clearCurrentFilters" class="btn-sm btn-danger">Clear Selections</button>
+					<button id="submitFilters" class="btn-sm btn-primary">Submit Filters</button>
+				</div>
+	        </div>
 	    </div>
-	    <div class="description padding-descrp">
-			<div class="row">
-				${topicsHtml()}
-			</div>
-	    </div>
-		<div id="filterModalFooter">
-			<button id="clearCurrentFilters" class="btn-sm btn-danger">Clear Selections</button>
-			<button id="submitFilters" class="btn-sm btn-primary">Submit Filters</button>
-		</div>
 	</div>
 `;
 

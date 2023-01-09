@@ -46,8 +46,6 @@ export class GenChart {
 
 		// Limit the bar-chart draw data to max of 10 lines or bars based on activeLegendList
 		if (p.usesBars) {
-			console.log("##DRAW BAR CHART###");
-			// console.log(DataCache.activeLegendList);
 			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
 			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
 			let barsAdded = 0;
@@ -76,8 +74,6 @@ export class GenChart {
 				...d,
 				dontDraw: !characteristicGroups.includes(d.stub_label),
 			}));
-
-			// console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		}
 
 		function mouseover(data) {
@@ -1469,7 +1465,6 @@ export class GenChart {
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {
-					// console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
 					legendData[i] = {
 						stroke: d.values[0].assignedLegendColor,
 						dashArrayScale: p.left1DashArrayScale,
