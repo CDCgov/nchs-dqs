@@ -693,7 +693,10 @@ export class LandingPage {
 	}
 
 	resetTimePeriods() {
-		const allYearsArray = [...new Set(this.getFilteredYearData().map((d) => d.year))];
+		const allYearsArray = [...new Set(this.getFilteredYearData().map((d) => d.year))].sort((a, b) =>
+			a.localeCompare(b)
+		);
+
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
 
 		this.initStartPeriodDropdown(this.allYearsOptions);
