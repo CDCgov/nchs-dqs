@@ -533,7 +533,7 @@ export class GenChart {
 						.style("text-anchor", "middle")
 						.attr("transform", "rotate(-90)")
 						.attr("id", "leftAxisTitle")
-						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
+						.attr("x", -chartCenterY) // up and down bc rotated  - (TT)  removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
 						.attr("font-weight", 600)
