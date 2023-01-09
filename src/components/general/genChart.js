@@ -432,7 +432,7 @@ export class GenChart {
 					.attr("y", chartCenterY)
 					.attr("transform", `rotate(-${p.chartRotationPercent})`);
 			} else {
-				// if line chart then dont rotate
+				// line chart
 				svg.append("text")
 					.text(p.noDataMessage)
 					.attr("text-anchor", "middle")
@@ -566,6 +566,21 @@ export class GenChart {
 
 			let bars;
 			if (p.usesBars) {
+				const hatchSize = 10; // 8px of color, 2px of whitespace, rotated 30 degrees, as defined below.
+				p.barColors.forEach((c, i) => {
+					svg.append("defs")
+						.append("pattern")
+						.attr("id", `diagonalHatch-${i}`)
+						.attr("patternUnits", "userSpaceOnUse")
+						.attr("width", hatchSize * 0.8)
+						.attr("height", hatchSize)
+						.attr("patternTransform", "rotate(30)")
+						.append("rect")
+						.attr("width", hatchSize / 2)
+						.attr("height", hatchSize)
+						.attr("fill", c);
+				});
+
 				bars = svg
 					.append("g")
 					.attr("class", "bars")
@@ -874,7 +889,7 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return p.barColors[i];
+											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -901,7 +916,7 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return p.barColors[i];
+											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
