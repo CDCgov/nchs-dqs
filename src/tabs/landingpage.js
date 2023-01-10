@@ -156,45 +156,28 @@ export class LandingPage {
 		this.chartSubTitle = "Subtopic: " + subtopicText;
 		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
 
-		// NOTE: the map tab DIV MUST be visible so that the vizId is rendered
-		$("#us-map-container").show();
+		// Get filtered data
+		let stateData = this.getFlattenedFilteredData();
+		// but need to narrow it to the selected time period
+		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
+		stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
 
-		// If TOTAL is selected we CANNOT DRAW THE MAP, so show a message
-		if (this.characteristicId === 0) {
-			// need to SHOW A MESSAGE
-			$("#us-map-message").html("Please select a Characteristic that supports US Map data.");
-			$("#us-map-legend").hide();
-			$("#us-map-time-slider").hide();
-		} else {
-			$("#us-map-message").html("");
-			// get rid of the big margins
-			$("#us-map-message").hide();
-			$("#us-map-legend").show();
-			$("#us-map-time-slider").show();
-
-			// Get filtered data
-			let stateData = this.getFlattenedFilteredData();
-			// but need to narrow it to the selected time period
-			const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-			stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
-
-			this.flattenedFilteredData = stateData;
-			const mapVizId = "us-map";
-			let map = new GenMap({
-				mapData: stateData,
-				topoJson: this.topoJson,
-				vizId: mapVizId,
-				classifyType: this.classifyType,
-				startYear: parseInt(this.startYear, 10),
-				allDates,
-				currentTimePeriodIndex: this.currentTimePeriodIndex,
-				animating: this.animating,
-				genTooltipConstructor: functions.getMapTooltipConstructor(this.genChart.props.genTooltipConstructor),
-			});
-			map.render();
-			$("#us-map-time-slider").empty();
-			map.renderTimeSeriesAxisSelector();
-		}
+		this.flattenedFilteredData = stateData;
+		const mapVizId = "us-map";
+		let map = new GenMap({
+			mapData: stateData,
+			topoJson: this.topoJson,
+			vizId: mapVizId,
+			classifyType: this.classifyType,
+			startYear: parseInt(this.startYear, 10),
+			allDates,
+			currentTimePeriodIndex: this.currentTimePeriodIndex,
+			animating: this.animating,
+			genTooltipConstructor: functions.getMapTooltipConstructor(this.genChart.props.genTooltipConstructor),
+		});
+		map.render();
+		$("#us-map-time-slider").empty();
+		map.renderTimeSeriesAxisSelector();
 	}
 
 	renderChart() {
@@ -579,7 +562,9 @@ export class LandingPage {
 
 	initGroupDropdown() {
 		let allCharacteristicIds;
-		this.flattenedFilteredData = this.flattenedFilteredData ?? this.getFlattenedFilteredData();
+		if (this.config.hasSubtopic || !this.flattenedFilteredData)
+			this.flattenedFilteredData = this.getFlattenedFilteredData();
+
 		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			nhisTopics.map((t) => t.id)
 		);
@@ -651,8 +636,14 @@ export class LandingPage {
 		this.events.stopAnimation();
 		this.config.subtopicId = parseInt(subtopicId, 10);
 		this.initGroupDropdown();
-		DataCache.activeLegendList = [];
+		if (this.config.hasMap && this.activeTabNumber === 0) {
+			this.updateCharacteristic(1, false);
+			this.groupDropdown.value("1");
+			this.groupDropdown.disableDropdown();
+			return;
+		}
 
+		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();
 	}
 
