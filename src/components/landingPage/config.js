@@ -289,7 +289,7 @@ export const topicLookup = {
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
 		socrataId: "2g8y-scu5",
-		private: "0",
+		private: "1",
 		chartTitle: "Medicaid coverage among persons under age 65",
 		filters:
 			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
