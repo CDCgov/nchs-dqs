@@ -1,5 +1,3 @@
-import { topicLookup } from "./config";
-
 const modalTopics = [
 	{
 		id: "filterAdults",

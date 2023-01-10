@@ -224,10 +224,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Obesity among Children",
 		filters: "AsianPacific,Black,Children,Hispanic,Poverty,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
@@ -235,10 +235,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Obesity among Adults",
 		filters: "Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	suicide: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/u9f7-4q6s",
@@ -246,10 +246,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
 		filters: "Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
-		hasSubtopic: false,
+		hasClassification: false,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
@@ -257,10 +257,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments",
 		filters: "Adults,Older,Children,Male,Female",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
-		hasSubtopic: false,
+		hasClassification: false,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
@@ -268,11 +268,11 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Infant Mortality",
 		filters: "Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	birthweight: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
@@ -280,11 +280,11 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Low birthweight live births",
 		filters: "Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
@@ -293,10 +293,10 @@ export const topicLookup = {
 		chartTitle: "Medicaid coverage among persons under age 65",
 		filters:
 			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
-		subtopicId: "NA",
+		classificationId: "NA",
 		yAxisUnitId: 2,
 		hasCI: true,
-		hasSubtopic: false,
+		hasClassification: false,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/52ij-h8yw",
@@ -304,10 +304,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
 		filters: "Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"ambulatory-care": {
 		dataUrl: "https://data.cdc.gov/resource/tz8d-jy2e.json",
@@ -315,10 +315,10 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Ambulatory Care Visits",
 		filters: "Adults,Black,Children,Female,Male,Older,Region,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"access-care": {
 		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
@@ -327,10 +327,10 @@ export const topicLookup = {
 		chartTitle: "Access to Care",
 		filters:
 			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 };
 
@@ -341,36 +341,14 @@ nhisTopics.forEach((t) => {
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
-		subtopicId: 1,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	};
 });
 
-export const vizConfig = {
-	caseObesity: {
-		title: "Obesity in Children and Adolescents",
-		subtitle: "Total Cases",
-		ySelect: "estimate",
-		tooltipLabel: "New Cases per 100K",
-		yLabel: "Cases",
-		subnav: "newcasesper100ksubmission",
-		calloutBox: "This is the callout box data explanation",
-	},
-	deathRawCumulativeSubmission: {
-		title: "Cumulative deaths attributed to Covid-19, reported to CDC, in",
-		subtitle: "Cumulative deaths by number of days since 100 total deaths first recorded",
-		ySelect: "tot_death",
-		tooltipLabel: "Total Deaths",
-		yLabel: "Deaths",
-		subnav: "totaldeathssubmission",
-		calloutBox:
-			"This allows you to compare trends in the cumulative number of deaths for up to 6 states, territories, or HHS regions.",
-	},
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rules for creating a new hashLookup object
 // 1. top-level value must match the ID in the Topic dropdown's Options list
 // 2. hash can be any string closely related to the TEXT in Topic dropdown, with "-" replacing any spaces. Do not use "_" as this is reserved
@@ -378,16 +356,16 @@ export const vizConfig = {
 //    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
 //    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
 //    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
-// 3. "subtopicOptions" uses rules #1 and #2 like above, but for the Subtopic dropdown
-// 4. "characteristicOptions" uses rules #1 and #2 like above, but for the Characteristic dropdown
+// 3. "classificationOptions" uses rules #1 and #2 like above, but for the Classification dropdown
+// 4. "groupOptions" uses rules #1 and #2 like above, but for the Group dropdown
 //
 // For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
-// Once your new dataset successfully loads you can inspect the Subtopic and Characteristic dropdowns.
+// Once your new dataset successfully loads you can inspect the Classification and Group dropdowns.
 export const hashLookup = [
 	{
 		hash: "obesity-children",
 		value: "obesity-child",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -413,7 +391,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "2-19",
 				value: "1",
@@ -435,7 +413,7 @@ export const hashLookup = [
 	{
 		hash: "obesity-adults",
 		value: "obesity-adult",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -461,7 +439,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "BMI-from-18.5-to-24.9",
 				value: "1",
@@ -491,7 +469,7 @@ export const hashLookup = [
 	{
 		hash: "suicide-mortality",
 		value: "suicide",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -525,7 +503,7 @@ export const hashLookup = [
 				value: "7",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -539,7 +517,7 @@ export const hashLookup = [
 	{
 		hash: "injury-ed-visits",
 		value: "injury",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -565,7 +543,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "0",
@@ -575,7 +553,7 @@ export const hashLookup = [
 	{
 		hash: "infant-mortality",
 		value: "infant-mortality",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -585,7 +563,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -615,7 +593,7 @@ export const hashLookup = [
 	{
 		hash: "low-birthweight",
 		value: "birthweight",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -625,7 +603,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -655,7 +633,7 @@ export const hashLookup = [
 	{
 		hash: "medicaid-coverage-under-65",
 		value: "medicaidU65",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -697,7 +675,7 @@ export const hashLookup = [
 				value: "9",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -711,7 +689,7 @@ export const hashLookup = [
 	{
 		hash: "drug-overdose",
 		value: "drug-overdose",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -737,7 +715,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "all-drug-overdose-deaths",
 				value: "1",
@@ -767,7 +745,7 @@ export const hashLookup = [
 	{
 		hash: "ambulatory-care",
 		value: "ambulatory-care",
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "all-places",
 				value: "1",
@@ -785,7 +763,7 @@ export const hashLookup = [
 				value: "4",
 			},
 		],
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -815,7 +793,7 @@ export const hashLookup = [
 	{
 		hash: "access-care",
 		value: "access-care",
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "nonreceipt-medical-care",
 				value: "1",
@@ -829,7 +807,7 @@ export const hashLookup = [
 				value: "3",
 			},
 		],
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -896,7 +874,7 @@ nhisTopics
 		hashLookup.push({
 			hash: id,
 			value: id,
-			characteristicOptions: nhisHash.characteristicOptions,
-			subtopicOptions: nhisHash.subtopicOptions,
+			groupOptions: nhisHash.groupOptions,
+			classificationOptions: nhisHash.classificationOptions,
 		});
 	});

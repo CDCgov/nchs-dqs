@@ -18,7 +18,7 @@ export class LandingPage {
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
 		this.dataTopic = "obesity-child"; // default
-		this.characteristicId = 0;
+		this.groupId = 0;
 		this.startPeriod = "1988-1994";
 		this.startYear = "1988"; // first year of the first period
 		this.endPeriod = "2013-2016";
@@ -37,6 +37,7 @@ export class LandingPage {
 		this.events = null;
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
+		this.groupDropdown = null;
 		this.allYearsOptions = null;
 	}
 
@@ -65,17 +66,17 @@ export class LandingPage {
 					flag: null,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.outcome_or_indicator,
-					panel: group.subtopic,
-					panel_num: group.subtopicId,
+					panel: group.classification,
+					panel_num: group.classificationId,
 					se: null,
 					stub_label: f.group,
-					stub_name: group.characteristic,
-					stub_name_num: group.characteristicId,
+					stub_name: group.group,
+					stub_name_num: group.groupId,
 					unit: "Percent of population",
 					unit_num: 1,
 					year: f.year,
 					year_num: "",
-					age: group.characteristic.includes("Age Group") ? f.group : "N/A",
+					age: group.group.includes("Age Group") ? f.group : "N/A",
 				});
 			}
 		});
@@ -131,7 +132,7 @@ export class LandingPage {
 				this.activeTabNumber = parseInt(e.currentTarget.id.split("-")[2], 10) - 1;
 				switch (this.activeTabNumber) {
 					case 0:
-						this.updateCharacteristic(1, false);
+						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
 						this.renderMap();
@@ -152,15 +153,13 @@ export class LandingPage {
 	}
 
 	renderMap() {
-		let subtopicText = this.classificationDropdown.text();
-		this.chartSubTitle = "Subtopic: " + subtopicText;
-		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
+		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
 		// Get filtered data
 		let stateData = this.getFlattenedFilteredData();
 		// but need to narrow it to the selected time period
 		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-		stateData = stateData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.startYear, 10));
+		stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
 		this.flattenedFilteredData = stateData;
 		const mapVizId = "us-map";
@@ -184,7 +183,12 @@ export class LandingPage {
 		const flattenedData = this.getFlattenedFilteredData();
 		this.flattenedFilteredData = flattenedData;
 
-		this.chartConfig = functions.getAllChartProps(flattenedData, this.showBarChart, this.config);
+		this.chartConfig = functions.getAllChartProps(
+			flattenedData,
+			this.showBarChart,
+			this.config,
+			this.groupDropdown.text()
+		);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 
 		$(`#${this.chartConfig.vizId}`).empty();
@@ -192,18 +196,14 @@ export class LandingPage {
 		this.genChart.render();
 
 		// set the title - easier to do it all here based on selectors
-		let topic = this.topicDropdown.text();
-		let characteristic = $("#characteristic option:selected").text();
-		if (this.showBarChart) {
-			this.config.chartTitle = topic + " by " + characteristic + " in " + this.startPeriod;
-		} else {
-			this.config.chartTitle =
-				topic + " by " + characteristic + " from " + this.startPeriod + " to " + this.endPeriod;
-		}
+		const topic = this.topicDropdown.text();
+		const group = this.groupDropdown.text();
+
+		if (this.showBarChart) this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
+		else this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		let subtopicText = this.classificationDropdown.text();
-		this.chartSubTitle = "Subtopic: " + subtopicText;
-		$("#chart-subtitle").html(`<strong>${this.chartSubTitle}</strong>`);
+		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 	}
 
 	renderDataVisualizations = () => {
@@ -211,23 +211,22 @@ export class LandingPage {
 			this.renderMap();
 		} else this.renderChart();
 		this.renderDataTable();
-		hashTab.writeHashToUrl(this.dataTopic, this.config.subtopicId, this.characteristicId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 		$(".genLoader").removeClass("active");
 	};
 
 	getFlattenedFilteredData() {
-		let selectedSubtopicData = this.socrataData.filter(
+		let data = this.socrataData.filter(
 			(d) =>
 				d.unit_num == this.config.yAxisUnitId &&
-				d.stub_name_num == this.characteristicId &&
+				d.stub_name_num == this.groupId &&
 				parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10) &&
 				parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10)
 		);
 
-		if (this.config.hasSubtopic)
-			selectedSubtopicData = selectedSubtopicData.filter((d) => d.panel_num == this.config.subtopicId);
+		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
 
-		if (selectedSubtopicData[0]?.estimate_uci) {
+		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
 			$("#enable-CI-checkbox").prop("disabled", false);
 		} else {
@@ -236,20 +235,20 @@ export class LandingPage {
 			$("#enable-CI-checkbox").prop("checked", false);
 		}
 
-		selectedSubtopicData.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
+		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
 
 		if (this.showBarChart) {
-			const allDataGroups = [...new Set(selectedSubtopicData.map((d) => d.stub_label))];
+			const allDataGroups = [...new Set(data.map((d) => d.stub_label))];
 
 			// filter to just the start year
-			selectedSubtopicData = selectedSubtopicData.filter((d) => d.year_pt == this.startYear);
+			data = data.filter((d) => d.year_pt == this.startYear);
 
-			const current = selectedSubtopicData[0];
+			const current = data[0];
 
-			const filteredDataGroups = [...new Set(selectedSubtopicData.map((d) => d.stub_label))];
+			const filteredDataGroups = [...new Set(data.map((d) => d.stub_label))];
 			const excludedGroups = allDataGroups.filter((d) => !filteredDataGroups.includes(d));
 			excludedGroups.forEach((d) =>
-				selectedSubtopicData.push({
+				data.push({
 					panel: current.panel,
 					unit: current.unit,
 					stub_name: current.stub_name,
@@ -264,33 +263,33 @@ export class LandingPage {
 			);
 		} else {
 			// set up for line chart
-			selectedSubtopicData = selectedSubtopicData.map((d) => ({
+			data = data.map((d) => ({
 				...d,
 				subLine: d.stub_label,
 			}));
 		}
 
-		let allFootnoteIdsArray = selectedSubtopicData.map((d) => d.footnote_id_list);
+		let allFootnoteIdsArray = data.map((d) => d.footnote_id_list);
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
-			return [...selectedSubtopicData].map((d) => ({
+			return [...data].map((d) => ({
 				...d,
 				date: new Date(`${d.year}-01-01T00:00:00`),
 			}));
 
-		return [...selectedSubtopicData];
+		return [...data];
 	}
 
-	// Pull all the available years, filtering by subtopic, unit, and characteristic
+	// Pull all the available years, filtering by classification, unit, and group
 	getFilteredYearData() {
 		const filteredData = this.socrataData.filter(
-			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.characteristicId
+			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
 
-		return this.config.hasSubtopic
-			? filteredData.filter((d) => d.panel_num == this.config.subtopicId)
+		return this.config.hasClassification
+			? filteredData.filter((d) => d.panel_num == this.config.classificationId)
 			: filteredData;
 	}
 
@@ -373,9 +372,10 @@ export class LandingPage {
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 		}
+
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
-		if (this.selections) this.config.subtopicId = parseInt(this.selections.subTopic, 10);
+		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
@@ -383,8 +383,6 @@ export class LandingPage {
 
 		// clear the list of active legend items
 		DataCache.activeLegendList = [];
-
-		// make sure time periods are visible (hidden if on Map tab or on refresh)
 
 		if (this.selections?.viewSinglePeriod) {
 			$("#startYearContainer").addClass("offset-3");
@@ -396,8 +394,8 @@ export class LandingPage {
 		this.config.enableCI = false;
 		$("#enable-CI-checkbox").prop("checked", false);
 
-		if (this.selections) this.characteristicId = parseInt(this.selections.characteristic, 10);
-		else this.characteristicId = 0;
+		if (this.selections) this.groupId = parseInt(this.selections.group, 10);
+		else this.groupId = 0;
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
@@ -532,7 +530,7 @@ export class LandingPage {
 		});
 	}
 
-	// Subtopic
+	// Classification
 	initClassificationDropdown() {
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
@@ -550,10 +548,10 @@ export class LandingPage {
 			containerId: "classificationDropdown",
 			ariaLabel: "refine by classification",
 			options,
-			selectedValue: this.selections?.subTopic,
+			selectedValue: this.selections?.classification,
 		});
 		this.classificationDropdown.render();
-		this.config.subtopicId = this.classificationDropdown.value();
+		this.config.classificationId = this.classificationDropdown.value();
 
 		if (options.length === 1) {
 			this.classificationDropdown.disableDropdown();
@@ -561,24 +559,25 @@ export class LandingPage {
 	}
 
 	initGroupDropdown() {
-		let allCharacteristicIds;
-		if (this.config.hasSubtopic || !this.flattenedFilteredData)
+		if (this.config.hasClassification || !this.flattenedFilteredData)
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
 		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			nhisTopics.map((t) => t.id)
 		);
+
+		let allGroupIds;
 		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
-			allCharacteristicIds = this.socrataData.filter((d) => d.panel_num == this.config.subtopicId);
+			allGroupIds = this.socrataData.filter((d) => d.panel_num == this.config.classificationId);
 		} else {
-			allCharacteristicIds = this.socrataData;
+			allGroupIds = this.socrataData;
 		}
 
-		allCharacteristicIds = [...new Map(allCharacteristicIds.map((item) => [item.stub_name, item])).values()].sort(
+		allGroupIds = [...new Map(allGroupIds.map((item) => [item.stub_name, item])).values()].sort(
 			(a, b) => a.stub_name_num - b.stub_name_num
 		);
 
-		const options = allCharacteristicIds.map((d) => ({
+		const options = allGroupIds.map((d) => ({
 			text: d.stub_name,
 			value: d.stub_name_num,
 		}));
@@ -587,15 +586,15 @@ export class LandingPage {
 			containerId: "groupDropdown",
 			ariaLabel: "view data by group",
 			options,
-			selectedValue: this.selections?.characteristic,
+			selectedValue: this.selections?.group,
 		});
 		this.groupDropdown.render();
-		this.characteristicId = this.groupDropdown.value();
+		this.groupId = this.groupDropdown.value();
 	}
 
 	setVerticalUnitAxisSelect() {
 		let allUnitsArray = this.socrataData.filter(
-			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.characteristicId, 10)
+			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.groupId, 10)
 		);
 
 		// Creates an array of objects with unique "name" property values.
@@ -615,7 +614,7 @@ export class LandingPage {
 		let foundUnit = false;
 		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
 		allUnitsArray.forEach((y) => {
-			if (this.config.yAxisUnitId === parseInt(y.unit_num, 10)) {
+			if (this.config.yAxisUnitId == y.unit_num) {
 				$("#unit-num-select-map").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$("#unit-num-select-chart").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
 				$("#unit-num-select-table").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
@@ -626,18 +625,19 @@ export class LandingPage {
 				$("#unit-num-select-table").append(`<option value="${y.unit_num}">${y.unit}</option>`);
 			}
 		});
-		if (foundUnit === false) {
+		if (!foundUnit) {
 			// have to set to a valid unit num or data will error out
 			this.config.yAxisUnitId = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
 		}
 	}
 
-	updateSubtopic(subtopicId) {
+	updateClassification(classificationId) {
 		this.events.stopAnimation();
-		this.config.subtopicId = parseInt(subtopicId, 10);
+		this.config.classificationId = parseInt(classificationId, 10);
 		this.initGroupDropdown();
+
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateCharacteristic(1, false);
+			this.updateGroup(1, false);
 			this.groupDropdown.value("1");
 			this.groupDropdown.disableDropdown();
 			return;
@@ -647,9 +647,9 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateCharacteristic(characteristicId, updateTimePeriods = true) {
+	updateGroup(groupId, updateTimePeriods = true) {
 		this.events.stopAnimation();
-		this.characteristicId = characteristicId;
+		this.groupId = groupId;
 		this.setVerticalUnitAxisSelect();
 
 		if (updateTimePeriods) this.resetTimePeriods();
@@ -692,10 +692,6 @@ export class LandingPage {
 
 		this.initStartPeriodDropdown(this.allYearsOptions);
 		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
-
-		// and update labels and global variables to new values
-		$("#year-start-label").text("Start Period");
-		$("#year-end-label").text("End Period");
 	}
 
 	updateStartTimePeriodDropdown(value) {
@@ -724,10 +720,8 @@ export class LandingPage {
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
 		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
-			// enable the CI checkbox
 			$("#enable-CI-checkbox").prop("disabled", false);
 		} else {
-			// disable it
 			$("#enable-CI-checkbox").prop("disabled", true);
 			$("#enable-CI-checkbox").prop("checked", false);
 		}
@@ -737,9 +731,12 @@ export class LandingPage {
 
 	updateShowBarChart(value) {
 		this.showBarChart = value;
-		if (value === 0) this.resetTimePeriods();
+		if (value === 0) {
+			this.resetTimePeriods();
+			$("#startYearContainer-label").html("Start Period");
+		} else $("#startYearContainer-label").html("Period");
 		this.renderChart();
-		hashTab.writeHashToUrl(this.dataTopic, this.config.subtopicId, this.characteristicId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
 	updateEnableCI(value) {
@@ -749,11 +746,11 @@ export class LandingPage {
 
 	updateClassifyType(value) {
 		switch (value) {
-			case "natural":
-				this.classifyType = 2; // natural
-				break;
 			case "quartiles":
 				this.classifyType = 1; // standard
+				break;
+			case "natural":
+				this.classifyType = 2; // natural
 				break;
 			case "equal":
 				this.classifyType = 3; // not using right now
@@ -782,7 +779,7 @@ export class LandingPage {
 	resetSelections() {
 		functions.resetTopicDropdownList();
 		this.initClassificationDropdown();
-		this.characteristicId = 0;
+		this.groupId = 0;
 		this.initGroupDropdown();
 
 		// remove "View Single Period" if it is set
@@ -801,7 +798,7 @@ export class LandingPage {
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 1) this.renderChart();
 		else $("a[href='#chart-tab']").trigger("click");
-		hashTab.writeHashToUrl(this.dataTopic, this.config.subtopicId, this.characteristicId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
 	renderDataTable() {

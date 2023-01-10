@@ -90,7 +90,7 @@ export class GenChart {
 			genTooltip.mouseout();
 		}
 
-		// inserts line breaks where every : is in the Characteristic on the bar left axis
+		// inserts line breaks where every : is in the Group on the bar left axis
 		let longestLabelSegmentLength = 0;
 		let measured = false;
 		const maxLabelLength = 24;
