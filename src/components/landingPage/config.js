@@ -133,7 +133,6 @@ export const tabContent = `
 				<div id="us-map-container">
 					<div id="mapDownloadTitle"></div>
 					<div id="us-map" class="general-chart"></div>
-					<div id="us-map-message" class="chart-title"></div>
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
 					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
 				</div>
