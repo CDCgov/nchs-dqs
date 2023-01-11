@@ -107,8 +107,8 @@ const populate = (props) => {
 
 const clickHandlerLookup = {
 	topicDropdown: (value) => appState.ACTIVE_TAB.topicDropdownChange(value),
-	classificationDropdown: (value) => appState.ACTIVE_TAB.updateSubtopic(value),
-	groupDropdown: (value) => appState.ACTIVE_TAB.updateCharacteristic(value),
+	classificationDropdown: (value) => appState.ACTIVE_TAB.updateClassification(value),
+	groupDropdown: (value) => appState.ACTIVE_TAB.updateGroup(value),
 	startYearContainer: (value) => appState.ACTIVE_TAB.updateStartPeriod(value),
 	endYearContainer: (value) => appState.ACTIVE_TAB.updateEndPeriod(value),
 };

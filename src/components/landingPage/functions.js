@@ -75,7 +75,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 			datumType: "string",
 		},
 		panel: {
-			title: "Subtopic: ",
+			title: "Classification: ",
 			datumType: "string",
 		},
 		stub_name: {
@@ -131,12 +131,23 @@ export const getMapTooltipConstructor = (chartConstructor) => {
 	return constructor;
 };
 
-export const getAllChartProps = (data, showBarChart, config) => {
+export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 	const chartValueProperty = "estimate";
-	const xAxisTitle = $("#characteristic option:selected").text(); // X Axis Title is the "Characteristic" selected
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
 	const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
+	const colors = [
+		"#6A3D9A",
+		"#A35200",
+		"#E31A1C",
+		"#298023",
+		"#1B6CA1",
+		"#549CC9",
+		"#A880BC",
+		"#E67300",
+		"#FC5D5A",
+		"#62A02C",
+	];
 
 	return {
 		data,
@@ -152,35 +163,7 @@ export const getAllChartProps = (data, showBarChart, config) => {
 		usesBars: showBarChart,
 		usesHoverBars: showBarChart,
 		barLayout: showBarChart ? { horizontal: true, size: 60 } : { horizontal: false, size: null },
-		barColors: [
-			"#6a3d9a",
-			"#A35200",
-			"#e31a1c",
-			"#298023",
-			"#1B6CA1",
-			"#549CC9",
-			"#A880BC",
-			"#E67300",
-			"#FC5D5A",
-			"#62A02C",
-		],
-		// barColors: [
-		// 	"#6a3d9a",
-		// 	"#cab2d6",
-		// 	"#ff7f00",
-		// 	"#fdbf6f",
-		// 	"#e31a1c",
-		// 	"#fb9a99",
-		// 	"#33a02c",
-		// 	"#b2df8a",
-		// 	"#1f78b4",
-		// 	"#a6cee3",
-		// 	"#A6A6A6",
-		// 	"#fb9a99",
-		// 	"#e31a1c",
-		// 	"#cab2d6",
-		// 	"#a6cee3",
-		// ],
+		barColors: colors,
 		marginRightMin: 20,
 		axisLabelFontScale: showBarChart ? 0.5 : 1,
 		usesChartTitle: true,
@@ -195,35 +178,7 @@ export const getAllChartProps = (data, showBarChart, config) => {
 		formatXAxis: showBarChart ? "magnitude" : "string",
 		formatYAxisLeft: showBarChart ? "string" : "magnitude",
 		usesMultiLineLeftAxis: !showBarChart,
-		multiLineColors: [
-			"#6a3d9a",
-			"#A35200",
-			"#e31a1c",
-			"#298023",
-			"#1B6CA1",
-			"#549CC9",
-			"#A880BC",
-			"#E67300",
-			"#FC5D5A",
-			"#62A02C",
-		],
-		// multiLineColors: [
-		// 	"#88419d",
-		// 	"#1f78b4",
-		// 	"#b2df8a",
-		// 	"#33a02c",
-		// 	"#0b84a5",
-		// 	"#cc4c02",
-		// 	"#690207",
-		// 	"#e1ed3e",
-		// 	"#7c7e82",
-		// 	"#8dddd0",
-		// 	"#A6A6A6",
-		// 	"#fb9a99",
-		// 	"#e31a1c",
-		// 	"#cab2d6",
-		// 	"#a6cee3",
-		// ],
+		multiLineColors: colors,
 		multiLineLeftAxisKey: "subLine",
 		vizId,
 		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty, config.hasCI),
