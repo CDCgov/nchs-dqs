@@ -562,12 +562,12 @@ export class LandingPage {
 		if (this.config.hasClassification || !this.flattenedFilteredData)
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
+		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			nhisTopics.map((t) => t.id)
 		);
 
 		let allGroupIds;
-		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
+		if (topicsWhereGroupsVaryByClassification.includes(this.dataTopic)) {
 			allGroupIds = this.socrataData.filter((d) => d.panel_num == this.config.classificationId);
 		} else {
 			allGroupIds = this.socrataData;

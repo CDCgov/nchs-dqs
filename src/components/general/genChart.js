@@ -49,12 +49,12 @@ export class GenChart {
 			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
 			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
 			let barsAdded = 0;
-			let characteristicGroups = DataCache.activeLegendList.map((d) => d.stub_label);
-			p.data = allIncomingData.filter((d) => characteristicGroups.includes(d.stub_label));
+			let groups = DataCache.activeLegendList.map((d) => d.stub_label);
+			p.data = allIncomingData.filter((d) => groups.includes(d.stub_label));
 
 			barsAdded = p.data.length;
 			if (barsAdded < barsToDraw) {
-				const filteredIncoming = allIncomingData.filter((d) => !characteristicGroups.includes(d.stub_label));
+				const filteredIncoming = allIncomingData.filter((d) => !groups.includes(d.stub_label));
 				for (let i = 0; i < filteredIncoming.length; i++) {
 					if (barsAdded < barsToDraw) {
 						p.data.push(filteredIncoming[i]);
@@ -69,10 +69,10 @@ export class GenChart {
 			}));
 			DataCache.activeLegendList = p.data;
 
-			characteristicGroups = p.data.map((d) => d.stub_label);
+			groups = p.data.map((d) => d.stub_label);
 			allIncomingData = allIncomingData.map((d) => ({
 				...d,
-				dontDraw: !characteristicGroups.includes(d.stub_label),
+				dontDraw: !groups.includes(d.stub_label),
 			}));
 		}
 
