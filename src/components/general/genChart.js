@@ -46,8 +46,6 @@ export class GenChart {
 
 		// Limit the bar-chart draw data to max of 10 lines or bars based on activeLegendList
 		if (p.usesBars) {
-			console.log("##DRAW BAR CHART###");
-			// console.log(DataCache.activeLegendList);
 			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
 			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
 			let barsAdded = 0;
@@ -76,8 +74,6 @@ export class GenChart {
 				...d,
 				dontDraw: !characteristicGroups.includes(d.stub_label),
 			}));
-
-			// console.log("@@@@ SactiveLegendList:", DataCache.activeLegendList);
 		}
 
 		function mouseover(data) {
@@ -94,7 +90,7 @@ export class GenChart {
 			genTooltip.mouseout();
 		}
 
-		// inserts line breaks where every : is in the Characteristic on the bar left axis
+		// inserts line breaks where every : is in the Group on the bar left axis
 		let longestLabelSegmentLength = 0;
 		let measured = false;
 		const maxLabelLength = 24;
@@ -423,23 +419,14 @@ export class GenChart {
 			.attr("viewBox", [0, 0, svgWidth, svgHeight]);
 
 		if (!p.data.length) {
-			if (p.usesBars) {
-				svg.append("text")
-					.text(p.noDataMessage)
-					.attr("text-anchor", "middle")
-					.attr("font-size", axisTitleFontSize)
-					.attr("x", -chartCenterX - 20)
-					.attr("y", chartCenterY)
-					.attr("transform", `rotate(-${p.chartRotationPercent})`);
-			} else {
-				// if line chart then dont rotate
-				svg.append("text")
-					.text(p.noDataMessage)
-					.attr("text-anchor", "middle")
-					.attr("font-size", axisTitleFontSize)
-					.attr("x", chartCenterX)
-					.attr("y", chartCenterY);
-			}
+			// line chart
+			svg.append("text")
+				.text(p.noDataMessage)
+				.attr("text-anchor", "middle")
+				.attr("font-size", axisTitleFontSize)
+				.attr("x", chartCenterX)
+				.attr("y", p.usesBars ? chartCenterY - 20 : chartCenterY);
+
 			// note if we have no data, genChart still tries to build the bar chart legend
 		} else {
 			// append the axes
@@ -537,7 +524,7 @@ export class GenChart {
 						.style("text-anchor", "middle")
 						.attr("transform", "rotate(-90)")
 						.attr("id", "leftAxisTitle")
-						.attr("x", -chartCenterY) // up and down bc rotated  - (TT) removed the adjust value centered it
+						.attr("x", -chartCenterY) // up and down bc rotated  - (TT)  removed the adjust value centered it
 						.attr("y", 2 * (axisTitleSize / p.labelPaddingScale) + 2) // move in 2nd line
 						.attr("font-size", axisTitleFontSize)
 						.attr("font-weight", 600)
@@ -566,6 +553,21 @@ export class GenChart {
 
 			let bars;
 			if (p.usesBars) {
+				const hatchSize = 10; // 8px of color, 2px of whitespace, rotated 30 degrees, as defined below...
+				p.barColors.forEach((c, i) => {
+					svg.append("defs")
+						.append("pattern")
+						.attr("id", `diagonalHatch-${i}`)
+						.attr("patternUnits", "userSpaceOnUse")
+						.attr("width", hatchSize * 0.8)
+						.attr("height", hatchSize)
+						.attr("patternTransform", "rotate(30)")
+						.append("rect")
+						.attr("width", hatchSize / 2)
+						.attr("height", hatchSize)
+						.attr("fill", c);
+				});
+
 				bars = svg
 					.append("g")
 					.attr("class", "bars")
@@ -874,7 +876,7 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return p.barColors[i];
+											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -901,7 +903,7 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return p.barColors[i];
+											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -1454,7 +1456,6 @@ export class GenChart {
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
 				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {
-					// console.log("fullnestdata d,i,color:", d, i, d.values[0].assignedLegendColor);
 					legendData[i] = {
 						stroke: d.values[0].assignedLegendColor,
 						dashArrayScale: p.left1DashArrayScale,
