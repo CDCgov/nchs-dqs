@@ -1553,7 +1553,13 @@ export class GenChart {
 				legendTx = 0;
 			}
 
-			const legendTy = legendData.length > 10 ? svgHeight + 20 : svgHeight;
+			let legendTy = svgHeight;
+			if (legendData.length > 10) {
+				legendTy += 20;
+				if (svgWidth < 550) {
+					legendTy += 20;
+				}
+			}
 
 			legendData.forEach((d, i) => {
 				const legendId = d.text.replace(/ /g, "_");
@@ -1688,21 +1694,40 @@ export class GenChart {
 			}
 
 			let legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
-
+			let centerX = chartCenterX;
+			if (svgWidth < 700) centerX -= margin.left / 2;
 			if (legendData.length > 10) {
+				let text = "Chart allows up to 10 selections.";
+				if (svgWidth >= 550) text += " Deselect default options to change the chart.";
+				else legendTy -= 20;
+
 				svg.append("g")
 					.attr("transform", `translate(0, ${legendTy})`)
 					.append("text")
 					.attr("id", "selectTenTxt")
-					.attr("x", chartCenterX)
+					.attr("x", centerX)
 					.attr("y", -6)
 					.attr("data-html2canvas-ignore", "")
 					.attr("text-anchor", "middle")
 					.style("fill", "black")
 					.style("font-size", "14px")
-					.text("Chart allows up to 10 selections. Deselect default options to change the chart.");
+					.text(text);
 
 				legendHeight += 20;
+				if (svgWidth < 550) {
+					legendHeight += 20;
+					svg.append("g")
+						.attr("transform", `translate(0, ${legendTy + 20})`)
+						.append("text")
+						.attr("id", "selectTenTxt")
+						.attr("x", centerX)
+						.attr("y", -6)
+						.attr("data-html2canvas-ignore", "")
+						.attr("text-anchor", "middle")
+						.style("fill", "black")
+						.style("font-size", "14px")
+						.text("Deselect default options to change the chart.");
+				}
 			}
 
 			svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
