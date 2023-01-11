@@ -2,81 +2,53 @@ import { ExportEvents } from "./exportevents";
 import { downLoadGenChart, downLoadMap2 } from "../utils/downloadimg";
 import { resetTopicDropdownList, updateTopicDropdownList } from "../components/landingPage/functions";
 
-export const MainEvents = {
-	registerEvents() {
-		let animationInterval;
-		const stopAnimation = () => {
-			clearInterval(animationInterval);
-			$("#animatePlayIcon").css("fill", "black");
-			$(".animatePauseIcon").css("fill", "none");
-			appState.ACTIVE_TAB.animating = false;
-			$("#mapPlayButtonContainer").hide();
-		};
+export class MainEvents {
+	constructor(animationInterval) {
+		this.animationInterval = animationInterval;
+	}
 
-		$("#topic").on("change", (e) => {
-			stopAnimation();
-			let dataTopic = e.target.value;
-			appState.ACTIVE_TAB.selections = null;
-			appState.ACTIVE_TAB.updateTopic(dataTopic);
-		});
+	stopAnimation = () => {
+		clearInterval(this.animationInterval);
+		$("#animatePlayIcon").css("fill", "black");
+		$(".animatePauseIcon").css("fill", "none");
+		appState.ACTIVE_TAB.animating = false;
+		$("#mapPlayButtonContainer").hide();
+	};
 
-		$("#subtopic").on("change", (e) => {
-			stopAnimation();
-			let subtopicId = e.target.value;
-			appState.ACTIVE_TAB.updateSubtopic(subtopicId);
-		});
-
-		$("#characteristic").on("change", (e) => {
-			stopAnimation();
-			let stubNum = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateCharacteristic(stubNum);
-		});
-
+	registerEvents = () => {
 		$("#staticTimePeriodsCheckbox").on("change", () => appState.ACTIVE_TAB.mapBinningChanged());
 
 		$(document)
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
 				if (appState.ACTIVE_TAB.animating) {
-					stopAnimation();
+					this.stopAnimation();
 					return;
 				}
 
-				const allYears = document.getElementById("year-start-select").options;
+				const allYears = appState.ACTIVE_TAB.allYearsOptions;
 				let next = appState.ACTIVE_TAB.currentTimePeriodIndex;
 				const { length } = allYears;
 
 				const moveNext = () => {
 					next++;
 					if (next === length) next = 0;
-					appState.ACTIVE_TAB.currentTimePeriodIndex = next;
 					appState.ACTIVE_TAB.updateStartPeriod(allYears[next].value);
 				};
 				appState.ACTIVE_TAB.animating = true;
 				moveNext();
-				animationInterval = setInterval(() => moveNext(), 1000);
+				this.animationInterval = setInterval(() => moveNext(), 1000);
 			});
 
 		$(document)
 			.off("click", ".mapAnimateAxisPoint")
 			.on("click", ".mapAnimateAxisPoint", (e) => {
-				stopAnimation();
+				this.stopAnimation();
 				const indexClicked = $(e.target).data("index");
-				const allYears = document.getElementById("year-start-select").options;
-				appState.ACTIVE_TAB.currentTimePeriodIndex = indexClicked;
-				appState.ACTIVE_TAB.updateStartPeriod(allYears[indexClicked].value);
+				const { value } = appState.ACTIVE_TAB.allYearsOptions[indexClicked];
+				appState.ACTIVE_TAB.updateStartPeriod(value);
+				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 			});
-
-		$("#year-start-select").on("change", (e) => {
-			const yrStart = e.target.value;
-			appState.ACTIVE_TAB.updateStartPeriod(yrStart);
-			appState.ACTIVE_TAB.currentTimePeriodIndex = document.getElementById("year-start-select").selectedIndex;
-		});
-
-		$("#year-end-select").on("change", (e) => {
-			const yrEnd = e.target.value;
-			appState.ACTIVE_TAB.updateEndPeriod(yrEnd);
-		});
 
 		// on the map tab
 		$("#unit-num-select-map").on("change", (e) => {
@@ -97,7 +69,7 @@ export const MainEvents = {
 		});
 
 		$("#show-one-period-checkbox").on("change", (e) => {
-			stopAnimation();
+			this.stopAnimation();
 			if (e.target.checked) {
 				// hide the ending period select dropdown and reposition start year container
 				$("#startYearContainer").addClass("offset-3");
@@ -160,7 +132,7 @@ export const MainEvents = {
 		});
 
 		$(document).on("click", "a[href='#chart-tab'], a[href='#table-tab']", () => {
-			stopAnimation();
+			this.stopAnimation();
 			$(".timePeriodContainer").css("display", "flex");
 			$("#show-one-period-checkbox").prop("disabled", false);
 		});
@@ -203,5 +175,5 @@ export const MainEvents = {
 		});
 
 		ExportEvents.registerEvents();
-	},
-};
+	};
+}

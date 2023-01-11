@@ -67,11 +67,14 @@ fieldset {
 	}
 }
 
-#us-map-time-slider {
-	display: flex !important;
-	justify-content: center !important;
-	svg {
-		flex-basis: 80%;
-		overflow-clip-margin: content-box;
+@media screen and (min-width: $large-screen-min-width) {
+	#us-map-time-slider,
+	#us-map {
+		display: flex !important;
+		justify-content: center !important;
+		svg {
+			flex-basis: 80%;
+			overflow-clip-margin: content-box;
+		}
 	}
 }

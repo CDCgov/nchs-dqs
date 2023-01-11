@@ -172,22 +172,6 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
 			}
 		}
 
-		// // CREATE SMOOTH NUMBER TRANSITION ON LEGEND \\
-		// let newMinNum;
-		// for (let m in tempObj) {
-		//     if (tempObj[m]["c"] === 0) {
-		//         // Suppressed class
-		//         // console.log("suppressed class");
-		//     } else if (tempObj[m]["c"] === 1) {
-		//         // First class break. Set min to 0
-		//         tempObj[m]["min"] = 0;
-		//         newMinNum = (tempObj[m]["max"] + .1).toFixed(1);
-		//     } else {
-		//         tempObj[m]["min"] = newMinNum;
-		//         newMinNum = (tempObj[m]["max"] + .1).toFixed(1);
-		//     }
-		// }
-
 		for (let h in tempObj) {
 			tempArray.push(tempObj[h]);
 		}
@@ -300,18 +284,12 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
 				return Math.max(a, b);
 			});
 
-		//let nbreaks = classes.max(...classes);
-
 		let varianceArr = breaks.map(function (d) {
 			return d.variance;
 		});
-		//console.log("breaks", breaks);
-		//console.log("varianceArr", varianceArr);
 
 		let sumvar = getSum(varianceArr);
 		let psumvar = sumvar + 1;
-
-		//console.log(sumvar, psumvar);
 
 		let iteration = 1,
 			valArr;
