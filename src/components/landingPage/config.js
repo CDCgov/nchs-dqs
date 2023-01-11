@@ -1,19 +1,19 @@
 import { modal, allFilters } from "./modal";
 import { nhisHash, nhisTopics } from "./nhis";
 
-const nhisFilters = ["Interview", allFilters.filter((a) => a !== "Children" && a !== "Infants")];
+const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
 export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<div id="topicSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label for="topic" class="preSelText" aria-label="Select a Topic">Select a</label>
+					<label id="topicDropdown-label" for="topicDropdown-select" class="preSelText">Select a</label>
 					<div class="mainSelText">
 						Topic
 						<span>
@@ -30,120 +30,37 @@ export const tabContent = `
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div class="styled-select">
-				<select name="topic select" id="topic" form="select-view-options">
-					<option value="obesity-child" selected data-filters="AsianPacific,Black,Children,Hispanic,Poverty,White">Obesity among Children</option>
-					<option value="obesity-adult" data-filters="Adults,Asian,Black,Hispanic,Poverty,White,Male,Female">Obesity among Adults</option>
-					<option value="suicide" data-filters="Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female">Death Rates for Suicide</option>
-					<option value="injury" data-filters="Adults,Older,Children,Male,Female">Initial injury-related visits to hospital emergency departments</option>
-					<option value="infant-mortality" data-filters="Infants,Indian,AsianPacific,Black,Children,Hispanic,White">Infant Mortality</option>
-					<option value="birthweight" data-filters="Infants,AsianPacific,Indian,Black,Children,Hispanic,White">Low birthweight live births</option>
-					<option value="medicaidU65" data-filters="Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White">Medicaid coverage among persons under age 65</option>
-					<option value="drug-overdose" data-filters="Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White">Deaths from drug overdose</option>
-					<option value="ambulatory-care" data-filters="Adults,Black,Children,Female,Male,Older,Region,White">Ambulatory Care Visits</option>
-					<option value="access-care" data-filters="Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White">Access to Care</option>
-					<option value="angina-pectoris" data-filters="${nhisFilters}">Angina/angina pectoris</option>
-					<option value="any-difficulty-communicating" data-filters="${nhisFilters}">Any difficulty communicating</option>
-					<option value="any-difficulty-hearing" data-filters="${nhisFilters}">Any difficulty hearing</option>
-					<option value="any-difficulty-remembering-or-concentrating" data-filters="${nhisFilters}">Any difficulty remembering or concentrating</option>
-					<option value="any-difficulty-seeing" data-filters="${nhisFilters}">Any difficulty seeing</option>
-					<option value="any-difficulty-walking-or-climbing-steps" data-filters="${nhisFilters}">Any difficulty walking or climbing steps</option>
-					<option value="any-difficulty-with-self-care" data-filters="${nhisFilters}">Any difficulty with self care</option>
-					<option value="any-skin-cancer" data-filters="${nhisFilters}">Any skin cancer</option>
-					<option value="any-type-of-cancer" data-filters="${nhisFilters}">Any type of cancer</option>
-					<option value="arthritis-diagnosis" data-filters="${nhisFilters}">Arthritis diagnosis</option>
-					<option value="asthma-episode-attack" data-filters="${nhisFilters}">Asthma episode/attack</option>
-					<option value="blood-pressure-check" data-filters="${nhisFilters}">Blood pressure check</option>
-					<option value="breast-cancer" data-filters="${nhisFilters}">Breast cancer</option>
-					<option value="cervical-cancer" data-filters="${nhisFilters}">Cervical cancer</option>
-					<option value="COPD-emphysema-chronic-bronchitis" data-filters="${nhisFilters}">COPD, emphysema, chronic bronchitis</option>
-					<option value="coronary-heart-disease" data-filters="${nhisFilters}">Coronary Heart Disease</option>
-					<option value="counseled-by-a-mental-health-professional" data-filters="${nhisFilters}">Counseled by a mental health professional</option>
-					<option value="current-asthma" data-filters="${nhisFilters}">Current asthma</option>
-					<option value="current-cigarette-smoking" data-filters="${nhisFilters}">Current cigarette smoking</option>
-					<option value="current-electronic-cigarette-use" data-filters="${nhisFilters}">Current electronic cigarette use</option>
-					<option value="delayed-getting-medical-care-due-to-cost" data-filters="${nhisFilters}">Delayed getting medical care due to cost</option>
-					<option value="dental-exam-or-cleaning" data-filters="${nhisFilters}">Dental exam or cleaning</option>
-					<option value="diagnosed-diabetes" data-filters="${nhisFilters}">Diagnosed diabetes</option>
-					<option value="diagnosed-hypertension" data-filters="${nhisFilters}">Diagnosed hypertension</option>
-					<option value="did-not-get-needed-medical-care-due-to-cost" data-filters="${nhisFilters}">Did not get needed medical care due to cost</option>
-					<option value="did-not-get-needed-mental-health-care-due-to-cost" data-filters="${nhisFilters}">Did not get needed mental health care due to cost</option>
-					<option value="did-not-take-medication-as-prescribed-to-save-money" data-filters="${nhisFilters}">Did not take medication as prescribed to save money</option>
-					<option value="disability-status-(composite)" data-filters="${nhisFilters}">Disability status (composite)</option>
-					<option value="doctor-visit" data-filters="${nhisFilters}">Doctor visit</option>
-					<option value="ever-received-a-pneumococcal-vaccination" data-filters="${nhisFilters}">Ever received a pneumococcal vaccination</option>
-					<option value="exchange-based-coverage-coverage-at-time-of-interview" data-filters="${nhisFilters}">Exchange-based coverage coverage at time of interview</option>
-					<option value="fair-or-Less-than-100%-FPL-health-status" data-filters="${nhisFilters}">Fair or Less than 100% FPL health status</option>
-					<option value="fair-or-poor-health-status" data-filters="${nhisFilters}">Fair or poor health status</option>
-					<option value="has-a-usual-place-of-care" data-filters="${nhisFilters}">Has a usual place of care</option>
-					<option value="heart-attack-myocardial-infarction" data-filters="${nhisFilters}">Heart attack/myocardial infarction</option>
-					<option value="high-cholesterol" data-filters="${nhisFilters}">High cholesterol</option>
-					<option value="hospital-emergency-department-visit" data-filters="${nhisFilters}">Hospital emergency department visit</option>
-					<option value="obesity" data-filters="${nhisFilters}">Obesity</option>
-					<option value="prescription-medication-use" data-filters="${nhisFilters}">Prescription medication use</option>
-					<option value="private-health-insurance-coverage-at-time-of-interview" data-filters="${nhisFilters}">Private health insurance coverage at time of interview</option>
-					<option value="prostate-cancer" data-filters="${nhisFilters}">Prostate cancer</option>
-					<option value="public-health-plan-coverage-at-time-of-interview" data-filters="${nhisFilters}">Public health plan coverage at time of interview</option>
-					<option value="receipt-of-influenza-vaccination" data-filters="${nhisFilters}">Receipt of influenza vaccination</option>
-					<option value="regularly-experienced-chronic-pain" data-filters="${nhisFilters}">Regularly experienced chronic pain</option>
-					<option value="regularly-had-feelings-of-depression" data-filters="${nhisFilters}">Regularly had feelings of depression</option>
-					<option value="regularly-had-feelings-of-worry-nervousness-or-anxiety" data-filters="${nhisFilters}">Regularly had feelings of worry, nervousness, or anxiety</option>
-					<option value="six-or-more-workdays-missed-due-to-illness-injury-or-disability" data-filters="${nhisFilters}">Six or more workdays missed due to illness, injury, or disability</option>
-					<option value="taking-prescription-medication-for-feelings-of-depression" data-filters="${nhisFilters}">Taking prescription medication for feelings of depression</option>
-					<option value="taking-prescription-medication-for-feelings-of-worry-nervousness-or-anxiety" data-filters="${nhisFilters}">Taking prescription medication for feelings of worry, nervousness, or anxiety</option>
-					<option value="uninsured-at-time-of-interview" data-filters="${nhisFilters}">Uninsured at time of interview</option>
-					<option value="uninsured-for-at-least-part-of-the-past-year" data-filters="${nhisFilters}">Uninsured for at least part of the past year</option>
-					<option value="uninsured-for-more-than-one-year" data-filters="${nhisFilters}">Uninsured for more than one year</option>
-					<option value="urgent-care-center-or-retail-health-clinic-visit" data-filters="${nhisFilters}">Urgent care center or retail health clinic visit</option>
-					<option value="wellness-visit" data-filters="${nhisFilters}">Wellness visit</option>
-				</select>
-			</div>
+			<div id="topicDropdown" class="genDropdown"></div>			
 		</div>
-		<div id="subtopicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText" aria-label="refine by characteristic." tabindex="0">
-					<label for="subtopic" class="preSelText">Refine by</label>
+				<div class="col-10 homeSelectorText">
+					<label id="classificationDropdown-label" for="classificationDropdown-select" class="preSelText">Refine by</label>
 					<div class="mainSelText">Classification</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div class="styled-select">
-				<select name="subtopic select" id="subtopic" form="select-view-options"></select>						
-			</div>
+			<div id="classificationDropdown" class="genDropdown"></div>
 		</div>
-		<div id="characteristicorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText" aria-label="view data by group." tabindex="0">
-					<label for="characteristic" class="preSelText">View Data by</label>
-					<div class="mainSelText">
-						Group
-						<!--<span>
-							<span class="fa-stack clearAllFilters" style="display: none">
-								<i class="fa fa-filter fa-stack-1x"></i>
-  								<i class="fa fa-slash fa-stack-1x"></i>
-							</span>
-							<span class="fa-stack callFiltersModal">
-								<i class="fa fa-filter fa-stack-1x"></i>  							
-							</span>
-						</span>-->
-					</div>
+				<div class="col-10 homeSelectorText">
+					<label id="groupDropdown-label" for="groupDropdown-select" class="preSelText">View Data by</label>
+					<div class="mainSelText">Group</div>
 				</div>
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div class="styled-select">
-				<select name="characteristic select" id="characteristic" form="select-view-options">
-				</select>
-			</div>
+			<div id="groupDropdown" class="genDropdown"></div>
 		</div>
-		<div id="timePeriodsSelectorGroup" class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -162,19 +79,11 @@ export const tabContent = `
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
-				<div id="startYearContainer" class="col-6" style="text-align: center">
-					<label for="year-start-select" class="label-style" id="year-start-label">Start Period</label>
-					<div class="styled-select">
-						<select name="year-start" id="year-start-select" form="select-view-options">
-						</select>
-					</div>
+				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
+					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
 				</div>
-				<div id="endYearContainer" class="col-6" style="text-align: center">
-					<label for="year-end-select" class="label-style" id="year-end-label">End Period</label>
-					<div class="styled-select">
-						<select name="year-end" id="year-end-select" form="select-view-options">
-						</select>
-					</div>
+				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center">
+					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
 		</div>
@@ -195,8 +104,9 @@ export const tabContent = `
 
 	<!-- Tabs navs -->
 	<div id="tabs">
-		<div class="ui inverted dimmer">
-			<div class="ui text loader">Loading</div>
+		<div class="fa-3x genLoader active">
+			<i class="fas fa-spinner fa-pulse"></i>
+			<div>LOADING</div>
 		</div>
 		<ul>
 			<li id="mapTab-li"><a href="#map-tab"><i class="fas fa-map fa-fw me-2"></i> Map</a></li>
@@ -223,7 +133,6 @@ export const tabContent = `
 				<div id="us-map-container">
 					<div id="mapDownloadTitle"></div>
 					<div id="us-map" class="general-chart"></div>
-					<div id="us-map-message" class="chart-title"></div>
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
 					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
 				</div>
@@ -270,15 +179,15 @@ export const tabContent = `
 
 	<div class="dwnl-img-container margin-spacer" style="display: flex; justify-content: space-between; text-align: center">
 		<span>
-			<a id="cdcDataGovButton" class="theme-cyan ui btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">
+			<a id="cdcDataGovButton" class="theme-cyan btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">
 				View Data on data.cdc.gov <i class="fas fa-download" aria-hidden="true"></i>
 			</a>
 		</span>
 		<span>
-			<button tabindex="0" id="dwn-chart-img" class="theme-cyan ui btn" style="margin-right: 20px">
+			<button tabindex="0" id="dwn-chart-img" class="theme-cyan btn" style="margin-right: 20px">
 				Download Image <i class="fas fa-image" aria-hidden="true"></i>
 			</button>
-			<button id="btnTableExport" class="theme-cyan ui btn" tabindex="0" aria-label="Download Data">
+			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">
 				Download Data <i class="fas fa-download" aria-hidden="true"></i>
 			</button>
 		</span>
@@ -312,102 +221,114 @@ export const topicLookup = {
 		socrataId: "64sz-mcbq",
 		private: "1",
 		chartTitle: "Obesity among Children",
-		subtopicId: 1,
+		filters: "AsianPacific,Black,Children,Hispanic,Poverty,White",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
 		socrataId: "23va-ejrn",
 		private: "1",
 		chartTitle: "Obesity among Adults",
-		subtopicId: 1,
+		filters: "Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	suicide: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/u9f7-4q6s",
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
-		subtopicId: 1,
+		filters: "Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
-		hasSubtopic: false,
+		hasClassification: false,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
 		socrataId: "k99r-jkp7",
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments",
-		subtopicId: 1,
+		filters: "Adults,Older,Children,Male,Female",
+		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
-		hasSubtopic: false,
-	},
-	birthweight: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
-		socrataId: "3p8z-99bn",
-		private: "1",
-		chartTitle: "Low birthweight live births",
-		subtopicId: 1,
-		yAxisUnitId: 1,
-		hasCI: false,
-		hasMap: true,
-		hasSubtopic: true,
+		hasClassification: false,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
 		socrataId: "bzax-vvbx",
 		private: "1",
 		chartTitle: "Infant Mortality",
-		subtopicId: 1,
+		filters: "Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
-		hasSubtopic: true,
+		hasClassification: true,
+	},
+	birthweight: {
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
+		socrataId: "3p8z-99bn",
+		private: "1",
+		chartTitle: "Low birthweight live births",
+		filters: "Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: true,
+		hasClassification: true,
 	},
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
 		socrataId: "2g8y-scu5",
-		private: "0",
+		private: "1",
 		chartTitle: "Medicaid coverage among persons under age 65",
-		subtopicId: "NA",
+		filters:
+			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+		classificationId: "NA",
 		yAxisUnitId: 2,
 		hasCI: true,
-		hasSubtopic: false,
+		hasClassification: false,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/52ij-h8yw",
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		subtopicId: 1,
+		filters: "Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"ambulatory-care": {
 		dataUrl: "https://data.cdc.gov/resource/tz8d-jy2e.json",
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits",
-		subtopicId: 1,
+		filters: "Adults,Black,Children,Female,Male,Older,Region,White",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 	"access-care": {
 		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
 		socrataId: "nt5r-ak33",
 		private: "1",
 		chartTitle: "Access to Care",
-		subtopicId: 1,
+		filters:
+			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	},
 };
 
@@ -417,36 +338,15 @@ nhisTopics.forEach((t) => {
 		socrataId: `nhis-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
-		subtopicId: 1,
+		filters: nhisFilters,
+		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasSubtopic: true,
+		hasClassification: true,
 	};
 });
 
-export const vizConfig = {
-	caseObesity: {
-		title: "Obesity in Children and Adolescents",
-		subtitle: "Total Cases",
-		ySelect: "estimate",
-		tooltipLabel: "New Cases per 100K",
-		yLabel: "Cases",
-		subnav: "newcasesper100ksubmission",
-		calloutBox: "This is the callout box data explanation",
-	},
-	deathRawCumulativeSubmission: {
-		title: "Cumulative deaths attributed to Covid-19, reported to CDC, in",
-		subtitle: "Cumulative deaths by number of days since 100 total deaths first recorded",
-		ySelect: "tot_death",
-		tooltipLabel: "Total Deaths",
-		yLabel: "Deaths",
-		subnav: "totaldeathssubmission",
-		calloutBox:
-			"This allows you to compare trends in the cumulative number of deaths for up to 6 states, territories, or HHS regions.",
-	},
-};
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rules for creating a new hashLookup object
 // 1. top-level value must match the ID in the Topic dropdown's Options list
 // 2. hash can be any string closely related to the TEXT in Topic dropdown, with "-" replacing any spaces. Do not use "_" as this is reserved
@@ -454,16 +354,16 @@ export const vizConfig = {
 //    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
 //    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
 //    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
-// 3. "subtopicOptions" uses rules #1 and #2 like above, but for the Subtopic dropdown
-// 4. "characteristicOptions" uses rules #1 and #2 like above, but for the Characteristic dropdown
+// 3. "classificationOptions" uses rules #1 and #2 like above, but for the Classification dropdown
+// 4. "groupOptions" uses rules #1 and #2 like above, but for the Group dropdown
 //
 // For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
-// Once your new dataset successfully loads you can inspect the Subtopic and Characteristic dropdowns.
+// Once your new dataset successfully loads you can inspect the Classification and Group dropdowns.
 export const hashLookup = [
 	{
 		hash: "obesity-children",
 		value: "obesity-child",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -489,7 +389,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "2-19",
 				value: "1",
@@ -511,7 +411,7 @@ export const hashLookup = [
 	{
 		hash: "obesity-adults",
 		value: "obesity-adult",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -537,7 +437,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "BMI-from-18.5-to-24.9",
 				value: "1",
@@ -567,7 +467,7 @@ export const hashLookup = [
 	{
 		hash: "suicide-mortality",
 		value: "suicide",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -601,7 +501,7 @@ export const hashLookup = [
 				value: "7",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -615,7 +515,7 @@ export const hashLookup = [
 	{
 		hash: "injury-ed-visits",
 		value: "injury",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "1",
@@ -641,7 +541,7 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "0",
@@ -651,7 +551,7 @@ export const hashLookup = [
 	{
 		hash: "infant-mortality",
 		value: "infant-mortality",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -661,7 +561,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -691,7 +591,7 @@ export const hashLookup = [
 	{
 		hash: "low-birthweight",
 		value: "birthweight",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -701,7 +601,7 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "All-races",
 				value: "1",
@@ -731,7 +631,7 @@ export const hashLookup = [
 	{
 		hash: "medicaid-coverage-under-65",
 		value: "medicaidU65",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -773,7 +673,7 @@ export const hashLookup = [
 				value: "9",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "NA",
 				value: "NA",
@@ -787,7 +687,7 @@ export const hashLookup = [
 	{
 		hash: "drug-overdose",
 		value: "drug-overdose",
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -813,7 +713,7 @@ export const hashLookup = [
 				value: "5",
 			},
 		],
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "all-drug-overdose-deaths",
 				value: "1",
@@ -843,7 +743,7 @@ export const hashLookup = [
 	{
 		hash: "ambulatory-care",
 		value: "ambulatory-care",
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "all-places",
 				value: "1",
@@ -861,7 +761,7 @@ export const hashLookup = [
 				value: "4",
 			},
 		],
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -891,7 +791,7 @@ export const hashLookup = [
 	{
 		hash: "access-care",
 		value: "access-care",
-		subtopicOptions: [
+		classificationOptions: [
 			{
 				hash: "nonreceipt-medical-care",
 				value: "1",
@@ -905,7 +805,7 @@ export const hashLookup = [
 				value: "3",
 			},
 		],
-		characteristicOptions: [
+		groupOptions: [
 			{
 				hash: "total",
 				value: "0",
@@ -972,7 +872,7 @@ nhisTopics
 		hashLookup.push({
 			hash: id,
 			value: id,
-			characteristicOptions: nhisHash.characteristicOptions,
-			subtopicOptions: nhisHash.subtopicOptions,
+			groupOptions: nhisHash.groupOptions,
+			classificationOptions: nhisHash.classificationOptions,
 		});
 	});

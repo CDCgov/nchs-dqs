@@ -1,24 +1,24 @@
 //modals
 
-.margin-top-adj {
-	margin-top: 1rem;
-}
+// .margin-top-adj {
+// 	margin-top: 1rem;
+// }
 
-.padding-descrp {
-	padding: 1.3rem;
-	padding-bottom: 0;
-	font-size: 0.8em;
+// .padding-descrp {
+// 	padding: 1.3rem;
+// 	padding-bottom: 0;
+// 	font-size: 0.8em;
 
-	label {
-		margin-bottom: 10px;
-	}
-}
+// 	label {
+// 		margin-bottom: 10px;
+// 	}
+// }
 
-#filtersModal {
-	top: auto !important;
-	height: auto !important;
-	left: auto !important;
-}
+// #filtersModal {
+// 	top: auto !important;
+// 	height: auto !important;
+// 	left: auto !important;
+// }
 
 #filterModalFooter {
 	text-align: right;
@@ -29,5 +29,46 @@
 @media screen and (max-width: 768px) {
 	.hide-on-mobile {
 		display: none;
+	}
+}
+
+// bootstrap modal overrides
+.modal-dialog {
+	position: relative;
+	width: auto;
+	margin: 0.5rem;
+	pointer-events: none;
+
+	@media (min-width: 576px) {
+		max-width: 500px;
+		margin: 1.75rem auto;
+	}
+	@media (min-width: 992px) {
+		max-width: 800px;
+	}
+
+	@media (min-width: 1200px) {
+		max-width: 1140px;
+	}
+}
+
+.modal-header {
+	background-color: #cce5e9;
+	font-size: 24px;
+
+	> h4 {
+		display: inline;
+	}
+
+	.close {
+		position: absolute;
+		right: 1rem;
+		font-size: 28px;
+		transition: all 0.2s ease-in-out;
+	}
+
+	.close:hover {
+		cursor: pointer;
+		transform: scale(1.1);
 	}
 }

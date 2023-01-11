@@ -7,8 +7,8 @@
 		<title>NCHS Data Visualization App</title>
 		<link rel="stylesheet" href="./css/index.css" type="text/css" />
 		<link rel="stylesheet" href="./css/fa.min.css" type="text/css" />
-		<script src="lib/semantic-cdt.js"></script>
 		<link rel="stylesheet" href="./css/fa.min.css" type="text/css" />
+		<script src="lib/jquery-3.4.1.min.js"></script>
 	</head>
 	<body class="theme-cyan">
 		<div class="container-fluid header-wrapper">
@@ -27,28 +27,10 @@
 			<div class="container-fluid px-4">
 				<div class="row">
 					<div class="col">
-						<div
-							class="
-								display-6_
-								text-white
-								fw-500
-								pt-0
-								pb-0
-								d-none d-md-block
-							"
-						>
+						<div class="display-6_ text-white fw-500 pt-0 pb-0 d-none d-md-block">
 							<h1 class="banner-txt">NCHS Data Visualization</h1>
 						</div>
-						<div
-							class="
-								display-6_
-								text-white
-								fw-500
-								pt-0
-								pb-0
-								d-md-none
-							"
-						>
+						<div class="display-6_ text-white fw-500 pt-0 pb-0 d-md-none">
 							<h1 class="banner-txt">NCHS Data Visualization</h1>
 						</div>
 					</div>
@@ -57,118 +39,50 @@
 		</div>
 		<!--End Banner-->
 		<!-- main content-->
-		<div
-			class="
-				ui
-				three
-				column
-				doubling
-				stackable
-				grid
-				container
-				mg-top
-				min-hght-spacer
-			"
-		>
-			<div class="column">
+		<div class="container mg-top">
+			<h1 class="warning-message">
+				The NCHS Data Visualization does not support Internet Explorer. It is accessible on the following supported browsers:
+			</h1>
+			<div class="browser-icon-container">
 				<div>
-					<h1 class="warning-message">
-						The NCHS Data Visualization does not support Internet
-						Explorer. It is accessible on the following supported
-						browsers:
-					</h1>
+					<span class="fab fa-chrome fa-7x"></span>
+					<p>
+						<a href="https://www.google.com/chrome/" target="_blank" rel="noopener noreferrer">Chrome</a>
+					</p>
+				</div>
+				<div>
+					<span class="fab fa-firefox-browser fa-7x"></span>
+					<p>
+						<a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank" rel="noopener noreferrer">Firefox</a>
+					</p>
+				</div>
+				<div>
+					<span class="fab fa-edge fa-7x"></span>
+					<p>
+						<a href=" https://www.microsoft.com/en-us/edge" target="_blank" rel="noopener noreferrer">Edge</a>
+					</p>
+				</div>
+				<div>
+					<span class="fab fa-safari fa-7x"></span>
+					<p>
+						<a href="https://support.apple.com/downloads/safari" target="_blank" rel="noopener noreferrer">Safari</a>
+					</p>
 				</div>
 			</div>
-			<div class="column">
-				<div class="browser-icon-container">
-					<div>
-						<span class="fab fa-chrome fa-7x"></span>
-						<p>
-							<a
-								href="https://www.google.com/chrome/"
-								target="_blank"
-								rel="noopener noreferrer"
-								>Chrome</a
-							>
-						</p>
-					</div>
-					<div>
-						<span class="fab fa-firefox-browser fa-7x"></span>
-						<p>
-							<a
-								href="https://www.mozilla.org/en-US/firefox/new/"
-								target="_blank"
-								rel="noopener noreferrer"
-								>Firefox</a
-							>
-						</p>
-					</div>
-					<div>
-						<span class="fab fa-edge fa-7x"></span>
-						<p>
-							<a
-								href=" https://www.microsoft.com/en-us/edge"
-								target="_blank"
-								rel="noopener noreferrer"
-								>Edge</a
-							>
-						</p>
-					</div>
-					<div>
-						<span class="fab fa-safari fa-7x"></span>
-						<p>
-							<a
-								href="https://support.apple.com/downloads/safari"
-								target="_blank"
-								rel="noopener noreferrer"
-								>Safari</a
-							>
-						</p>
-					</div>
+			<div class="input-container">
+				<h2 class="warning-message">
+					If you already have one of these browsers installed, please copy and paste the following link into that browser to get started
+				</h2>
+				<div>
+					<input id="url-link" type="text" value="https://covid.cdc.gov/covid-data-tracker/#nchs-home" disabled />
+					<button id="copy-link" class="btn">
+						<span class="copy icon"></span>
+						Copy Link
+					</button>
 				</div>
-			</div>
-			<div class="column">
-				<div class="input-container">
-					<h2 class="warning-message">
-						If you already have one of these browsers installed,
-						please copy and paste the following link into that
-						browser to get started
-					</h2>
-					<div>
-						<div class="ui massive action input">
-							<input
-								id="url-link"
-								type="text"
-								value="https://covid.cdc.gov/covid-data-tracker/#nchs-home"
-								disabled
-							/>
-							<button
-								id="copy-link"
-								class="
-									theme-cyan
-									ui
-									btn
-									right
-									labeled
-									icon
-									button
-								"
-							>
-								<span class="copy icon"></span>
-								Copy Link
-							</button>
-						</div>
-					</div>
-					<div class="copy-message-bkg">
-						<p class="copy-message">Copied to ClipBoard ✔</p>
-					</div>
-					<div class="link-back">
-						<p class="link">
-							Or <a href="./index.html">click here </a>to return
-							the NCHS Data Visualization landing page and visit other
-							Firefox-compatible dashboards.
-						</p>
-					</div>
+
+				<div class="copy-message-bkg">
+					<p class="copy-message">Copied to ClipBoard ✔</p>
 				</div>
 			</div>
 		</div>
@@ -186,31 +100,17 @@
 		</footer>
 		<script>
 			$(".copy-message").hide();
-			$(".link-back").hide();
 
 			$("#copy-link").on("click", function () {
 				$("#url-link").removeAttr("disabled");
 				$("#url-link").select();
 				document.execCommand("copy");
 				$("#url-link").attr("disabled", "disabled");
-				$(".copy-message")
-					.fadeIn(1000, "linear")
-					.fadeOut(1000, "linear");
+				$(".copy-message").fadeIn(1000, "linear").fadeOut(1000, "linear");
 			});
 
-			if (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) {
-				$(".link-back").show();
-				$(".browser-icon-container div:nth-of-type(2)").hide();
-				$("h1.warning-message").text(
-					"This dashboard does not support Firefox. It is accessible on the following supported browsers:"
-				);
-			} else {
-				$("h1.warning-message").text(
-					"The COVID Data Tracker does not support Internet Explorer. It is accessible on the following supported browsers:"
-				);
-				$(".browser-icon-container div:nth-of-type(2)").show();
-				$(".link-back").hide();
-			}
+			$("h1.warning-message").text("The COVID Data Tracker does not support Internet Explorer. It is accessible on the following supported browsers:");
+			$(".browser-icon-container div:nth-of-type(2)").show();
 		</script>
 	</body>
 </html>
