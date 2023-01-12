@@ -199,8 +199,8 @@ export class LandingPage {
 				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
 			}));
 			staticBin = JSON.parse(JSON.stringify(this.legend));
-			// staticBin[1].min = "min";
-			// staticBin[4].max = "max";
+			staticBin[1].min = "min";
+			staticBin[4].max = "max";
 		} else {
 			classified = functions.binData(stateData);
 			stateData = classified.classifiedData;
