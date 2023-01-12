@@ -123,15 +123,17 @@ export const tabContent = `
 					</select>
 				</div>				
 				<fieldset class="breaksContainer">
-					<div class="btnToggle">
-						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-						<label role="button" for="classNBreaks">Natural Breaks</label>
-						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-						<label role="button" for="classQuartiles">Quartiles</label>
-					</div>
 					<div id="staticBinningContainer">
-						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">Static Binning</label>
-						<input id="staticTimePeriodsCheckbox" type="checkbox" checked />
+						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">
+							Binning
+							<i class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
+						</label>
+					</div>
+					<div class="btnToggle">
+						<input type="radio" name="classifyBy" value="static" id="classNBreaks" checked="checked" />
+						<label role="button" for="classNBreaks">Static</label>
+						<input type="radio" name="classifyBy" value="dynamic" id="classQuartiles" />
+						<label role="button" for="classQuartiles">Dynamic</label>
 					</div>
 				</fieldset>			
 				<div id="us-map-container">
@@ -276,6 +278,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
+		binGranularity: 0.1,
 		hasClassification: true,
 	},
 	birthweight: {
@@ -288,6 +291,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
+		binGranularity: 0.01,
 		hasClassification: true,
 	},
 	medicaidU65: {

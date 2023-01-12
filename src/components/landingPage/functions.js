@@ -247,7 +247,6 @@ export const updateTopicDropdownList = () => {
 	} else resetTopicDropdownList();
 };
 
-export const binData = (data, type) => {
-	const bins = type === 1 ? 4 : 5;
-	return ClassifyData(data, "estimate", bins, type);
+export const binData = (data) => {
+	return ClassifyData(data, "estimate", 4, 1);
 };

@@ -16,8 +16,6 @@ export class MainEvents {
 	};
 
 	registerEvents = () => {
-		$("#staticTimePeriodsCheckbox").on("change", () => appState.ACTIVE_TAB.mapBinningChanged());
-
 		$(document)
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
