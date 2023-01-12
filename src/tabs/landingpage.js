@@ -137,6 +137,7 @@ export class LandingPage {
 						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
+						this.allMapData = null;
 						this.renderMap();
 						break;
 					case 1:
@@ -182,31 +183,36 @@ export class LandingPage {
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
 		let stateData = this.getFlattenedFilteredData();
-		if (!this.allMapData && this.activeTabNumber === 0 && this.groupDropdown.value() === 1)
-			this.allMapData = [...stateData];
-
 		this.legend = this.legend ?? this.generateLegend();
-		if (!this.legend) return;
-		// but need to narrow it to the selected time period
-		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
+		if (!this.legend?.length) {
+			return;
+		}
+
+		const allDates = this.allYearsOptions.map((d) => d.value);
 		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+
 		let classified;
+		let staticBin;
 		if (this.binning === "static") {
 			stateData = stateData.map((d) => ({
 				...d,
 				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
 			}));
+			staticBin = JSON.parse(JSON.stringify(this.legend));
+			// staticBin[1].min = "min";
+			// staticBin[4].max = "max";
 		} else {
 			classified = functions.binData(stateData);
 			stateData = classified.classifiedData;
 		}
 
 		this.flattenedFilteredData = stateData;
+
 		const mapVizId = "us-map";
 		let map = new GenMap({
 			mapData: stateData,
 			topoJson: this.topoJson,
-			mLegendData: this.binning === "static" ? this.legend : classified.legend,
+			mLegendData: this.binning === "static" ? staticBin : classified.legend,
 			vizId: mapVizId,
 			startYear: parseInt(this.startYear, 10),
 			allDates,
@@ -265,6 +271,7 @@ export class LandingPage {
 		);
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
+		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
 
 		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
@@ -684,7 +691,7 @@ export class LandingPage {
 		this.initGroupDropdown();
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateGroup(1, false);
+			this.updateGroup(1);
 			this.groupDropdown.value("1");
 			this.groupDropdown.disableDropdown();
 			return;
@@ -736,9 +743,9 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
-
 		this.initStartPeriodDropdown(this.allYearsOptions);
 		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
+		this.currentTimePeriodIndex = 0;
 	}
 
 	updateStartTimePeriodDropdown(value) {
@@ -794,7 +801,6 @@ export class LandingPage {
 	updateClassifyType(value) {
 		this.binning = value;
 		this.resetTimePeriods();
-		this.currentTimePeriodIndex = 0;
 		this.renderMap();
 	}
 
