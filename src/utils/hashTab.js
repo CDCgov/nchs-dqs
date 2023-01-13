@@ -12,18 +12,18 @@ export const writeHashToUrl = (topicId, classificationId, groupId) => {
 	try {
 		const topicHash = hashLookup.find((l) => l.value == topicId).hash;
 
-		const subtopicHash = hashLookup
+		const classificationHash = hashLookup
 			.find((l) => l.value === topicId)
 			[classificationOptions].find((s) => s.value == classificationId).hash;
 
-		const characteristicHash = hashLookup
+		const groupHash = hashLookup
 			.find((l) => l.value === topicId)
 			[groupOptions].find((c) => c.value == groupId).hash;
 
 		window.location.hash = `${hashPrefix.replace(
 			"#",
 			""
-		)}_${topicHash}/${subtopicHash}/${characteristicHash}/${singlePeriod}`;
+		)}_${topicHash}/${classificationHash}/${groupHash}/${singlePeriod}`;
 	} catch {
 		/* do nothing */
 	}
