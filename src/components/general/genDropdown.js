@@ -175,6 +175,9 @@ export class GenDropdown {
 			.on("click", `#${this.props.containerId}-select`, (e) => {
 				if (this.disabled) return;
 				e.stopPropagation();
+				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+					this.#closeOtherOpenDropdown(el)
+				);
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
@@ -184,7 +187,12 @@ export class GenDropdown {
 				if (key === "Enter" || (key === " " && !open)) {
 					e.preventDefault();
 					if (open) this.#handleSelectionMade();
-					else this.#toggleOpenClose();
+					else {
+						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+							this.#closeOtherOpenDropdown(el)
+						);
+						this.#toggleOpenClose();
+					}
 				} else if (key === " " && !this.searchText.length) {
 					e.preventDefault();
 					this.#toggleOpenClose();
@@ -293,6 +301,19 @@ export class GenDropdown {
 	// ///////////////////////////////////////////// //
 	// 				PRIVATE METHODS					 //
 	// ///////////////////////////////////////////// //
+	#closeOtherOpenDropdown = (target) => {
+		if (!target) return; // this should never happen but just in case
+		$(target).find(".genOptionSelected").removeClass("genOptionSelected"); // a hover-over may have selected an option so we need to remove that
+		const previouslySelectedText = $(target).parent().find("a").html().trim();
+		const children = $(target).find("a");
+		children.each((i, el) => {
+			if ($(el).html().trim() === previouslySelectedText) {
+				$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
+				return false; // exit the loop
+			}
+		});
+		$(target).removeClass("genDropdownOpened"); // close the dropdown
+	};
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");

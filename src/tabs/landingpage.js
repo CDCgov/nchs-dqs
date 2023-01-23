@@ -302,21 +302,30 @@ export class LandingPage {
 	}
 
 	updateFootnotes(footnotesIdArray) {
-		const sourceText = [...footnotesIdArray]
-			.filter((d) => d.toString().startsWith("SC"))
-			.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
-			.join("");
+		const sourceTextNotes = [...footnotesIdArray].filter((d) => d.toString().startsWith("SC"));
+		let sourceText = "";
+		if (sourceTextNotes.length) {
+			sourceText = sourceTextNotes
+				.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
+				.join("");
+		}
 		$("#source-text-map").html(sourceText);
 		$("#source-text-chart").html(sourceText);
 
 		// now update the footnotes on the page
-		$("#pageFooter").html(
-			[...footnotesIdArray]
-				.filter((d) => d.substring(0, 2) !== "SC")
+		let footerNotes = "";
+		const footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+
+		// check if there are any footnotes to display and there is not just an empty string for a single footnote
+		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
+			footerNotes = footerNotesArray
 				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
-				.join("")
-		);
-		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
+				.join("");
+			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
+		} else {
+			$("#pageFooterTable").hide();
+		}
+		$("#pageFooter").html(footerNotes);
 	}
 
 	topicDropdownChange = (value) => {
