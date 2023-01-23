@@ -269,7 +269,15 @@ export class LandingPage {
 			}));
 		}
 
-		let allFootnoteIdsArray = data.map((d) => d.footnote_id_list);
+		const allFootnoteIdsArray = [
+			...new Set(
+				data
+					.map((d) => d.footnote_id_list)
+					.join(",")
+					.split(",")
+			),
+		];
+
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 
 		// "date" property is necessary for correctly positioning data point for these charts
@@ -293,66 +301,21 @@ export class LandingPage {
 			: filteredData;
 	}
 
-	updateFootnotes(footnotesIdArray, dataTopic) {
-		let footnotesList;
-		let sourceList;
-		let allFootnotesText = "";
-		let sourceText = "";
-		// in some cases this gets called with no footnotes.
-
-		if (dataTopic === "obesity-child" && footnotesIdArray[1]) {
-			// this includes every item in the footnotes
-			footnotesList = footnotesIdArray[1].split(",");
-
-			// get ONLY the source codes list
-			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
-			sourceList.forEach(
-				(f) =>
-					(sourceText +=
-						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
-			);
-
-			// now remove the SC notes from footnotesList
-			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
-
-			// foreach footnote ID, look it up in the tabnotes and ADD it to text
-			allFootnotesText = "";
-			footnotesList.forEach(
-				(f) =>
-					(allFootnotesText +=
-						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
-			);
-		} else if (footnotesIdArray[0]) {
-			// this includes every item in the footnotes
-			footnotesList = footnotesIdArray[0].split(",");
-
-			// get ONLY the source codes list
-			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
-			sourceList.forEach(
-				(f) =>
-					(sourceText +=
-						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
-			);
-
-			// now remove the SC notes from footnotesList
-			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
-
-			// foreach footnote ID, look it up in the tabnotes and ADD it to text
-			allFootnotesText = "";
-			footnotesList.forEach(
-				(f) =>
-					(allFootnotesText +=
-						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
-			);
-		}
-		// update source text
+	updateFootnotes(footnotesIdArray) {
+		const sourceText = [...footnotesIdArray]
+			.filter((d) => d.toString().startsWith("SC"))
+			.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
+			.join("");
 		$("#source-text-map").html(sourceText);
 		$("#source-text-chart").html(sourceText);
 
 		// now update the footnotes on the page
-		$("#pageFooter").html(allFootnotesText);
+		$("#pageFooter").html(
+			[...footnotesIdArray]
+				.filter((d) => d.substring(0, 2) !== "SC")
+				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
+				.join("")
+		);
 		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 	}
 
