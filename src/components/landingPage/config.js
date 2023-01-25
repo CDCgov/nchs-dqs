@@ -99,7 +99,7 @@ export const tabContent = `
 
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center">
 		<span id="chart-title" class="chart-title"></span><br />
-		<span tabindex="0" id="chart-subtitle"></span>
+		<span id="chart-subtitle"></span>
 	</div>
 
 	<!-- Tabs navs -->
