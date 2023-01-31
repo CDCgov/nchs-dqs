@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "webpack --config webpack.prod.js",
+		"build": "webpack --config webpack.prod.js && node ./src/utils/getSitemap.js",
 		"dev": "webpack --config webpack.dev.js",
 		"start": "webpack serve --config webpack.dev.js",
 		"watch": "webpack --config webpack.dev.js --watch",
