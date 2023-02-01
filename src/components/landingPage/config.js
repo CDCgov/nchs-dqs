@@ -196,8 +196,8 @@ export const tabContent = `
 	</div>
 
 	<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px; margin-bottom: 15px">
-		<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
-			<h4 role="button" aria-label="footnotes" class="table-title">Footnotes</h4>
+		<div role="button" aria-label="footnotes" class="table-toggle closed" id="footer-table-toggle" tabindex="0">
+			<h4 class="table-title">Footnotes</h4>
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-plus"></i></div>
 		</div>
 		<div id="pageFooter" class="data-table closed"></div>
