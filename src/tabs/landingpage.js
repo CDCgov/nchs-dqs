@@ -129,7 +129,26 @@ export class LandingPage {
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
 			activate: (e) => {
-				this.activeTabNumber = parseInt(e.currentTarget.id.split("-")[2], 10) - 1;
+				let target = e.currentTarget;
+				let id;
+				if (!target) {
+					// if the keyboard is used to navigate tabs, neither target nor currentTarget are available
+					// if there is no map and navigation lands on map-tab, switch to either table or chart
+					target = $(".ui-tabs-active > a");
+					id = parseInt(target.attr("id").slice(-1), 10);
+					if (!this.config.hasMap && id === 1) {
+						if (this.activeTabNumber === 1) {
+							// activate table
+							$("#ui-id-3").trigger("click");
+							return;
+						}
+						// activate chart
+						$("#ui-id-2").trigger("click");
+						return;
+					}
+				} else id = parseInt(target.id.slice(-1), 10);
+
+				this.activeTabNumber = id - 1;
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateGroup(1, false);
@@ -145,6 +164,9 @@ export class LandingPage {
 					default:
 						break;
 				}
+			},
+			keydown: () => {
+				debugger;
 			},
 		});
 
