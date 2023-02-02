@@ -634,14 +634,33 @@ export class GenMap {
 					let legendId = "legend-box-" + i;
 					if (leg.DisplayLabel.match("Unreliable")) {
 						// for cross hatching, just use white
-						legendGeneratedHTML += `<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
-        			<input class='form-check-input' type='checkbox' value='${leg.ItemValue}' ${isCheckedStr} style='margin-right:3px;cursor:pointer"
-            			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;
+						legendGeneratedHTML += `
+						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
+							<input
+								id='mapchk-${i}'
+								class='form-check-input'
+								type='checkbox'
+								value='${leg.ItemValue}'
+								${isCheckedStr}
+								style='margin-right:3px;cursor:pointer"
+								aria-label='${leg.DisplayLabel.replace("-", "to")}'
+								autocomplete='off' />
+							<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
+						</div>`;
 					} else {
 						// draw regular with color
-						legendGeneratedHTML += `<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
-        			<input class='form-check-input' type='checkbox' value='${leg.ItemValue}' ${isCheckedStr} style='margin-right:3px;cursor:pointer"
-            			aria-label='${leg.DisplayLabel}' autocomplete='off'>${leg.DisplayLabel}</input></div>`;
+						legendGeneratedHTML += `
+						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
+							<input
+								class='form-check-input'
+								type='checkbox'
+								value='${leg.ItemValue}'
+								${isCheckedStr}
+								style='margin-right:3px; cursor:pointer;'
+								aria-label='${leg.DisplayLabel.replace("-", "to")}'
+								autocomplete='off' />
+								<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
+						</div>`;
 					}
 				});
 				legendGeneratedHTML += "</div><br />";
