@@ -108,7 +108,7 @@ export const modal = `
 	        <div class="modal-content" aria-describedby="modalLabel">
 	            <div class="modal-header text-center d-block">
 	                <h4 aria-hidden="false" tabindex="0" id="modalLabel">Advanced Filter for Topic</h4>
-	                <button type="button" class="close" data-bs-dismiss="modal" aria-label="close advanced filters modal" aria-hidden="false"><span aria-hidden="true">&times;</span></button>
+	                <button type="button" class="close" data-bs-dismiss="modal" aria-label="close advanced filters modal"  aria-hidden="false"><span aria-hidden="true">&times;</span></button>
 	            </div>
 	            <div class="modal-body" aria-hidden="false">
 					<div class="row">
