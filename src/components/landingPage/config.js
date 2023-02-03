@@ -17,11 +17,11 @@ export const tabContent = `
 					<div class="mainSelText">
 						Topic
 						<span>
-							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none">
+							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none" tabindex="0" aria-label="clear advanced filters">
 								<i class="clearFiltersIcons fa fa-filter fa-stack-1x"></i>
   								<i class="clearFiltersIcons fa fa-slash fa-stack-1x"></i>
 							</span>
-							<span id="editFiltersContainer" class="fa-stack callFiltersModal">
+							<span id="editFiltersContainer" class="fa-stack callFiltersModal"tabindex="0" aria-label="open advanced filters">
 								<i class="editFiltersIcon fa fa-filter fa-stack-1x"></i>
 							</span>
 						</span>						
