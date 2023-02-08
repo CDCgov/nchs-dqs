@@ -64,8 +64,9 @@
 
  *************************************************************************************************************************************************************************** */
 import { getCurrentSliderDomain } from "./genTrendsSlider";
+import { Utils } from "../../utils/utils";
 
-const populate = (props) => {
+const populate = (props, mobile) => {
 	const optionList = [];
 	let selected = props.options.find((o) => o[props.value] === props.selectedValue);
 	if (!selected) {
@@ -98,6 +99,7 @@ const populate = (props) => {
 		tabindex="0"
 		role="listbox"		
 		aria-labelledby="${props.containerId}-label"
+		contenteditable=${mobile ? "false" : "true"}
 	>
 		<a>${selectedHtml}</a>
 		<div class="genDropdownOptions">${optionList.join("")}</div>
@@ -127,6 +129,7 @@ export class GenDropdown {
 		this.listItems = `#${providedProps.containerId} .genDropdownOption`;
 		this.selectedOption = `#${providedProps.containerId} .genOptionSelected`;
 		this.disabled = false;
+		this.isMobile = Utils.isMobile();
 	}
 
 	// ///////////////////////////////////////////// //
@@ -154,11 +157,9 @@ export class GenDropdown {
 
 	render = () => {
 		$(`#${this.props.containerId}-select`).remove();
-		$(`#${this.props.containerId}`).append(populate(this.props));
+		$(`#${this.props.containerId}`).append(populate(this.props, this.isMobile));
 		this.selectedOptionEl = $(this.selectedOption);
 		this.#updateAriaLabel($(`${this.selectedOption} > a`).html());
-		const selectedHeight = $(`#${this.props.containerId} .genMsdSelected`).height();
-		$(".genDropdownOptions").css("top", selectedHeight + 4);
 
 		if (this.props.firstOptObj) {
 			if (this.props.selectedValue === this.props.firstOptObj.returnValue) {
@@ -175,6 +176,9 @@ export class GenDropdown {
 			.on("click", `#${this.props.containerId}-select`, (e) => {
 				if (this.disabled) return;
 				e.stopPropagation();
+				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+					this.#closeOtherOpenDropdown(el)
+				);
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
@@ -184,7 +188,12 @@ export class GenDropdown {
 				if (key === "Enter" || (key === " " && !open)) {
 					e.preventDefault();
 					if (open) this.#handleSelectionMade();
-					else this.#toggleOpenClose();
+					else {
+						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+							this.#closeOtherOpenDropdown(el)
+						);
+						this.#toggleOpenClose();
+					}
 				} else if (key === " " && !this.searchText.length) {
 					e.preventDefault();
 					this.#toggleOpenClose();
@@ -293,10 +302,55 @@ export class GenDropdown {
 	// ///////////////////////////////////////////// //
 	// 				PRIVATE METHODS					 //
 	// ///////////////////////////////////////////// //
+	#closeOtherOpenDropdown = (target) => {
+		if (!target) return; // this should never happen but just in case
+		$(target).find(".genOptionSelected").removeClass("genOptionSelected"); // a hover-over may have selected an option so we need to remove that
+		const previouslySelectedText = $(target).parent().find("a").html().trim();
+		const children = $(target).find("a");
+		children.each((i, el) => {
+			if ($(el).html().trim() === previouslySelectedText) {
+				$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
+				return false; // exit the loop
+			}
+		});
+		$(target).removeClass("genDropdownOpened"); // close the dropdown
+	};
+
+	// used in conjunction with the contenteditable tag, the setCaret method moves the cursor to the front of the currently selected text
+	// seems this only works with native javascript selector syntax
+	#setCaret = () => {
+		const el = document.querySelector(`#${this.props.containerId} .genDropdownSelected`);
+		const range = document.createRange();
+		const sel = window.getSelection();
+
+		range.setStart(el.childNodes[0], 0);
+		range.collapse(true);
+
+		sel.removeAllRanges();
+		sel.addRange(range);
+	};
+
+	#scrollIntoView = () => {
+		const selectHeight = $(`#${this.props.containerId}-select`)[0].getBoundingClientRect().height;
+		const dropdownDims = $(this.dropdownSection)[0].getBoundingClientRect();
+		let dropdownHeight = dropdownDims.height;
+		let dropdownBottom = dropdownDims.bottom;
+		const windowHeight = $(window).height();
+		const requiredHeight = dropdownHeight + selectHeight + 50; // 50 is for a label above, which may not exist or follow intended label class
+		if (requiredHeight > windowHeight) {
+			const newHeight = windowHeight - selectHeight - 50;
+			$(this.dropdownSection).css("height", newHeight);
+			dropdownBottom = $(this.dropdownSection)[0].getBoundingClientRect().bottom;
+		}
+		const scrollTop = $(window).scrollTop();
+		const scrollDifference = windowHeight - scrollTop;
+		if (dropdownBottom > windowHeight) $(window).scrollTop(dropdownBottom - scrollDifference + 20);
+	};
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
-		$(`#${this.props.containerId} .genMsdSelected`).toggleClass("genDropdownOpened");
+		if (!this.isMobile) this.#setCaret();
+		this.#scrollIntoView();
 	};
 
 	#updateAriaLabel = (text) => {

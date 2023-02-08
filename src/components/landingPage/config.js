@@ -17,11 +17,11 @@ export const tabContent = `
 					<div class="mainSelText">
 						Topic
 						<span>
-							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none">
+							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none" tabindex="0" aria-label="clear advanced filters">
 								<i class="clearFiltersIcons fa fa-filter fa-stack-1x"></i>
   								<i class="clearFiltersIcons fa fa-slash fa-stack-1x"></i>
 							</span>
-							<span id="editFiltersContainer" class="fa-stack callFiltersModal">
+							<span id="editFiltersContainer" class="fa-stack callFiltersModal"tabindex="0" aria-label="open advanced filters">
 								<i class="editFiltersIcon fa fa-filter fa-stack-1x"></i>
 							</span>
 						</span>						
@@ -99,7 +99,7 @@ export const tabContent = `
 
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center">
 		<span id="chart-title" class="chart-title"></span><br />
-		<span tabindex="0" id="chart-subtitle"></span>
+		<span id="chart-subtitle"></span>
 	</div>
 
 	<!-- Tabs navs -->
@@ -194,7 +194,7 @@ export const tabContent = `
 	</div>
 
 	<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px; margin-bottom: 15px">
-		<div class="table-toggle closed" id="footer-table-toggle" tabindex="0">
+		<div role="button" aria-label="footnotes" class="table-toggle closed" id="footer-table-toggle" tabindex="0">
 			<h4 class="table-title">Footnotes</h4>
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-plus"></i></div>
 		</div>

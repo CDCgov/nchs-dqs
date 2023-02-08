@@ -129,7 +129,26 @@ export class LandingPage {
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
 			activate: (e) => {
-				this.activeTabNumber = parseInt(e.currentTarget.id.split("-")[2], 10) - 1;
+				let target = e.currentTarget;
+				let id;
+				if (!target) {
+					// if the keyboard is used to navigate tabs, neither target nor currentTarget are available
+					// if there is no map and navigation lands on map-tab, switch to either table or chart
+					target = $(".ui-tabs-active > a");
+					id = parseInt(target.attr("id").slice(-1), 10);
+					if (!this.config.hasMap && id === 1) {
+						if (this.activeTabNumber === 1) {
+							// activate table
+							$("#ui-id-3").trigger("click");
+							return;
+						}
+						// activate chart
+						$("#ui-id-2").trigger("click");
+						return;
+					}
+				} else id = parseInt(target.id.slice(-1), 10);
+
+				this.activeTabNumber = id - 1;
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateGroup(1, false);
@@ -145,6 +164,9 @@ export class LandingPage {
 					default:
 						break;
 				}
+			},
+			keydown: () => {
+				debugger;
 			},
 		});
 
@@ -269,7 +291,15 @@ export class LandingPage {
 			}));
 		}
 
-		let allFootnoteIdsArray = data.map((d) => d.footnote_id_list);
+		const allFootnoteIdsArray = [
+			...new Set(
+				data
+					.map((d) => d.footnote_id_list)
+					.join(",")
+					.split(",")
+			),
+		];
+
 		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
 
 		// "date" property is necessary for correctly positioning data point for these charts
@@ -293,67 +323,31 @@ export class LandingPage {
 			: filteredData;
 	}
 
-	updateFootnotes(footnotesIdArray, dataTopic) {
-		let footnotesList;
-		let sourceList;
-		let allFootnotesText = "";
+	updateFootnotes(footnotesIdArray) {
+		const sourceTextNotes = [...footnotesIdArray].filter((d) => d.toString().startsWith("SC"));
 		let sourceText = "";
-		// in some cases this gets called with no footnotes.
-
-		if (dataTopic === "obesity-child" && footnotesIdArray[1]) {
-			// this includes every item in the footnotes
-			footnotesList = footnotesIdArray[1].split(",");
-
-			// get ONLY the source codes list
-			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
-			sourceList.forEach(
-				(f) =>
-					(sourceText +=
-						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
-			);
-
-			// now remove the SC notes from footnotesList
-			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
-
-			// foreach footnote ID, look it up in the tabnotes and ADD it to text
-			allFootnotesText = "";
-			footnotesList.forEach(
-				(f) =>
-					(allFootnotesText +=
-						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
-			);
-		} else if (footnotesIdArray[0]) {
-			// this includes every item in the footnotes
-			footnotesList = footnotesIdArray[0].split(",");
-
-			// get ONLY the source codes list
-			sourceList = footnotesList;
-			sourceList = sourceList.filter((d) => d.toString().startsWith("SC")); // match(/SC/));
-			sourceList.forEach(
-				(f) =>
-					(sourceText +=
-						"<div><b>Source</b>: " + f + ": " + functions.linkify(this.footnoteMap[f]) + "</div>")
-			);
-
-			// now remove the SC notes from footnotesList
-			footnotesList = footnotesList.filter((d) => d.substring(0, 2) !== "SC");
-
-			// foreach footnote ID, look it up in the tabnotes and ADD it to text
-			allFootnotesText = "";
-			footnotesList.forEach(
-				(f) =>
-					(allFootnotesText +=
-						"<p class='footnote-text'>" + f + ": " + functions.linkify(this.footnoteMap[f]) + "</p>")
-			);
+		if (sourceTextNotes.length) {
+			sourceText = sourceTextNotes
+				.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
+				.join("");
 		}
-		// update source text
 		$("#source-text-map").html(sourceText);
 		$("#source-text-chart").html(sourceText);
 
 		// now update the footnotes on the page
-		$("#pageFooter").html(allFootnotesText);
-		$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
+		let footerNotes = "";
+		const footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+
+		// check if there are any footnotes to display and there is not just an empty string for a single footnote
+		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
+			footerNotes = footerNotesArray
+				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
+				.join("");
+			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
+		} else {
+			$("#pageFooterTable").hide();
+		}
+		$("#pageFooter").html(footerNotes);
 	}
 
 	topicDropdownChange = (value) => {
@@ -562,12 +556,12 @@ export class LandingPage {
 		if (this.config.hasClassification || !this.flattenedFilteredData)
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
-		const topicsWhereCharacteristicsVaryBySubtopic = ["obesity-child", "obesity-adult", "birthweight"].concat(
+		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			nhisTopics.map((t) => t.id)
 		);
 
 		let allGroupIds;
-		if (topicsWhereCharacteristicsVaryBySubtopic.includes(this.dataTopic)) {
+		if (topicsWhereGroupsVaryByClassification.includes(this.dataTopic)) {
 			allGroupIds = this.socrataData.filter((d) => d.panel_num == this.config.classificationId);
 		} else {
 			allGroupIds = this.socrataData;
