@@ -730,7 +730,8 @@ export class LandingPage {
 	updateEndPeriod(end) {
 		this.endYear = end;
 		this.endPeriod = functions.getYear(end);
-		this.renderChart(this.flattenedFilteredData);
+		const data = this.getFlattenedFilteredData();
+		this.renderChart(data);
 	}
 
 	updateYAxisUnitId(yAxisUnitId) {
@@ -757,7 +758,8 @@ export class LandingPage {
 			this.resetTimePeriods();
 			$("#startYearContainer-label").html("Start Period");
 		} else $("#startYearContainer-label").html("Period");
-		this.renderChart(this.flattenedFilteredData);
+		const data = this.getFlattenedFilteredData();
+		this.renderChart(data);
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
@@ -795,8 +797,8 @@ export class LandingPage {
 		if (currentLength > 0 && foundItemIndex !== -1) DataCache.activeLegendList.splice(foundItemIndex, 1);
 		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
 		else return;
-
-		this.renderChart(this.flattenedFilteredData);
+		const data = this.getFlattenedFilteredData();
+		this.renderChart(data);
 	}
 
 	// call this when Reset Button is clicked
@@ -820,7 +822,8 @@ export class LandingPage {
 		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
-		if (this.activeTabNumber === 1) this.renderChart(this.flattenedFilteredData);
+		const data = this.getFlattenedFilteredData();
+		if (this.activeTabNumber === 1) this.renderChart(data);
 		else $("a[href='#chart-tab']").trigger("click");
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
