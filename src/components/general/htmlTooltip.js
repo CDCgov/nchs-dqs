@@ -5,8 +5,9 @@
 
 ********************************************************************* */
 
-const template = `
-            <div class="generalTooltip tooltip">
+const template = (id) => {
+	return `
+            <div id="${id}" class="generalTooltip tooltip">
                 <div class="tip-header">
                     <h3></h3>
                     <h4></h4>
@@ -14,6 +15,7 @@ const template = `
                 <div class="tip-body"></div>
             </div>
             `;
+};
 
 export class HtmlTooltip {
 	constructor({ h3, h4, body, containerId }) {
@@ -25,11 +27,16 @@ export class HtmlTooltip {
 	}
 
 	render() {
-		$(`#${this.containerId}`).append(template);
+		$(`#${this.containerId}`).append(template(`${this.containerId}-tooltip`));
 	}
 
 	getWhichSvgSides = (event) => {
-		const boundingBox = $(`#${this.containerId}`)[0].getBoundingClientRect();
+		let boundingBox;
+		try {
+			boundingBox = $(`#${this.containerId}`)[0].getBoundingClientRect();
+		} catch (e) {
+			boundingBox = $(event.currentTarget)[0].getBoundingClientRect();
+		}
 		const centerX = boundingBox.width / 2;
 		const centerY = boundingBox.height / 2;
 		const sides = {
@@ -53,8 +60,18 @@ export class HtmlTooltip {
 		if (this.body) tip.select(".tip-body").html(this.body);
 		else tip.select(".tip-body").html("");
 
-		const tipHeight = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetHeight;
-		const tipWidth = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetWidth;
+		let tipHeight;
+		try {
+			tipHeight = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetHeight;
+		} catch (e) {
+			tipHeight = $(event.currentTarget)[0].offsetHeight;
+		}
+		let tipWidth;
+		try {
+			tipWidth = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetWidth;
+		} catch (e) {
+			tipWidth = $(event.currentTarget)[0].offsetWidth;
+		}
 
 		const { clientX, clientY } = event;
 		const widthToLeftBounds = clientX - leftBounds;

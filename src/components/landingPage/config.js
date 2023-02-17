@@ -116,11 +116,9 @@ export const tabContent = `
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
 				<div class="adjustUnitContainer">
-					<label for="unit-num-select-map" aria-label="Adjust Unit">Adjust Unit</label>
-                    <br />
-					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options">
-						<option value="1" selected>Percent of population, crude</option>
-					</select>
+					<div id="estimateTypeDropdownMap" class="genDropdown">
+						<div id="estimateTypeDropdownMap-label" for="estimateTypeDropdownMap-select"class="select-label">Estimate Type</div>
+					</div>
 				</div>
 				<fieldset class="breaksContainer">
 					<div class="btnToggle">
@@ -144,14 +142,11 @@ export const tabContent = `
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
 			<div class="content-wrapper">
 				<div class="adjustUnitContainer">
-					<label for="unit-num-select-chart" aria-label="Adjust Unit">Adjust Unit</label>
-                    <br />
-					<select name="unit-num-select-chart-box" id="unit-num-select-chart" form="select-view-options">
-						<option value="1" selected>Percent of population, crude</option>
-					</select>
-
+					<div id="estimateTypeDropdownChart" class="genDropdown">
+						<div id="estimateTypeDropdownChart-label" for="estimateTypeDropdownChart-select"class="select-label">Estimate Type</div>
+					</div>
 					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline">
-						<input type="checkbox" id="enable-CI-checkbox" name="enable-CI-checkbox" />
+						<input type="checkbox" id="enable-CI-checkbox" class="ciCheckGroup" name="enable-CI-checkbox" />
 						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
 					</div>
 				</div>
@@ -163,13 +158,30 @@ export const tabContent = `
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div class="content-wrapper">
-				<div class="adjustUnitContainer">
-					<label for="unit-num-select-table" aria-label="Adjust Unit">Adjust Unit</label>
-                    <br />
-					<select name="unit-num-select-table-box" id="unit-num-select-table" form="select-view-options">
-						<option value="1" selected>Percent of population, crude</option>
-					</select>
-				</div>				
+				<div class="chart-table-selectors">
+					<div>
+						<div>
+							<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
+							<label class="switch">
+								<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
+								<span class="slider round"></span>
+							</label>
+						</div>				
+						<div id="ciTableSlider">
+							<label for="showConfidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>					
+							<label class="switch">
+								<input id="showConfidenceIntervalSlider" tabindex="0" class="ciCheckGroup" type="checkbox" aria-label="show all subgroups">
+								<span id="ciTableHover" class="slider round"></span>
+							</label>
+						</div>
+					</div>
+					<div>
+						<div id="estimateTypeDropdownTable" class="genDropdown">
+							<div id="estimateTypeDropdownTable-label" for="estimateTypeDropdownTable-select"class="select-label">Estimate Type</div>
+						</div>
+					</div>
+				</div>
+				<div style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
 				<div class="expanded-data-table"></div>
 				<br />
 			</div>

@@ -4,7 +4,6 @@ import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
-import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
 import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
@@ -38,7 +37,10 @@ export class LandingPage {
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
+		this.estimateTypeTableDropdown = null;
+		this.estimateTypeChartDropdown = null;
 		this.allYearsOptions = null;
+		this.dataTable = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -154,19 +156,21 @@ export class LandingPage {
 						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
-						this.renderMap();
+						this.estimateTypeMapDropdown.value(this.config.yAxisUnitId);
 						break;
 					case 1:
 						this.groupDropdown.enableDropdown();
-						this.renderChart();
+						this.estimateTypeChartDropdown.value(this.config.yAxisUnitId);
 						this.groupDropdown.enableValues("all");
 						break;
+					case 2: // table
+						this.estimateTypeTableDropdown.value(this.config.yAxisUnitId);
+						$("#showAllSubgroupsSlider").trigger("focus");
+						break;
+
 					default:
 						break;
 				}
-			},
-			keydown: () => {
-				debugger;
 			},
 		});
 
@@ -174,11 +178,11 @@ export class LandingPage {
 		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
 	}
 
-	renderMap() {
+	renderMap(data) {
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
 		// Get filtered data
-		let stateData = this.getFlattenedFilteredData();
+		let stateData = [...data];
 		// but need to narrow it to the selected time period
 		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
 		stateData = stateData.filter((d) => d.year_pt == this.startYear);
@@ -201,8 +205,8 @@ export class LandingPage {
 		map.renderTimeSeriesAxisSelector();
 	}
 
-	renderChart() {
-		const flattenedData = this.getFlattenedFilteredData();
+	renderChart(data) {
+		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 
 		this.chartConfig = functions.getAllChartProps(
@@ -229,10 +233,20 @@ export class LandingPage {
 	}
 
 	renderDataVisualizations = () => {
+		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.renderMap();
-		} else this.renderChart();
-		this.renderDataTable();
+			this.renderMap(data);
+			$("#btnTableExport").hide();
+			$("#dwn-chart-img").show();
+		} else if (this.activeTabNumber === 1) {
+			this.renderChart(data);
+			$("#btnTableExport").hide();
+			$("#dwn-chart-img").show();
+		} else if (this.activeTabNumber === 2) {
+			this.renderDataTable(data);
+			$("#btnTableExport").show();
+			$("#dwn-chart-img").hide();
+		}
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 		$(".genLoader").removeClass("active");
 	};
@@ -250,11 +264,13 @@ export class LandingPage {
 
 		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
-			$("#enable-CI-checkbox").prop("disabled", false);
+			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+			$("#ciTableSlider-tooltip").hide();
 		} else {
 			// disable it
-			$("#enable-CI-checkbox").prop("disabled", true);
-			$("#enable-CI-checkbox").prop("checked", false);
+			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
+			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("checked", false);
+			$("#ciTableSlider-tooltip").show();
 		}
 
 		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
@@ -384,10 +400,6 @@ export class LandingPage {
 			this.showBarChart = true;
 		}
 
-		$("#enable-CI-checkbox-wrapper").toggle(this.config.hasCI); // toggle is show/hide depending on boolean
-		this.config.enableCI = false;
-		$("#enable-CI-checkbox").prop("checked", false);
-
 		if (this.selections) this.groupId = parseInt(this.selections.group, 10);
 		else this.groupId = 0;
 
@@ -465,11 +477,14 @@ export class LandingPage {
 				if (this.flattenedFilteredData[0] !== undefined) {
 					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
 						// enable the CI checkbox
-						$("#enable-CI-checkbox").prop("disabled", false);
+						$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+						$("#ciTableSlider-tooltip").hide();
 					} else {
 						// disable it
-						$("#enable-CI-checkbox").prop("disabled", true);
-						$("#enable-CI-checkbox").prop("checked", false);
+						$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
+						document.getElementById("enable-CI-checkbox").checked = false;
+						document.getElementById("showConfidenceIntervalSlider").checked = false;
+						$("#ciTableSlider-tooltip").show();
 					}
 				}
 
@@ -584,6 +599,9 @@ export class LandingPage {
 		});
 		this.groupDropdown.render();
 		this.groupId = this.groupDropdown.value();
+		const groupText = this.groupDropdown.text();
+		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
+		else $("#showAllSubgroupsSlider").prop("disabled", false);
 	}
 
 	setVerticalUnitAxisSelect() {
@@ -600,28 +618,33 @@ export class LandingPage {
 			return a.unit_num - b.unit_num;
 		});
 
-		$("#unit-num-select-map").empty();
-		$("#unit-num-select-chart").empty();
-		// on the table tab
-		$("#unit-num-select-table").empty();
+		const options = allUnitsArray.map((d) => ({ text: d.unit, value: d.unit_num }));
+		if (options.length) {
+			this.estimateTypeTableDropdown = new GenDropdown({
+				containerId: "estimateTypeDropdownTable",
+				options,
+				ariaLabel: "estimate type",
+				selectedValue: this.config.yAxisUnitId,
+			});
+			this.estimateTypeTableDropdown.render();
 
-		let foundUnit = false;
-		// PROBLEM: on Suicide and AGe... we have not unit_num 1 so it only has 2 and this the filter in render removes out all data
-		allUnitsArray.forEach((y) => {
-			if (this.config.yAxisUnitId == y.unit_num) {
-				$("#unit-num-select-map").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
-				$("#unit-num-select-chart").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
-				$("#unit-num-select-table").append(`<option value="${y.unit_num}" selected>${y.unit}</option>`);
-				foundUnit = true;
-			} else {
-				$("#unit-num-select-map").append(`<option value="${y.unit_num}">${y.unit}</option>`);
-				$("#unit-num-select-chart").append(`<option value="${y.unit_num}">${y.unit}</option>`);
-				$("#unit-num-select-table").append(`<option value="${y.unit_num}">${y.unit}</option>`);
-			}
-		});
-		if (!foundUnit) {
-			// have to set to a valid unit num or data will error out
-			this.config.yAxisUnitId = $("#unit-num-select-chart option:first").val(); // set to first item on the unit list
+			this.estimateTypeChartDropdown = new GenDropdown({
+				containerId: "estimateTypeDropdownChart",
+				options,
+				ariaLabel: "estimate type",
+				selectedValue: this.config.yAxisUnitId,
+			});
+			this.estimateTypeChartDropdown.render();
+
+			this.estimateTypeMapDropdown = new GenDropdown({
+				containerId: "estimateTypeDropdownMap",
+				options,
+				ariaLabel: "estimate type",
+				selectedValue: this.config.yAxisUnitId,
+			});
+			this.estimateTypeMapDropdown.render();
+
+			if (!options.find((o) => o.value == this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
 		}
 	}
 
@@ -647,6 +670,9 @@ export class LandingPage {
 		this.setVerticalUnitAxisSelect();
 
 		if (updateTimePeriods) this.resetTimePeriods();
+		const groupText = this.groupDropdown.text();
+		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
+		else $("#showAllSubgroupsSlider").prop("disabled", false);
 
 		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();
@@ -704,20 +730,22 @@ export class LandingPage {
 	updateEndPeriod(end) {
 		this.endYear = end;
 		this.endPeriod = functions.getYear(end);
-		this.renderChart();
+		this.renderChart(this.flattenedFilteredData);
 	}
 
 	updateYAxisUnitId(yAxisUnitId) {
 		this.config.yAxisUnitId = parseInt(yAxisUnitId, 10);
-		this.initGroupDropdown();
 
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
 		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
-			$("#enable-CI-checkbox").prop("disabled", false);
+			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+			$("#ciTableSlider-tooltip").hide();
 		} else {
-			$("#enable-CI-checkbox").prop("disabled", true);
-			$("#enable-CI-checkbox").prop("checked", false);
+			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
+			document.getElementById("enable-CI-checkbox").checked = false;
+			document.getElementById("showConfidenceIntervalSlider").checked = false;
+			$("#ciTableSlider-tooltip").show();
 		}
 
 		this.renderDataVisualizations();
@@ -729,13 +757,15 @@ export class LandingPage {
 			this.resetTimePeriods();
 			$("#startYearContainer-label").html("Start Period");
 		} else $("#startYearContainer-label").html("Period");
-		this.renderChart();
+		this.renderChart(this.flattenedFilteredData);
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
 	updateEnableCI(value) {
 		this.config.enableCI = value;
-		this.renderChart();
+		const data = this.getFlattenedFilteredData();
+		if (this.activeTabNumber === 1) this.renderChart(data);
+		else if (this.activeTabNumber === 2) this.renderDataTable(data);
 	}
 
 	updateClassifyType(value) {
@@ -753,7 +783,7 @@ export class LandingPage {
 				this.classifyType = 2;
 				break;
 		}
-		this.renderMap();
+		this.renderMap(this.flattenedFilteredData);
 	}
 
 	toggleLegendItem(value) {
@@ -766,7 +796,7 @@ export class LandingPage {
 		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
 		else return;
 
-		this.renderChart();
+		this.renderChart(this.flattenedFilteredData);
 	}
 
 	// call this when Reset Button is clicked
@@ -790,67 +820,177 @@ export class LandingPage {
 		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
-		if (this.activeTabNumber === 1) this.renderChart();
+		if (this.activeTabNumber === 1) this.renderChart(this.flattenedFilteredData);
 		else $("a[href='#chart-tab']").trigger("click");
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
-	renderDataTable() {
-		const tableData = this.flattenedFilteredData;
+	renderDataTable(data, search) {
+		let tableData = [...data];
+		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+
+		const showCI = document.getElementById("showConfidenceIntervalSlider").checked && this.config.hasCI;
+		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
+
+		tableData = tableData.map((d) => ({
+			year: d.year,
+			column: `${d.stub_label}${
+				d.age && groupNotAge && d.age !== "N/A" && d.age !== d.stub_label ? ": " + d.age : ""
+			}`,
+			data: `${d.estimate}${showCI ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
+				d.flag ? " " + d.flag : ""
+			}`,
+		}));
+
+		const columns = [...new Set(tableData.map((d) => d.column))];
+		const years = [...new Set(tableData.map((d) => d.year))];
+		const allResultsCount = columns.length * years.length;
+		$("#fullTableCount").html(allResultsCount);
+		$("#filteredTableCount").html(allResultsCount);
 		let tableId = "nchs-table";
-		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
-		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
-
-		if (this.config.hasCI) {
-			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
-			keys.push("estimate_lci", "estimate_uci");
-		}
-
-		cols.push("Flag");
-		keys.push("flag");
-
-		this.csv = {
-			data: tableData,
-			dataKeys: keys,
-			title: this.config.chartTitle,
-			headers: cols,
-		};
-		// Now delete a couple cols for visual table
-		keys = keys.filter(
-			(item) =>
-				item !== "indicator" &&
-				item !== "footnote_id_list" &&
-				item !== "unit" &&
-				!item.match("_num") &&
-				!item.match("year_pt") &&
-				!item.match("subLine") &&
-				!item.match("dontDraw") &&
-				!item.match("assignedLegendColor") &&
-				item !== "date"
-		);
 
 		$(".expanded-data-table").empty().html(`
-			<table id="nchs-table" class="table table-bordered table-striped">
-				<thead><tr></tr></thead>
+			<div class="row genSearch">
+				<div class="col-12" style="width: 100%; display: flex; align-items: center; position: relative;">
+					<i class="fa fa-search" style="padding: 0 6px;"></i>
+					<input
+						id="search-table"
+						class="form-control form-control-sm"
+						style="width: 100%; border: 1px solid lightgrey;"
+						type="text"
+						placeholder="Search this table"
+						value="${search ?? ""}" />
+					<i  role="button"
+						tabindex="0"
+						class="fa fa-times-circle"
+						id="clear-search-table" style="padding: 0 6px; cursor: pointer; position: absolute; right: 0.6em; font-size: 1.5em; color: grey;"
+						aria-label="press enter to reset table to all results"></i>
+				</div>
+			</div>
+			<table id="nchs-table" class="table table-bordered">
+				<thead>
+					<tr>
+						<th style="position: sticky; left: 0; z-index: 3; background-color: #e0e0e0;" class="dtfc-fixed-left">Year</th>
+						<th colspan="${columns.length}">Estimate${showCI ? " (Confidence Interval)" : ""}</th>
+					</tr>
+					<tr>
+						<th style="left: 1px !important;"></th>
+						${columns.map((c, i) => `<th class="headerValue" data-index=${i + 1}>${c}</th>`).join("")}
+					</tr>
+				</thead>
 				<tbody></tbody>
 			</table>`);
 
-		const header = `#${tableId} > thead > tr`;
-		$(header).empty();
-		cols.forEach((c) => $(header).append(`<th>${c}</th>`));
-
 		const body = `#${tableId} > tbody`;
-		$(body).empty();
-		tableData.forEach((d) => {
-			const row = document.createElement("tr");
-			keys.forEach((c) => $(row).append(`<td>${d[c] ?? "N/A"}</td>`));
+
+		years.forEach((d) => {
+			const row = `
+			<tr>
+				<th tabindex="0">${d}</th>
+				${columns.map((c) => {
+					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "";
+					return `<td tabindex="0">${value.includes("NaN") ? value.replaceAll("NaN", "") : value}</td>`;
+				})}</tr>`;
 			$(body).append(row);
 		});
 
-		$("#nchs-table").DataTable();
-	}
+		$("#clear-search-table").hide();
+		this.dataTable = $("#nchs-table")
+			.DataTable({
+				bAutoWidth: false,
+				bInfo: false,
+				paging: false,
+				scrollX: "auto",
+				fixedColumns: {
+					left: 1,
+				},
+				searching: false,
+				dom: "tB",
+				buttons: ["csv"],
+			})
+			.columns.adjust();
 
-	exportCSV() {
-		downloadCSV(this.csv);
+		const filter = $("div.dataTables_filter");
+		$(filter).parent().parent().find("div:first").remove();
+		$(filter).parent().removeClass().addClass("col-12");
+		$(filter).find("label").prepend("<i class='fa fa-search' style='padding: 0 6px'></i>");
+
+		let allWordsInHeaderValues = [];
+		$(".headerValue").each((i, d) => {
+			const words = $(d).text().split(" ");
+			words.forEach((w) => {
+				if (!allWordsInHeaderValues.includes(w)) allWordsInHeaderValues.push(w);
+			});
+		});
+		allWordsInHeaderValues = allWordsInHeaderValues.map((d) => d.replace(":", "").toLowerCase());
+		const clearIndices = columns.map((d, i) => i + 1);
+
+		const hideShowColumns = (search) => {
+			clearIndices.forEach((i) => {
+				const column = this.dataTable.column(i);
+				column.visible(true);
+			});
+
+			if (search === "") {
+				$("#clear-search-table").hide();
+				$("#filteredTableCount").html(allResultsCount);
+				return;
+			}
+			const searchIsFullWordInHeader = allWordsInHeaderValues.includes(search.toLowerCase());
+			$(".dataTables_scrollHeadInner .headerValue").each((i, d) => {
+				const column = this.dataTable.column(i + 1);
+				const wordsInHeader = $(d)
+					.text()
+					.split(" ")
+					.map((d) => d.replace(":", "").toLowerCase());
+				if (searchIsFullWordInHeader && !wordsInHeader.includes(search.toLowerCase())) column.visible(false);
+				else if (!searchIsFullWordInHeader && !wordsInHeader.some((w) => w.includes(search.toLowerCase())))
+					column.visible(false);
+			});
+			// check if user has filtered out all columns
+			const visibleColumns = this.dataTable
+				.columns()
+				.visible()
+				.filter((d) => d === true);
+			if (visibleColumns.length === 1) {
+				this.renderDataTable(data, search);
+				return;
+			}
+
+			$("#filteredTableCount").html($(".dataTables_scrollHeadInner .headerValue").length * years.length);
+		};
+
+		$("#search-table")
+			.autocomplete({
+				source: allWordsInHeaderValues,
+				select: (event, ui) => {
+					$("#search-table").val(ui.item.value);
+					$("#search-table").trigger("keyup");
+					hideShowColumns(ui.item.value);
+				},
+				response: (event, ui) => {
+					if (!ui.content.length) ui.content.push({ value: "", label: "No results found" });
+				},
+			})
+			.on("keyup", (e) => {
+				if ($("#search-table").val() === "") {
+					hideShowColumns("");
+					return;
+				}
+				if (e.keyCode === 13) {
+					hideShowColumns($("#search-table").val());
+					$("#search-table").autocomplete("close");
+				} else if (e.keyCode === 27 && $("#search-table").val() !== "") $("#search-table").val("");
+				else $("#clear-search-table").show();
+			});
+
+		$("#clear-search-table").on("click", () => {
+			$("#search-table").val("");
+			hideShowColumns("");
+		});
+
+		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
+		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
 	}
 }

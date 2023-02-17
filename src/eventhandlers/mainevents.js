@@ -48,24 +48,6 @@ export class MainEvents {
 				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 			});
 
-		// on the map tab
-		$("#unit-num-select-map").on("change", (e) => {
-			const yAxisUnitId = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
-		});
-
-		// on the chart tab
-		$("#unit-num-select-chart").on("change", (e) => {
-			const yAxisUnitId = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
-		});
-
-		// on the table tab
-		$("#unit-num-select-table").on("change", (e) => {
-			const yAxisUnitId = parseInt(e.target.value, 10);
-			appState.ACTIVE_TAB.updateYAxisUnitId(yAxisUnitId);
-		});
-
 		$("#show-one-period-checkbox").on("change", (e) => {
 			this.stopAnimation();
 			if (e.target.checked) {
@@ -84,11 +66,15 @@ export class MainEvents {
 			}
 		});
 
-		$("#enable-CI-checkbox").on("change", (e) => {
-			let isChecked = e.target.checked;
-			if (isChecked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
-			else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
-		});
+		$(document)
+			.off("click", "input.ciCheckGroup")
+			.on("click", "input.ciCheckGroup", (e) => {
+				const { checked } = e.currentTarget;
+				document.getElementById("enable-CI-checkbox").checked = checked;
+				document.getElementById("showConfidenceIntervalSlider").checked = checked;
+				if (checked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
+				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
+			});
 
 		const resetTopics = () => {
 			$(".filterCheckbox").prop("checked", false);

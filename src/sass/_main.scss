@@ -79,6 +79,13 @@ a {
 	}
 }
 
+.chart-table-selectors {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 28px 0;
+}
+
 .homeSelectorText {
 	.preSelText {
 		font-size: 1vw;
@@ -147,11 +154,13 @@ a {
 }
 
 .adjustUnitContainer {
-	margin: 15px 20px 10px 0;
-	width: auto;
-	display: inline;
-	float: left;
-	font-size: 0.8em;
+	margin: 0 20px 10px 0;
+	padding-top: 15px;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-end;
 }
 
 .content-wrapper {
