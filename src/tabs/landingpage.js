@@ -96,11 +96,14 @@ export class LandingPage {
 		try {
 			console.log("SOCRATA get topic", config.socrataId);
 
-			let [jsonData] = [];
+			let [jsonData, metaData] = [];
 			// if (config.socrataId === "f8fd-33mw" || config.socrataId === "dm8v-ubmw") {
-			// 	const url = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
-			// 	[jsonData] = await Promise.all([fetch(url).then((res) => res.text())]);
-			// } else {
+			if (!this.config.private) {
+				const url = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+				const metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
+				[jsonData] = await Promise.all([fetch(url).then((res) => res.text())]);
+				[metaData] = await Promise.all([fetch(url).then((res) => res.text())]);
+			} else {
 			[jsonData] = await Promise.all([
 				fetch(
 					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
