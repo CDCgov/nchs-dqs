@@ -96,13 +96,12 @@ export class LandingPage {
 		try {
 			console.log("SOCRATA get topic", config.socrataId);
 
-			let [jsonData, metaData] = [];
+			let [metaData, jsonData] = [];
 			if (config.private == 0) {
-				debugger;
-				const url = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
 				const metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
-				[jsonData] = await Promise.all([fetch(url).then((res) => res.text())]);
 				[metaData] = await Promise.all([fetch(metaUrl).then((res) => res.text())]);
+				const dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+				[jsonData] = await Promise.all([fetch(dataUrl).then((res) => res.text())]);
 			} else {
 				[metaData, jsonData] = await Promise.all([
 					//t is Socrata ID, m is metadata and p is private
