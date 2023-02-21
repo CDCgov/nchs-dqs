@@ -97,21 +97,27 @@ export class LandingPage {
 			console.log("SOCRATA get topic", config.socrataId);
 
 			let [jsonData, metaData] = [];
-			// if (config.socrataId === "f8fd-33mw" || config.socrataId === "dm8v-ubmw") {
-			if (!this.config.private) {
+			if (config.private == 0) {
+				debugger;
 				const url = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
 				const metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
 				[jsonData] = await Promise.all([fetch(url).then((res) => res.text())]);
-				[metaData] = await Promise.all([fetch(url).then((res) => res.text())]);
+				[metaData] = await Promise.all([fetch(metaUrl).then((res) => res.text())]);
 			} else {
-			[jsonData] = await Promise.all([
-				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
-				).then((res) => res.text()),
-			]);
-			// }
+				[metaData, jsonData] = await Promise.all([
+					//t is Socrata ID, m is metadata and p is private
+					fetch(
+						`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`
+					).then((res) => res.text()),
+					fetch(
+						`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
+					).then((res) => res.text()),
+				]);
+			}
 
-			const nchsData = JSON.parse(jsonData);
+			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
+			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
+
 			DataCache[`data-${config.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
