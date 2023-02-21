@@ -359,7 +359,8 @@ export class LandingPage {
 
 		// now update the footnotes on the page
 		let footerNotes = "";
-		const footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
@@ -723,7 +724,7 @@ export class LandingPage {
 		this.startPeriod = start;
 		this.currentTimePeriodIndex = this.allYearsOptions.findIndex((d) => d.value === start);
 		this.startYear = functions.getYear(start);
-		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear <= functions.getYear(d.value));
+		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear < functions.getYear(d.value));
 		this.initEndPeriodDropdown(endPeriodOptions);
 		this.renderDataVisualizations();
 	}
@@ -1009,5 +1010,6 @@ export class LandingPage {
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
+		// $(".buttons-csv.buttons-html5").html("");
 	}
 }
