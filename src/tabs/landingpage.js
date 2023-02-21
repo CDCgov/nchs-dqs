@@ -94,21 +94,26 @@ export class LandingPage {
 		}
 
 		try {
-			let [metaData, jsonData] = [];
 			console.log("SOCRATA get topic", config.socrataId);
 
-			[metaData, jsonData] = await Promise.all([
+			let [metaData, jsonData] = [];
+			let metaUrl, dataUrl;
+
+			if (config.private == 0) {
+				metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
+				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+			} else {
 				//t is Socrata ID, m is metadata and p is private
-				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`
-				).then((res) => res.text()),
-				fetch(
-					`https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`
-				).then((res) => res.text()),
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+			}
+
+			[metaData, jsonData] = await Promise.all([
+				fetch(metaUrl).then((res) => res.text()),
+				fetch(dataUrl).then((res) => res.text()),
 			]);
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
-
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
 
 			DataCache[`data-${config.socrataId}`] = nchsData;
@@ -423,6 +428,20 @@ export class LandingPage {
 					allFootNotes = [...footNotes, ...nhisFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
+
+				// Promise.all([
+				// 	this.getSelectedSocrataData(this.config),
+				// 	this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+				// 	this.getUSMapData(),
+				// ])
+				// 	.then((data) => {
+				// 		let [socrataData, nhisFootnotes, mapData] = data;
+				// 		if (mapData) this.topoJson = JSON.parse(mapData);
+				// 		let allFootNotes = DataCache.Footnotes;
+				// 		if (!allFootNotes) {
+				// 			allFootNotes = [...nhisFootnotes];
+				// 			DataCache.Footnotes = allFootNotes;
+				// 		}
 
 				if (!this.footnoteMap) {
 					this.footnoteMap = {};

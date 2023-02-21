@@ -94,7 +94,7 @@ module.exports = {
 			cleanOnceBeforeBuildPatterns: ["index*", "support*", "css/index*", "runtime*", "vendors*"],
 		}),
 		new HtmlWebPackPlugin({
-			template: "./src/CoronaView_prototype.html",
+			template: "./src/main.html",
 			filename: "./index.html",
 			chunksSortMode: "none",
 			// inject: false,
@@ -111,11 +111,11 @@ module.exports = {
 		new SSICompileWebpackplugin({
 			localBaseDir: "/",
 			minify: false,
-			remoteBasePath: "https://covid.cdc.gov/covid-data-tracker/",
+			remoteBasePath: "https://NCHSData.cdc.gov/",
 		}),
-		new webpack.DefinePlugin({
-			"process.env.API_URL": JSON.stringify("./COVIDData/getAjaxData?id="),
-		}),
+		// new webpack.DefinePlugin({
+		// 	"process.env.API_URL": JSON.stringify("./COVIDData/getAjaxData?id="),
+		// }),
 	],
 
 	resolve: {
