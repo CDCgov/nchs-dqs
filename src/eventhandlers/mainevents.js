@@ -67,11 +67,9 @@ export class MainEvents {
 		});
 
 		$(document)
-			.off("click", "input.ciCheckGroup")
-			.on("click", "input.ciCheckGroup", (e) => {
+			.off("click", "#confidenceIntervalSlider")
+			.on("click", "#confidenceIntervalSlider", (e) => {
 				const { checked } = e.currentTarget;
-				document.getElementById("enable-CI-checkbox").checked = checked;
-				document.getElementById("showConfidenceIntervalSlider").checked = checked;
 				if (checked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 			});

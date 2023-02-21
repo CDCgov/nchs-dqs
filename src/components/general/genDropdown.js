@@ -113,8 +113,7 @@ const clickHandlerLookup = {
 	groupDropdown: (value) => appState.ACTIVE_TAB.updateGroup(value),
 	startYearContainer: (value) => appState.ACTIVE_TAB.updateStartPeriod(value),
 	endYearContainer: (value) => appState.ACTIVE_TAB.updateEndPeriod(value),
-	estimateTypeDropdownTable: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
-	estimateTypeDropdownChart: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
+	estimateTypeDropdown: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
 	estimateTypeDropdownMap: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
 };
 

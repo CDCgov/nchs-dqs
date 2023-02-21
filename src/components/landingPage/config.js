@@ -3,6 +3,32 @@ import { nhisHash, nhisTopics } from "./nhis";
 
 const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
+export const chartAndTableSelectors = `
+	<div id="chart-table-selectors">
+		<div>
+			<div id="subGroupsSelectorsSection">
+				<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
+				<label class="switch">
+					<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
+					<span class="slider round"></span>
+				</label>
+			</div>				
+			<div id="ciTableSlider">
+				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>					
+				<label class="switch">
+					<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
+					<span id="ciTableHover" class="slider round"></span>
+				</label>
+			</div>
+		</div>
+		<div>
+			<div id="estimateTypeDropdown" class="genDropdown">
+				<div id="estimateTypeDropdown-label" for="estimateTypeDropdown-select"class="select-label">Estimate Type</div>
+			</div>
+		</div>
+	</div>
+`;
+
 export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
@@ -141,15 +167,7 @@ export const tabContent = `
 		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
 			<div class="content-wrapper">
-				<div class="adjustUnitContainer">
-					<div id="estimateTypeDropdownChart" class="genDropdown">
-						<div id="estimateTypeDropdownChart-label" for="estimateTypeDropdownChart-select"class="select-label">Estimate Type</div>
-					</div>
-					<div class="checkbox-style" id="enable-CI-checkbox-wrapper" style="display: inline">
-						<input type="checkbox" id="enable-CI-checkbox" class="ciCheckGroup" name="enable-CI-checkbox" />
-						<label for="enable-CI-checkbox">Enable 95% Confidence Intervals</label>
-					</div>
-				</div>
+				<div id="chartSelectors"></div>
 				<div id="chart-container"></div>
 				<br />
 				<div tabindex="0" class="source-text" id="source-text-chart"><b>Source</b>: Data is unavailable for selections chosen.</div>
@@ -158,30 +176,8 @@ export const tabContent = `
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div class="content-wrapper">
-				<div class="chart-table-selectors">
-					<div>
-						<div>
-							<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
-							<label class="switch">
-								<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
-								<span class="slider round"></span>
-							</label>
-						</div>				
-						<div id="ciTableSlider">
-							<label for="showConfidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>					
-							<label class="switch">
-								<input id="showConfidenceIntervalSlider" tabindex="0" class="ciCheckGroup" type="checkbox" aria-label="show all subgroups">
-								<span id="ciTableHover" class="slider round"></span>
-							</label>
-						</div>
-					</div>
-					<div>
-						<div id="estimateTypeDropdownTable" class="genDropdown">
-							<div id="estimateTypeDropdownTable-label" for="estimateTypeDropdownTable-select"class="select-label">Estimate Type</div>
-						</div>
-					</div>
-				</div>
-				<div style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
+				<div id="tableSelectors"></div>
+				<div id="tableResultsCount" style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
 				<div class="expanded-data-table"></div>
 				<br />
 			</div>
