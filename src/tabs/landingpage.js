@@ -845,7 +845,7 @@ export class LandingPage {
 			column: `${d.stub_label}${
 				d.age && groupNotAge && d.age !== "N/A" && d.age !== d.stub_label ? ": " + d.age : ""
 			}`,
-			data: `${d.estimate}${showCI ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
+			data: `${d.estimate}${showCI && d.estimate ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
 				d.flag ? " " + d.flag : ""
 			}`,
 		}));

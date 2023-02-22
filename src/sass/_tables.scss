@@ -195,7 +195,6 @@ input:checked + .slider:before {
 	border-radius: 50%;
 }
 
-.dt-buttons.btn-group,
-.dt-buttons.btn-group * {
-	width: 0 !important;
+.btn.buttons-csv {
+	display: none;
 }

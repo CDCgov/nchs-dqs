@@ -80,13 +80,15 @@ export class MainEvents {
 			resetTopicDropdownList();
 		};
 
-		$(document).on("click", "#home-btn-reset", (event) => {
-			event.stopPropagation();
-			resetTopics();
-			$(".timePeriodContainer").css("display", "flex");
-			appState.ACTIVE_TAB.resetSelections();
-			e.preventDefault();
-		});
+		$(document)
+			.off("click", "#home-btn-reset")
+			.on("click", "#home-btn-reset", (e) => {
+				e.stopPropagation();
+				resetTopics();
+				$(".timePeriodContainer").css("display", "flex");
+				appState.ACTIVE_TAB.resetSelections();
+				e.preventDefault();
+			});
 
 		$(document).on("keyup", ".far-legendItem", (e) => {
 			const code = e.key; // recommended to use e.key, it's normalized across devices and languages
