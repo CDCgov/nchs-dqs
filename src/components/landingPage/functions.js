@@ -34,9 +34,15 @@ export const addHtmlTooltips = () => {
 		containerId: "dropdownSelectorGroup",
 	});
 
+	const ciToggleTooltip = new HtmlTooltip({
+		body: "Confidence interval not available for this set of data",
+		containerId: "ciTableSlider",
+	});
+
 	resetInfoTooltip.render();
 	editFiltersTooltip.render();
 	removeFiltersTooltip.render();
+	ciToggleTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
@@ -51,6 +57,10 @@ export const addHtmlTooltips = () => {
 	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
 	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
 	$(".clearFiltersIcons").mouseleave((e) => removeFiltersTooltip.mouseout(e));
+
+	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
+	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
+	$("#ciTableHover").mouseleave((e) => ciToggleTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);

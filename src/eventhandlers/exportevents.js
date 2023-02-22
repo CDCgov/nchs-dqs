@@ -4,7 +4,7 @@ export const ExportEvents = {
 		if (typeof basicUSTable !== "undefined" && basicUSTable != null) {
 			document.getElementById("btnTableExport").addEventListener("click", (evt) => {
 				evt.preventDefault();
-				appState.ACTIVE_TAB.exportCSV();
+				$(".btn.buttons-csv").trigger("click");
 			});
 		}
 	},
