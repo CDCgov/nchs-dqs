@@ -67,11 +67,9 @@ export class MainEvents {
 		});
 
 		$(document)
-			.off("click", "input.ciCheckGroup")
-			.on("click", "input.ciCheckGroup", (e) => {
+			.off("click", "#confidenceIntervalSlider")
+			.on("click", "#confidenceIntervalSlider", (e) => {
 				const { checked } = e.currentTarget;
-				document.getElementById("enable-CI-checkbox").checked = checked;
-				document.getElementById("showConfidenceIntervalSlider").checked = checked;
 				if (checked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 			});
@@ -82,13 +80,15 @@ export class MainEvents {
 			resetTopicDropdownList();
 		};
 
-		$(document).on("click", "#home-btn-reset", (event) => {
-			event.stopPropagation();
-			resetTopics();
-			$(".timePeriodContainer").css("display", "flex");
-			appState.ACTIVE_TAB.resetSelections();
-			e.preventDefault();
-		});
+		$(document)
+			.off("click", "#home-btn-reset")
+			.on("click", "#home-btn-reset", (e) => {
+				e.stopPropagation();
+				resetTopics();
+				$(".timePeriodContainer").css("display", "flex");
+				appState.ACTIVE_TAB.resetSelections();
+				e.preventDefault();
+			});
 
 		$(document).on("keyup", ".far-legendItem", (e) => {
 			const code = e.key; // recommended to use e.key, it's normalized across devices and languages

@@ -38,7 +38,6 @@ export class LandingPage {
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
 		this.estimateTypeTableDropdown = null;
-		this.estimateTypeChartDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
 	}
@@ -128,6 +127,9 @@ export class LandingPage {
 
 	renderTab() {
 		$("#maincontent").html(config.tabContent);
+		$("#chartSelectors").html(config.chartAndTableSelectors);
+		$("#subGroupsSelectorsSection").hide();
+
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
 
@@ -165,11 +167,11 @@ export class LandingPage {
 						break;
 					case 1:
 						this.groupDropdown.enableDropdown();
-						this.estimateTypeChartDropdown.value(this.config.yAxisUnitId);
 						this.groupDropdown.enableValues("all");
+						this.renderDataVisualizations();
 						break;
 					case 2: // table
-						this.estimateTypeTableDropdown.value(this.config.yAxisUnitId);
+						this.renderDataVisualizations();
 						$("#showAllSubgroupsSlider").trigger("focus");
 						break;
 
@@ -211,6 +213,11 @@ export class LandingPage {
 	}
 
 	renderChart(data) {
+		if (!$("#chartSelectors #chart-table-selectors").length) {
+			$("#chart-table-selectors").detach().prependTo("#chartSelectors");
+			$("#subGroupsSelectorsSection").hide();
+		}
+
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 
@@ -269,12 +276,12 @@ export class LandingPage {
 
 		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
-			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+			$("#confidenceIntervalSlider").prop("disabled", false);
 			$("#ciTableSlider-tooltip").hide();
 		} else {
 			// disable it
-			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
-			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("checked", false);
+			$("#confidenceIntervalSlider").prop("disabled", true);
+			$("#confidenceIntervalSlider").prop("checked", false);
 			$("#ciTableSlider-tooltip").show();
 		}
 
@@ -357,7 +364,8 @@ export class LandingPage {
 
 		// now update the footnotes on the page
 		let footerNotes = "";
-		const footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
@@ -496,13 +504,12 @@ export class LandingPage {
 				if (this.flattenedFilteredData[0] !== undefined) {
 					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
 						// enable the CI checkbox
-						$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+						$("#confidenceIntervalSlider").prop("disabled", false);
 						$("#ciTableSlider-tooltip").hide();
 					} else {
 						// disable it
-						$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
-						document.getElementById("enable-CI-checkbox").checked = false;
-						document.getElementById("showConfidenceIntervalSlider").checked = false;
+						$("#confidenceIntervalSlider").prop("disabled", true);
+						document.getElementById("confidenceIntervalSlider").checked = false;
 						$("#ciTableSlider-tooltip").show();
 					}
 				}
@@ -640,20 +647,12 @@ export class LandingPage {
 		const options = allUnitsArray.map((d) => ({ text: d.unit, value: d.unit_num }));
 		if (options.length) {
 			this.estimateTypeTableDropdown = new GenDropdown({
-				containerId: "estimateTypeDropdownTable",
+				containerId: "estimateTypeDropdown",
 				options,
 				ariaLabel: "estimate type",
 				selectedValue: this.config.yAxisUnitId,
 			});
 			this.estimateTypeTableDropdown.render();
-
-			this.estimateTypeChartDropdown = new GenDropdown({
-				containerId: "estimateTypeDropdownChart",
-				options,
-				ariaLabel: "estimate type",
-				selectedValue: this.config.yAxisUnitId,
-			});
-			this.estimateTypeChartDropdown.render();
 
 			this.estimateTypeMapDropdown = new GenDropdown({
 				containerId: "estimateTypeDropdownMap",
@@ -729,7 +728,10 @@ export class LandingPage {
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
 
-		this.initStartPeriodDropdown(this.allYearsOptions);
+		const startPeriodOptions = this.selections?.viewSinglePeriod
+			? this.allYearsOptions
+			: this.allYearsOptions.slice(0, -1);
+		this.initStartPeriodDropdown(startPeriodOptions);
 		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
 	}
 
@@ -741,7 +743,7 @@ export class LandingPage {
 		this.startPeriod = start;
 		this.currentTimePeriodIndex = this.allYearsOptions.findIndex((d) => d.value === start);
 		this.startYear = functions.getYear(start);
-		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear <= functions.getYear(d.value));
+		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear < functions.getYear(d.value));
 		this.initEndPeriodDropdown(endPeriodOptions);
 		this.renderDataVisualizations();
 	}
@@ -749,8 +751,7 @@ export class LandingPage {
 	updateEndPeriod(end) {
 		this.endYear = end;
 		this.endPeriod = functions.getYear(end);
-		const data = this.getFlattenedFilteredData();
-		this.renderChart(data);
+		this.renderDataVisualizations();
 	}
 
 	updateYAxisUnitId(yAxisUnitId) {
@@ -758,13 +759,12 @@ export class LandingPage {
 
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
-		if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
-			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", false);
+		if (this.flattenedFilteredData[0]?.hasOwnProperty("estimate_uci")) {
+			$("#confidenceIntervalSlider").prop("disabled", false);
 			$("#ciTableSlider-tooltip").hide();
 		} else {
-			$("#enable-CI-checkbox, #showConfidenceIntervalSlider").prop("disabled", true);
-			document.getElementById("enable-CI-checkbox").checked = false;
-			document.getElementById("showConfidenceIntervalSlider").checked = false;
+			$("#confidenceIntervalSlider").prop("disabled", true);
+			document.getElementById("confidenceIntervalSlider").checked = false;
 			$("#ciTableSlider-tooltip").show();
 		}
 
@@ -776,17 +776,17 @@ export class LandingPage {
 		if (value === 0) {
 			this.resetTimePeriods();
 			$("#startYearContainer-label").html("Start Period");
-		} else $("#startYearContainer-label").html("Period");
-		const data = this.getFlattenedFilteredData();
-		this.renderChart(data);
+		} else {
+			this.initStartPeriodDropdown(this.allYearsOptions);
+			$("#startYearContainer-label").html("Period");
+		}
+		this.renderDataVisualizations();
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
 	updateEnableCI(value) {
 		this.config.enableCI = value;
-		const data = this.getFlattenedFilteredData();
-		if (this.activeTabNumber === 1) this.renderChart(data);
-		else if (this.activeTabNumber === 2) this.renderDataTable(data);
+		this.renderDataVisualizations();
 	}
 
 	updateClassifyType(value) {
@@ -816,8 +816,7 @@ export class LandingPage {
 		if (currentLength > 0 && foundItemIndex !== -1) DataCache.activeLegendList.splice(foundItemIndex, 1);
 		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
 		else return;
-		const data = this.getFlattenedFilteredData();
-		this.renderChart(data);
+		this.renderDataVisualizations();
 	}
 
 	// call this when Reset Button is clicked
@@ -841,18 +840,23 @@ export class LandingPage {
 		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
-		const data = this.getFlattenedFilteredData();
-		if (this.activeTabNumber === 1) this.renderChart(data);
-		else $("a[href='#chart-tab']").trigger("click");
+		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
+		else this.renderDataVisualizations();
+
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
 	renderDataTable(data, search) {
+		if (!$("#tableSelectors #chart-table-selectors").length) {
+			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
+			$("#subGroupsSelectorsSection").show();
+		}
+
 		let tableData = [...data];
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
-		const showCI = document.getElementById("showConfidenceIntervalSlider").checked && this.config.hasCI;
+		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
 
 		tableData = tableData.map((d) => ({
@@ -860,10 +864,21 @@ export class LandingPage {
 			column: `${d.stub_label}${
 				d.age && groupNotAge && d.age !== "N/A" && d.age !== d.stub_label ? ": " + d.age : ""
 			}`,
-			data: `${d.estimate}${showCI ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
+			data: `${d.estimate}${showCI && d.estimate ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
 				d.flag ? " " + d.flag : ""
 			}`,
 		}));
+
+		if (tableData.every((d) => !d.data || d.data === "NaN")) {
+			$("#tableResultsCount").hide();
+			$(".expanded-data-table")
+				.empty()
+				.html(
+					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options.</div>`
+				);
+			return;
+		}
+		$("#tableResultsCount").show();
 
 		const columns = [...new Set(tableData.map((d) => d.column))];
 		const years = [...new Set(tableData.map((d) => d.year))];
@@ -1014,5 +1029,6 @@ export class LandingPage {
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
+		// $(".buttons-csv.buttons-html5").html("");
 	}
 }

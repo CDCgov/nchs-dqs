@@ -290,8 +290,8 @@ div.genDropdownSelected {
 }
 
 #estimateTypeDropdownMap,
-#estimateTypeDropdownChart,
-#estimateTypeDropdownTable {
+// #estimateTypeDropdownChart,
+#estimateTypeDropdown {
 	width: 400px;
 	@media screen and (max-width: 400px) {
 		width: 100%;
