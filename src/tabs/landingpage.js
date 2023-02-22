@@ -26,21 +26,19 @@ export class LandingPage {
 		this.footnoteMap = null;
 		this.showBarChart = 0;
 		this.topoJson = null;
+		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 		this.selections = null;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
 		this.config = null;
 		this.activeTabNumber = 1; // the chart tab number, 0 indexed
 		this.genChart = null;
-		this.allMapData = null;
 		this.animationInterval = null;
 		this.events = null;
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
 		this.allYearsOptions = null;
-		this.binning = "static";
-		this.legend = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -161,7 +159,6 @@ export class LandingPage {
 						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
-						this.allMapData = null;
 						this.renderMap();
 						break;
 					case 1:
@@ -182,65 +179,22 @@ export class LandingPage {
 		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
 	}
 
-	generateLegend = () => {
-		if (!this.allMapData) return null;
-
-		const min = d3.min(this.allMapData, (d) => d.estimate);
-		const max = d3.max(this.allMapData, (d) => d.estimate);
-
-		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt == this.endYear));
-		const { legend } = endYearDataBinned;
-		let currentMax;
-		legend.forEach((l, i) => {
-			if (i === 0) return;
-			if (i === 1) {
-				l.min = min;
-				currentMax = l.max;
-			} else {
-				l.min = Number((currentMax + this.config.binGranularity).toFixed(2));
-				currentMax = l.max;
-			}
-			if (i === 4) l.max = max;
-		});
-
-		return legend;
-	};
-
 	renderMap() {
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
+		// Get filtered data
 		let stateData = this.getFlattenedFilteredData();
-		this.legend = this.legend ?? this.generateLegend();
-		if (!this.legend?.length) {
-			return;
-		}
-
-		const allDates = this.allYearsOptions.map((d) => d.value);
+		// but need to narrow it to the selected time period
+		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
 		stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
-		let classified;
-		let staticBin;
-		if (this.binning === "static") {
-			stateData = stateData.map((d) => ({
-				...d,
-				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
-			}));
-			staticBin = JSON.parse(JSON.stringify(this.legend));
-			staticBin[1].min = "min";
-			staticBin[4].max = "max";
-		} else {
-			classified = functions.binData(stateData);
-			stateData = classified.classifiedData;
-		}
-
 		this.flattenedFilteredData = stateData;
-
 		const mapVizId = "us-map";
 		let map = new GenMap({
 			mapData: stateData,
 			topoJson: this.topoJson,
-			mLegendData: this.binning === "static" ? staticBin : classified.legend,
 			vizId: mapVizId,
+			classifyType: this.classifyType,
 			startYear: parseInt(this.startYear, 10),
 			allDates,
 			currentTimePeriodIndex: this.currentTimePeriodIndex,
@@ -298,7 +252,6 @@ export class LandingPage {
 		);
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
-		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
 
 		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
@@ -405,8 +358,6 @@ export class LandingPage {
 	topicDropdownChange = (value) => {
 		this.events.stopAnimation();
 		this.selections = null;
-		this.legend = null;
-		this.allMapData = null;
 		this.updateTopic(value);
 	};
 
@@ -419,7 +370,6 @@ export class LandingPage {
 			$("#startYearContainer").removeClass("offset-3");
 			$("#endYearContainer").show();
 			this.showBarChart = false;
-			this.currentTimePeriodIndex = 0;
 		}
 
 		this.dataTopic = dataTopic; // string
@@ -695,16 +645,12 @@ export class LandingPage {
 	}
 
 	updateClassification(classificationId) {
-		this.legend = null;
-		this.allMapData = null;
-		this.currentTimePeriodIndex = 0;
-
 		this.events.stopAnimation();
 		this.config.classificationId = parseInt(classificationId, 10);
 		this.initGroupDropdown();
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateGroup(1);
+			this.updateGroup(1, false);
 			this.groupDropdown.value("1");
 			this.groupDropdown.disableDropdown();
 			return;
@@ -756,9 +702,9 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
+
 		this.initStartPeriodDropdown(this.allYearsOptions);
 		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
-		this.currentTimePeriodIndex = 0;
 	}
 
 	updateStartTimePeriodDropdown(value) {
@@ -812,8 +758,20 @@ export class LandingPage {
 	}
 
 	updateClassifyType(value) {
-		this.binning = value;
-		this.resetTimePeriods();
+		switch (value) {
+			case "quartiles":
+				this.classifyType = 1; // standard
+				break;
+			case "natural":
+				this.classifyType = 2; // natural
+				break;
+			case "equal":
+				this.classifyType = 3; // not using right now
+				break;
+			default: // natural
+				this.classifyType = 2;
+				break;
+		}
 		this.renderMap();
 	}
 

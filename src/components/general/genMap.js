@@ -1,19 +1,19 @@
 import * as d3 from "../../lib/d3.min";
 import { GenTooltip } from "./genTooltip";
 import { getGenSvgScale } from "../../utils/genSvgScale";
+import { ClassifyData } from "../../utils/ClassifyDataNT";
 
 export class GenMap {
 	constructor(props) {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
+		this.classifyType = parseInt(props.classifyType, 10);
 		this.startYear = props.startYear; // time period start year selected
 		this.allDates = props.allDates;
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
 		this.animating = props.animating;
 		this.noDataColorHexVal = null;
 		this.tooltipConstructor = props.genTooltipConstructor;
-		this.mLegendData = props.mLegendData;
-		this.stableBuckets = props.stableBuckets;
 		this.topoJson = props.topoJson;
 	}
 
@@ -163,7 +163,7 @@ export class GenMap {
 	render() {
 		const topoJson = JSON.parse(JSON.stringify(this.topoJson));
 		const { geometries } = topoJson.objects.StatesAndTerritories;
-		let { mLegendData } = this;
+		let mLegendData;
 		let mActiveLegendItems = [];
 		let mActiveLegendItemColors = [];
 		const mSuppressedFlagID = -2;
@@ -175,6 +175,27 @@ export class GenMap {
 		$(`#${this.mapVizId}`).empty();
 
 		const genTooltip = new GenTooltip(this.tooltipConstructor);
+
+		let ClassifiedDataObj;
+
+		switch (this.classifyType) {
+			case 1:
+				// Standard Breaks - with 4 Quartiles
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 4, 1);
+				break;
+			case 2:
+				// Natural Breaks
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 2);
+				break;
+			case 3:
+				// Equal Intervals - NOT USED
+				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 3);
+				break;
+			default:
+				break;
+		}
+
+		this.data = ClassifiedDataObj.classifiedData;
 
 		function mouseover() {
 			const thisElement = d3.select(this);
@@ -428,6 +449,7 @@ export class GenMap {
 
 		genTooltip.render();
 
+		mLegendData = ClassifiedDataObj.legend;
 		mActiveLegendItems = getDefaultActiveLegendItems();
 
 		loadMapLegend();

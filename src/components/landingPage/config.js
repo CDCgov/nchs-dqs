@@ -114,26 +114,20 @@ export const tabContent = `
 			<li><a href="#table-tab"><i class="fas fa-table fa-fw me-2"></i> Table</a></li>
 		</ul>
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper map">
-				<div class="adjustUnitContainer map">
+			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+				<div class="adjustUnitContainer">
 					<label for="unit-num-select-map" aria-label="Adjust Unit">Adjust Unit</label>
                     <br />
 					<select name="unit-num-select-map-box" id="unit-num-select-map" form="select-view-options">
 						<option value="1" selected>Percent of population, crude</option>
 					</select>
-				</div>				
+				</div>
 				<fieldset class="breaksContainer">
-					<div id="staticBinningContainer">
-						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">
-							Binning
-							<i class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
-						</label>
-					</div>
 					<div class="btnToggle">
-						<input type="radio" name="classifyBy" value="static" id="classNBreaks" checked="checked" />
-						<label role="button" for="classNBreaks">Static</label>
-						<input type="radio" name="classifyBy" value="dynamic" id="classQuartiles" />
-						<label role="button" for="classQuartiles">Dynamic</label>
+						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
+						<label role="button" for="classNBreaks">Natural Breaks</label>
+						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
+						<label role="button" for="classQuartiles">Quartiles</label>
 					</div>
 				</fieldset>			
 				<div id="us-map-container">
@@ -278,7 +272,6 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
-		binGranularity: 0.1,
 		hasClassification: true,
 	},
 	birthweight: {
@@ -291,7 +284,6 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
-		binGranularity: 0.01,
 		hasClassification: true,
 	},
 	medicaidU65: {
