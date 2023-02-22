@@ -152,26 +152,11 @@ a {
 	display: inline;
 	float: left;
 	font-size: 0.8em;
-
-	&.map {
-		@media screen and (min-width: $large-screen-min-width) {
-			position: absolute;
-			left: calc(4rem + 10px);
-			text-align: left;
-		}
-	}
 }
 
 .content-wrapper {
 	padding: 0 4vw;
 	background-color: #b3d2ce;
-
-	&.map {
-		background-color: #b3d2ce;
-		margin-top: 0px;
-		padding-top: 1px;
-		text-align: center;
-	}
 }
 
 #us-map-container {
@@ -193,7 +178,7 @@ a {
 }
 
 .breaksContainer {
-	margin: 1px auto auto 10px;
+	margin: 20px auto auto 10px;
 	display: inline;
 }
 
