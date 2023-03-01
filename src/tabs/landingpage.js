@@ -8,6 +8,7 @@ import * as config from "../components/landingPage/config";
 import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
+import { TopicDropdown } from "../components/general/topicDropdown";
 
 export class LandingPage {
 	constructor() {
@@ -37,6 +38,7 @@ export class LandingPage {
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
+		this.subgroupDropdown = null;
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
@@ -547,13 +549,14 @@ export class LandingPage {
 				options.push({
 					text: title,
 					value: k[0],
+					topicGroup: k[1].topicGroup,
 				});
 		});
 
-		this.topicDropdown = new GenDropdown({
+		this.topicDropdown = new TopicDropdown({
 			containerId: "topicDropdown",
 			ariaLabel: "select a topic",
-			options,
+			options: options.sort((a, b) => a.text.localeCompare(b.text)),
 			selectedValue: this.selections?.topic,
 		});
 		this.topicDropdown.render();
@@ -630,6 +633,8 @@ export class LandingPage {
 		else $("#showAllSubgroupsSlider").prop("disabled", false);
 	}
 
+	initSubgroupDropdown() {}
+
 	setVerticalUnitAxisSelect() {
 		let allUnitsArray = this.socrataData.filter(
 			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.groupId, 10)
@@ -689,8 +694,11 @@ export class LandingPage {
 
 		if (updateTimePeriods) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
-		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
-		else $("#showAllSubgroupsSlider").prop("disabled", false);
+		if (groupText.toLowerCase().includes("total")) {
+			$("#showAllSubgroupsSlider").prop("disabled", true);
+		} else {
+			$("#showAllSubgroupsSlider").prop("disabled", false);
+		}
 
 		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();

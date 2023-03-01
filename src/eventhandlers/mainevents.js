@@ -77,6 +77,7 @@ export class MainEvents {
 		const resetTopics = () => {
 			$(".filterCheckbox").prop("checked", false);
 			$(".clearAllFilters").hide();
+			$("#refineTopicList").attr("style", "");
 			resetTopicDropdownList();
 		};
 
@@ -138,22 +139,38 @@ export class MainEvents {
 				} else if (appState.ACTIVE_TAB.activeTabNumber === 0) {
 					downLoadMap2();
 				}
+			})
+			.off("click keypress", "#refineTopicList")
+			.on("click keypress", "#refineTopicList", (e) => {
+				if (e.type === "keypress" && e.key !== "Enter") return;
+				$("#filtersModal").modal("show");
+			})
+			.off("click", "#submitFilters, #closeAdvancedFilters")
+			.on("click", "#submitFilters, #closeAdvancedFilters", () => {
+				if ($(".filterCheckbox:checkbox:checked").length)
+					$("#refineTopicList").attr("style", "color: #800080 !important");
+				else $("#refineTopicList").attr("style", "color: #00f !important");
+
+				$("#filtersModal").modal("hide");
+				updateTopicDropdownList();
+			})
+			.off("click", ".filterCheckbox")
+			.on("click", ".filterCheckbox", () => {
+				const selected = $(".filterCheckbox:checkbox:checked").length;
+				if (selected) {
+					let message = "";
+					$(".filterCheckbox:checkbox:checked").each((i, el) => {
+						message += $(el).siblings("label").text() + " <b>OR</b> ";
+					});
+					message = message.slice(0, -11);
+					$("#filterResults").html(message);
+				} else {
+					$("#filterResults").html("All.");
+				}
 			});
 
-		$(".callFiltersModal").click(() => {
-			$("#filtersModal").modal("show");
-		});
-
-		$("#submitFilters").click(() => {
-			if ($(".filterCheckbox:checkbox:checked").length) {
-				$(".clearAllFilters").show();
-				$(".callFiltersModal").hide();
-			} else $(".clearAllFilters").hide();
-			$("#filtersModal").modal("hide");
-			updateTopicDropdownList();
-		});
-
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {
+			$("#filterResults").html("All.");
 			resetTopics();
 			$(".callFiltersModal").show();
 		});
