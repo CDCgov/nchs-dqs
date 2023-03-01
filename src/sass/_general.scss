@@ -262,6 +262,7 @@ div.genDropdownSelected {
 			top: 64px;
 		}
 
+		z-index: 2 !important;
 		margin: 0;
 		width: calc(100% + 2px);
 		position: absolute;
