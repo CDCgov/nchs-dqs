@@ -99,9 +99,7 @@ export const tabContent = `
 			</div>
 			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div id="subgroupDropdown" class="genDropdown">
-				<label for="subgroupDropdown-select" id="subgroupDropdown-label">&nbsp;</label>
-			</div>
+			<div id="subgroupDropdown"></div>
 		</div>
 		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
 		<div class="col homeSelectorGroup leftBorderSmallView">
@@ -190,7 +188,7 @@ export const tabContent = `
 				<div id="chartSelectors"></div>
 				<div id="chart-container"></div>
 				<br />
-				<div tabindex="0" class="source-text" id="source-text-chart"><b>Source</b>: Data is unavailable for selections chosen.</div>
+				<div tabindex="0" class="source-text" id="source-text-chart"><b>Source</b>: Data are unavailable for selections chosen.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>

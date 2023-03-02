@@ -9,6 +9,7 @@ import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
+import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
 
 export class LandingPage {
 	constructor() {
@@ -631,9 +632,22 @@ export class LandingPage {
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
 		else $("#showAllSubgroupsSlider").prop("disabled", false);
+		this.initSubgroupDropdown();
 	}
 
-	initSubgroupDropdown() {}
+	initSubgroupDropdown() {
+		this.subgroupDropdown = new SubgroupMultiSelectDropdown({
+			tabName: "landingPage",
+			containerId: "subgroupDropdown",
+			chartContainerId: "chart-container",
+			options: [
+				{ text: "All", value: "all" },
+				{ text: "None", value: "none" },
+				{ text: "Custom", value: "custom" },
+			],
+		});
+		this.subgroupDropdown.render();
+	}
 
 	setVerticalUnitAxisSelect() {
 		let allUnitsArray = this.socrataData.filter(

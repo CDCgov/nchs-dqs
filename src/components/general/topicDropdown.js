@@ -405,7 +405,10 @@ export class TopicDropdown {
 			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #000");
 			$(`#${this.props.containerId} #genDropdownSearch`).html("<a>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
-		} else this.#resetOptions(); // $(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
+		} else {
+			this.#resetOptions();
+			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
+		}
 		this.#scrollIntoView();
 	};
 

@@ -262,6 +262,7 @@ div.genDropdownSelected {
 			top: 64px;
 		}
 
+		z-index: 2 !important;
 		margin: 0;
 		width: calc(100% + 2px);
 		position: absolute;
@@ -327,6 +328,139 @@ div.genDropdownSelected {
 
 		&.genDropDownWithGroups div.genDropdownOption {
 			padding-left: 30px;
+		}
+	}
+}
+
+.genMsdSelected {
+	min-height: 38px;
+	display: flex;
+	flex-wrap: wrap;
+	position: relative;
+	background-color: white;
+	border: 1px solid #bbb;
+	border-radius: 5px;
+	width: 100%;
+	margin: 0;
+	padding: 2px 240px 2px 4px;
+	@include mobile-breakpoint {
+		padding-top: 36px;
+	}
+
+	&:hover {
+		border-color: #555;
+	}
+
+	&.genMsdOpened {
+		border-color: #555;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+		border-bottom-color: transparent;
+	}
+
+	.genMsdSearch {
+		border: 1px solid #aaa;
+		border-radius: 4px;
+		padding-left: 5px;
+		position: absolute;
+		top: 3px;
+		right: 30px;
+
+		@include mobile-breakpoint {
+			left: 4px;
+		}
+	}
+
+	> .genMsdOption {
+		margin: 2.5px 0;
+		margin-right: 5px;
+		padding: 0.35em 0.75em;
+		font-size: 14px;
+		font-weight: 700;
+		line-height: 14px;
+		white-space: nowrap;
+		color: rgb(7, 82, 144);
+		background-color: rgb(224, 224, 224);
+		border: 1px solid rgb(200, 200, 200);
+		border-radius: 4px;
+
+		i {
+			margin-left: 8px;
+			opacity: 0.8;
+			transition: opacity 0.15s ease-in;
+
+			&:hover {
+				opacity: 1;
+				transition: opacity 0.15s ease-in;
+			}
+		}
+	}
+
+	.genMsdUnselected {
+		margin: 0;
+		width: calc(100% + 2px);
+		position: absolute;
+		left: -1px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		max-height: 317px;
+		display: none;
+		background-color: #f5f5f5;
+		border: 1px solid #555;
+		border-top: none;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+
+		&.genMsdOpened {
+			display: block;
+		}
+
+		ul {
+			list-style: none;
+			margin-bottom: 5px;
+			padding-left: 5px;
+
+			li:nth-child(even) {
+				background-color: #fff;
+			}
+
+			li {
+				margin-left: -10px;
+				margin-right: -10px;
+				padding-left: 20px;
+				padding-right: 20px;
+				color: #191919;
+
+				&:hover {
+					text-decoration: underline;
+					cursor: pointer;
+				}
+			}
+		}
+		ul#maxSelectionsInfo {
+			margin-bottom: 0;
+		}
+		ul#maxSelectionsInfo li:not(.genMsdClearAll):not(.genMsdSelectTopN) {
+			color: rgb(85, 85, 85);
+			text-decoration: none;
+			cursor: default;
+		}
+	}
+
+	#genMsdOpenIcon {
+		position: absolute;
+		top: -2px;
+		right: -6px;
+		cursor: pointer;
+		color: rgb(85, 85, 85);
+		font-size: 28px;
+		padding: 0 12px;
+		opacity: 0.8;
+		transition: opacity 0.15s ease-in;
+
+		&:hover {
+			opacity: 1;
+			transition: opacity 0.15s ease-in;
 		}
 	}
 }
