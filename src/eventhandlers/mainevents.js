@@ -147,9 +147,10 @@ export class MainEvents {
 			})
 			.off("click", "#submitFilters, #closeAdvancedFilters")
 			.on("click", "#submitFilters, #closeAdvancedFilters", () => {
-				if ($(".filterCheckbox:checkbox:checked").length)
-					$("#refineTopicList").attr("style", "color: #800080 !important");
-				else $("#refineTopicList").attr("style", "color: #00f !important");
+				$("#refineTopicList").attr("style", "color: #800080 !important");
+				// if ($(".filterCheckbox:checkbox:checked").length)
+				// 	$("#refineTopicList").attr("style", "color: #800080 !important");
+				// else $("#refineTopicList").attr("style", "color: #00f !important");
 
 				$("#filtersModal").modal("hide");
 				updateTopicDropdownList();
@@ -165,12 +166,12 @@ export class MainEvents {
 					message = message.slice(0, -11);
 					$("#filterResults").html(message);
 				} else {
-					$("#filterResults").html("All.");
+					$("#filterResults").html("All");
 				}
 			});
 
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {
-			$("#filterResults").html("All.");
+			$("#filterResults").html("All");
 			resetTopics();
 			$(".callFiltersModal").show();
 		});
