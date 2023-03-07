@@ -181,6 +181,7 @@ export class GenDropdown {
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
 				);
+				$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened"); // close subgroup dropdown
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
@@ -194,6 +195,7 @@ export class GenDropdown {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
 						);
+						$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened"); // close subgroup dropdown
 						this.#toggleOpenClose();
 					}
 				} else if (key === " " && !this.searchText.length) {

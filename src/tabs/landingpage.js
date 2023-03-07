@@ -39,7 +39,11 @@ export class LandingPage {
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
-		this.subgroupDropdown = null;
+		this.subgroupDropdown = new SubgroupMultiSelectDropdown({
+			tabName: "landingPage",
+			containerId: "subgroupDropdown",
+			chartContainerId: "chart-container",
+		});
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
@@ -161,6 +165,7 @@ export class LandingPage {
 				} else id = parseInt(target.id.slice(-1), 10);
 
 				this.activeTabNumber = id - 1;
+				$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened");
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateGroup(1, false);
@@ -223,9 +228,11 @@ export class LandingPage {
 
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
+		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
+		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
 
 		this.chartConfig = functions.getAllChartProps(
-			flattenedData,
+			chartData,
 			this.showBarChart,
 			this.config,
 			this.groupDropdown.text()
@@ -254,10 +261,18 @@ export class LandingPage {
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 1) {
+			const disabled = this.groupDropdown.text().toLowerCase().includes("total");
+			this.subgroupDropdown.disable(disabled);
+			this.subgroupDropdown.setMaxSelections(7);
 			this.renderChart(data);
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 2) {
+			const onTotal = this.groupDropdown.text().toLowerCase().includes("total");
+			const showingAllSubgroups = $("#showAllSubgroupsSlider").is(":checked");
+			const disabled = onTotal || showingAllSubgroups;
+			this.subgroupDropdown.disable(disabled);
+			this.subgroupDropdown.setMaxSelections(1000); // arbitrary large number
 			this.renderDataTable(data);
 			$("#btnTableExport").show();
 			$("#dwn-chart-img").hide();
@@ -408,7 +423,6 @@ export class LandingPage {
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
 
 		// clear the list of active legend items
-		DataCache.activeLegendList = [];
 
 		if (this.selections?.viewSinglePeriod) {
 			$("#startYearContainer").addClass("offset-3");
@@ -421,8 +435,6 @@ export class LandingPage {
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-
-		DataCache.activeLegendList = [];
 
 		if (this.config.socrataId.startsWith("nhis") && !this.nhisData) {
 			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
@@ -481,8 +493,7 @@ export class LandingPage {
 					...d,
 					estimate: parseFloat(d.estimate),
 					year_pt: functions.getYear(d.year),
-					dontDraw: false,
-					assignedLegendColor: "#FFFFFF",
+					// assignedLegendColor: "#FFFFFF",
 				}));
 
 				// for line chart and bar chart, REMOVE the undefined data entirely
@@ -636,16 +647,13 @@ export class LandingPage {
 	}
 
 	initSubgroupDropdown() {
-		this.subgroupDropdown = new SubgroupMultiSelectDropdown({
-			tabName: "landingPage",
-			containerId: "subgroupDropdown",
-			chartContainerId: "chart-container",
-			options: [
-				{ text: "All", value: "all" },
-				{ text: "None", value: "none" },
-				{ text: "Custom", value: "custom" },
-			],
-		});
+		this.flattenedFilteredData = this.getFlattenedFilteredData();
+		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
+			text: d,
+			value: d,
+			selected: i < 5,
+		}));
+		this.subgroupDropdown.setOptions(options);
 		this.subgroupDropdown.render();
 	}
 
@@ -697,7 +705,6 @@ export class LandingPage {
 			return;
 		}
 
-		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();
 	}
 
@@ -714,7 +721,7 @@ export class LandingPage {
 			$("#showAllSubgroupsSlider").prop("disabled", false);
 		}
 
-		DataCache.activeLegendList = [];
+		this.initSubgroupDropdown();
 		this.renderDataVisualizations();
 	}
 
@@ -766,7 +773,7 @@ export class LandingPage {
 		this.currentTimePeriodIndex = this.allYearsOptions.findIndex((d) => d.value === start);
 		this.startYear = functions.getYear(start);
 		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear < functions.getYear(d.value));
-		this.initEndPeriodDropdown(endPeriodOptions);
+		if (endPeriodOptions.length) this.initEndPeriodDropdown(endPeriodOptions);
 		this.renderDataVisualizations();
 	}
 
@@ -829,18 +836,6 @@ export class LandingPage {
 		this.renderMap(this.flattenedFilteredData);
 	}
 
-	toggleLegendItem(value) {
-		const selDataPt = value.replace(/_/g, " ");
-
-		const currentLength = DataCache.activeLegendList.length;
-		const foundItemIndex = DataCache.activeLegendList.findIndex((f) => f.stub_label === selDataPt);
-
-		if (currentLength > 0 && foundItemIndex !== -1) DataCache.activeLegendList.splice(foundItemIndex, 1);
-		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
-		else return;
-		this.renderDataVisualizations();
-	}
-
 	// call this when Reset Button is clicked
 	resetSelections() {
 		functions.resetTopicDropdownList();
@@ -859,7 +854,6 @@ export class LandingPage {
 		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect();
-		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
@@ -875,6 +869,11 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
+		if (!$("#showAllSubgroupsSlider").is(":checked")) {
+			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
+			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		}
+
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
@@ -896,7 +895,7 @@ export class LandingPage {
 			$(".expanded-data-table")
 				.empty()
 				.html(
-					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options.</div>`
+					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options. Select at least one Subgroup.</div>`
 				);
 			return;
 		}

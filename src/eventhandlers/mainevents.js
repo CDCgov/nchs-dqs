@@ -72,7 +72,11 @@ export class MainEvents {
 				const { checked } = e.currentTarget;
 				if (checked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
-			});
+			})
+			.off("click", "#showAllSubgroupsSlider")
+			.on("click", "#showAllSubgroupsSlider", (e) =>
+				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget)
+			);
 
 		const resetTopics = () => {
 			$(".filterCheckbox").prop("checked", false);
@@ -90,24 +94,6 @@ export class MainEvents {
 				appState.ACTIVE_TAB.resetSelections();
 				e.preventDefault();
 			});
-
-		$(document).on("keyup", ".far-legendItem", (e) => {
-			const code = e.key; // recommended to use e.key, it's normalized across devices and languages
-			if (code === "Enter" || code === "Space") {
-				e.stopPropagation();
-				// get the unique id of the legend item
-				let legItem = e.target.parentNode.parentNode.id;
-				appState.ACTIVE_TAB.toggleLegendItem(legItem);
-				e.preventDefault();
-			}
-		});
-		$(document).on("click", ".far-legendItem", (e) => {
-			e.stopPropagation();
-			// get the unique id of the legend item
-			const legItem = e.target.parentNode.parentNode.id;
-			appState.ACTIVE_TAB.toggleLegendItem(legItem);
-			e.preventDefault();
-		});
 
 		// click Map then show Map
 		$(document).on("click", "a[href='#map-tab']", () => {
@@ -147,10 +133,7 @@ export class MainEvents {
 			})
 			.off("click", "#submitFilters, #closeAdvancedFilters")
 			.on("click", "#submitFilters, #closeAdvancedFilters", () => {
-				if ($(".filterCheckbox:checkbox:checked").length)
-					$("#refineTopicList").attr("style", "color: #800080 !important");
-				else $("#refineTopicList").attr("style", "color: #00f !important");
-
+				$("#refineTopicList").attr("style", "color: #800080 !important");
 				$("#filtersModal").modal("hide");
 				updateTopicDropdownList();
 			})
@@ -165,12 +148,12 @@ export class MainEvents {
 					message = message.slice(0, -11);
 					$("#filterResults").html(message);
 				} else {
-					$("#filterResults").html("All.");
+					$("#filterResults").html("All");
 				}
 			});
 
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {
-			$("#filterResults").html("All.");
+			$("#filterResults").html("All");
 			resetTopics();
 			$(".callFiltersModal").show();
 		});

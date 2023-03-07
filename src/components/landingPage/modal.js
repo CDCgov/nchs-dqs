@@ -131,7 +131,7 @@ export const modal = `
 				<div class="modal-footer text-center d-block">
 					<div id="refineInfoRow" class="flexRow">
 						<i id="refineInfoIcon" class="fas fa-info-circle" style="font-size: 24px; margin-right: 6px"></i>
-						<div>Show results for: <span id="filterResults">All.</span></div>
+						<div>Show results for: <span id="filterResults">All</span></div>
 					</div>
 					<button id="clearCurrentFilters" class="btn-sm btn-danger" aria-hidden="false">Clear Selections</button>
 					<button id="submitFilters" class="btn-sm btn-primary" aria-hidden="false">Submit Filters</button>

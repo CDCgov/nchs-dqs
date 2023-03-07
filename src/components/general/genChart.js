@@ -21,15 +21,11 @@ import { genFormat } from "../../utils/genFormat";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
-import { DataCache } from "../../utils/datacache";
 
 export class GenChart {
 	constructor(providedProps) {
 		this.props = getProps(providedProps);
 	}
-
-	// NOTE: ALl data sorting needs to be done on the data
-	// BEFORE passing into this genChart (TT)
 
 	render() {
 		const p = this.props;
@@ -43,38 +39,6 @@ export class GenChart {
 
 		let allIncomingData = p.data.filter((d) => !Number.isNaN(d.estimate)); // this has to be used for the LEGENDS
 		// and for reliability, filter out any null data
-
-		// Limit the bar-chart draw data to max of 10 lines or bars based on activeLegendList
-		if (p.usesBars) {
-			let barsToDraw = DataCache.activeLegendList.filter((e) => e.dontDraw === false).length;
-			if (barsToDraw === 0) barsToDraw = Math.min(10, p.data.length);
-			let barsAdded = 0;
-			let groups = DataCache.activeLegendList.map((d) => d.stub_label);
-			p.data = allIncomingData.filter((d) => groups.includes(d.stub_label));
-
-			barsAdded = p.data.length;
-			if (barsAdded < barsToDraw) {
-				const filteredIncoming = allIncomingData.filter((d) => !groups.includes(d.stub_label));
-				for (let i = 0; i < filteredIncoming.length; i++) {
-					if (barsAdded < barsToDraw) {
-						p.data.push(filteredIncoming[i]);
-						if (barsAdded++ === barsToDraw) break;
-					}
-				}
-			}
-
-			p.data = p.data.map((d) => ({
-				...d,
-				dontDraw: false,
-			}));
-			DataCache.activeLegendList = p.data;
-
-			groups = p.data.map((d) => d.stub_label);
-			allIncomingData = allIncomingData.map((d) => ({
-				...d,
-				dontDraw: !groups.includes(d.stub_label),
-			}));
-		}
 
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
@@ -619,104 +583,28 @@ export class GenChart {
 			let lines = [];
 			let lineGroups = [];
 			let lineGroupPaths = [];
-			let lineCount = 0;
 			if (p.usesMultiLineLeftAxis) {
-				// move to top - multiLineColors = d3.scaleOrdinal(p.multiLineColors);
-				// need the legend Nests from ALL incoming data
 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
 					.entries(allIncomingData);
 
-				// limit legend to 10 max
-				let numLinesToDraw = 0;
-				fullNestedData.forEach((d, i) => {
-					numLinesToDraw = DataCache.activeLegendList.filter(function (e) {
-						return e.dontDraw === false;
-					}).length;
-
-					// set all data to dontDraw == true
-					d.dontDraw = true; // disable ALL
-				});
-
-				if (numLinesToDraw === 0) numLinesToDraw = 10;
-
-				// iterate through and set the dontDraw values based on activeLegendList
-				let numSetToDraw = 0;
-				fullNestedData.forEach((d, i) => {
-					if (
-						DataCache.activeLegendList.filter(function (e) {
-							return e.stub_label === d.values[0].stub_label;
-						}).length > 0
-					) {
-						// it is on the list
-						d.values[0].dontDraw = false;
-						numSetToDraw++;
-					} else {
-						d.values[0].dontDraw = true;
-					}
-				});
-
-				// otherwise it might draw nothing
-				if (numSetToDraw === 0) {
-					// then select 10 to draw
-					fullNestedData.forEach((d, i) => {
-						if (numSetToDraw < numLinesToDraw) {
-							// it is on the list
-							d.values[0].dontDraw = false;
-							numSetToDraw++;
-						}
-					});
-				}
-
-				// NOW WE CAN deal with the legend and whether the lines are drawn
-				fullNestedData.forEach((d) => {
-					if (d.values[0].dontDraw === false && lineCount < numLinesToDraw) {
-						lineCount++; // increment barCount
-
-						if (DataCache.activeLegendList.filter((e) => e.stub_label === d.values[0].stub_label).length) {
-							// it is on the list so do nothing
-						} else {
-							DataCache.activeLegendList.push(d.values[0]);
-						}
-					} else {
-						// remove if it was on active list
-						const tempList = DataCache.activeLegendList.filter(
-							(e) => e.stub_label !== d.values[0].stub_label
-						);
-						DataCache.activeLegendList = [];
-						DataCache.activeLegendList = tempList;
-						d.values[0].dontDraw = true;
-					}
-
-					if (DataCache.activeLegendList.filter((e) => e.stub_label === d.values[0].stub_label).length > 0) {
-						d.values[0].dontDraw = false;
-					} else {
-						d.values[0].dontDraw = true;
-					}
-				});
-
 				fullNestedData.forEach((nd, i) => {
-					// only draw those whose first data point is dontDraw = false
-					if (nd.values[0].dontDraw === false) {
-						lines[i] = d3.line().defined(function (d) {
-							return d.estimate !== null;
-						});
-						const lineGroup = svg
-							.append("g")
-							.attr("class", nd.key.replace(/[\W_]+/g, ""))
-							.attr("transform", `translate(${margin.left}, ${margin.top})`);
+					lines[i] = d3.line().defined((d) => d.estimate !== null);
+					const lineGroup = svg
+						.append("g")
+						.attr("class", nd.key.replace(/[\W_]+/g, ""))
+						.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-						lineGroups[i] = lineGroup;
+					lineGroups[i] = lineGroup;
 
-						nd.values[0].assignedLegendColor = multiLineColors(i);
+					nd.values[0].assignedLegendColor = multiLineColors(i);
 
-						lineGroupPaths[i] = lineGroups[i]
-							.append("path")
-							.attr("fill", "none")
-							.attr("stroke", multiLineColors(i))
-							.attr("stroke-width", 2);
-					}
+					lineGroupPaths[i] = lineGroups[i]
+						.append("path")
+						.attr("fill", "none")
+						.attr("stroke", multiLineColors(i))
+						.attr("stroke-width", 2);
 				});
 			}
 
@@ -787,7 +675,7 @@ export class GenChart {
 			}
 
 			const updateTheChart = (data, nestedData) => {
-				const sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
+				let sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
 
 				if (p.needsScaleTime) {
 					let minReported = sortedXValues[0];
@@ -797,7 +685,10 @@ export class GenChart {
 					xScale.domain([minReported, maxReported]).nice();
 				} else if (p.barLayout.horizontal) {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
-				} else xScale.domain(sortedXValues.map((d) => d));
+				} else {
+					sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a.localeCompare(b));
+					xScale.domain(sortedXValues.map((d) => d));
+				}
 
 				if (p.usesDomainCallout) {
 					const calloutDomainY = yScaleLeft(p.domainCalloutY);
@@ -876,7 +767,9 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
+											return d.flag && d.flag !== "N/A"
+												? `url(#diagonalHatch-${i})`
+												: p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -903,7 +796,9 @@ export class GenChart {
 										if (p.barColors) {
 											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return d.flag ? `url(#diagonalHatch-${i})` : p.barColors[i];
+											return d.flag && d.flag !== "N/A"
+												? `url(#diagonalHatch-${i})`
+												: p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -1049,86 +944,83 @@ export class GenChart {
 
 				if (p.usesMultiLineLeftAxis) {
 					nestedData.forEach((nd, i) => {
-						// only draw those whose first data point is dontDraw = false
-						if (nd.values[0].dontDraw === false) {
-							lines[i]
-								.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-								.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-								.curve(d3.curveCatmullRom);
+						lines[i]
+							.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
+							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+							.curve(d3.curveCatmullRom);
 
-							// #### Show confidence interval #####
-							// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
-							if (p.enableCI) {
-								lineGroups[i]
-									.append("path")
-									.datum(nd.values, (d) => d[p.chartProperties.xAxis])
-									.attr("fill", multiLineColors(i))
-									.attr("stroke", "none")
-									.style("opacity", 0.4)
-									.attr(
-										"d",
-										d3
-											.area()
-											.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-											.y0((d) => yScaleLeft(d.estimate_lci))
-											.y1((d) => yScaleLeft(d.estimate_uci))
-											.curve(d3.curveCatmullRom)
-									);
-							}
-
-							lineGroupPaths[i].attr("d", lines[i](nd.values));
+						// #### Show confidence interval #####
+						// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
+						if (p.enableCI) {
 							lineGroups[i]
-								.selectAll("ellipse")
-								.data(nd.values, (d) => d[p.chartProperties.xAxis])
-								.join(
-									(enter) => {
-										enter
-											.append("ellipse") // adding hover over ellipses
-											.filter(function (d) {
-												return d.estimate;
-											})
-											.style("fill", multiLineColors(i))
-											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-											.attr("rx", d3.max([5, offset]))
-											.attr("ry", d3.max([5, d3.min([offset, 15])]))
-											.style("opacity", 0); // this makes it invisible
-										enter
-											.append("ellipse") // add always visible "point" (TT)
-											// filter out the nulls at last possible moment (TT)
-											.filter(function (d) {
-												return d.estimate;
-											})
-											// change to a function and set based on the "flag"
-											.style("fill", function (d) {
-												if (d.flag === "*") {
-													return "white"; // creates circle that appears "empty" for "*" flag
-												}
-												return multiLineColors(i); // fills in the dot with line color
-											})
-											.style("stroke", function (d) {
-												if (d.flag !== undefined) {
-													return multiLineColors(i);
-												}
-											})
-											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-											.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
-											.attr("ry", d3.max([5, d3.min([offset, 1])]))
-											.style("opacity", 1);
-									},
-									(update) => {
-										update
-											.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-											.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-											.attr("rx", d3.max([5, offset]))
-											.attr("ry", d3.max([5, d3.min([offset, 15])]));
-									},
-									(exit) => {
-										exit.remove();
-									}
+								.append("path")
+								.datum(nd.values, (d) => d[p.chartProperties.xAxis])
+								.attr("fill", multiLineColors(i))
+								.attr("stroke", "none")
+								.style("opacity", 0.4)
+								.attr(
+									"d",
+									d3
+										.area()
+										.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
+										.y0((d) => yScaleLeft(d.estimate_lci))
+										.y1((d) => yScaleLeft(d.estimate_uci))
+										.curve(d3.curveCatmullRom)
 								);
 						}
+
+						lineGroupPaths[i].attr("d", lines[i](nd.values));
+						lineGroups[i]
+							.selectAll("ellipse")
+							.data(nd.values, (d) => d[p.chartProperties.xAxis])
+							.join(
+								(enter) => {
+									enter
+										.append("ellipse") // adding hover over ellipses
+										.filter(function (d) {
+											return d.estimate;
+										})
+										.style("fill", multiLineColors(i))
+										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+										.attr("rx", d3.max([5, offset]))
+										.attr("ry", d3.max([5, d3.min([offset, 15])]))
+										.style("opacity", 0); // this makes it invisible
+									enter
+										.append("ellipse") // add always visible "point" (TT)
+										// filter out the nulls at last possible moment (TT)
+										.filter(function (d) {
+											return d.estimate;
+										})
+										// change to a function and set based on the "flag"
+										.style("fill", function (d) {
+											if (d.flag === "*") {
+												return "white"; // creates circle that appears "empty" for "*" flag
+											}
+											return multiLineColors(i); // fills in the dot with line color
+										})
+										.style("stroke", function (d) {
+											if (d.flag !== undefined) {
+												return multiLineColors(i);
+											}
+										})
+										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+										.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
+										.attr("ry", d3.max([5, d3.min([offset, 1])]))
+										.style("opacity", 1);
+								},
+								(update) => {
+									update
+										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
+										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
+										.attr("rx", d3.max([5, offset]))
+										.attr("ry", d3.max([5, d3.min([offset, 15])]));
+								},
+								(exit) => {
+									exit.remove();
+								}
+							);
 					});
 				}
 
@@ -1454,13 +1346,11 @@ export class GenChart {
 		// DRAW LEGEND
 		if (p.usesLegend) {
 			if (p.usesMultiLineLeftAxis && fullNestedData && fullNestedData[0].key) {
-				// ALL nests go on the legend but only draw those that are set to dontDraw = false
 				fullNestedData.forEach((d, i) => {
 					legendData[i] = {
 						stroke: d.values[0].assignedLegendColor,
 						dashArrayScale: p.left1DashArrayScale,
 						text: d.key,
-						dontDraw: d.values[0].dontDraw,
 						stub_label_num: d.stub_label_num,
 					};
 				});
@@ -1470,17 +1360,15 @@ export class GenChart {
 						stroke: color(d.key),
 						dashArrayScale: p.left1DashArrayScale,
 						text: p.genTooltipConstructor.propertyLookup[d.key].title.split(":")[0],
-						dontDraw: d.values[0].dontDraw,
 					};
 				});
 				legendData.reverse();
 			} else if (p.usesBars) {
 				allIncomingData = allIncomingData.map((d) => ({
 					...d,
-					assignedLegendColor:
-						d.dontDraw || !d.estimate
-							? ""
-							: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
+					assignedLegendColor: !d.estimate
+						? ""
+						: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
 				}));
 
 				allIncomingData.forEach((d, i) => {
@@ -1488,7 +1376,6 @@ export class GenChart {
 						stroke: d.assignedLegendColor,
 						dashArrayScale: 0,
 						text: d.stub_label,
-						dontDraw: d.dontDraw,
 					};
 				});
 			} else {
@@ -1497,7 +1384,6 @@ export class GenChart {
 						stroke: leftLine1Color,
 						dashArrayScale: p.left1DashArrayScale,
 						text: p.leftLegendText,
-						dontDraw: d.values[0].dontDraw,
 					});
 				}
 				if (p.usesLeftLine2) {
@@ -1505,7 +1391,6 @@ export class GenChart {
 						stroke: p.leftLine2Color,
 						dashArrayScale: p.left2DashArrayScale,
 						text: p.left2LegendText,
-						dontDraw: d.values[0].dontDraw,
 					});
 				}
 				if (p.usesLeftLine3) {
@@ -1513,7 +1398,6 @@ export class GenChart {
 						stroke: p.leftLine3Color,
 						dashArrayScale: p.left3DashArrayScale,
 						text: p.left3LegendText,
-						dontDraw: d.values[0].dontDraw,
 					});
 				}
 			}
@@ -1523,7 +1407,6 @@ export class GenChart {
 					stroke: rightLineColor,
 					dashArrayScale: p.rightDashArrayScale,
 					text: p.rightLegendText,
-					dontDraw: d.values[0].dontDraw,
 				});
 			}
 
@@ -1592,33 +1475,12 @@ export class GenChart {
 					.attr("stroke-dasharray", d.dashArrayScale)
 					.attr("cursor", "default");
 
-				// draw the check box using unicode
-				legendItem
-					.append("g")
-					.append("text")
-					.attr("class", "far far-legendItem")
-					.attr("tabindex", "0")
-					.attr("aria-label", d.text + " " + "checkbox")
-					.attr("role", "checkbox")
-					.attr("data-html2canvas-ignore", "")
-					.attr("font-size", axisLabelFontSize)
-					.attr("x", 2.5 * unit)
-					.attr("y", unit * 0.4)
-					.attr("cursor", "pointer")
-
-					.text(
-						() =>
-							d.dontDraw
-								? "\uf0c8" // square unicode [&#xf0c8;]
-								: "\uf14a" // check square unicode
-					);
-
 				// now draw the legend item text last
 				legendItem
 					.append("g")
 					.append("text")
 					.attr("class", "legendText")
-					.attr("x", 2.5 * unit + 20)
+					.attr("x", 2.5 * unit)
 					.attr("y", unit * 0.4)
 					.text(d.text)
 					.attr("font-size", axisLabelFontSize)
