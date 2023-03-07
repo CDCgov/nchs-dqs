@@ -20,10 +20,10 @@ export class LandingPage {
 		this.flattenedFilteredData = null;
 		this.dataTopic = "obesity-child"; // default
 		this.groupId = 0;
-		this.startPeriod = "1988-1994";
-		this.startYear = "1988"; // first year of the first period
-		this.endPeriod = "2013-2016";
-		this.endYear = "2013"; // first year of the last period
+		this.startPeriod = null;
+		this.startYear = null; // first year of the first period
+		this.endPeriod = null;
+		this.endYear = null; // first year of the last period
 		this.footnoteMap = null;
 		this.showBarChart = 0;
 		this.topoJson = null;
@@ -200,7 +200,7 @@ export class LandingPage {
 		let stateData = [...data];
 		// but need to narrow it to the selected time period
 		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+		if (this.startYear) stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
 		this.flattenedFilteredData = stateData;
 		const mapVizId = "us-map";
@@ -286,8 +286,8 @@ export class LandingPage {
 			(d) =>
 				d.unit_num == this.config.yAxisUnitId &&
 				d.stub_name_num == this.groupId &&
-				parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10) &&
-				parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10)
+				(!this.startYear || parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10)) &&
+				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
@@ -309,7 +309,7 @@ export class LandingPage {
 			const allDataGroups = [...new Set(data.map((d) => d.stub_label))];
 
 			// filter to just the start year
-			data = data.filter((d) => d.year_pt == this.startYear);
+			if (this.startYear) data = data.filter((d) => d.year_pt == this.startYear);
 
 			const current = data[0];
 
@@ -398,6 +398,8 @@ export class LandingPage {
 	}
 
 	topicDropdownChange = (value) => {
+		this.startYear = null;
+		this.endYear = null;
 		this.events.stopAnimation();
 		this.selections = null;
 		this.updateTopic(value);
@@ -463,20 +465,6 @@ export class LandingPage {
 					allFootNotes = [...footNotes, ...nhisFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
-
-				// Promise.all([
-				// 	this.getSelectedSocrataData(this.config),
-				// 	this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
-				// 	this.getUSMapData(),
-				// ])
-				// 	.then((data) => {
-				// 		let [socrataData, nhisFootnotes, mapData] = data;
-				// 		if (mapData) this.topoJson = JSON.parse(mapData);
-				// 		let allFootNotes = DataCache.Footnotes;
-				// 		if (!allFootNotes) {
-				// 			allFootNotes = [...nhisFootnotes];
-				// 			DataCache.Footnotes = allFootNotes;
-				// 		}
 
 				if (!this.footnoteMap) {
 					this.footnoteMap = {};

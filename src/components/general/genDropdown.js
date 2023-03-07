@@ -68,7 +68,7 @@ import { Utils } from "../../utils/utils";
 
 const populate = (props, mobile) => {
 	const optionList = [];
-	let selected = props.options.find((o) => o[props.value] === props.selectedValue);
+	let selected = props.options.find((o) => o[props.value] == props.selectedValue);
 	if (!selected) {
 		if (props.firstOptObj) {
 			selected = { [props.text]: props.firstOptObj.text, [props.value]: props.selectedValue };

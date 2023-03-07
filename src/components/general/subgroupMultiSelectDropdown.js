@@ -32,7 +32,7 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 	const selectedHtmlList = [];
 	selected.forEach((o) =>
 		selectedHtmlList.push(`
-			<div class="genMsdOption" style="display: flex; flex-direction: row; min-width: calc(50% - 4px); justify-content: space-between;" role="option">
+			<div class="genMsdOption" style="display: flex; flex-direction: row; flex-grow: 1; min-width: calc(50% - 4px); justify-content: space-between;" role="option">
 				<div class="genMsdIgnoreClick" style="white-space: initial">${o.text}</div>
 				<i data-val="${o.value}" class="genMsdDeleteIcon genMsdDelete fas fa-times" type="button" aria-label="Click to Remove ${o.text}" tabindex="0"></i>
 			</div>
@@ -61,7 +61,7 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 			<div id="genMsdTitle" class="${disabled ? "disabled" : ""}">${disabled ? "N/A" : "Select Subgroups"}</div>
 			<input 	type="text"
 					class="genMsdSearch ${leaveOpen ? "genMsdOpened" : ""}"
-					placeholder="Search subgroup list"
+					placeholder="Search Subgroup List"
 					aria-label="search input for items in multiselect dropdown" />
 			<div class="genMsdUnselected ${leaveOpen ? "genMsdOpened" : ""}">
 				<div id="filteredGroup" style="display: flex; flex-direction: row; justify-content: space-between">
