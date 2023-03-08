@@ -183,7 +183,7 @@ export class TopicDropdown {
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
 				);
-				$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened"); // close subgroup dropdown
+				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
 				if (e.currentTarget.id !== "genDropdownSearch") this.#toggleOpenClose();
 			})
 			.on("keydown", `#${this.props.containerId}-select`, (e) => {
@@ -206,7 +206,7 @@ export class TopicDropdown {
 					$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 						this.#closeOtherOpenDropdown(el)
 					);
-					$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened"); // close subgroup dropdown
+					$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
 					this.#toggleOpenClose();
 				} else if (key === "Escape") {
 					if (this.searchText.length) {
@@ -284,7 +284,7 @@ export class TopicDropdown {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
 						);
-						$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened"); // close subgroup dropdown
+						$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
 						this.#toggleOpenClose();
 					}
 				} else if (key === " " && !this.searchText.length) {

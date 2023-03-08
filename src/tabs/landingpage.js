@@ -165,7 +165,7 @@ export class LandingPage {
 				} else id = parseInt(target.id.slice(-1), 10);
 
 				this.activeTabNumber = id - 1;
-				$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened");
+				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateGroup(1, false);

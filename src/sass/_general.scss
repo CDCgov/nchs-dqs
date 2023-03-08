@@ -357,7 +357,7 @@ div.genDropdownSelected {
 		background-color: #bdbdbd !important;
 	}
 
-	&.genMsdOpened {
+	&.genDropdownOpened {
 		border-color: #555;
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
@@ -366,7 +366,7 @@ div.genDropdownSelected {
 	}
 
 	.genMsdSearch {
-		&.genMsdOpened {
+		&.genDropdownOpened {
 			visibility: visible;
 		}
 
@@ -427,7 +427,7 @@ div.genDropdownSelected {
 		border-bottom-right-radius: 5px;
 		z-index: 1;
 
-		&.genMsdOpened {
+		&.genDropdownOpened {
 			visibility: visible;
 		}
 

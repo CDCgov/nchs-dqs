@@ -57,13 +57,13 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 
 	return `		
 		<div style="display: flex;"><label id="maxAllowedLabel" style="color: transparent; margin: auto;" for="groupDropdown-select">The maximum allowed is 7.</label></div>
-		<div class="genMsdSelected ${leaveOpen ? "genMsdOpened " : ""} ${disabled ? "disabled" : ""}">
+		<div class="genMsdSelected ${leaveOpen ? "genDropdownOpened " : ""} ${disabled ? "disabled" : ""}">
 			<div id="genMsdTitle" class="${disabled ? "disabled" : ""}">${disabled ? "N/A" : "Select Subgroups"}</div>
 			<input 	type="text"
-					class="genMsdSearch ${leaveOpen ? "genMsdOpened" : ""}"
+					class="genMsdSearch ${leaveOpen ? "genDropdownOpened" : ""}"
 					placeholder="Search Subgroup List"
 					aria-label="search input for items in multiselect dropdown" />
-			<div class="genMsdUnselected ${leaveOpen ? "genMsdOpened" : ""}">
+			<div class="genMsdUnselected ${leaveOpen ? "genDropdownOpened" : ""}">
 				<div id="filteredGroup" style="display: flex; flex-direction: row; justify-content: space-between">
 					<div id="filteredText" style="padding: 0 5px;">Filtered by:</div>
 					<div style="padding: 0 5px; cursor: pointer;"><a class="genMsdClearAll" tabindex="0">Clear all</a></div>
@@ -147,8 +147,8 @@ export class SubgroupMultiSelectDropdown {
 			$(".genDropdownOpened").removeClass("genDropdownOpened");
 			e.stopPropagation();
 			e.preventDefault();
-			if ($(".genMsdOpened").length) {
-				$(".genMsdOpened").removeClass("genMsdOpened");
+			if ($(".genDropdownOpened").length) {
+				$(".genDropdownOpened").removeClass("genDropdownOpened");
 				$(`#${this.props.containerId} #genMsdOpenIcon`).attr(
 					"aria-label",
 					`${this.ariaPre}open${this.ariaPost}`
@@ -156,7 +156,7 @@ export class SubgroupMultiSelectDropdown {
 			} else {
 				$(
 					`.genMsdSearch, #${this.props.containerId} .genMsdUnselected, #${this.props.containerId} .genMsdSelected`
-				).addClass("genMsdOpened");
+				).addClass("genDropdownOpened");
 				$(`#${this.props.containerId} #genMsdOpenIcon`).attr(
 					"aria-label",
 					`${this.ariaPre}close${this.ariaPost}`
@@ -225,7 +225,7 @@ export class SubgroupMultiSelectDropdown {
 					if (checked) this.#removeFromSelections($(e.target).data("val"));
 					else this.#addToSelections($(e.target).data("val"));
 				} else if (closeKeys.includes(e.which))
-					$(`#${this.props.containerId} .genMsdOpened`).removeClass("genMsdOpened");
+					$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
 			});
 
 		// Search
@@ -233,7 +233,7 @@ export class SubgroupMultiSelectDropdown {
 			.off("keyup focus click", `#${this.props.containerId} .genMsdSearch`)
 			.on("keyup", `#${this.props.containerId} .genMsdSearch`, (e) => {
 				this.searchText = $(e.target).val().toLowerCase();
-				if (closeKeys.includes(e.which) && $(`#${this.props.containerId} .genMsdOpened`).length) {
+				if (closeKeys.includes(e.which) && $(`#${this.props.containerId} .genDropdownOpened`).length) {
 					// close keys pressed and dropdown is open
 					if (e.which === 27 && this.searchText.length) {
 						// clear search text on ESC
@@ -241,7 +241,7 @@ export class SubgroupMultiSelectDropdown {
 						$(e.target).val(this.searchText);
 					} else if (!this.searchText.length) {
 						// close dropdown on ESC or Backspace or Delete when search text is empty
-						$(`#${this.props.containerId} .genMsdOpened`).removeClass("genMsdOpened");
+						$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
 						$(`#${this.props.containerId} #genMsdOpenIcon`).attr(
 							"aria-label",
 							`${this.ariaPre}open${this.ariaPost}`
@@ -282,13 +282,13 @@ export class SubgroupMultiSelectDropdown {
 		const countOverMax = countOfCurrentSelections - this.props.maxSelections;
 		if (this.props.maxSelections && countOverMax >= 0) {
 			$("#maxAllowedLabel").css("color", "#b50909");
-			$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened");
+			$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 
 			// remove the first checked item, this will loop by causing landing page to re-render chart until max is reached
 			if (countOverMax > 0) {
 				const el = $(`#${this.props.containerId} .genMsdUnselected li input:checked:first`);
 				this.#removeFromSelections(el);
-				$(`#${this.props.containerId} .genMsdOpened`).removeClass("genMsdOpened");
+				$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
 			}
 			return true;
 		}
