@@ -74,9 +74,10 @@ export class MainEvents {
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 			})
 			.off("click", "#showAllSubgroupsSlider")
-			.on("click", "#showAllSubgroupsSlider", (e) =>
-				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget)
-			);
+			.on("click", "#showAllSubgroupsSlider", (e) => {
+				$("#subgroupDropdown .genMsdOpened").removeClass("genMsdOpened");
+				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget);
+			});
 
 		const resetTopics = () => {
 			$(".filterCheckbox").prop("checked", false);

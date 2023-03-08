@@ -17,4 +17,11 @@ export const PageEvents = {
 		$(document).on("click", ".table-toggle", toggleTable);
 		$(document).on("keyup", ".table-toggle", toggleTable);
 	},
+
+	closeDropdowns() {
+		$(document).on("click", (e) => {
+			if ($(e.target).closest(".genDropdownOpened").length) return;
+			$(".genDropdownOpened").removeClass("genDropdownOpened");
+		});
+	},
 };

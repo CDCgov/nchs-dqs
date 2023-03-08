@@ -4,6 +4,7 @@ import { PageEvents } from "./pageevents";
 export const TabEvents = {
 	registerEvents() {
 		PageEvents.tableToggle();
+		PageEvents.closeDropdowns();
 	},
 	tabHTMLHandler(hash) {
 		let hashSplit = hash.split("_");
