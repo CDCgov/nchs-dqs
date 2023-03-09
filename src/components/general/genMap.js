@@ -621,8 +621,7 @@ export class GenMap {
 				}
 
 				// Generate the HTML for the legend
-				legendGeneratedHTML =
-					"<div id='us-map-legend' style='margin-left: 5px; margin-right: 5px' class='d-flex justify-content-center da-map-legend mb-1'>";
+				legendGeneratedHTML = "";
 
 				legendItems.forEach((leg, i) => {
 					let isCheckedStr;
@@ -635,7 +634,7 @@ export class GenMap {
 					if (leg.DisplayLabel.match("Unreliable")) {
 						// for cross hatching, just use white
 						legendGeneratedHTML += `
-						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
+						<div id='${legendId}' style='${leg.ColorStyle}'>
 							<input
 								id='mapchk-${i}'
 								class='form-check-input'
@@ -650,7 +649,7 @@ export class GenMap {
 					} else {
 						// draw regular with color
 						legendGeneratedHTML += `
-						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
+						<div id='${legendId}' style='${leg.ColorStyle}'>
 							<input
 								class='form-check-input'
 								type='checkbox'
@@ -663,7 +662,6 @@ export class GenMap {
 						</div>`;
 					}
 				});
-				legendGeneratedHTML += "</div><br />";
 
 				// now add the legend to the map div
 				$("#us-map-legend").html(legendGeneratedHTML);

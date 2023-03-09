@@ -34,11 +34,42 @@ a {
 		// }
 	}
 }
+#usMapLegendContainer {
+	margin-top: 25px;
+	margin-right: 20px;
+	width: 12%;
+	color: #333;
 
-#us-map-legend > div > input {
-	cursor: pointer;
+	#us-map-legend-title {
+		text-align: center;
+		font-size: 20px;
+		font-weight: bold;
+	}
+
+	#mapLegendPeriod {
+		white-space: nowrap;
+		font-weight: bold;
+	}
+
+	#us-map-legend {
+		height: 250px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-content: center;
+		flex-wrap: wrap;
+
+		> div {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+
+			> input {
+				cursor: pointer;
+			}
+		}
+	}
 }
-
 .homeSmallGroup {
 	border: 1px solid lightgray;
 	padding-top: 2px;
@@ -177,7 +208,9 @@ a {
 }
 
 #us-map-container {
-	text-align: center;
+	display: flex;
+	flex-direction: row;
+	background-color: white;
 }
 
 #nchs-table-container {

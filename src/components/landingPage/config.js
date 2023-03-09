@@ -174,9 +174,17 @@ export const tabContent = `
 				</fieldset>			
 				<div id="us-map-container">
 					<div id="mapDownloadTitle"></div>
-					<div id="us-map" class="general-chart"></div>
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
-					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
+					<div id="us-map" class="general-chart"></div>
+					<div id="usMapLegendContainer">
+						<div id="us-map-legend-title" class="general-chart" style="margin-top: 0">Legend</div>
+						<div>Data classified</div>
+						<div>using <button type="button">quartile</button></div>
+						<div>based on</div>
+						<div id="mapLegendPeriod">2013 - 2015</div>
+						<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
+					</div>
+				</div>
 				</div>
 				<br />
 				<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
