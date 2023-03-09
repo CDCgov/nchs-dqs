@@ -1410,6 +1410,7 @@ export class GenChart {
 				});
 			}
 
+			if (!legendData.length) return;
 			// to get the px size needed for the longest legend label and use that to evenly position legend items
 			// we add a temporary element, query size, and then remove it
 			const longestLegendTextLength = d3.max([...legendData].map((ld) => ld.text.length));

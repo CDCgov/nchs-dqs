@@ -431,12 +431,11 @@ div.genDropdownSelected {
 			visibility: visible;
 		}
 
-		ul {
-			list-style: none;
+		div#genMsdSelections {
 			margin-bottom: 5px;
 			padding-left: 5px;
 
-			li {
+			> div {
 				margin-left: -10px;
 				margin-right: -10px;
 				padding-left: 20px;

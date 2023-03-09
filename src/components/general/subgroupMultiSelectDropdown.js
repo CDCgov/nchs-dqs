@@ -28,7 +28,7 @@
  ************************************************************************************* */
 import { getCurrentSliderDomain } from "./genTrendsSlider";
 
-const populate = (selected, unselected, disabled, leaveOpen = false) => {
+const populate = (selected, unselected, searchText, disabled, leaveOpen = false) => {
 	const selectedHtmlList = [];
 	selected.forEach((o, i) =>
 		selectedHtmlList.push(`
@@ -42,19 +42,20 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 	const unselectedHtmlList = [];
 	unselected.forEach((o, i) =>
 		unselectedHtmlList.push(
-			`<li id="genMsdUnselected${i}" class="genMsdAdd" data-val="${o.value}" role="button" aria-label="${
+			`<div id="genMsdUnselected${i}" class="genMsdAdd" data-val="${o.value}" aria-label="${
 				o.text
 			}, press enter to add to selected, escape to exit dropdown">
 				<input
 					id="genMsdUnselectedInput${i}"
 					for="genMsdUnselected${i}"
+					class="genMsdUnselectedInput"
 					type="checkbox"
 					style="pointer-events: none; margin-right: 5px;"
 					${o.selected ? "checked" : ""}
-					data-val="${o.value}"
-					tabindex="0" />
-					<label for="genMsdUnselectedInput${i}" style="pointer-events: none; display: inline;">${o.text}</label>
-			</li>`
+					data-val="${o.value}"/><label for="genMsdUnselectedInput${i}" style="pointer-events: none; display: inline;">${
+				o.text
+			}</label>
+			</div>`
 		)
 	);
 
@@ -69,7 +70,8 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 			<input 	type="text"
 					class="genMsdSearch ${leaveOpen ? "genDropdownOpened" : ""}"
 					placeholder="Search Subgroup List"
-					aria-label="search input for items in multiselect dropdown" />
+					aria-label="search input for items in multiselect dropdown"
+					value="${searchText}" />
 			<div class="genMsdUnselected ${leaveOpen ? "genDropdownOpened" : ""}">
 				<div id="filteredGroup" style="display: flex; flex-direction: row; justify-content: space-between">
 					<div id="filteredText" style="padding: 0 5px;">Filtered by:</div>
@@ -80,9 +82,9 @@ const populate = (selected, unselected, disabled, leaveOpen = false) => {
 				)}</div>
 				<hr style="margin: 2px;" />
 				<div id="subgroupsNotFound" style="text-align: center; padding: 10px; color: #bdbdbd; display: none;">No matching results found </div>
-				<ul id="genMsdSelections">					
+				<div id="genMsdSelections">					
 					${unselectedHtmlList.join("")}
-				</ul>
+				</div>
 			</div>
 		</div>
 	`;
@@ -175,7 +177,15 @@ export class SubgroupMultiSelectDropdown {
 				if (e.key === "Enter" || e.key === " ") handleOpenOrClose(e);
 			});
 
-		// Remove from selected list
+		// Clear all selections
+		$(document)
+			.off("click keydown", `#${this.props.containerId} .genMsdClearAll`)
+			.on("click keydown", `#${this.props.containerId} .genMsdClearAll`, (e) => {
+				e.stopPropagation();
+				if (e.type === "click" || (e.type === "keydown" && e.key === "Enter")) this.#clearAllSelections();
+			});
+
+		// Remove from selected list via X button
 		$(document)
 			.off("click keydown", `#${this.props.containerId} .genMsdDeleteIcon`)
 			.on("click", `#${this.props.containerId} .genMsdDeleteIcon`, (e) => {
@@ -192,32 +202,13 @@ export class SubgroupMultiSelectDropdown {
 				}
 			});
 
-		// Clear all selections
+		// Add/Remove to/from selected list
 		$(document)
-			.off("click keydown", `#${this.props.containerId} .genMsdClearAll`)
-			.on("click keydown", `#${this.props.containerId} .genMsdClearAll`, (e) => {
+			.off("click", `#${this.props.containerId} .genMsdUnselected`)
+			.off("keydown", `#${this.props.containerId} .genMsdUnselected input`)
+			.on("click", `#${this.props.containerId} .genMsdUnselected`, (e) => {
 				e.stopPropagation();
-				if (e.type === "click" || (e.type === "keydown" && e.key === "Enter")) this.#clearAllSelections();
-			});
-
-		// Select top N
-		$(document)
-			.off("click keydown", `#${this.props.containerId} .genMsdSelectTopN`)
-			.on("click keydown", `#${this.props.containerId} .genMsdSelectTopN`, (e) => {
-				if (e.type === "click" || (e.type === "keydown" && e.key === "Enter")) {
-					this.updateSliderDomain();
-					setTimeout(() => this.resetToDefaultSelections(), 50);
-				}
-			});
-
-		// Add to selected list
-		$(document)
-			.off("click keydown", `#${this.props.containerId} .genMsdUnselected li`)
-			.on("click", `#${this.props.containerId} .genMsdUnselected li`, (e) => {
-				const { classList } = e.target;
-				if (classList.contains("genMsdClearAll")) return;
-				e.stopPropagation();
-				const checked = $(e.currentTarget).find("input").is(":checked");
+				const checked = $(e.target).find("input").is(":checked");
 				if (checked) {
 					this.#removeFromSelections(e.target);
 					this.#toggleMaxMessage();
@@ -226,18 +217,31 @@ export class SubgroupMultiSelectDropdown {
 					this.#addToSelections(e.target);
 				}
 			})
-			.on("keydown", `#${this.props.containerId} .genMsdUnselected li`, (e) => {
+			.off("click", `#${this.props.containerId} .genMsdUnselectedInput`)
+			.on("click", `#${this.props.containerId} .genMsdUnselectedInput`, (e) => {
+				// this event only fires when a screen-reader turns a keydown event into a click event
+				e.stopPropagation();
+				e.preventDefault();
+				const checked = $(e.target).is(":checked");
+				if (!checked) {
+					this.#removeFromSelections(e.target.closest(".genMsdAdd"));
+					this.#toggleMaxMessage();
+				} else {
+					if (this.#toggleMaxMessage()) return;
+					this.#addToSelections(e.target.closest(".genMsdAdd"));
+				}
+			})
+			.on("keydown", `#${this.props.containerId} .genMsdUnselectedInput`, (e) => {
 				if (e.key === "Enter" || e.key === " ") {
-					const { classList } = e.target;
-					if (classList.contains("genMsdClearAll")) return;
 					e.stopPropagation();
-					const checked = $(e.currentTarget).find("input").is(":checked");
+					e.preventDefault();
+					const checked = $(e.target).is(":checked");
 					if (checked) {
-						this.#removeFromSelections(e.target.closest("li"));
+						this.#removeFromSelections(e.target.closest(".genMsdAdd"));
 						this.#toggleMaxMessage();
 					} else {
 						if (this.#toggleMaxMessage()) return;
-						this.#addToSelections(e.target.closest("li"));
+						this.#addToSelections(e.target.closest(".genMsdAdd"));
 					}
 				} else if (closeKeys.includes(e.which))
 					$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
@@ -268,28 +272,31 @@ export class SubgroupMultiSelectDropdown {
 						`${this.ariaPre}close${this.ariaPost}`
 					);
 
-				// show only the filtered list of options
-				$("#genMsdSelections").show();
-				$("#subgroupsNotFound").hide();
-
-				$(`#${this.props.containerId} .genMsdUnselected li`).each((i, el) => {
-					if (el.innerText.toLowerCase().includes(this.searchText)) {
-						$(el).show();
-					} else {
-						$(el).hide();
-					}
-
-					if ($(`#${this.props.containerId} .genMsdUnselected li:visible`).length === 0) {
-						$("#genMsdSelections").hide();
-						$("#subgroupsNotFound").show();
-					}
-				});
+				this.#search();
 			})
 			.on("click", `#${this.props.containerId} .genMsdSearch`, (e) => e.stopPropagation())
 			.on("focus", `#${this.props.containerId} .genMsdSearch`, (e) => {
 				e.stopPropagation();
 				$(".genMsdSearch").val("");
+				this.searchText = "";
+				this.#search();
 			});
+	}
+
+	#search() {
+		// show only the filtered list of options
+		$("#genMsdSelections").show();
+		$("#subgroupsNotFound").hide();
+
+		$(`#${this.props.containerId} .genMsdUnselected .genMsdUnselectedInput`).each((i, el) => {
+			if ($(el).data("val").toLowerCase().includes(this.searchText)) $(el).closest(".genMsdAdd").show();
+			else $(el).closest(".genMsdAdd").hide();
+
+			if ($(`#${this.props.containerId} .genMsdUnselected .genMsdAdd:visible`).length === 0) {
+				$("#genMsdSelections").hide();
+				$("#subgroupsNotFound").show();
+			}
+		});
 	}
 
 	#toggleMaxMessage() {
@@ -301,7 +308,7 @@ export class SubgroupMultiSelectDropdown {
 
 			// remove the first checked item, this will loop by causing landing page to re-render chart until max is reached
 			if (countOverMax > 0) {
-				const el = $(`#${this.props.containerId} .genMsdUnselected li input:checked:first`);
+				const el = $(`#${this.props.containerId} .genMsdUnselected .genMsdUnselectedInput:checked:first`);
 				this.#removeFromSelections(el);
 				$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
 			}
@@ -316,10 +323,11 @@ export class SubgroupMultiSelectDropdown {
 		currentlySelected.forEach((s) => {
 			s.selected = false;
 		});
-		this.#updateDropdown();
+		this.#updateDropdown(true);
 		currentlySelected.forEach((s) => {
 			this.tabAddRemove.remove(s.value);
 		});
+		$(".genMsdUnselectedInput:first").trigger("focus");
 	}
 
 	#updateDropdown(target) {
@@ -329,7 +337,10 @@ export class SubgroupMultiSelectDropdown {
 
 		const selected = this.props.options.filter((s) => s.selected);
 		const unselected = this.props.options;
-		$(`#${this.props.containerId}`).html(populate(selected, unselected, this.props.disabled, target)); // target is treated as a boolean here for leaveOpen
+		$(`#${this.props.containerId}`).html(
+			populate(selected, unselected, this.searchText, this.props.disabled, target)
+		); // target is treated as a boolean here for leaveOpen
+		this.#search();
 
 		const selectedMaxWidth = $("#subgroupsSelected").width();
 		$(".genMsdOption").each((i, el) => {
@@ -342,10 +353,21 @@ export class SubgroupMultiSelectDropdown {
 
 		this.updateDropdownPosition();
 		if (id) {
-			movedTop = $(`#${id}`).offset().top;
+			let index;
+			if (id.startsWith("genMsdDelete")) {
+				index = Math.max(0, Number(id.replace("genMsdDelete", "") - 1));
+				try {
+					movedTop = $(`#genMsdDelete${index}`).offset().top;
+					$(`#genMsdDelete${index}`).trigger("focus");
+				} catch (e) {
+					movedTop = currentTop;
+				}
+			} else {
+				movedTop = $(`#${id}`).offset().top;
+				$(`#${id}`).find("input").trigger("focus");
+			}
+
 			$("#subgroupDropdown .genMsdUnselected").scrollTop(movedTop - currentTop);
-			if (id.startsWith("genMsdDelete")) $(`#${id}`).trigger("focus");
-			else $(`#${id}`).find("input").trigger("focus");
 		}
 	}
 
