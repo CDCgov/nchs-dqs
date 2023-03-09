@@ -18,19 +18,20 @@ a {
 	transform: translateY(1vw);
 
 	i {
-		font-size: 2vw;
+		font-size: 26px;
+		// font-size: 2vw;
 
-		@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-			font-size: 3vw;
-		}
+		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		// 	font-size: 3vw;
+		// }
 
-		@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-			font-size: 4vw;
-		}
+		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
+		// 	font-size: 4vw;
+		// }
 
-		@media screen and (max-width: $mobile-max-width-2) {
-			font-size: 5vw;
-		}
+		// @media screen and (max-width: $mobile-max-width-2) {
+		// 	font-size: 5vw;
+		// }
 	}
 }
 
@@ -89,56 +90,61 @@ a {
 
 .homeSelectorText {
 	.preSelText {
-		font-size: 1vw;
+		font-size: 18px;
+		color: #333;
+		// font-size: 1vw;
 
-		@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-			font-size: 1.5vw;
-		}
+		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		// 	font-size: 1.5vw;
+		// }
 
-		@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-			font-size: 2vw;
-		}
+		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
+		// 	font-size: 2vw;
+		// }
 
-		@media screen and (max-width: $mobile-max-width-2) {
-			font-size: 2.5vw;
-		}
+		// @media screen and (max-width: $mobile-max-width-2) {
+		// 	font-size: 2.5vw;
+		// }
 	}
 
 	.mainSelText {
-		font-size: 1.5vw;
+		font-size: 28px;
 		line-height: 1vw;
+		color: #333;
+		// font-size: 1.5vw;
+		// line-height: 1vw;
 
-		> span {
-			float: right;
-			height: 0;
+		// > span {
+		// 	float: right;
+		// 	height: 0;
 
-			.clearAllFilters {
-				.fa-slash {
-					color: white;
-				}
-			}
-		}
+		// }
 
-		i {
-			line-height: 0;
-			color: grey;
-		}
+		// i {
+		// 	line-height: 0;
+		// 	color: grey;
+		// }
 
-		@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-			font-size: 2.25vw;
-			line-height: 1.5vw;
-		}
+		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+		// 	font-size: 2.25vw;
+		// 	line-height: 1.5vw;
+		// }
 
-		@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-			font-size: 3vw;
-			line-height: 2vw;
-		}
+		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
+		// 	font-size: 3vw;
+		// 	line-height: 2vw;
+		// }
 
-		@media screen and (max-width: $mobile-max-width-2) {
-			font-size: 3.75vw;
-			line-height: 2.5vw;
-		}
+		// @media screen and (max-width: $mobile-max-width-2) {
+		// 	font-size: 3.75vw;
+		// 	line-height: 2.5vw;
+		// }
 	}
+}
+
+#show-one-period-checkbox {
+	height: 24px;
+	width: 24px;
 }
 
 .btn-reset {
@@ -149,7 +155,8 @@ a {
 	background: white;
 	font-family: Open Sans, sans-serif;
 	font-weight: 600;
-	font-size: 0.8em;
+	// font-size: 16px;
+	// font-size: 0.8em;
 	padding-left: 0.6em;
 	padding-right: 0.6em;
 }
@@ -373,5 +380,12 @@ button.disabled {
 		@include desktop-min {
 			content: "desktop";
 		}
+	}
+}
+
+#refineTopicList {
+	color: #00f !important;
+	&:hover {
+		text-decoration: underline !important;
 	}
 }

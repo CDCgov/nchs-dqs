@@ -33,82 +33,101 @@ export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">
+		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">-->
+		<div class="col homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="topicDropdown-label" for="topicDropdown-select" class="preSelText">Select a</label>
-					<div class="mainSelText">
+					<label id="topicDropdown-label" for="topicDropdown-select" class="body2">Select a</label>
+					<div class="mainSelText heading4">
 						Topic
-						<span>
-							<span id="clearFiltersContainer" class="fa-stack clearAllFilters" style="display: none" tabindex="0" aria-label="clear advanced filters">
-								<i class="clearFiltersIcons fa fa-filter fa-stack-1x"></i>
-  								<i class="clearFiltersIcons fa fa-slash fa-stack-1x"></i>
-							</span>
-							<span id="editFiltersContainer" class="fa-stack callFiltersModal"tabindex="0" aria-label="open advanced filters">
-								<i class="editFiltersIcon fa fa-filter fa-stack-1x"></i>
-							</span>
-						</span>						
 					</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div id="topicDropdown" class="genDropdown"></div>			
+			<div id="topicDropdown" class="genDropdown">
+				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
+			</div>			
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
+		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
+			<div class="col homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="classificationDropdown-label" for="classificationDropdown-select" class="preSelText">Refine by</label>
-					<div class="mainSelText">Classification</div>
+					<label id="classificationDropdown-label" for="classificationDropdown-select" class="body2">Refine by</label>
+					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div id="classificationDropdown" class="genDropdown"></div>
+			<div id="classificationDropdown" class="genDropdown">
+				<label for="classificationDropdown-select" id="classificationDropdown-label">&nbsp;</label>
+			</div>
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
+		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="groupDropdown-label" for="groupDropdown-select" class="preSelText">View Data by</label>
-					<div class="mainSelText">Group</div>
+					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">View Data by</label>
+					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw">&nbsp</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
-			<div id="groupDropdown" class="genDropdown"></div>
+			<div id="groupDropdown" class="genDropdown">
+				<label for="groupDropdown-select" id="groupDropdown-label">&nbsp;</label>
+			</div>
 		</div>
-		<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">
+		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
+		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<div class="preSelText" aria-label="Choose from available time periods">Choose from available</div>
-					<div class="mainSelText">Time Periods</div>
+					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">Filter by</label>
+					<div class="mainSelText heading4">Subgroup</div>
+				</div>
+			</div>
+			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
+			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div id="subgroupDropdown" class="genDropdown">
+				<label for="subgroupDropdown-select" id="subgroupDropdown-label">&nbsp;</label>
+			</div>
+		</div>
+		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
+		<div class="col homeSelectorGroup leftBorderSmallView">
+			<div class="row">
+				<div class="col-2 homeIcon">
+					<i class="fas fa-arrow-circle-right"></i>
+				</div>
+				<div class="col-10 homeSelectorText">
+					<div class="body2" aria-label="Choose from available time periods">Choose from available</div>
+					<div class="mainSelText heading4">Time Periods</div>
 				</div>
 			</div>
 			<div class="row" style="text-align: center">
 				<div class="col-12">
-					<div style="margin-top: 0.4vw; line-height: 1vw">
-						<input type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
-						<label class="label-style" for="show-one-period-checkbox">View single period</label>
+					<div class="flexRow">
+					<!--<div style="margin-top: 0.4vw; line-height: 1vw">-->
+						<input style="margin-right: 8px;" type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
+						<label class="label-style body2" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
 				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
+					<label for="startYearContainer-select" id="startYearContainer-label" class="body2">Start Period</label>
 				</div>
-				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center">
+				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center" class="body2">
 					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
@@ -116,9 +135,10 @@ export const tabContent = `
 	</div>
 
 	<div id="resetInfoContainer" class="row homeSmallGroup">
-		<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">
-			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
-			<button id="home-btn-reset" class="btn-reset" type="button"><i class="fas fa-undo"></i> Reset</button>
+		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
+		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
+			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 24px; color: #555">&nbsp;</i>
+			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>
 	<br />
@@ -234,6 +254,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
+		topicGroup: 5,
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
@@ -245,6 +266,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
+		topicGroup: 5,
 	},
 	suicide: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/u9f7-4q6s",
@@ -256,6 +278,7 @@ export const topicLookup = {
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
+		topicGroup: 4,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
@@ -267,6 +290,7 @@ export const topicLookup = {
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
+		topicGroup: 10,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
@@ -279,6 +303,7 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
+		topicGroup: 4,
 	},
 	birthweight: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
@@ -291,6 +316,7 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
+		topicGroup: 11,
 	},
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
@@ -303,6 +329,7 @@ export const topicLookup = {
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasClassification: false,
+		topicGroup: 3,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/52ij-h8yw",
@@ -314,6 +341,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
+		topicGroup: 4,
 	},
 	"ambulatory-care": {
 		dataUrl: "https://data.cdc.gov/resource/tz8d-jy2e.json",
@@ -325,6 +353,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
+		topicGroup: 10,
 	},
 	"access-care": {
 		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
@@ -337,6 +366,7 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
+		topicGroup: 0,
 	},
 };
 
@@ -351,8 +381,29 @@ nhisTopics.forEach((t) => {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
+		topicGroup: t.topicGroup,
 	};
 });
+
+export const topicGroups = [
+	"Access to care", // 0
+	"Cancer", // 1
+	"Circulatory system", // 2
+	"Coverage", // 3
+	"Death", // 4
+	"Endocrine system", // 5
+	"Health Status", // 6
+	"Mental Health", // 7
+	"Musculoskeletal system", // 8
+	"Nervous system", // 9
+	"Outpatient Visit", // 10
+	"Perinatal period", // 11
+	"Prescription Medication", // 12
+	"Respiratory system", // 13
+	"Sensory Impairments", // 14
+	"Tobacco usage", // 15
+	"Vaccination", // 16
+];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rules for creating a new hashLookup object

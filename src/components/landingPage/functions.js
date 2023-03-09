@@ -1,4 +1,5 @@
 import { HtmlTooltip } from "../general/htmlTooltip";
+import { topicGroups } from "./config";
 
 // this is the function that cleans up Socrata data
 export const addMissingProps = (cols, rows) => {
@@ -39,20 +40,28 @@ export const addHtmlTooltips = () => {
 		containerId: "ciTableSlider",
 	});
 
+	const refineTopicInfoTooltip = new HtmlTooltip({
+		body: "E.g. Select <b>Female, Asian, Infant</b> to show all results for Female <b>OR</b> Asian <b>OR</b> Infant.",
+		containerId: "refineInfoRow",
+	});
+
 	resetInfoTooltip.render();
 	editFiltersTooltip.render();
 	removeFiltersTooltip.render();
 	ciToggleTooltip.render();
+	refineTopicInfoTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
 	$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
 	$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
 	$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
+	$("#resetInfo").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
 
 	$(".editFiltersIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
 	$(".editFiltersIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
 	$(".editFiltersIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
+	$(".editFiltersIcon").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
 
 	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
 	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
@@ -61,6 +70,10 @@ export const addHtmlTooltips = () => {
 	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
 	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
 	$("#ciTableHover").mouseleave((e) => ciToggleTooltip.mouseout(e));
+
+	$("#refineInfoIcon").mouseover((e) => refineTopicInfoTooltip.mouseover(e));
+	$("#refineInfoIcon").mousemove((e) => refineTopicInfoTooltip.mousemove(e));
+	$("#refineInfoIcon").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
@@ -210,7 +223,20 @@ export const linkify = (t) => {
 	return a.join("");
 };
 
-export const resetTopicDropdownList = () => $("#topicDropdown-select .genDropdownOption").each((i, el) => $(el).show());
+export const resetTopicDropdownList = () => {
+	$("#topicDropdown-select .genDropdownOption").each((i, el) => {
+		$(el).removeClass("genOptionFilteredOut");
+		$(el).attr("style", "");
+	});
+
+	topicGroups.forEach((group, i) => {
+		$("#topicGroup" + i)
+			.attr("hidden", false)
+			.removeClass("genOptionFilteredOut");
+	});
+
+	$(".genDropdownOpened").removeClass("genDropdownOpened");
+};
 
 export const updateTopicDropdownList = () => {
 	const selectedFilters = $(".filterCheckbox:checked")
@@ -227,14 +253,17 @@ export const updateTopicDropdownList = () => {
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
 				$(el).show();
+				$(el).removeClass("genOptionFilteredOut");
 			} else {
 				$(el).hide();
+				$(el).addClass("genOptionFilteredOut");
 				if (value === currentSelected) {
 					needToChangeSelected = true;
 					$(el).removeClass("genOptionSelected");
 				}
 			}
 		});
+
 		if (needToChangeSelected) {
 			$("#topicDropdown .genDropdownOption").each((i, el) => {
 				if ($(el).css("display") === "block") {
@@ -244,5 +273,17 @@ export const updateTopicDropdownList = () => {
 				}
 			});
 		}
+
+		topicGroups.forEach((group, i) => {
+			const someVisible = $(`.topicGroup${i}`).not(".genOptionFilteredOut").length > 0;
+			if (someVisible) {
+				$("#topicGroup" + i)
+					.attr("hidden", false)
+					.removeClass("genOptionFilteredOut");
+			} else
+				$("#topicGroup" + i)
+					.attr("hidden", true)
+					.addClass("genOptionFilteredOut");
+		});
 	} else resetTopicDropdownList();
 };

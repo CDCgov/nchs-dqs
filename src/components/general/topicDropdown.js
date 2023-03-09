@@ -3,10 +3,6 @@
 	Email: rlv1@cdc.org
 	Date: Oct 2022
 
-	WARNING: This is used on multiple tabs. For a new implementation of the genDropdown, changes are required in the clickHandlerLookup
-	object (ONLY). If you need to make other changes, or have any questions, please reach out to Lincoln via Teams or at the email
-	address provided above to liaise/consult.
-
 	REQUIRED html:
 		<div id="[your containerId]" class="genDropdown"></div>
 
@@ -63,10 +59,11 @@
 		this.myDropdown.enableValues("all"); enables all values
 
  *************************************************************************************************************************************************************************** */
-import { getCurrentSliderDomain } from "./genTrendsSlider";
 import { Utils } from "../../utils/utils";
+import { getCurrentSliderDomain } from "./genTrendsSlider";
+import { topicGroups } from "../landingPage/config";
 
-const populate = (props, mobile) => {
+const populate = (props) => {
 	const optionList = [];
 	let selected = props.options.find((o) => o[props.value] === props.selectedValue);
 	if (!selected) {
@@ -79,45 +76,47 @@ const populate = (props, mobile) => {
 	}
 
 	const selectedHtml = selected[props.text];
-	props.options.forEach((o) =>
-		optionList.push(`
-			<div class="genDropdownOption ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
+	topicGroups.forEach((g, i) => {
+		const groupOptions = props.options
+			.filter((o) => o.topicGroup === i)
+			.sort((a, b) => a.text.localeCompare(b.text));
+		optionList.push(`<div id="topicGroup${i}" class="genDropdownTopicGroup">${g}</div>`);
+		groupOptions.forEach((o) =>
+			optionList.push(`
+			<div class="genDropdownOption topicGroup${i} ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
 				data-val="${o[props.value]}"
 				role="option"				
 				aria-label="${o[props.text].trim()}"
 				tabindex="0"
 			>
-				<a>${o[props.text].trim()}</a>
+				<i class="fas fa-level-up-alt fa-rotate-90"></i><a>${o[props.text].trim()}</a>
 			</div>
 		`)
-	);
+		);
+	});
 
 	return `
+	<div id="genDropdownSearch" contenteditable="true"><a></a></div>
 	<div
 		id="${props.containerId}-select"
 		class="genDropdownSelected"
 		tabindex="0"
 		role="listbox"		
 		aria-labelledby="${props.containerId}-label"
-		contenteditable=${mobile ? "false" : "true"}
 	>
 		<a>${selectedHtml}</a>
-		<div class="genDropdownOptions">${optionList.join("")}</div>
+		<div class="genDropdownOptions genDropDownWithGroups">
+			${optionList.join("")}
+		</div>
 	</div>
 	`;
 };
 
 const clickHandlerLookup = {
 	topicDropdown: (value) => appState.ACTIVE_TAB.topicDropdownChange(value),
-	classificationDropdown: (value) => appState.ACTIVE_TAB.updateClassification(value),
-	groupDropdown: (value) => appState.ACTIVE_TAB.updateGroup(value),
-	startYearContainer: (value) => appState.ACTIVE_TAB.updateStartPeriod(value),
-	endYearContainer: (value) => appState.ACTIVE_TAB.updateEndPeriod(value),
-	estimateTypeDropdown: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
-	estimateTypeDropdownMap: (value) => appState.ACTIVE_TAB.updateYAxisUnitId(value),
 };
 
-export class GenDropdown {
+export class TopicDropdown {
 	constructor(providedProps) {
 		this.props = providedProps;
 		this.props.text = providedProps.text ?? "text";
@@ -131,7 +130,6 @@ export class GenDropdown {
 		this.listItems = `#${providedProps.containerId} .genDropdownOption`;
 		this.selectedOption = `#${providedProps.containerId} .genOptionSelected`;
 		this.disabled = false;
-		this.isMobile = Utils.isMobile();
 	}
 
 	// ///////////////////////////////////////////// //
@@ -157,9 +155,16 @@ export class GenDropdown {
 	// get the text for the dropdown option currently selected
 	text = () => $(`${this.selectedOption} > a`).html();
 
+	update = () =>
+		$(`#${this.props.containerId}-select .genDropdownOption`).each((i, el) => {
+			if ($(el).hasClass("genOptionFilteredOut")) $(el).attr("hidden", true);
+			else $(el).removeAttr("hidden");
+		});
+
 	render = () => {
 		$(`#${this.props.containerId}-select`).remove();
-		$(`#${this.props.containerId}`).append(populate(this.props, this.isMobile));
+		this.isMobile = Utils.isMobile();
+		$(`#${this.props.containerId}`).append(populate(this.props));
 		this.selectedOptionEl = $(this.selectedOption);
 		this.#updateAriaLabel($(`${this.selectedOption} > a`).html());
 
@@ -171,51 +176,37 @@ export class GenDropdown {
 
 		// EVENT HANDLERS
 		$(document)
-			.off("click", `#${this.props.containerId}-select`)
-			.off("click", `#${this.props.containerId}-select > a`)
-			.off("keypress keydown", `#${this.props.containerId}`)
-			.on("click", `#${this.props.containerId}-select > a`, () => $(`#${this.props.containerId}-select`).focus())
+			.off("click keydown", `#${this.props.containerId}-select`)
 			.on("click", `#${this.props.containerId}-select`, (e) => {
 				if (this.disabled) return;
 				e.stopPropagation();
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
 				);
-				this.#toggleOpenClose();
+				if (e.currentTarget.id !== "genDropdownSearch") this.#toggleOpenClose();
 			})
-			.on("keypress", `#${this.props.containerId}`, (e) => {
-				if (this.disabled) return;
+			.on("keydown", `#${this.props.containerId}-select`, (e) => {
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
-				if (key === "Enter" || (key === " " && !open)) {
+				if (key === "Tab" && open && document.activeElement.id === "topicDropdown-select") {
 					e.preventDefault();
-					if (open) this.#handleSelectionMade();
-					else {
-						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
-							this.#closeOtherOpenDropdown(el)
-						);
-						this.#toggleOpenClose();
-					}
-				} else if (key === " " && !this.searchText.length) {
-					e.preventDefault();
-					this.#toggleOpenClose();
-				} else {
-					if (!open) this.#toggleOpenClose();
-					e.preventDefault();
-					this.#search(key);
+					$(`#${this.props.containerId} #genDropdownSearch`).trigger("focus");
 				}
 			})
+
+			.off("keydown", `#${this.props.containerId}`)
 			.on("keydown", `#${this.props.containerId}`, (e) => {
-				if (this.disabled) return;
+				const targetId = e.target.id;
+				if (this.disabled || targetId === "refineTopicList") return;
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
-				if (key === "Backspace" && open) {
-					this.searchText = this.searchText.slice(0, -1);
-					if (!this.searchText.length) {
-						this.#resetOptions();
-						this.#toggleOpenClose();
-					} else this.#search();
-				} else if (key === "Delete" || key === "Escape") {
+				if (!open && (key === "Enter" || key === " ")) {
+					e.preventDefault();
+					$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+						this.#closeOtherOpenDropdown(el)
+					);
+					this.#toggleOpenClose();
+				} else if (key === "Escape") {
 					if (this.searchText.length) {
 						this.searchText = "";
 						this.#resetOptions();
@@ -224,8 +215,16 @@ export class GenDropdown {
 					e.preventDefault();
 					const currentSelected = $(this.selectedOption);
 					const selector = open ? ":visible" : "";
-					const previous = $(currentSelected).prevAll(selector).not(".disabled").first();
-					const next = $(currentSelected).nextAll(selector).not(".disabled").first();
+					const previous = $(currentSelected)
+						.prevAll(selector)
+						.not(".disabled")
+						.not(".genDropdownTopicGroup")
+						.first();
+					const next = $(currentSelected)
+						.nextAll(selector)
+						.not(".disabled")
+						.not(".genDropdownTopicGroup")
+						.first();
 					const dropdown = $(".genDropdownOptions");
 					const dropdownDims = $(dropdown)[0].getBoundingClientRect();
 
@@ -254,10 +253,62 @@ export class GenDropdown {
 					}
 				}
 			})
+
+			.off("keypress keydown", `#${this.props.containerId} #genDropdownSearch`)
+			.on("keydown", `#${this.props.containerId} #genDropdownSearch`, (e) => {
+				if (this.disabled) return;
+				const { key } = e;
+				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
+				if (open) {
+					if (key === "Backspace") {
+						this.searchText = this.searchText.slice(0, -1);
+						this.#search();
+					} else if (key === "Tab" || key === "ArrowDown") {
+						e.preventDefault();
+						if ($("#clearSearch").length) $("#clearSearch").trigger("focus");
+						else $(".genDropdownOption:visible:first").trigger("focus");
+					}
+				}
+			})
+			.on("keypress", `#${this.props.containerId} #genDropdownSearch`, (e) => {
+				if (this.disabled) return;
+				const { key } = e;
+				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
+				if (key === "Enter" || (key === " " && !open)) {
+					e.preventDefault();
+					if (open) {
+						if (e.target.id !== "clearSearch") this.#handleSelectionMade();
+					} else {
+						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
+							this.#closeOtherOpenDropdown(el)
+						);
+						this.#toggleOpenClose();
+					}
+				} else if (key === " " && !this.searchText.length) {
+					e.preventDefault();
+					this.#toggleOpenClose();
+				} else {
+					if (!open) this.#toggleOpenClose();
+					e.preventDefault();
+					this.#search(key);
+				}
+			})
+
+			.off("click", "#genDropdownSearch")
+			.on("click", "#genDropdownSearch", () => {
+				$("#genDropdownSearch").html("<a></a>");
+			})
+
 			.off("mouseenter focus", this.listItems)
 			.on("mouseenter focus", this.listItems, (e) => {
 				$(this.listItems).removeClass("genOptionSelected");
 				$(e.currentTarget).addClass("genOptionSelected");
+			})
+
+			.off("click keypress", "#clearSearch")
+			.on("click keypress", "#clearSearch", (e) => {
+				e.preventDefault();
+				this.#resetOptions();
 			});
 
 		// Handle Selection Made
@@ -306,32 +357,16 @@ export class GenDropdown {
 	// ///////////////////////////////////////////// //
 	#closeOtherOpenDropdown = (target) => {
 		if (!target) return; // this should never happen but just in case
-
 		$(target).find(".genOptionSelected").removeClass("genOptionSelected"); // a hover-over may have selected an option so we need to remove that
 		const previouslySelectedText = $(target).parent().find("a").html().trim();
 		const children = $(target).find("a");
-		if (target.id !== "genDropdownSearch")
-			children.each((i, el) => {
-				if ($(el).html().trim() === previouslySelectedText) {
-					$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
-					return false; // exit the loop
-				}
-			});
+		children.each((i, el) => {
+			if ($(el).html().trim() === previouslySelectedText) {
+				$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
+				return false; // exit the loop
+			}
+		});
 		$(target).removeClass("genDropdownOpened"); // close the dropdown
-	};
-
-	// used in conjunction with the contenteditable tag, the setCaret method moves the cursor to the front of the currently selected text
-	// seems this only works with native javascript selector syntax
-	#setCaret = () => {
-		const el = document.querySelector(`#${this.props.containerId} .genDropdownSelected`);
-		const range = document.createRange();
-		const sel = window.getSelection();
-
-		range.setStart(el.childNodes[0], 0);
-		range.collapse(true);
-
-		sel.removeAllRanges();
-		sel.addRange(range);
 	};
 
 	#scrollIntoView = () => {
@@ -353,7 +388,27 @@ export class GenDropdown {
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
-		if (!this.isMobile) this.#setCaret();
+		const topicWidth = $(`#${this.props.containerId}`).width();
+		const topicHeight = $(`#${this.props.containerId}`).height();
+		$(`#${this.props.containerId} #genDropdownSearch`)
+			.toggleClass("genDropdownOpened")
+			.css({
+				width: `${topicWidth}px`,
+				top: `${topicHeight}px`,
+			});
+		const searchHeight = $(`#${this.props.containerId} #genDropdownSearch`).height();
+		const totalHeight = topicHeight + searchHeight;
+		$(".genDropDownWithGroups").css({
+			top: `${totalHeight - 17}px`,
+		});
+		if ($(this.dropdownSection).hasClass("genDropdownOpened")) {
+			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #000");
+			$(`#${this.props.containerId} #genDropdownSearch`).html("<a>Search topic list</a>");
+			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+		} else {
+			this.#resetOptions();
+			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
+		}
 		this.#scrollIntoView();
 	};
 
@@ -383,11 +438,15 @@ export class GenDropdown {
 	};
 
 	#resetOptions = () => {
-		$(this.listItems).removeClass("genOptionSelected").attr("hidden", false);
-		const html = $(this.selectedOptionEl).find("a").html();
-		$(`#${this.props.containerId}-select > a`).html(html);
+		$(this.listItems).not(".genOptionFilteredOut").removeClass("genOptionSelected").attr("hidden", false);
 		$(this.selectedOptionEl).addClass("genOptionSelected");
-		$(`#${this.props.containerId}-select`).focus();
+		$(`#${this.props.containerId} #genDropdownSearch`)
+			.css("caret-color", "inherit")
+			.html("<a>Search topic list</a>")
+			.trigger("focus");
+
+		$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+		this.searchText = "";
 	};
 
 	#search = (c) => {
@@ -395,18 +454,19 @@ export class GenDropdown {
 		const lowercaseSearch = this.searchText.toLowerCase();
 		let matchIndex;
 		if (this.searchText.length) {
+			$("#genDropdownSearch").css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				if (
 					html.toLowerCase().includes(lowercaseSearch) &&
 					!$(item).hasClass("disabled") &&
-					$(item).css("display") === "block"
+					!$(item).hasClass("genOptionFilteredOut")
 				) {
 					$(item).attr("hidden", false);
 					matchIndex = html.toLowerCase().indexOf(lowercaseSearch);
 					const matchingText = html.slice(matchIndex, matchIndex + this.searchText.length);
 					const remaining = html.split(matchingText);
-					$(`#${this.props.containerId}-select > a`).html(`
+					$(`#${this.props.containerId} #genDropdownSearch > a`).html(`
 							<span>${remaining[0]}</span><span style="font-weight: bold;">${this.searchText}</span><span>${remaining[1]}</span>
 						`);
 				} else $(item).attr("hidden", true);
@@ -416,17 +476,45 @@ export class GenDropdown {
 					$(selected).removeClass("genOptionSelected");
 					$(`#${this.props.containerId}`)
 						.find(".genDropdownOption:visible:first")
-						.addClass("genOptionSelected")
-						.focus();
+						.addClass("genOptionSelected");
 				}
 			});
+			topicGroups.forEach((group, i) => {
+				const filteredOut = $(`#topicGroup${i}`).hasClass("genOptionFilteredOut");
+				if (filteredOut) return;
+				const someVisible = $(`.topicGroup${i} :visible`).length > 0;
+				if (group.toLowerCase().includes(lowercaseSearch) || someVisible) {
+					$("#topicGroup" + i).attr("hidden", false);
+					if (group.toLowerCase().includes(lowercaseSearch))
+						$(".topicGroup" + i)
+							.not(".genOptionFilteredOut")
+							.attr("hidden", false);
+				} else $("#topicGroup" + i).attr("hidden", true);
+			});
+		} else {
+			$(`#${this.props.containerId} #genDropdownSearch`)
+				.css("caret-color", "inherit")
+				.html("<a>Search topic list</a>");
+			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+			$(".genDropdownOption").not(".genOptionFilteredOut").attr("hidden", false);
+			matchIndex = 1;
 		}
 		if (matchIndex === undefined) {
-			$(`#${this.props.containerId}-select > a`).html(
-				`<span style="font-weight: bold;">${this.searchText}</span>`
-			);
-			$(`#${this.props.containerId}-select`).focus();
+			const countOfVisibleTopicGroups = $(".genDropdownTopicGroup:visible").length;
+			if (countOfVisibleTopicGroups === 0) {
+				$(`#${this.props.containerId} #genDropdownSearch > a`)
+					.html(
+						`No matching results found <i id="clearSearch" class="fas fa-times" aria-label="reset search" tabindex="0"></i>`
+					)
+					.attr("aria-label", "No matching results found");
+			} else $(`#${this.props.containerId} #genDropdownSearch > a`).html(this.searchText);
 		}
+		const topicHeight = $(`#${this.props.containerId}`).height();
+		const searchHeight = $(`#${this.props.containerId} #genDropdownSearch`).height();
+		const totalHeight = topicHeight + searchHeight;
+		$(".genDropDownWithGroups").css({
+			top: `${totalHeight - 17}px`,
+		});
 	};
 
 	#hideFirst = () => {

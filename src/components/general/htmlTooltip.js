@@ -48,7 +48,7 @@ export class HtmlTooltip {
 
 	mouseover(event) {
 		this.incomingElement = event.target;
-		const { sides, leftBounds } = this.getWhichSvgSides(event);
+		let { sides, leftBounds } = this.getWhichSvgSides(event);
 
 		this.incomingElement.style.transform = "scale(1.1)";
 
@@ -57,8 +57,22 @@ export class HtmlTooltip {
 		else tip.select("h3").html("");
 		if (this.h4) tip.select("h4").html(this.h4);
 		else tip.select("h4").html("");
-		if (this.body) tip.select(".tip-body").html(this.body);
-		else tip.select(".tip-body").html("");
+		if (this.body) {
+			if (this.containerId === "refineInfoRow") {
+				sides = { x: "left", y: "bottom" };
+				const selected = $(".filterCheckbox:checkbox:checked").length;
+				if (selected) {
+					let modalMessage = "Show results for: ";
+					$(".filterCheckbox:checkbox:checked").each((i, el) => {
+						modalMessage += $(el).siblings("label").text() + " <b>OR</b> ";
+					});
+					this.body = modalMessage.slice(0, -11);
+				} else
+					this.body =
+						"E.g. Select <b>Female, Asian, Infant</b> to show all results for Female <b>OR</b> Asian <b>OR</b> Infant.";
+			}
+			tip.select(".tip-body").html(this.body);
+		} else tip.select(".tip-body").html("");
 
 		let tipHeight;
 		try {
@@ -93,7 +107,9 @@ export class HtmlTooltip {
 	}
 
 	mousemove(event) {
-		const { sides } = this.getWhichSvgSides(event);
+		let { sides } = this.getWhichSvgSides(event);
+		if (this.body && this.containerId === "refineInfoRow") sides = { x: "left", y: "bottom" };
+
 		const tipHeight = d3.select(`#${this.containerId} .generalTooltip.tooltip`)._groups[0][0].offsetHeight;
 		const tipWidth = d3.select(`#${this.containerId} .generalTooltip.tooltip`)._groups[0][0].offsetWidth;
 		d3.select(`#${this.containerId} .tooltip`)
@@ -102,7 +118,9 @@ export class HtmlTooltip {
 	}
 
 	mouseout() {
-		this.incomingElement.style.transform = "scale(1)";
-		d3.select(`#${this.containerId} .tooltip`).transition().duration(150).style("visibility", "hidden");
+		if (this.incomingElement) {
+			this.incomingElement.style.transform = "scale(1)";
+			d3.select(`#${this.containerId} .tooltip`).transition().duration(150).style("visibility", "hidden");
+		}
 	}
 }
