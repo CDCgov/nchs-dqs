@@ -34,7 +34,7 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 		selectedHtmlList.push(`
 			<div class="genMsdOption" style="display: flex; flex-direction: row; flex-grow: 1; min-width: calc(50% - 4px); justify-content: space-between;" role="option">
 				<div class="genMsdIgnoreClick" style="white-space: initial">${o.text}</div>
-				<i id="genMsdDelete${i}" data-val="${o.value}" class="genMsdDeleteIcon genMsdDelete fas fa-times" type="button" aria-label="Click to Remove ${o.text}" tabindex="0"></i>
+				<i id="genMsdDelete${i}" data-val="${o.value}" class="genMsdDeleteIcon genMsdDelete fas fa-times" type="button" aria-label="click, press enter, or shift enter, to remove ${o.text} from the list" tabindex="0"></i>
 			</div>
 			`)
 	);
