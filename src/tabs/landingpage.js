@@ -9,6 +9,7 @@ import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
+import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
 
 export class LandingPage {
 	constructor() {
@@ -19,10 +20,10 @@ export class LandingPage {
 		this.flattenedFilteredData = null;
 		this.dataTopic = "obesity-child"; // default
 		this.groupId = 0;
-		this.startPeriod = "1988-1994";
-		this.startYear = "1988"; // first year of the first period
-		this.endPeriod = "2013-2016";
-		this.endYear = "2013"; // first year of the last period
+		this.startPeriod = null;
+		this.startYear = null; // first year of the first period
+		this.endPeriod = null;
+		this.endYear = null; // first year of the last period
 		this.footnoteMap = null;
 		this.showBarChart = 0;
 		this.topoJson = null;
@@ -38,7 +39,11 @@ export class LandingPage {
 		this.topicDropdown = null;
 		this.classificationDropdown = null;
 		this.groupDropdown = null;
-		this.subgroupDropdown = null;
+		this.subgroupDropdown = new SubgroupMultiSelectDropdown({
+			tabName: "landingPage",
+			containerId: "subgroupDropdown",
+			chartContainerId: "chart-container",
+		});
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
@@ -160,6 +165,7 @@ export class LandingPage {
 				} else id = parseInt(target.id.slice(-1), 10);
 
 				this.activeTabNumber = id - 1;
+				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 				switch (this.activeTabNumber) {
 					case 0:
 						this.updateGroup(1, false);
@@ -194,7 +200,7 @@ export class LandingPage {
 		let stateData = [...data];
 		// but need to narrow it to the selected time period
 		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+		if (this.startYear) stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
 		this.flattenedFilteredData = stateData;
 		const mapVizId = "us-map";
@@ -222,9 +228,11 @@ export class LandingPage {
 
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
+		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
+		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
 
 		this.chartConfig = functions.getAllChartProps(
-			flattenedData,
+			chartData,
 			this.showBarChart,
 			this.config,
 			this.groupDropdown.text()
@@ -253,10 +261,18 @@ export class LandingPage {
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 1) {
+			const disabled = this.groupDropdown.text().toLowerCase().includes("total");
+			this.subgroupDropdown.disable(disabled);
+			this.subgroupDropdown.setMaxSelections(7);
 			this.renderChart(data);
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 2) {
+			const onTotal = this.groupDropdown.text().toLowerCase().includes("total");
+			const showingAllSubgroups = $("#showAllSubgroupsSlider").is(":checked");
+			const disabled = onTotal || showingAllSubgroups;
+			this.subgroupDropdown.disable(disabled);
+			this.subgroupDropdown.setMaxSelections(1000); // arbitrary large number
 			this.renderDataTable(data);
 			$("#btnTableExport").show();
 			$("#dwn-chart-img").hide();
@@ -270,8 +286,8 @@ export class LandingPage {
 			(d) =>
 				d.unit_num == this.config.yAxisUnitId &&
 				d.stub_name_num == this.groupId &&
-				parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10) &&
-				parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10)
+				(!this.startYear || parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10)) &&
+				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
@@ -293,7 +309,7 @@ export class LandingPage {
 			const allDataGroups = [...new Set(data.map((d) => d.stub_label))];
 
 			// filter to just the start year
-			data = data.filter((d) => d.year_pt == this.startYear);
+			if (this.startYear) data = data.filter((d) => d.year_pt == this.startYear);
 
 			const current = data[0];
 
@@ -382,6 +398,8 @@ export class LandingPage {
 	}
 
 	topicDropdownChange = (value) => {
+		this.startYear = null;
+		this.endYear = null;
 		this.events.stopAnimation();
 		this.selections = null;
 		this.updateTopic(value);
@@ -407,7 +425,6 @@ export class LandingPage {
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
 
 		// clear the list of active legend items
-		DataCache.activeLegendList = [];
 
 		if (this.selections?.viewSinglePeriod) {
 			$("#startYearContainer").addClass("offset-3");
@@ -420,8 +437,6 @@ export class LandingPage {
 
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-
-		DataCache.activeLegendList = [];
 
 		if (this.config.socrataId.startsWith("nhis") && !this.nhisData) {
 			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
@@ -451,20 +466,6 @@ export class LandingPage {
 					DataCache.Footnotes = allFootNotes;
 				}
 
-				// Promise.all([
-				// 	this.getSelectedSocrataData(this.config),
-				// 	this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
-				// 	this.getUSMapData(),
-				// ])
-				// 	.then((data) => {
-				// 		let [socrataData, nhisFootnotes, mapData] = data;
-				// 		if (mapData) this.topoJson = JSON.parse(mapData);
-				// 		let allFootNotes = DataCache.Footnotes;
-				// 		if (!allFootNotes) {
-				// 			allFootNotes = [...nhisFootnotes];
-				// 			DataCache.Footnotes = allFootNotes;
-				// 		}
-
 				if (!this.footnoteMap) {
 					this.footnoteMap = {};
 					let i = null;
@@ -480,8 +481,7 @@ export class LandingPage {
 					...d,
 					estimate: parseFloat(d.estimate),
 					year_pt: functions.getYear(d.year),
-					dontDraw: false,
-					assignedLegendColor: "#FFFFFF",
+					// assignedLegendColor: "#FFFFFF",
 				}));
 
 				// for line chart and bar chart, REMOVE the undefined data entirely
@@ -631,9 +631,19 @@ export class LandingPage {
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
 		else $("#showAllSubgroupsSlider").prop("disabled", false);
+		this.initSubgroupDropdown();
 	}
 
-	initSubgroupDropdown() {}
+	initSubgroupDropdown() {
+		this.flattenedFilteredData = this.getFlattenedFilteredData();
+		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
+			text: d,
+			value: d,
+			selected: i < 5,
+		}));
+		this.subgroupDropdown.setOptions(options);
+		this.subgroupDropdown.render();
+	}
 
 	setVerticalUnitAxisSelect() {
 		let allUnitsArray = this.socrataData.filter(
@@ -683,7 +693,6 @@ export class LandingPage {
 			return;
 		}
 
-		DataCache.activeLegendList = [];
 		this.renderDataVisualizations();
 	}
 
@@ -700,7 +709,7 @@ export class LandingPage {
 			$("#showAllSubgroupsSlider").prop("disabled", false);
 		}
 
-		DataCache.activeLegendList = [];
+		this.initSubgroupDropdown();
 		this.renderDataVisualizations();
 	}
 
@@ -752,7 +761,7 @@ export class LandingPage {
 		this.currentTimePeriodIndex = this.allYearsOptions.findIndex((d) => d.value === start);
 		this.startYear = functions.getYear(start);
 		const endPeriodOptions = this.allYearsOptions.filter((d) => this.startYear < functions.getYear(d.value));
-		this.initEndPeriodDropdown(endPeriodOptions);
+		if (endPeriodOptions.length) this.initEndPeriodDropdown(endPeriodOptions);
 		this.renderDataVisualizations();
 	}
 
@@ -815,18 +824,6 @@ export class LandingPage {
 		this.renderMap(this.flattenedFilteredData);
 	}
 
-	toggleLegendItem(value) {
-		const selDataPt = value.replace(/_/g, " ");
-
-		const currentLength = DataCache.activeLegendList.length;
-		const foundItemIndex = DataCache.activeLegendList.findIndex((f) => f.stub_label === selDataPt);
-
-		if (currentLength > 0 && foundItemIndex !== -1) DataCache.activeLegendList.splice(foundItemIndex, 1);
-		else if (currentLength < 10) DataCache.activeLegendList.push({ stub_label: selDataPt, dontDraw: false });
-		else return;
-		this.renderDataVisualizations();
-	}
-
 	// call this when Reset Button is clicked
 	resetSelections() {
 		functions.resetTopicDropdownList();
@@ -845,7 +842,6 @@ export class LandingPage {
 		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect();
-		DataCache.activeLegendList = [];
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
@@ -861,6 +857,11 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
+		if (!$("#showAllSubgroupsSlider").is(":checked")) {
+			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
+			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		}
+
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
@@ -882,7 +883,7 @@ export class LandingPage {
 			$(".expanded-data-table")
 				.empty()
 				.html(
-					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options.</div>`
+					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options. Select at least one Subgroup.</div>`
 				);
 			return;
 		}

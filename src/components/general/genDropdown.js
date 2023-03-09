@@ -68,7 +68,7 @@ import { Utils } from "../../utils/utils";
 
 const populate = (props, mobile) => {
 	const optionList = [];
-	let selected = props.options.find((o) => o[props.value] === props.selectedValue);
+	let selected = props.options.find((o) => o[props.value] == props.selectedValue);
 	if (!selected) {
 		if (props.firstOptObj) {
 			selected = { [props.text]: props.firstOptObj.text, [props.value]: props.selectedValue };
@@ -181,6 +181,7 @@ export class GenDropdown {
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
 				);
+				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
@@ -194,6 +195,7 @@ export class GenDropdown {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
 						);
+						$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
 						this.#toggleOpenClose();
 					}
 				} else if (key === " " && !this.searchText.length) {
