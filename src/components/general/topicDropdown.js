@@ -96,7 +96,7 @@ const populate = (props) => {
 	});
 
 	return `
-	<div id="genDropdownSearch" contenteditable="true"><a></a></div>
+	<div id="genDropdownSearch" contenteditable="true"><a id="genDdSearchAnchor"></a></div>
 	<div
 		id="${props.containerId}-select"
 		class="genDropdownSelected"
@@ -299,7 +299,7 @@ export class TopicDropdown {
 
 			.off("click", "#genDropdownSearch")
 			.on("click", "#genDropdownSearch", () => {
-				$("#genDropdownSearch").html("<a></a>");
+				$("#genDropdownSearch").html("<a id='genDdSearchAnchor'></a>");
 			})
 
 			.off("mouseenter focus", this.listItems)
@@ -406,7 +406,7 @@ export class TopicDropdown {
 		});
 		if ($(this.dropdownSection).hasClass("genDropdownOpened")) {
 			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #000");
-			$(`#${this.props.containerId} #genDropdownSearch`).html("<a>Search topic list</a>");
+			$(`#${this.props.containerId} #genDropdownSearch`).html("<a id='genDdSearchAnchor'>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
 		} else {
 			this.#resetOptions();
@@ -445,7 +445,7 @@ export class TopicDropdown {
 		$(this.selectedOptionEl).addClass("genOptionSelected");
 		$(`#${this.props.containerId} #genDropdownSearch`)
 			.css("caret-color", "inherit")
-			.html("<a>Search topic list</a>")
+			.html("<a id='genDdSearchAnchor'>Search topic list</a>")
 			.trigger("focus");
 
 		$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);

@@ -21,6 +21,7 @@ export const PageEvents = {
 	closeDropdowns() {
 		$(document).on("click", (e) => {
 			if ($(e.target).closest(".genDropdownOpened").length) return;
+			if (e.target.id === "genDropdownSearch" || e.target.id === "genDdSearchAnchor") return;
 			$(".genDropdownOpened").removeClass("genDropdownOpened");
 		});
 	},
