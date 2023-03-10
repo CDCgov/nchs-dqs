@@ -9,7 +9,7 @@ export class MainEvents {
 
 	stopAnimation = () => {
 		clearInterval(this.animationInterval);
-		$("#animatePlayIcon").css("fill", "black");
+		$("#animatePlayIcon").css("fill", "white");
 		$(".animatePauseIcon").css("fill", "none");
 		appState.ACTIVE_TAB.animating = false;
 		$("#mapPlayButtonContainer").hide();

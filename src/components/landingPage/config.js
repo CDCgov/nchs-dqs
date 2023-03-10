@@ -12,12 +12,19 @@ export const chartAndTableSelectors = `
 					<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
 					<span class="slider round"></span>
 				</label>
-			</div>				
+			</div>
 			<div id="ciTableSlider">
-				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>					
+				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
 				<label class="switch">
 					<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
 					<span id="ciTableHover" class="slider round"></span>
+				</label>
+			</div>			
+			<div id="mapBinningTypeSelector">
+				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles base on the most recent available period</label>
+				<label class="switch">
+					<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
+					<span class="slider round"></span>
 				</label>
 			</div>
 		</div>
@@ -157,19 +164,22 @@ export const tabContent = `
 			<li><a href="#chart-tab"><i class="fas fa-chart-line fa-fw me-2"></i> Chart</a></li>
 			<li><a href="#table-tab"><i class="fas fa-table fa-fw me-2"></i> Table</a></li>
 		</ul>
+		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="adjustUnitContainer">
-					<div id="estimateTypeDropdownMap" class="genDropdown">
-						<div id="estimateTypeDropdownMap-label" for="estimateTypeDropdownMap-select"class="select-label">Estimate Type</div>
-					</div>
-				</div>
+				<div id="mapSelectors"></div>
 				<fieldset class="breaksContainer">
+					<div id="staticBinningContainer">
+						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">
+							Binning
+							<i class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
+						</label>
+					</div>
 					<div class="btnToggle">
-						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-						<label role="button" for="classNBreaks">Natural Breaks</label>
-						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-						<label role="button" for="classQuartiles">Quartiles</label>
+						<input type="radio" name="classifyBy" value="static" id="classNBreaks" checked="checked" />
+						<label role="button" for="classNBreaks">Static</label>
+						<input type="radio" name="classifyBy" value="dynamic" id="classQuartiles" />
+						<label role="button" for="classQuartiles">Dynamic</label>
 					</div>
 				</fieldset>			
 				<div id="us-map-container">
@@ -184,7 +194,6 @@ export const tabContent = `
 						<div id="mapLegendPeriod">2013 - 2015</div>
 						<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
 					</div>
-				</div>
 				</div>
 				<br />
 				<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
@@ -309,6 +318,7 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
+		binGranularity: 0.1,
 		topicGroup: 4,
 	},
 	birthweight: {
@@ -322,6 +332,7 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
+		binGranularity: 0.01,
 		topicGroup: 11,
 	},
 	medicaidU65: {

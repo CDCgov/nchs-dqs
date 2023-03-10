@@ -1,13 +1,11 @@
 import * as d3 from "../../lib/d3.min";
 import { GenTooltip } from "./genTooltip";
 import { getGenSvgScale } from "../../utils/genSvgScale";
-import { ClassifyData } from "../../utils/ClassifyDataNT";
 
 export class GenMap {
 	constructor(props) {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
-		this.classifyType = parseInt(props.classifyType, 10);
 		this.startYear = props.startYear; // time period start year selected
 		this.allDates = props.allDates;
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
@@ -15,6 +13,8 @@ export class GenMap {
 		this.noDataColorHexVal = null;
 		this.tooltipConstructor = props.genTooltipConstructor;
 		this.topoJson = props.topoJson;
+		this.mLegendData = props.mLegendData;
+		this.stableBuckets = props.stableBuckets;
 	}
 
 	renderTimeSeriesAxisSelector() {
@@ -27,40 +27,43 @@ export class GenMap {
 		const remDiv = viz.append("div").attr("line-height", "1rem").attr("display", "none");
 		const rem = parseFloat(remDiv.style("line-height"), 10);
 
-		const { fullSvgWidth } = getGenSvgScale(this.mapVizId);
+		const { fullSvgWidth } = getGenSvgScale("us-map-time-slider");
 		const axisLabelFontSize = 0.6 * rem;
+		const svgWidth = fullSvgWidth;
+		const svgHeight = $("#us-map-svg").height();
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: 0,
-			right: axisLabelFontSize,
-			bottom: 100,
-			left: 3 * axisLabelFontSize,
+			top: 0.044 * svgHeight,
+			right: 0,
+			bottom: 0.22 * svgHeight,
+			left: 0.95 * svgWidth,
 		};
 
-		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
-		const mapWidthRatio = 0.8;
-		const svgWidth = fullSvgWidth * mapWidthRatio;
-		const svgHeight = 110;
-
-		const chartWidth = svgWidth - xMargin;
-		const chartHeight = svgHeight - yMargin;
+		const height = svgHeight - yMargin;
 
 		// setup scales
-		let xScale = d3
+		let yScale = d3
 			.scalePoint()
-			.range([0, chartWidth])
+			.range([0, height])
 			.domain(this.allDates.map((d) => d));
 
 		// set up axes
-		const xAxis = d3.axisBottom(xScale).tickSize(5);
+		const yAxis = d3.axisLeft(yScale).tickSize(5);
 		const svg = viz.append("svg").attr("viewBox", [0, 0, svgWidth, svgHeight]).attr("id", svgId);
 
 		svg.append("g")
-			.attr("class", "axis bottom")
-			.attr("transform", `translate(${margin.left}, ${margin.top + chartHeight})`)
-			.call(xAxis);
+			.attr("class", "axis left")
+			.attr("transform", `translate(${margin.left}, ${margin.top})`)
+			.call(yAxis);
+
+		d3.selectAll(`#${svgId} .axis.left text`).attr("text-anchor", "end");
+		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
+
+		d3.selectAll(`#${svgId} .axis text`)
+			.filter((d, i) => i === this.currentTimePeriodIndex)
+			.attr("font-weight", "bold");
 
 		// axis marker overlay (so clicking near a marker triggers a stop on that time-period)
 		svg.append("g")
@@ -69,10 +72,10 @@ export class GenMap {
 			.enter()
 			.append("rect")
 			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", margin.bottom)
-			.attr("width", xScale.step())
-			.attr("x", (d) => xScale(d) + margin.left - 0.1 * axisLabelFontSize - xScale.step() / 2)
-			.attr("y", 0.2 * axisLabelFontSize)
+			.attr("height", yScale.step())
+			.attr("width", margin.left)
+			.attr("y", (d) => yScale(d) + margin.top - 0.1 * axisLabelFontSize - yScale.step() / 2)
+			.attr("x", 0.2 * axisLabelFontSize)
 			.attr("fill", "transparent")
 			.attr("data-index", (d, i) => i)
 			.attr("cursor", "pointer");
@@ -81,39 +84,40 @@ export class GenMap {
 		svg.append("g")
 			.append("rect")
 			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", 0.9 * axisLabelFontSize)
-			.attr("width", 0.2 * axisLabelFontSize)
-			.attr("x", xScale(this.allDates[this.currentTimePeriodIndex]) + margin.left - 0.1 * axisLabelFontSize)
-			.attr("y", 0.2 * axisLabelFontSize)
-			.attr("fill", "darkgrey");
+			.attr("width", 0.9 * axisLabelFontSize)
+			.attr("height", 0.2 * axisLabelFontSize)
+			.attr("y", yScale(this.allDates[this.currentTimePeriodIndex]) + margin.top - 0.1 * axisLabelFontSize)
+			.attr("x", margin.left - 0.45 * axisLabelFontSize)
+			.attr("fill", "black");
 
-		// animate section
-		const animate = svg.append("g");
+		const widthOfAxis = $(`#${svgId} .axis.left`)[0].getBoundingClientRect().width;
+		const playPauseOffset = svgWidth - widthOfAxis - axisLabelFontSize;
 
+		const animate = svg
+			.append("g")
+			.attr("transform", `translate(${playPauseOffset}, ${margin.top + 0.8 * axisLabelFontSize})`);
+
+		// outer circle containing play/pause 'icons' that gives the illusion of a an active button
 		animate
-			.append("rect")
+			.append("circle")
 			.attr("class", "mapPlayButton")
 			.attr("id", "mapPlayButtonContainer")
-			.attr("width", 2 * axisLabelFontSize)
-			.attr("height", 2 * axisLabelFontSize)
+			.attr("r", 1.06 * axisLabelFontSize)
 			.attr("fill", "darkgrey")
-			.attr("rx", 0.2 * axisLabelFontSize)
-			.attr("ry", 0.2 * axisLabelFontSize)
-			.attr("transform", `translate(0, ${axisLabelFontSize})`)
+			.attr("cx", -0.9 * axisLabelFontSize)
+			.attr("cy", -0.9 * axisLabelFontSize)
 			.style("cursor", "pointer")
 			.style("display", this.animating ? "block" : "none");
 
-		// // inner rectangle to contain play button
+		// inner circle containing play/pause 'icons'
 		animate
-			.append("rect")
+			.append("circle")
 			.attr("class", "mapPlayButton")
-			.attr("width", 1.7 * axisLabelFontSize)
-			.attr("height", 1.7 * axisLabelFontSize)
-			.attr("fill", "#F2F2F2")
+			.attr("r", 0.9 * axisLabelFontSize)
+			.attr("fill", "black")
 			.attr("stroke", "black")
-			.attr("rx", 0.2 * axisLabelFontSize)
-			.attr("ry", 0.2 * axisLabelFontSize)
-			.attr("transform", `translate(${0.15 * axisLabelFontSize}, ${1.15 * axisLabelFontSize})`)
+			.attr("cx", -0.9 * axisLabelFontSize)
+			.attr("cy", -0.9 * axisLabelFontSize)
 			.style("cursor", "pointer");
 
 		// play icon (triangle)
@@ -126,44 +130,36 @@ export class GenMap {
 				d3
 					.symbol()
 					.type(d3.symbolTriangle)
-					.size(3 * axisLabelFontSize)
+					.size(4 * axisLabelFontSize)
 			)
-			.attr("fill", this.animating ? "none" : "black")
-			.attr("transform", `rotate(90), translate(${2 * axisLabelFontSize}, ${-axisLabelFontSize})`);
+			.attr("fill", this.animating ? "none" : "white")
+			.attr("transform", `rotate(90), translate(${-0.94 * axisLabelFontSize}, ${0.94 * axisLabelFontSize})`);
 
+		// one of the pause rectangles
 		animate
 			.append("rect")
 			.attr("class", "animatePauseIcon")
-			.attr("x", 1.05 * axisLabelFontSize)
-			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("x", -1.15 * axisLabelFontSize)
+			.attr("y", -1.3 * axisLabelFontSize)
 			.attr("width", 0.15 * axisLabelFontSize)
 			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "black" : "none");
+			.attr("fill", this.animating ? "white" : "none");
 
+		// the other pause rectangle
 		animate
 			.append("rect")
 			.attr("class", "animatePauseIcon")
-			.attr("x", 0.8 * axisLabelFontSize)
-			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("x", -0.85 * axisLabelFontSize)
+			.attr("y", -1.3 * axisLabelFontSize)
 			.attr("width", 0.15 * axisLabelFontSize)
 			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "black" : "none");
-
-		d3.selectAll(`#${svgId} .axis.bottom text`)
-			.attr("text-anchor", "end")
-			.attr("transform", `translate(${-0.85 * axisLabelFontSize}, ${0.5 * axisLabelFontSize}), rotate(-90)`);
-
-		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
-
-		d3.selectAll(`#${svgId} .axis text`)
-			.filter((d, i) => i === this.currentTimePeriodIndex)
-			.attr("font-weight", "bold");
+			.attr("fill", this.animating ? "white" : "none");
 	}
 
 	render() {
 		const topoJson = JSON.parse(JSON.stringify(this.topoJson));
 		const { geometries } = topoJson.objects.StatesAndTerritories;
-		let mLegendData;
+		let { mLegendData } = this;
 		let mActiveLegendItems = [];
 		let mActiveLegendItemColors = [];
 		const mSuppressedFlagID = -2;
@@ -175,27 +171,6 @@ export class GenMap {
 		$(`#${this.mapVizId}`).empty();
 
 		const genTooltip = new GenTooltip(this.tooltipConstructor);
-
-		let ClassifiedDataObj;
-
-		switch (this.classifyType) {
-			case 1:
-				// Standard Breaks - with 4 Quartiles
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 4, 1);
-				break;
-			case 2:
-				// Natural Breaks
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 2);
-				break;
-			case 3:
-				// Equal Intervals - NOT USED
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 3);
-				break;
-			default:
-				break;
-		}
-
-		this.data = ClassifiedDataObj.classifiedData;
 
 		function mouseover() {
 			const thisElement = d3.select(this);
@@ -449,7 +424,6 @@ export class GenMap {
 
 		genTooltip.render();
 
-		mLegendData = ClassifiedDataObj.legend;
 		mActiveLegendItems = getDefaultActiveLegendItems();
 
 		loadMapLegend();
