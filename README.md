@@ -2,7 +2,7 @@
 This is the code repository for the NHCS application for visualizing, charting, and mapping data, created by the CDC's GRASP team.
 
 ## Developer Documentation
-A detailed guide to working within the project.
+A detailed guide to working within the NCHS project.
 
 # Build and Test
 TODO: Describe and show how to build your code and run the tests. 
