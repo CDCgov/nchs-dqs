@@ -411,7 +411,7 @@ export const topicGroups = [
 //    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
 //    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
 //    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
-// 3. "classificationOptions" uses rules #1 and #2 like above, but for the Classification dropdown
+// 3. "classificationOptions" uses rules #1 and #2 like above, but for the Classification  dropdown
 // 4. "groupOptions" uses rules #1 and #2 like above, but for the Group dropdown
 //
 // For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
