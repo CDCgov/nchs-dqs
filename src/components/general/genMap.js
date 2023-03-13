@@ -620,7 +620,7 @@ export class GenMap {
 					legendItems.push(legendItemObj);
 				}
 
-				// Generate the HTML for the  legend
+				// Generate the HTML for the legend
 				legendGeneratedHTML =
 					"<div id='us-map-legend' style='margin-left: 5px; margin-right: 5px' class='d-flex justify-content-center da-map-legend mb-1'>";
 
