@@ -168,31 +168,21 @@ export const tabContent = `
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
-				<fieldset class="breaksContainer">
-					<div id="staticBinningContainer">
-						<label id="staticBinningLabel" for="staticTimePeriodsCheckbox">
-							Binning
-							<i class="fas fa-info-circle" style="font-size: 0.8em; color: #0033a1">&nbsp;</i>
-						</label>
-					</div>
-					<div class="btnToggle">
-						<input type="radio" name="classifyBy" value="static" id="classNBreaks" checked="checked" />
-						<label role="button" for="classNBreaks">Static</label>
-						<input type="radio" name="classifyBy" value="dynamic" id="classQuartiles" />
-						<label role="button" for="classQuartiles">Dynamic</label>
-					</div>
-				</fieldset>			
-				<div id="us-map-container">
+				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
-					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
+					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
 					<div id="us-map" class="general-chart"></div>
 					<div id="usMapLegendContainer">
-						<div id="us-map-legend-title" class="general-chart" style="margin-top: 0">Legend</div>
-						<div>Data classified</div>
-						<div>using <button type="button">quartile</button></div>
-						<div>based on</div>
-						<div id="mapLegendPeriod">2013 - 2015</div>
-						<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
+						<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+							<div id="us-map-legend-title" class="general-chart">Legend</div>
+							<div style="display: inline-block; text-align: left;">
+								Data classified<br />
+								using <button type="button">quartile</button><br />
+								based on<br />
+								<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
+							</div>
+							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
+						</div>
 					</div>
 				</div>
 				<br />

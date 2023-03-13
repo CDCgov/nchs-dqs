@@ -47,7 +47,7 @@ export class LandingPage {
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
-		this.binning = "static";
+		this.binning = true;
 		this.legend = null;
 	}
 
@@ -142,6 +142,7 @@ export class LandingPage {
 
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
+		DataCache.mapLegendColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
 
 		functions.addHtmlTooltips();
 
@@ -242,7 +243,7 @@ export class LandingPage {
 
 		let classified;
 		let staticBin;
-		if (this.binning === "static") {
+		if (this.binning) {
 			stateData = stateData.map((d) => ({
 				...d,
 				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
@@ -261,7 +262,7 @@ export class LandingPage {
 		let map = new GenMap({
 			mapData: stateData,
 			topoJson: this.topoJson,
-			mLegendData: this.binning === "static" ? staticBin : classified.legend,
+			mLegendData: this.binning ? staticBin : classified.legend,
 			vizId: mapVizId,
 			startYear: parseInt(this.startYear, 10),
 			allDates,
@@ -869,8 +870,8 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateClassifyType(value) {
-		this.binning = value;
+	updateBinningMethod(toggle) {
+		this.binning = toggle;
 		this.resetTimePeriods();
 		this.renderMap(this.flattenedFilteredData);
 	}

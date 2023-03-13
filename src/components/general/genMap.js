@@ -1,4 +1,5 @@
 import * as d3 from "../../lib/d3.min";
+import { DataCache } from "../../utils/datacache";
 import { GenTooltip } from "./genTooltip";
 import { getGenSvgScale } from "../../utils/genSvgScale";
 
@@ -34,7 +35,7 @@ export class GenMap {
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: 0.044 * svgHeight,
+			top: 0.02 * svgHeight,
 			right: 0,
 			bottom: 0.22 * svgHeight,
 			left: 0.95 * svgWidth,
@@ -157,11 +158,10 @@ export class GenMap {
 	}
 
 	render() {
-		const topoJson = JSON.parse(JSON.stringify(this.topoJson));
+		const topoJson = JSON.parse(JSON.stringify(this.topoJson)); // deep clone
 		const { geometries } = topoJson.objects.StatesAndTerritories;
 		let { mLegendData } = this;
 		let mActiveLegendItems = [];
-		let mActiveLegendItemColors = [];
 		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
 		let noDataColorHexVal = "#dee2e6";
@@ -184,8 +184,6 @@ export class GenMap {
 		}
 
 		const bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
-		// same as above but remove WHITE
-		mActiveLegendItemColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
 
 		function getColor(bin, flag) {
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
@@ -193,7 +191,7 @@ export class GenMap {
 			if (flag === "N/A") return noDataColorHexVal; // Set to no data color
 
 			const binColor = bgColors[bin]; // this IS based on position of the bin to the color
-			const index = mActiveLegendItemColors.indexOf(binColor);
+			const index = DataCache.mapLegendColors.indexOf(binColor);
 			if (index > -1) return binColor; // COLOR FOUND !!
 			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
@@ -201,7 +199,7 @@ export class GenMap {
 		function getColorFromDProps(d) {
 			const binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
 			const { flag, estimate, crosshatch } = d.properties;
-			const index = mActiveLegendItemColors.indexOf(binColor);
+			const index = DataCache.mapLegendColors.indexOf(binColor);
 
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
 			if (crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
@@ -216,7 +214,7 @@ export class GenMap {
 			const binColor = bgColors[d.class]; // this IS based on position of the bin to the color
 			const { flag, estimate } = d;
 
-			const index = mActiveLegendItemColors.indexOf(binColor);
+			const index = DataCache.mapLegendColors.indexOf(binColor);
 			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
 			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
 			if (flag === "*" && estimate !== null && index > -1) return binColor;
@@ -228,16 +226,16 @@ export class GenMap {
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
 		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
 		const getFontColor = (bin) => fontColors[bin];
-
+		// debugger;
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 50 * overallScale;
 
 		const width = fullSvgWidth;
-		const mapHeightRatio = 0.5;
+		const mapHeightRatio = 0.65;
 		const mapHeight = width * mapHeightRatio;
 		const svgHeight = mapHeight + territoriesHeight * 2;
 
-		const svg = d3.select(`#${this.mapVizId}`).append("svg").attr("id", svgId).attr("display", "inline-block");
+		const svg = d3.select(`#${this.mapVizId}`).append("svg").attr("id", svgId);
 
 		svg.append("defs")
 			.append("pattern")
@@ -298,14 +296,12 @@ export class GenMap {
 		};
 
 		const states = topojson.feature(topoJson, stateGeoCollection);
-		const projection = d3
-			.geoAlbers()
-			.translate([width / 2, mapHeight / 2])
-			.scale(width);
-
+		// const projection = d3.geoAlbers().fitSize([width, svgHeight], states);
+		const projection = d3.geoAlbers().fitSize([width, mapHeight], states);
 		const path = d3.geoPath().projection(projection);
 
 		svg.attr("viewBox", [0, 0, width, svgHeight]);
+		// svg.attr("viewBox", [0, 0, width, svgHeight]).attr("preserveAspectRatio", "xMinYMin meet");
 
 		svg.append("g")
 			.attr("id", "states")
@@ -455,84 +451,40 @@ export class GenMap {
 			return activeLegendItems;
 		}
 
-		function convertRGB(rgb) {
-			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
-			const separator = rgb.indexOf(",") > -1 ? "," : " ";
+		function legendClickHandler(e) {
+			e.stopPropagation();
 
-			// This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString
-			const cleanedRgb = rgb.substr(4).split(")")[0].split(separator);
+			const color = $(e.target).data("color");
+			const checked = $(e.target).hasClass("checked");
 
-			// Here we will convert the decimal values to hexadecimal using toString(16)
-			let r = (+cleanedRgb[0]).toString(16);
-			let g = (+cleanedRgb[1]).toString(16);
-			let b = (+cleanedRgb[2]).toString(16);
+			if (checked) $(e.target).removeClass("checked").attr("style", "background-color: transparent");
+			else $(e.target).addClass("checked").attr("style", `background-color: ${color}`);
 
-			if (r.length === 1) r = "0" + r;
-			if (g.length === 1) g = "0" + g;
-			if (b.length === 1) b = "0" + b;
-
-			// The return value is a concatenation of "#" plus the rgb values which will give you your hex
-			return "#" + r + g + b;
-		}
-
-		function legendClickHandler(evt) {
-			let index;
-			let itemLabel;
-			let $chkBxObj;
-
-			// will call click event twice if you dont call this
-			evt.stopPropagation();
-
-			// get bg color of the one clicked
-			let theClickedColor = convertRGB(evt.target.parentNode.style.backgroundColor);
-
-			if (theClickedColor === "#dee2e6") {
-				// this is the color used for 'No Data'
-				this.noDataHasColor = !this.noDataHasColor;
-				if (this.noDataHasColor) noDataColorHexVal = "#ffffff";
+			if (color === "#dee2e6") {
+				if (checked) noDataColorHexVal = "#ffffff";
 				else noDataColorHexVal = "#dee2e6";
 			}
 
-			index = mActiveLegendItemColors.indexOf(theClickedColor);
 			// Add or Remove that color to/from the Active list of colors
+			let index = DataCache.mapLegendColors.indexOf(color);
 			// - note the ORDER of the colors is NOT related to the bin number
 			// - this just tracks whether that color is ACTIVE or not
-			if (index > -1) {
-				// COLOR FOUND
-				// remove it from the list
-				mActiveLegendItemColors.splice(index, 1);
+			if (index !== -1) {
+				// COLOR FOUND .. remove it from the list
+				DataCache.mapLegendColors.splice(index, 1);
 			} else {
-				// ADD COLOR BACK
-				// it's not there, so add the item to the active list
-				mActiveLegendItemColors.push(theClickedColor);
+				// ADD COLOR BACK ... it's not there, so add the item to the active list
+				DataCache.mapLegendColors.push(color);
 			}
 
-			if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase()) {
-				itemLabel = $(evt.target).val();
-				$chkBxObj = $(evt.target);
-			} else if ($(evt.target).hasClass("da-maplegend-box")) {
-				itemLabel = $(evt.target).find("input").val();
-				$chkBxObj = $(evt.target).find("input");
-			}
-			index = mActiveLegendItems.indexOf(itemLabel);
-
-			if (index > -1) {
-				// ITEM FOUND,  remove it from the list
-				mActiveLegendItems.splice(index, 1);
-				$chkBxObj.prop("checked", false);
-			} else {
-				// RE-ENABLE, it's not there, so add the item to the active list
-				mActiveLegendItems.push(itemLabel);
-				$chkBxObj.prop("checked", true);
-			}
-
-			// just update the colors without redrawing the map
-			updateMap();
+			updateMap(); // just update the colors without redrawing the map
 		}
 
 		function addEventListeners() {
 			$(document).off("click", "#us-map-legend > div > input");
 			$(document).on("click", "#us-map-legend > div > input", legendClickHandler);
+			$(document).off("click", "#us-map-legend .squareCheckbox");
+			$(document).on("click", "#us-map-legend .squareCheckbox", legendClickHandler);
 		}
 
 		// create and load the map legend
@@ -545,14 +497,13 @@ export class GenMap {
 			let legendGeneratedHTML;
 			let legendItemVal; // 11Apr2019
 			let bgColor;
-			let fontColor;
 			let isActive;
 
 			$("#us-map-legend").empty();
 
 			// No Data Box is First
 			legendItemObj = {
-				ColorStyle: "color:black !important; background-color:" + noDataColorHexVal,
+				ColorStyle: noDataColorHexVal,
 				DisplayLabel: "No Data",
 				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
 				IsChecked: 1, // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
@@ -574,12 +525,10 @@ export class GenMap {
 					} else {
 						if (nullFlag) {
 							bgColor = getColor(i);
-							fontColor = getFontColor(i);
 						} else {
 							bgColor = getColor(i + 1);
-							fontColor = getFontColor(i + 1);
 						}
-						colorStyle = "color:" + fontColor + " !important;background-color:" + bgColor;
+						colorStyle = bgColor;
 					}
 
 					isActive = mLegendData[i].active;
@@ -596,7 +545,7 @@ export class GenMap {
 
 				// Generate the HTML for the legend
 				legendGeneratedHTML = "";
-
+				// debugger;
 				legendItems.forEach((leg, i) => {
 					let isCheckedStr;
 					if (leg.IsChecked === 1) {
@@ -605,36 +554,22 @@ export class GenMap {
 						isCheckedStr = "";
 					}
 					let legendId = "legend-box-" + i;
-					if (leg.DisplayLabel.match("Unreliable")) {
-						// for cross hatching, just use white
-						legendGeneratedHTML += `
-						<div id='${legendId}' style='${leg.ColorStyle}'>
-							<input
-								id='mapchk-${i}'
-								class='form-check-input'
-								type='checkbox'
-								value='${leg.ItemValue}'
-								${isCheckedStr}
-								style='margin-right:3px;cursor:pointer"
-								aria-label='${leg.DisplayLabel.replace("-", "to")}'
-								autocomplete='off' />
-							<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
-						</div>`;
-					} else {
-						// draw regular with color
-						legendGeneratedHTML += `
-						<div id='${legendId}' style='${leg.ColorStyle}'>
-							<input
-								class='form-check-input'
-								type='checkbox'
-								value='${leg.ItemValue}'
-								${isCheckedStr}
-								style='margin-right:3px; cursor:pointer;'
-								aria-label='${leg.DisplayLabel.replace("-", "to")}'
-								autocomplete='off' />
-								<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
-						</div>`;
-					}
+					// draw regular with color
+					legendGeneratedHTML += `
+						<div class="row">
+							<div class="col-3 col-offset-1">
+								<div id=${legendId}
+									 class="squareCheckbox checked"
+									 data-color=${leg.ColorStyle}
+									 tabindex="0"
+									 aria-label='${leg.DisplayLabel.replace("-", "to")}'
+									 style="background-color: ${leg.ColorStyle};">
+									 	&nbsp;
+								</div>
+							</div>
+							<div class="col-9">${leg.DisplayLabel}</div>
+						</div>
+        				`;
 				});
 
 				// now add the legend to the map div
