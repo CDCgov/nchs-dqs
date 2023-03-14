@@ -29,18 +29,18 @@ export class MainEvents {
 				const { length } = allYears;
 
 				const moveNext = (restart) => {
-					next++;
-					if (restart) next = 0;
-					else if (next === length) {
+					if (!restart && next === 0) {
 						this.stopAnimation();
 						return;
 					}
+					next++;
+					if (next === length) next = 0;
 					const { value } = allYears[next];
 					appState.ACTIVE_TAB.updateStartPeriod(value);
 					appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 				};
 				appState.ACTIVE_TAB.animating = true;
-				moveNext(next === length - 1);
+				moveNext(next === 0);
 				this.animationInterval = setInterval(() => moveNext(), 1000);
 			});
 
