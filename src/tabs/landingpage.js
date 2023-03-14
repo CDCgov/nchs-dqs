@@ -897,7 +897,7 @@ export class LandingPage {
 		let tableId = "nchs-table";
 
 		$(".expanded-data-table").empty().html(`
-			<div class="row genSearch">
+			<!--<div class="row genSearch">
 				<div class="col-12" style="width: 100%; display: flex; align-items: center; position: relative;">
 					<i class="fa fa-search" style="padding: 0 6px;"></i>
 					<input
@@ -913,7 +913,7 @@ export class LandingPage {
 						id="clear-search-table" style="padding: 0 6px; cursor: pointer; position: absolute; right: 0.6em; font-size: 1.5em; color: grey;"
 						aria-label="press enter to reset table to all results"></i>
 				</div>
-			</div>
+			</div>-->
 			<table id="nchs-table" class="table table-bordered">
 				<thead>
 					<tr>
@@ -941,103 +941,105 @@ export class LandingPage {
 			$(body).append(row);
 		});
 
-		$("#clear-search-table").hide();
+		// $("#clear-search-table").hide();
 		this.dataTable = $("#nchs-table")
 			.DataTable({
 				bAutoWidth: false,
 				bInfo: false,
 				paging: false,
 				scrollX: "auto",
+				scrollY: "auto",
 				fixedColumns: {
 					left: 1,
 				},
+				fixedHeader: true,
 				searching: false,
 				dom: "tB",
 				buttons: ["csv"],
 			})
 			.columns.adjust();
 
-		const filter = $("div.dataTables_filter");
-		$(filter).parent().parent().find("div:first").remove();
-		$(filter).parent().removeClass().addClass("col-12");
-		$(filter).find("label").prepend("<i class='fa fa-search' style='padding: 0 6px'></i>");
+		// const filter = $("div.dataTables_filter");
+		// $(filter).parent().parent().find("div:first").remove();
+		// $(filter).parent().removeClass().addClass("col-12");
+		// $(filter).find("label").prepend("<i class='fa fa-search' style='padding: 0 6px'></i>");
 
-		let allWordsInHeaderValues = [];
-		$(".headerValue").each((i, d) => {
-			const words = $(d).text().split(" ");
-			words.forEach((w) => {
-				if (!allWordsInHeaderValues.includes(w)) allWordsInHeaderValues.push(w);
-			});
-		});
-		allWordsInHeaderValues = allWordsInHeaderValues.map((d) => d.replace(":", "").toLowerCase());
-		const clearIndices = columns.map((d, i) => i + 1);
+		// let allWordsInHeaderValues = [];
+		// $(".headerValue").each((i, d) => {
+		// 	const words = $(d).text().split(" ");
+		// 	words.forEach((w) => {
+		// 		if (!allWordsInHeaderValues.includes(w)) allWordsInHeaderValues.push(w);
+		// 	});
+		// });
+		// allWordsInHeaderValues = allWordsInHeaderValues.map((d) => d.replace(":", "").toLowerCase());
 
-		const hideShowColumns = (search) => {
-			clearIndices.forEach((i) => {
-				const column = this.dataTable.column(i);
-				column.visible(true);
-			});
+		// const clearIndices = columns.map((d, i) => i + 1);
 
-			if (search === "") {
-				$("#clear-search-table").hide();
-				$("#filteredTableCount").html(allResultsCount);
-				return;
-			}
-			const searchIsFullWordInHeader = allWordsInHeaderValues.includes(search.toLowerCase());
-			$(".dataTables_scrollHeadInner .headerValue").each((i, d) => {
-				const column = this.dataTable.column(i + 1);
-				const wordsInHeader = $(d)
-					.text()
-					.split(" ")
-					.map((d) => d.replace(":", "").toLowerCase());
-				if (searchIsFullWordInHeader && !wordsInHeader.includes(search.toLowerCase())) column.visible(false);
-				else if (!searchIsFullWordInHeader && !wordsInHeader.some((w) => w.includes(search.toLowerCase())))
-					column.visible(false);
-			});
-			// check if user has filtered out all columns
-			const visibleColumns = this.dataTable
-				.columns()
-				.visible()
-				.filter((d) => d === true);
-			if (visibleColumns.length === 1) {
-				this.renderDataTable(data, search);
-				return;
-			}
+		// const hideShowColumns = (search) => {
+		// 	clearIndices.forEach((i) => {
+		// 		const column = this.dataTable.column(i);
+		// 		column.visible(true);
+		// 	});
 
-			$("#filteredTableCount").html($(".dataTables_scrollHeadInner .headerValue").length * years.length);
-		};
+		// 	if (search === "") {
+		// 		$("#clear-search-table").hide();
+		// 		$("#filteredTableCount").html(allResultsCount);
+		// 		return;
+		// 	}
+		// 	const searchIsFullWordInHeader = allWordsInHeaderValues.includes(search.toLowerCase());
+		// 	$(".dataTables_scrollHeadInner .headerValue").each((i, d) => {
+		// 		const column = this.dataTable.column(i + 1);
+		// 		const wordsInHeader = $(d)
+		// 			.text()
+		// 			.split(" ")
+		// 			.map((d) => d.replace(":", "").toLowerCase());
+		// 		if (searchIsFullWordInHeader && !wordsInHeader.includes(search.toLowerCase())) column.visible(false);
+		// 		else if (!searchIsFullWordInHeader && !wordsInHeader.some((w) => w.includes(search.toLowerCase())))
+		// 			column.visible(false);
+		// 	});
+		// 	// check if user has filtered out all columns
+		// 	const visibleColumns = this.dataTable
+		// 		.columns()
+		// 		.visible()
+		// 		.filter((d) => d === true);
+		// 	if (visibleColumns.length === 1) {
+		// 		this.renderDataTable(data, search);
+		// 		return;
+		// 	}
 
-		$("#search-table")
-			.autocomplete({
-				source: allWordsInHeaderValues,
-				select: (event, ui) => {
-					$("#search-table").val(ui.item.value);
-					$("#search-table").trigger("keyup");
-					hideShowColumns(ui.item.value);
-				},
-				response: (event, ui) => {
-					if (!ui.content.length) ui.content.push({ value: "", label: "No results found" });
-				},
-			})
-			.on("keyup", (e) => {
-				if ($("#search-table").val() === "") {
-					hideShowColumns("");
-					return;
-				}
-				if (e.keyCode === 13) {
-					hideShowColumns($("#search-table").val());
-					$("#search-table").autocomplete("close");
-				} else if (e.keyCode === 27 && $("#search-table").val() !== "") $("#search-table").val("");
-				else $("#clear-search-table").show();
-			});
+		// 	$("#filteredTableCount").html($(".dataTables_scrollHeadInner .headerValue").length * years.length);
+		// };
 
-		$("#clear-search-table").on("click", () => {
-			$("#search-table").val("");
-			hideShowColumns("");
-		});
+		// $("#search-table")
+		// 	.autocomplete({
+		// 		source: allWordsInHeaderValues,
+		// 		select: (event, ui) => {
+		// 			$("#search-table").val(ui.item.value);
+		// 			$("#search-table").trigger("keyup");
+		// 			hideShowColumns(ui.item.value);
+		// 		},
+		// 		response: (event, ui) => {
+		// 			if (!ui.content.length) ui.content.push({ value: "", label: "No results found" });
+		// 		},
+		// 	})
+		// 	.on("keyup", (e) => {
+		// 		if ($("#search-table").val() === "") {
+		// 			hideShowColumns("");
+		// 			return;
+		// 		}
+		// 		if (e.keyCode === 13) {
+		// 			hideShowColumns($("#search-table").val());
+		// 			$("#search-table").autocomplete("close");
+		// 		} else if (e.keyCode === 27 && $("#search-table").val() !== "") $("#search-table").val("");
+		// 		else $("#clear-search-table").show();
+		// 	});
+
+		// $("#clear-search-table").on("click", () => {
+		// 	$("#search-table").val("");
+		// 	hideShowColumns("");
+		// });
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
-		// $(".buttons-csv.buttons-html5").html("");
 	}
 }
