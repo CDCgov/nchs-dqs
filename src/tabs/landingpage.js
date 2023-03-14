@@ -189,8 +189,12 @@ export class LandingPage {
 			},
 		});
 
-		this.initTopicDropdown();
+		const hasFiltersAppliedFromUrl = this.initTopicDropdown();
 		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
+		if (hasFiltersAppliedFromUrl) {
+			$("#refineTopicList").attr("style", "color: #800080 !important");
+			functions.updateTopicDropdownList();
+		}
 	}
 
 	renderMap(data) {
@@ -539,8 +543,15 @@ export class LandingPage {
 
 	initTopicDropdown() {
 		this.selections = hashTab.getSelections();
-
-		if (this.selections) this.dataTopic = this.selections.topic;
+		let filters = [];
+		if (this.selections) {
+			if (this.selections.includes("filters")) {
+				filters = this.selections.split("=")[1].split("&");
+				filters.forEach((filter) => {
+					$(`#filter${filter}`).prop("checked", true);
+				});
+			} else this.dataTopic = this.selections.topic;
+		}
 
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
@@ -566,6 +577,8 @@ export class LandingPage {
 			const value = $(el).data("val");
 			$(el).data("filter", config.topicLookup[value].filters);
 		});
+
+		return filters.length > 0;
 	}
 
 	// Classification
