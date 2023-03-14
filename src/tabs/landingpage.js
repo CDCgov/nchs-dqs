@@ -47,7 +47,7 @@ export class LandingPage {
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
-		this.binning = true;
+		this.staticBinning = true;
 		this.legend = null;
 	}
 
@@ -142,7 +142,8 @@ export class LandingPage {
 
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
-		DataCache.mapLegendColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
+		DataCache.mapLegendColors = ["#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
+		DataCache.noDataColorHexVal = "#e0e0e0";
 
 		functions.addHtmlTooltips();
 
@@ -172,18 +173,20 @@ export class LandingPage {
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 				switch (this.activeTabNumber) {
 					case 0:
+						this.allMapData = null;
 						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
-						this.allMapData = null;
-						this.estimateTypeMapDropdown.value(this.config.yAxisUnitId);
+						this.subgroupDropdown.disable(true);
 						break;
 					case 1:
+						this.subgroupDropdown.disable(false);
 						this.groupDropdown.enableDropdown();
 						this.groupDropdown.enableValues("all");
 						this.renderDataVisualizations();
 						break;
 					case 2: // table
+						this.subgroupDropdown.disable(false);
 						this.renderDataVisualizations();
 						$("#showAllSubgroupsSlider").trigger("focus");
 						break;
@@ -233,6 +236,7 @@ export class LandingPage {
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
 		let stateData = [...data];
+
 		this.legend = this.legend ?? this.generateLegend();
 		if (!this.legend?.length) {
 			return;
@@ -241,9 +245,14 @@ export class LandingPage {
 		const allDates = this.allYearsOptions.map((d) => d.value);
 		stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
+		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
+		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
+		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
+
 		let classified;
 		let staticBin;
-		if (this.binning) {
+		if (this.staticBinning) {
 			stateData = stateData.map((d) => ({
 				...d,
 				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
@@ -262,7 +271,7 @@ export class LandingPage {
 		let map = new GenMap({
 			mapData: stateData,
 			topoJson: this.topoJson,
-			mLegendData: this.binning ? staticBin : classified.legend,
+			mLegendData: this.staticBinning ? staticBin : classified.legend,
 			vizId: mapVizId,
 			startYear: parseInt(this.startYear, 10),
 			allDates,
@@ -340,15 +349,18 @@ export class LandingPage {
 
 	getFlattenedFilteredData() {
 		let data = this.socrataData.filter(
+			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
+		);
+
+		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
+
+		data = data.filter(
 			(d) =>
-				d.unit_num == this.config.yAxisUnitId &&
-				d.stub_name_num == this.groupId &&
 				(!this.startYear || parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10)) &&
 				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
-		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
 
 		if (data[0]?.estimate_uci) {
 			// enable the CI checkbox
@@ -728,14 +740,6 @@ export class LandingPage {
 			});
 			this.estimateTypeTableDropdown.render();
 
-			this.estimateTypeMapDropdown = new GenDropdown({
-				containerId: "estimateTypeDropdownMap",
-				options,
-				ariaLabel: "estimate type",
-				selectedValue: this.config.yAxisUnitId,
-			});
-			this.estimateTypeMapDropdown.render();
-
 			if (!options.find((o) => o.value == this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
 		}
 	}
@@ -759,12 +763,13 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateGroup(groupId, updateTimePeriods = true) {
+	// updateGroup(groupId, updateTimePeriods = true) {
+	updateGroup(groupId) {
 		this.events.stopAnimation();
+
 		this.groupId = groupId;
 		this.setVerticalUnitAxisSelect();
-
-		if (updateTimePeriods) this.resetTimePeriods();
+		// if (updateTimePeriods) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) {
 			$("#showAllSubgroupsSlider").prop("disabled", true);
@@ -871,9 +876,9 @@ export class LandingPage {
 	}
 
 	updateBinningMethod(toggle) {
-		this.binning = toggle;
-		this.resetTimePeriods();
-		this.renderMap(this.flattenedFilteredData);
+		this.staticBinning = toggle;
+		this.legend = null;
+		this.renderDataVisualizations();
 	}
 
 	// call this when Reset Button is clicked

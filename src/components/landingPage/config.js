@@ -174,10 +174,10 @@ export const tabContent = `
 					<div id="us-map" class="general-chart"></div>
 					<div id="usMapLegendContainer">
 						<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
-							<div id="us-map-legend-title" class="general-chart">Legend</div>
-							<div style="display: inline-block; text-align: left;">
+							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
+							<div style="display: inline-block; text-align: left;" tabindex="0">
 								Data classified<br />
-								using <button type="button">quartile</button><br />
+								using <a class="viewFootnotes" tabindex="0">quartiles</a><br />
 								based on<br />
 								<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
 							</div>

@@ -35,7 +35,9 @@ export class MainEvents {
 						this.stopAnimation();
 						return;
 					}
-					appState.ACTIVE_TAB.updateStartPeriod(allYears[next].value);
+					const { value } = allYears[next];
+					appState.ACTIVE_TAB.updateStartPeriod(value);
+					appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 				};
 				appState.ACTIVE_TAB.animating = true;
 				moveNext(next === length - 1);
@@ -155,6 +157,15 @@ export class MainEvents {
 					$("#filterResults").html(message);
 				} else {
 					$("#filterResults").html("All");
+				}
+			})
+			.off("click keyup", ".viewFootnotes")
+			.on("click keyup", ".viewFootnotes", (e) => {
+				if (!e.key || (e.type === "keyup" && e.key === "Enter")) {
+					e.stopPropagation();
+					document.getElementById("pageFooterTable").scrollIntoView();
+					if ($("#pageFooterTable .table-toggle").hasClass("closed"))
+						$("#pageFooterTable .table-toggle").trigger("click");
 				}
 			});
 

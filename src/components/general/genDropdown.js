@@ -150,7 +150,7 @@ export class GenDropdown {
 		if (triggerChange) this.#handleSelectionMade(false);
 		else {
 			const newText = $(newSelection).html()?.trim();
-			$(`#${this.props.containerId} .genDropdownSelected`).html(newText);
+			$(`#${this.props.containerId} .genDropdownSelected > a`).html(newText);
 		}
 	};
 
@@ -337,10 +337,10 @@ export class GenDropdown {
 	};
 
 	#scrollIntoView = () => {
-		const selectHeight = $(`#${this.props.containerId}-select`)[0].getBoundingClientRect().height;
-		const dropdownDims = $(this.dropdownSection)[0].getBoundingClientRect();
-		let dropdownHeight = dropdownDims.height;
-		let dropdownBottom = dropdownDims.bottom;
+		const selectHeight = $(`#${this.props.containerId}-select`)[0]?.getBoundingClientRect()?.height ?? 0;
+		const dropdownDims = $(this.dropdownSection)[0]?.getBoundingClientRect();
+		let dropdownHeight = dropdownDims?.height ?? 0;
+		let dropdownBottom = dropdownDims?.bottom ?? 0;
 		const windowHeight = $(window).height();
 		const requiredHeight = dropdownHeight + selectHeight + 50; // 50 is for a label above, which may not exist or follow intended label class
 		if (requiredHeight > windowHeight) {
