@@ -21,7 +21,7 @@ export const chartAndTableSelectors = `
 				</label>
 			</div>			
 			<div id="mapBinningTypeSelector">
-				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles base on the most recent available period</label>
+				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles based on the most recent available period</label>
 				<label class="switch">
 					<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
 					<span class="slider round"></span>
