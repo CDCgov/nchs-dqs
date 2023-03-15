@@ -1,20 +1,20 @@
 import * as d3 from "../../lib/d3.min";
+import { DataCache } from "../../utils/datacache";
 import { GenTooltip } from "./genTooltip";
 import { getGenSvgScale } from "../../utils/genSvgScale";
-import { ClassifyData } from "../../utils/ClassifyDataNT";
 
 export class GenMap {
 	constructor(props) {
 		this.data = props.mapData;
 		this.mapVizId = props.vizId;
-		this.classifyType = parseInt(props.classifyType, 10);
 		this.startYear = props.startYear; // time period start year selected
 		this.allDates = props.allDates;
 		this.currentTimePeriodIndex = props.currentTimePeriodIndex;
 		this.animating = props.animating;
-		this.noDataColorHexVal = null;
 		this.tooltipConstructor = props.genTooltipConstructor;
 		this.topoJson = props.topoJson;
+		this.mLegendData = props.mLegendData;
+		this.stableBuckets = props.stableBuckets;
 	}
 
 	renderTimeSeriesAxisSelector() {
@@ -27,40 +27,44 @@ export class GenMap {
 		const remDiv = viz.append("div").attr("line-height", "1rem").attr("display", "none");
 		const rem = parseFloat(remDiv.style("line-height"), 10);
 
-		const { fullSvgWidth } = getGenSvgScale(this.mapVizId);
-		const axisLabelFontSize = 0.6 * rem;
+		const { fullSvgWidth } = getGenSvgScale("us-map-time-slider");
+		// const axisLabelFontSize = 0.6 * rem;
+		const axisLabelFontSize = 16;
+		const svgWidth = fullSvgWidth;
+		const svgHeight = $("#us-map-svg").height();
 
 		// setup margins, widths, and heights
 		const margin = {
-			top: 0,
-			right: axisLabelFontSize,
-			bottom: 100,
-			left: 3 * axisLabelFontSize,
+			top: 0.02 * svgHeight,
+			right: 0,
+			bottom: 0.22 * svgHeight,
+			left: 0.95 * svgWidth,
 		};
 
-		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
-		const mapWidthRatio = 0.8;
-		const svgWidth = fullSvgWidth * mapWidthRatio;
-		const svgHeight = 110;
-
-		const chartWidth = svgWidth - xMargin;
-		const chartHeight = svgHeight - yMargin;
+		const height = svgHeight - yMargin;
 
 		// setup scales
-		let xScale = d3
+		let yScale = d3
 			.scalePoint()
-			.range([0, chartWidth])
+			.range([0, height])
 			.domain(this.allDates.map((d) => d));
 
 		// set up axes
-		const xAxis = d3.axisBottom(xScale).tickSize(5);
+		const yAxis = d3.axisLeft(yScale).tickSize(5);
 		const svg = viz.append("svg").attr("viewBox", [0, 0, svgWidth, svgHeight]).attr("id", svgId);
 
 		svg.append("g")
-			.attr("class", "axis bottom")
-			.attr("transform", `translate(${margin.left}, ${margin.top + chartHeight})`)
-			.call(xAxis);
+			.attr("class", "axis left")
+			.attr("transform", `translate(${margin.left}, ${margin.top})`)
+			.call(yAxis);
+
+		d3.selectAll(`#${svgId} .axis.left text`).attr("text-anchor", "end");
+		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
+
+		d3.selectAll(`#${svgId} .axis text`)
+			.filter((d, i) => i === this.currentTimePeriodIndex)
+			.attr("font-weight", "bold");
 
 		// axis marker overlay (so clicking near a marker triggers a stop on that time-period)
 		svg.append("g")
@@ -69,10 +73,10 @@ export class GenMap {
 			.enter()
 			.append("rect")
 			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", margin.bottom)
-			.attr("width", xScale.step())
-			.attr("x", (d) => xScale(d) + margin.left - 0.1 * axisLabelFontSize - xScale.step() / 2)
-			.attr("y", 0.2 * axisLabelFontSize)
+			.attr("height", yScale.step())
+			.attr("width", margin.left)
+			.attr("y", (d) => yScale(d) + margin.top - 0.1 * axisLabelFontSize - yScale.step() / 2)
+			.attr("x", 0.2 * axisLabelFontSize)
 			.attr("fill", "transparent")
 			.attr("data-index", (d, i) => i)
 			.attr("cursor", "pointer");
@@ -81,39 +85,40 @@ export class GenMap {
 		svg.append("g")
 			.append("rect")
 			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", 0.9 * axisLabelFontSize)
-			.attr("width", 0.2 * axisLabelFontSize)
-			.attr("x", xScale(this.allDates[this.currentTimePeriodIndex]) + margin.left - 0.1 * axisLabelFontSize)
-			.attr("y", 0.2 * axisLabelFontSize)
-			.attr("fill", "darkgrey");
+			.attr("width", 0.9 * axisLabelFontSize)
+			.attr("height", 0.2 * axisLabelFontSize)
+			.attr("y", yScale(this.allDates[this.currentTimePeriodIndex]) + margin.top - 0.1 * axisLabelFontSize)
+			.attr("x", margin.left - 0.45 * axisLabelFontSize)
+			.attr("fill", "black");
 
-		// animate section
-		const animate = svg.append("g");
+		const widthOfAxis = $(`#${svgId} .axis.left`)[0].getBoundingClientRect().width;
+		const playPauseOffset = svgWidth - widthOfAxis - axisLabelFontSize;
 
+		const animate = svg
+			.append("g")
+			.attr("transform", `translate(${playPauseOffset}, ${margin.top + 0.8 * axisLabelFontSize})`);
+
+		// outer circle containing play/pause 'icons' that gives the illusion of a an active button
 		animate
-			.append("rect")
+			.append("circle")
 			.attr("class", "mapPlayButton")
 			.attr("id", "mapPlayButtonContainer")
-			.attr("width", 2 * axisLabelFontSize)
-			.attr("height", 2 * axisLabelFontSize)
+			.attr("r", 1.06 * axisLabelFontSize)
 			.attr("fill", "darkgrey")
-			.attr("rx", 0.2 * axisLabelFontSize)
-			.attr("ry", 0.2 * axisLabelFontSize)
-			.attr("transform", `translate(0, ${axisLabelFontSize})`)
+			.attr("cx", -0.9 * axisLabelFontSize)
+			.attr("cy", -0.9 * axisLabelFontSize)
 			.style("cursor", "pointer")
 			.style("display", this.animating ? "block" : "none");
 
-		// // inner rectangle to contain play button
+		// inner circle containing play/pause 'icons'
 		animate
-			.append("rect")
+			.append("circle")
 			.attr("class", "mapPlayButton")
-			.attr("width", 1.7 * axisLabelFontSize)
-			.attr("height", 1.7 * axisLabelFontSize)
-			.attr("fill", "#F2F2F2")
+			.attr("r", 0.9 * axisLabelFontSize)
+			.attr("fill", "black")
 			.attr("stroke", "black")
-			.attr("rx", 0.2 * axisLabelFontSize)
-			.attr("ry", 0.2 * axisLabelFontSize)
-			.attr("transform", `translate(${0.15 * axisLabelFontSize}, ${1.15 * axisLabelFontSize})`)
+			.attr("cx", -0.9 * axisLabelFontSize)
+			.attr("cy", -0.9 * axisLabelFontSize)
 			.style("cursor", "pointer");
 
 		// play icon (triangle)
@@ -126,76 +131,44 @@ export class GenMap {
 				d3
 					.symbol()
 					.type(d3.symbolTriangle)
-					.size(3 * axisLabelFontSize)
+					.size(4 * axisLabelFontSize)
 			)
-			.attr("fill", this.animating ? "none" : "black")
-			.attr("transform", `rotate(90), translate(${2 * axisLabelFontSize}, ${-axisLabelFontSize})`);
+			.attr("fill", this.animating ? "none" : "white")
+			.attr("transform", `rotate(90), translate(${-0.94 * axisLabelFontSize}, ${0.94 * axisLabelFontSize})`);
 
+		// one of the pause rectangles
 		animate
 			.append("rect")
 			.attr("class", "animatePauseIcon")
-			.attr("x", 1.05 * axisLabelFontSize)
-			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("x", -1.15 * axisLabelFontSize)
+			.attr("y", -1.3 * axisLabelFontSize)
 			.attr("width", 0.15 * axisLabelFontSize)
 			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "black" : "none");
+			.attr("fill", this.animating ? "white" : "none");
 
+		// the other pause rectangle
 		animate
 			.append("rect")
 			.attr("class", "animatePauseIcon")
-			.attr("x", 0.8 * axisLabelFontSize)
-			.attr("y", 1.65 * axisLabelFontSize)
+			.attr("x", -0.85 * axisLabelFontSize)
+			.attr("y", -1.3 * axisLabelFontSize)
 			.attr("width", 0.15 * axisLabelFontSize)
 			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "black" : "none");
-
-		d3.selectAll(`#${svgId} .axis.bottom text`)
-			.attr("text-anchor", "end")
-			.attr("transform", `translate(${-0.85 * axisLabelFontSize}, ${0.5 * axisLabelFontSize}), rotate(-90)`);
-
-		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
-
-		d3.selectAll(`#${svgId} .axis text`)
-			.filter((d, i) => i === this.currentTimePeriodIndex)
-			.attr("font-weight", "bold");
+			.attr("fill", this.animating ? "white" : "none");
 	}
 
 	render() {
-		const topoJson = JSON.parse(JSON.stringify(this.topoJson));
+		const topoJson = JSON.parse(JSON.stringify(this.topoJson)); // deep clone
 		const { geometries } = topoJson.objects.StatesAndTerritories;
-		let mLegendData;
-		let mActiveLegendItems = [];
-		let mActiveLegendItemColors = [];
+		let { mLegendData } = this;
 		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
-		let noDataColorHexVal = "#dee2e6";
 		const svgId = `${this.mapVizId}-svg`;
 
 		// Need to clear out the last map that was generated
 		$(`#${this.mapVizId}`).empty();
 
 		const genTooltip = new GenTooltip(this.tooltipConstructor);
-
-		let ClassifiedDataObj;
-
-		switch (this.classifyType) {
-			case 1:
-				// Standard Breaks - with 4 Quartiles
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 4, 1);
-				break;
-			case 2:
-				// Natural Breaks
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 2);
-				break;
-			case 3:
-				// Equal Intervals - NOT USED
-				ClassifiedDataObj = ClassifyData(this.data, "estimate", 5, 3);
-				break;
-			default:
-				break;
-		}
-
-		this.data = ClassifiedDataObj.classifiedData;
 
 		function mouseover() {
 			const thisElement = d3.select(this);
@@ -208,32 +181,26 @@ export class GenMap {
 			genTooltip.mouseout(d3.select(this));
 		}
 
-		const bgColors = ["#FFFFFF", "#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b", "#FFFFFF"];
-		// same as above but remove WHITE
-		mActiveLegendItemColors = ["#e4f2e1", "#8dcebb", "#00a9b5", "#007fbe", "#00008b"];
+		const bgColors = ["#ffffff", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
 
-		function getColor(bin, flag) {
-			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
-			if (flag === "*") return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "N/A") return noDataColorHexVal; // Set to no data color
-
+		function getColor(bin) {
 			const binColor = bgColors[bin]; // this IS based on position of the bin to the color
-			const index = mActiveLegendItemColors.indexOf(binColor);
-			if (index > -1) return binColor; // COLOR FOUND !!
-			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
+			if (DataCache.mapLegendColors.indexOf(binColor) !== -1)
+				return { bgColor: binColor, checkboxColor: binColor }; // COLOR FOUND !!
+			return { bgColor: binColor, checkboxColor: "#ffffff" }; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		function getColorFromDProps(d) {
 			const binColor = bgColors[d.properties.class]; // this IS based on position of the bin to the color
 			const { flag, estimate, crosshatch } = d.properties;
-			const index = mActiveLegendItemColors.indexOf(binColor);
+			const index = DataCache.mapLegendColors.indexOf(binColor);
 
-			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
+			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
 			if (crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
 			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return noDataColorHexVal; // no data record found
+			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
-			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
+			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// the territories don't have Properties off the d object - so just duplicated function and removed the properties
@@ -241,28 +208,27 @@ export class GenMap {
 			const binColor = bgColors[d.class]; // this IS based on position of the bin to the color
 			const { flag, estimate } = d;
 
-			const index = mActiveLegendItemColors.indexOf(binColor);
-			if (flag === "- - -") return noDataColorHexVal; // ignore bin set to light gray
+			const index = DataCache.mapLegendColors.indexOf(binColor);
+			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
 			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
 			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return noDataColorHexVal; // no data record found
+			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
-			return "#FFFFFF"; // COLOR NOT FOUND - so NOT ACTIVE
+			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
-		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#ffffff", "#ffffff", "#ffffff"];
 		const getFontColor = (bin) => fontColors[bin];
-
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
-		const territoriesHeight = 50 * overallScale;
+		const territoriesHeight = 15;
 
 		const width = fullSvgWidth;
-		const mapHeightRatio = 0.5;
+		const mapHeightRatio = 0.65;
 		const mapHeight = width * mapHeightRatio;
-		const svgHeight = mapHeight + territoriesHeight * 2;
+		const svgHeight = mapHeight + territoriesHeight + 50;
 
-		const svg = d3.select(`#${this.mapVizId}`).append("svg").attr("id", svgId).attr("display", "inline-block");
+		const svg = d3.select(`#${this.mapVizId}`).append("svg").attr("id", svgId);
 
 		svg.append("defs")
 			.append("pattern")
@@ -323,14 +289,12 @@ export class GenMap {
 		};
 
 		const states = topojson.feature(topoJson, stateGeoCollection);
-		const projection = d3
-			.geoAlbers()
-			.translate([width / 2, mapHeight / 2])
-			.scale(width);
-
+		// const projection = d3.geoAlbers().fitSize([width, svgHeight], states);
+		const projection = d3.geoAlbers().fitSize([width, mapHeight], states);
 		const path = d3.geoPath().projection(projection);
 
 		svg.attr("viewBox", [0, 0, width, svgHeight]);
+		// svg.attr("viewBox", [0, 0, width, svgHeight]).attr("preserveAspectRatio", "xMinYMin meet");
 
 		svg.append("g")
 			.attr("id", "states")
@@ -449,9 +413,6 @@ export class GenMap {
 
 		genTooltip.render();
 
-		mLegendData = ClassifiedDataObj.legend;
-		mActiveLegendItems = getDefaultActiveLegendItems();
-
 		loadMapLegend();
 		addEventListeners(); // detect clicks
 
@@ -468,97 +429,40 @@ export class GenMap {
 			});
 		}
 
-		// this just generates a LIST  of ALL ITEMS out of the mlegendData array
-		// - it does not do any filtering yet
-		// - this just starts off the active legend list
-		function getDefaultActiveLegendItems() {
-			let activeLegendItems = [];
-			activeLegendItems.push(String(mNoDataFlagID)); // No Data = 0th item always
+		function legendClickHandler(e) {
+			if (e.key && e.key !== "Enter" && e.key !== " ") return;
+			e.stopPropagation();
+			e.preventDefault();
+			const color = $(e.target).data("color");
+			const checked = $(e.target).hasClass("checked");
 
-			for (let i = 0; i < mLegendData.length; i += 1) {
-				activeLegendItems.push(mLegendData[i].min + " - " + mLegendData[i].max);
-			}
-			return activeLegendItems;
-		}
+			if (checked)
+				$(e.target).removeClass("checked").removeAttr("checked").attr("style", "background-color: transparent");
+			else $(e.target).addClass("checked").attr("checked", true).attr("style", `background-color: ${color}`);
 
-		function convertRGB(rgb) {
-			// This will choose the correct separator, if there is a "," in your value it will use a comma, otherwise, a separator will not be used.
-			const separator = rgb.indexOf(",") > -1 ? "," : " ";
-
-			// This will convert "rgb(r,g,b)" into [r,g,b] so we can use the "+" to convert them back to numbers before using toString
-			const cleanedRgb = rgb.substr(4).split(")")[0].split(separator);
-
-			// Here we will convert the decimal values to hexadecimal using toString(16)
-			let r = (+cleanedRgb[0]).toString(16);
-			let g = (+cleanedRgb[1]).toString(16);
-			let b = (+cleanedRgb[2]).toString(16);
-
-			if (r.length === 1) r = "0" + r;
-			if (g.length === 1) g = "0" + g;
-			if (b.length === 1) b = "0" + b;
-
-			// The return value is a concatenation of "#" plus the rgb values which will give you your hex
-			return "#" + r + g + b;
-		}
-
-		function legendClickHandler(evt) {
-			let index;
-			let itemLabel;
-			let $chkBxObj;
-
-			// will call click event twice if you dont call this
-			evt.stopPropagation();
-
-			// get bg color of the one clicked
-			let theClickedColor = convertRGB(evt.target.parentNode.style.backgroundColor);
-
-			if (theClickedColor === "#dee2e6") {
-				// this is the color used for 'No Data'
-				this.noDataHasColor = !this.noDataHasColor;
-				if (this.noDataHasColor) noDataColorHexVal = "#ffffff";
-				else noDataColorHexVal = "#dee2e6";
+			if (color === "#e0e0e0") {
+				if (checked) DataCache.noDataColorHexVal = "#ffffff";
+				else DataCache.noDataColorHexVal = "#e0e0e0";
 			}
 
-			index = mActiveLegendItemColors.indexOf(theClickedColor);
 			// Add or Remove that color to/from the Active list of colors
+			let index = DataCache.mapLegendColors.indexOf(color);
 			// - note the ORDER of the colors is NOT related to the bin number
 			// - this just tracks whether that color is ACTIVE or not
-			if (index > -1) {
-				// COLOR FOUND
-				// remove it from the list
-				mActiveLegendItemColors.splice(index, 1);
+			if (index !== -1) {
+				// COLOR FOUND .. remove it from the list
+				DataCache.mapLegendColors.splice(index, 1);
 			} else {
-				// ADD COLOR BACK
-				// it's not there, so add the item to the active list
-				mActiveLegendItemColors.push(theClickedColor);
+				// ADD COLOR BACK ... it's not there, so add the item to the active list
+				DataCache.mapLegendColors.push(color);
 			}
 
-			if (evt.target && evt.target.nodeName.toLowerCase() === "input".toLowerCase()) {
-				itemLabel = $(evt.target).val();
-				$chkBxObj = $(evt.target);
-			} else if ($(evt.target).hasClass("da-maplegend-box")) {
-				itemLabel = $(evt.target).find("input").val();
-				$chkBxObj = $(evt.target).find("input");
-			}
-			index = mActiveLegendItems.indexOf(itemLabel);
-
-			if (index > -1) {
-				// ITEM FOUND,  remove it from the list
-				mActiveLegendItems.splice(index, 1);
-				$chkBxObj.prop("checked", false);
-			} else {
-				// RE-ENABLE, it's not there, so add the item to the active list
-				mActiveLegendItems.push(itemLabel);
-				$chkBxObj.prop("checked", true);
-			}
-
-			// just update the colors without redrawing the map
-			updateMap();
+			updateMap(); // just update the colors without redrawing the map
 		}
 
 		function addEventListeners() {
-			$(document).off("click", "#us-map-legend > div > input");
-			$(document).on("click", "#us-map-legend > div > input", legendClickHandler);
+			$(document).off("click keydown", "#us-map-legend .squareCheckbox");
+			$(document).on("click keydown", "#us-map-legend .squareCheckbox", legendClickHandler);
 		}
 
 		// create and load the map legend
@@ -571,48 +475,33 @@ export class GenMap {
 			let legendGeneratedHTML;
 			let legendItemVal; // 11Apr2019
 			let bgColor;
-			let fontColor;
 			let isActive;
 
 			$("#us-map-legend").empty();
 
 			// No Data Box is First
 			legendItemObj = {
-				ColorStyle: "color:black !important; background-color:" + noDataColorHexVal,
+				bgColor: "#e0e0e0",
+				checkboxColor: DataCache.noDataColorHexVal,
 				DisplayLabel: "No Data",
 				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
-				IsChecked: 1, // always start it checked // OLD - mActiveLegendItems.indexOf(String(mNoDataFlagID)) > -1
 			};
 			legendItems.push(legendItemObj);
-
-			let nullFlag = false;
 			if (mLegendData.length) {
 				for (i = 0; i < mLegendData.length; i += 1) {
 					displayLabel = mLegendData[i].min + " - " + mLegendData[i].max;
 					legendItemVal = mLegendData[i].min + " - " + mLegendData[i].max; // 11Apr2019
 
-					if (displayLabel.match("null")) {
-						// then skip adding that as a legend item
-						// bc we hardcoded that item above
-						nullFlag = true;
-						continue;
-						// then it is "Unreliable"
-					} else {
-						if (nullFlag) {
-							bgColor = getColor(i);
-							fontColor = getFontColor(i);
-						} else {
-							bgColor = getColor(i + 1);
-							fontColor = getFontColor(i + 1);
-						}
-						colorStyle = "color:" + fontColor + " !important;background-color:" + bgColor;
-					}
+					if (displayLabel.match("null")) continue;
+					// then skip adding that as a legend item
+					// bc we hardcoded that item above
 
-					isActive = mLegendData[i].active;
+					const { bgColor, checkboxColor } = getColor(i);
 
 					// form object and save it to the list
 					legendItemObj = {
-						ColorStyle: colorStyle,
+						bgColor,
+						checkboxColor,
 						DisplayLabel: displayLabel,
 						ItemValue: legendItemVal,
 						IsChecked: isActive,
@@ -621,49 +510,30 @@ export class GenMap {
 				}
 
 				// Generate the HTML for the legend
-				legendGeneratedHTML =
-					"<div id='us-map-legend' style='margin-left: 5px; margin-right: 5px' class='d-flex justify-content-center da-map-legend mb-1'>";
+				legendGeneratedHTML = "";
 
 				legendItems.forEach((leg, i) => {
-					let isCheckedStr;
-					if (leg.IsChecked === 1) {
-						isCheckedStr = "checked";
-					} else {
-						isCheckedStr = "";
-					}
 					let legendId = "legend-box-" + i;
-					if (leg.DisplayLabel.match("Unreliable")) {
-						// for cross hatching, just use white
-						legendGeneratedHTML += `
-						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
-							<input
-								id='mapchk-${i}'
-								class='form-check-input'
-								type='checkbox'
-								value='${leg.ItemValue}'
-								${isCheckedStr}
-								style='margin-right:3px;cursor:pointer"
-								aria-label='${leg.DisplayLabel.replace("-", "to")}'
-								autocomplete='off' />
-							<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
-						</div>`;
-					} else {
-						// draw regular with color
-						legendGeneratedHTML += `
-						<div id='${legendId}' class='px-2 py-1 da-maplegend-box border border-secondary' style='${leg.ColorStyle}'>
-							<input
-								class='form-check-input'
-								type='checkbox'
-								value='${leg.ItemValue}'
-								${isCheckedStr}
-								style='margin-right:3px; cursor:pointer;'
-								aria-label='${leg.DisplayLabel.replace("-", "to")}'
-								autocomplete='off' />
-								<label for='mapchk-${i}'>${leg.DisplayLabel}</label>
-						</div>`;
-					}
+					// draw regular with color
+
+					legendGeneratedHTML += `
+						<div class="row">							
+							<div class="col-3 col-offset-1">
+								<div id=${legendId}
+									 class="squareCheckbox ${leg.checkboxColor !== "#ffffff" ? "checked" : ""}"
+									 data-color=${leg.bgColor}
+									 tabindex="0"
+									 role="checkbox"
+									  ${leg.checkboxColor !== "#ffffff" ? "checked" : ""}									 
+									 style="background-color: ${leg.checkboxColor};">&nbsp;
+								</div>
+							</div>
+							<div class="col-9"><label for=${legendId} aria-label='${leg.DisplayLabel.replace("-", "to")}'>${
+						leg.DisplayLabel
+					}</label></div>
+						</div>
+        				`;
 				});
-				legendGeneratedHTML += "</div><br />";
 
 				// now add the legend to the map div
 				$("#us-map-legend").html(legendGeneratedHTML);

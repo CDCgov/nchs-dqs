@@ -33,6 +33,11 @@ export const getSelections = () => {
 	const { hash } = window.location;
 	if (hash) {
 		let selections = hash.split("_");
+		const filtersIndex = selections.findIndex((s) => s.includes("filters"));
+		if (filtersIndex) {
+			const filtersSection = selections[filtersIndex];
+			return filtersSection;
+		}
 		if (selections.length <= 1) return null;
 
 		selections = selections[1].split("/");

@@ -27,13 +27,13 @@ export class LandingPage {
 		this.footnoteMap = null;
 		this.showBarChart = 0;
 		this.topoJson = null;
-		this.classifyType = 2; // 1 = Quartiles, 2 = Natural, 3 = EqualIntervals
 		this.selections = null;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
 		this.config = null;
 		this.activeTabNumber = 1; // the chart tab number, 0 indexed
 		this.genChart = null;
+		this.allMapData = null;
 		this.animationInterval = null;
 		this.events = null;
 		this.topicDropdown = null;
@@ -47,6 +47,8 @@ export class LandingPage {
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
+		this.staticBinning = true;
+		this.legend = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -136,9 +138,12 @@ export class LandingPage {
 		$("#maincontent").html(config.tabContent);
 		$("#chartSelectors").html(config.chartAndTableSelectors);
 		$("#subGroupsSelectorsSection").hide();
+		$("#mapBinningTypeSelector").hide();
 
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
+		DataCache.mapLegendColors = ["#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
+		DataCache.noDataColorHexVal = "#e0e0e0";
 
 		functions.addHtmlTooltips();
 
@@ -168,17 +173,20 @@ export class LandingPage {
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 				switch (this.activeTabNumber) {
 					case 0:
+						this.allMapData = null;
 						this.updateGroup(1, false);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
-						this.estimateTypeMapDropdown.value(this.config.yAxisUnitId);
+						this.subgroupDropdown.disable(true);
 						break;
 					case 1:
+						this.subgroupDropdown.disable(false);
 						this.groupDropdown.enableDropdown();
 						this.groupDropdown.enableValues("all");
 						this.renderDataVisualizations();
 						break;
 					case 2: // table
+						this.subgroupDropdown.disable(false);
 						this.renderDataVisualizations();
 						$("#showAllSubgroupsSlider").trigger("focus");
 						break;
@@ -189,26 +197,86 @@ export class LandingPage {
 			},
 		});
 
-		this.initTopicDropdown();
+		const hasFiltersAppliedFromUrl = this.initTopicDropdown();
 		this.updateTopic(this.dataTopic, false); // this gets Socrata data and renders chart/map/datatable; "false" param means topicChange = false
+		if (hasFiltersAppliedFromUrl) {
+			$("#refineTopicList").attr("style", "color: #800080 !important");
+			functions.updateTopicDropdownList();
+		}
 	}
 
+	generateLegend = () => {
+		if (!this.allMapData) return null;
+
+		const min = d3.min(this.allMapData, (d) => d.estimate);
+		const max = d3.max(this.allMapData, (d) => d.estimate);
+
+		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt == this.endYear));
+		const { legend } = endYearDataBinned;
+		let currentMax;
+		legend.forEach((l, i) => {
+			if (i === 0) return;
+			if (i === 1) {
+				l.min = min;
+				currentMax = l.max;
+			} else {
+				l.min = Number((currentMax + this.config.binGranularity).toFixed(2));
+				currentMax = l.max;
+			}
+			if (i === 4) l.max = max;
+		});
+
+		return legend;
+	};
+
 	renderMap(data) {
+		if (!$("#mapSelectors #chart-table-selectors").length) {
+			$("#chart-table-selectors").detach().prependTo("#mapSelectors");
+			$("#subGroupsSelectorsSection").hide();
+			$("#ciTableSlider").hide();
+			$("#mapBinningTypeSelector").show();
+		}
+
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
-		// Get filtered data
 		let stateData = [...data];
-		// but need to narrow it to the selected time period
-		const allDates = this.socrataData.map((d) => d.year).filter((v, i, a) => a.indexOf(v) === i);
-		if (this.startYear) stateData = stateData.filter((d) => d.year_pt == this.startYear);
+
+		this.legend = this.legend ?? this.generateLegend();
+		if (!this.legend?.length) {
+			return;
+		}
+
+		const allDates = this.allYearsOptions.map((d) => d.value);
+		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+
+		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
+		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
+		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
+
+		let classified;
+		let staticBin;
+		if (this.staticBinning) {
+			stateData = stateData.map((d) => ({
+				...d,
+				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
+			}));
+			staticBin = JSON.parse(JSON.stringify(this.legend));
+			staticBin[1].min = "min";
+			staticBin[4].max = "max";
+		} else {
+			classified = functions.binData(stateData);
+			stateData = classified.classifiedData;
+		}
 
 		this.flattenedFilteredData = stateData;
+
 		const mapVizId = "us-map";
 		let map = new GenMap({
 			mapData: stateData,
 			topoJson: this.topoJson,
+			mLegendData: this.staticBinning ? staticBin : classified.legend,
 			vizId: mapVizId,
-			classifyType: this.classifyType,
 			startYear: parseInt(this.startYear, 10),
 			allDates,
 			currentTimePeriodIndex: this.currentTimePeriodIndex,
@@ -224,6 +292,8 @@ export class LandingPage {
 		if (!$("#chartSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#chartSelectors");
 			$("#subGroupsSelectorsSection").hide();
+			$("#ciTableSlider").show();
+			$("#mapBinningTypeSelector").hide();
 		}
 
 		const flattenedData = [...data];
@@ -283,9 +353,13 @@ export class LandingPage {
 
 	getFlattenedFilteredData() {
 		let data = this.socrataData.filter(
+			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
+		);
+
+		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
+
+		data = data.filter(
 			(d) =>
-				d.unit_num == this.config.yAxisUnitId &&
-				d.stub_name_num == this.groupId &&
 				(!this.startYear || parseInt(d.year_pt, 10) >= parseInt(this.startYear, 10)) &&
 				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
@@ -402,6 +476,8 @@ export class LandingPage {
 		this.endYear = null;
 		this.events.stopAnimation();
 		this.selections = null;
+		this.legend = null;
+		this.allMapData = null;
 		this.updateTopic(value);
 	};
 
@@ -414,6 +490,7 @@ export class LandingPage {
 			$("#startYearContainer").removeClass("offset-3");
 			$("#endYearContainer").show();
 			this.showBarChart = false;
+			this.currentTimePeriodIndex = 0;
 		}
 
 		this.dataTopic = dataTopic; // string
@@ -423,8 +500,6 @@ export class LandingPage {
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
-
-		// clear the list of active legend items
 
 		if (this.selections?.viewSinglePeriod) {
 			$("#startYearContainer").addClass("offset-3");
@@ -539,8 +614,15 @@ export class LandingPage {
 
 	initTopicDropdown() {
 		this.selections = hashTab.getSelections();
-
-		if (this.selections) this.dataTopic = this.selections.topic;
+		let filters = [];
+		if (this.selections) {
+			if (this.selections.includes("filters")) {
+				filters = this.selections.split("=")[1].split("&");
+				filters.forEach((filter) => {
+					$(`#filter${filter}`).prop("checked", true);
+				});
+			} else this.dataTopic = this.selections.topic;
+		}
 
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
@@ -566,6 +648,8 @@ export class LandingPage {
 			const value = $(el).data("val");
 			$(el).data("filter", config.topicLookup[value].filters);
 		});
+
+		return filters.length > 0;
 	}
 
 	// Classification
@@ -669,19 +753,15 @@ export class LandingPage {
 			});
 			this.estimateTypeTableDropdown.render();
 
-			this.estimateTypeMapDropdown = new GenDropdown({
-				containerId: "estimateTypeDropdownMap",
-				options,
-				ariaLabel: "estimate type",
-				selectedValue: this.config.yAxisUnitId,
-			});
-			this.estimateTypeMapDropdown.render();
-
 			if (!options.find((o) => o.value == this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
 		}
 	}
 
 	updateClassification(classificationId) {
+		this.legend = null;
+		this.allMapData = null;
+		this.currentTimePeriodIndex = 0;
+
 		this.events.stopAnimation();
 		this.config.classificationId = parseInt(classificationId, 10);
 		this.initGroupDropdown();
@@ -696,12 +776,13 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateGroup(groupId, updateTimePeriods = true) {
+	// updateGroup(groupId, updateTimePeriods = true) {
+	updateGroup(groupId) {
 		this.events.stopAnimation();
+
 		this.groupId = groupId;
 		this.setVerticalUnitAxisSelect();
-
-		if (updateTimePeriods) this.resetTimePeriods();
+		// if (updateTimePeriods) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) {
 			$("#showAllSubgroupsSlider").prop("disabled", true);
@@ -750,6 +831,7 @@ export class LandingPage {
 			: this.allYearsOptions.slice(0, -1);
 		this.initStartPeriodDropdown(startPeriodOptions);
 		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
+		this.currentTimePeriodIndex = 0;
 	}
 
 	updateStartTimePeriodDropdown(value) {
@@ -806,22 +888,10 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	updateClassifyType(value) {
-		switch (value) {
-			case "quartiles":
-				this.classifyType = 1; // standard
-				break;
-			case "natural":
-				this.classifyType = 2; // natural
-				break;
-			case "equal":
-				this.classifyType = 3; // not using right now
-				break;
-			default: // natural
-				this.classifyType = 2;
-				break;
-		}
-		this.renderMap(this.flattenedFilteredData);
+	updateBinningMethod(toggle) {
+		this.staticBinning = toggle;
+		this.legend = null;
+		this.renderDataVisualizations();
 	}
 
 	// call this when Reset Button is clicked
@@ -854,6 +924,8 @@ export class LandingPage {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#subGroupsSelectorsSection").show();
+			$("#ciTableSlider").show();
+			$("#mapBinningTypeSelector").hide();
 		}
 
 		let tableData = [...data];

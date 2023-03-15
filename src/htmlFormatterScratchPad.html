@@ -1,4 +1,32 @@
-<div class="genMsdOption" style="display: flex; flex-direction: row; justify-content: space-between" role="option">
-	<div style="white-space: initial">Male</div>
-	<i data-val="Male" class="genMsdDeleteIcon genMsdDelete fas fa-times" type="button" aria-label="Click to Remove Male" tabindex="0"></i>
+<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
+	<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+		<div class="adjustUnitContainer">
+			<div id="estimateTypeDropdownMap" class="genDropdown">
+				<div id="estimateTypeDropdownMap-label" for="estimateTypeDropdownMap-select" class="select-label">Estimate Type</div>
+			</div>
+		</div>
+		<fieldset class="breaksContainer">
+			<div class="btnToggle">
+				<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
+				<label role="button" for="classNBreaks">Natural Breaks</label>
+				<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
+				<label role="button" for="classQuartiles">Quartiles</label>
+			</div>
+		</fieldset>
+		<div id="us-map-container">
+			<div id="mapDownloadTitle"></div>
+			<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
+			<div id="us-map" class="general-chart"></div>
+			<div id="usMapLegendContainer">
+				<div id="us-map-legend-title" class="general-chart" style="margin-top: 0">Legend</div>
+				<div>Data classified</div>
+				<div>using <button type="button">quartile</button></div>
+				<div>based on</div>
+				<div id="mapLegendPeriod">2013 - 2015</div>
+				<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
+			</div>
+		</div>
+		<br />
+		<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
+	</div>
 </div>

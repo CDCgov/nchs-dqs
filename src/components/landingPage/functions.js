@@ -1,3 +1,4 @@
+import { ClassifyData } from "../../utils/ClassifyDataNT";
 import { HtmlTooltip } from "../general/htmlTooltip";
 import { topicGroups } from "./config";
 
@@ -45,6 +46,12 @@ export const addHtmlTooltips = () => {
 		containerId: "refineInfoRow",
 	});
 
+	const staticBinningTooltip = new HtmlTooltip({
+		body: "Freeze data bin ranges for all time periods for ease of comparison",
+		containerId: "staticBinningContainer",
+	});
+	staticBinningTooltip.render();
+
 	resetInfoTooltip.render();
 	editFiltersTooltip.render();
 	removeFiltersTooltip.render();
@@ -74,6 +81,10 @@ export const addHtmlTooltips = () => {
 	$("#refineInfoIcon").mouseover((e) => refineTopicInfoTooltip.mouseover(e));
 	$("#refineInfoIcon").mousemove((e) => refineTopicInfoTooltip.mousemove(e));
 	$("#refineInfoIcon").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
+
+	$("#staticBinningLabel").mouseover((e) => staticBinningTooltip.mouseover(e));
+	$("#staticBinningLabel").mousemove((e) => staticBinningTooltip.mousemove(e));
+	$("#staticBinningLabel").mouseleave((e) => staticBinningTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
@@ -286,4 +297,8 @@ export const updateTopicDropdownList = () => {
 					.addClass("genOptionFilteredOut");
 		});
 	} else resetTopicDropdownList();
+};
+
+export const binData = (data) => {
+	return ClassifyData(data, "estimate", 4, 1);
 };
