@@ -29,6 +29,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -159,6 +160,17 @@ export class GenChart {
 		// these 4 params keeps everything sized/positioned correctly regardless of screen resolution
 		const { fullSvgWidth, overallScale, svgHeightRatio, svgScale } = getGenSvgScale(p.vizId);
 
+		const symbolSize = fullSvgWidth / 6;
+		const symbols = [
+			d3.symbol().type(d3.symbolCircle).size(symbolSize),
+			d3.symbol().type(d3.symbolSquare).size(symbolSize),
+			d3.symbol().type(d3.symbolTriangle).size(symbolSize),
+			d3.symbol().type(d3.symbolDiamond).size(symbolSize),
+			d3.symbol().type(d3.symbolStar).size(symbolSize),
+			d3.symbol().type(d3.symbolCross).size(symbolSize),
+			d3.symbol().type(d3.symbolWye).size(symbolSize),
+		];
+
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
 		// this scaling often makes the title sizes too big on Mobile
@@ -190,7 +202,7 @@ export class GenChart {
 		if (p.usesLeftAxisTitle) {
 			// with bigger font size - always split the left axis title
 			splitText = splitTitle(
-				$("#unit-num-select-chart :selected").text(),
+				$("#estimateTypeDropdown-select > a").text(),
 				fullSvgWidth * svgHeightRatio,
 				axisLabelFontSize
 			);
@@ -584,6 +596,21 @@ export class GenChart {
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			if (p.usesMultiLineLeftAxis) {
+				const hatchSize = 8; // 8px of color, 2px of whitespace, rotated 30 degrees, as defined below...
+				p.multiLineColors.forEach((c, i) => {
+					svg.append("defs")
+						.append("pattern")
+						.attr("id", `diagonalHatch-${i}`)
+						.attr("patternUnits", "userSpaceOnUse")
+						.attr("width", hatchSize * 0.8)
+						.attr("height", hatchSize)
+						.attr("patternTransform", "rotate(30)")
+						.append("rect")
+						.attr("width", hatchSize / 2)
+						.attr("height", hatchSize)
+						.attr("fill", c);
+				});
+
 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
@@ -971,7 +998,7 @@ export class GenChart {
 
 						lineGroupPaths[i].attr("d", lines[i](nd.values));
 						lineGroups[i]
-							.selectAll("ellipse")
+							.selectAll("p")
 							.data(nd.values, (d) => d[p.chartProperties.xAxis])
 							.join(
 								(enter) => {
@@ -987,28 +1014,18 @@ export class GenChart {
 										.attr("ry", d3.max([5, d3.min([offset, 15])]))
 										.style("opacity", 0); // this makes it invisible
 									enter
-										.append("ellipse") // add always visible "point" (TT)
-										// filter out the nulls at last possible moment (TT)
-										.filter(function (d) {
-											return d.estimate;
+										.append("path")
+										.attr("class", "symbolPoints")
+										.attr("d", symbols[i])
+										.attr("transform", (d) => {
+											return `translate(${
+												xScale(d[p.chartProperties.xAxis]) + offset
+											}, ${yScaleLeft(d[p.chartProperties.yLeft1])})`;
 										})
-										// change to a function and set based on the "flag"
-										.style("fill", function (d) {
-											if (d.flag === "*") {
-												return "white"; // creates circle that appears "empty" for "*" flag
-											}
-											return multiLineColors(i); // fills in the dot with line color
-										})
-										.style("stroke", function (d) {
-											if (d.flag !== undefined) {
-												return multiLineColors(i);
-											}
-										})
-										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-										.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
-										.attr("ry", d3.max([5, d3.min([offset, 1])]))
-										.style("opacity", 1);
+										.attr("stroke", (d) => (d.flag !== undefined ? multiLineColors(i) : "white"))
+										.style("fill", (d) =>
+											d.flag && d.flag !== "N/A" ? `url(#diagonalHatch-${i})` : multiLineColors(i)
+										);
 								},
 								(update) => {
 									update
@@ -1281,7 +1298,7 @@ export class GenChart {
 				d3.selectAll(`#${svgId} .y.axis.right .tick text`).attr("fill", p.rightAxisColor);
 
 				d3.selectAll(
-					`#${svgId} ellipse, #${svgId} ellipse, #${svgId} rect.bar, #${svgId} rect.hover-bar, #${svgId} rect.stacked-bar`
+					`#${svgId} .symbolPoints, #${svgId} ellipse, #${svgId} ellipse, #${svgId} rect.bar, #${svgId} rect.hover-bar, #${svgId} rect.stacked-bar`
 				)
 					.on("mouseover", mouseover)
 					.on("mousemove", mousemove)
