@@ -34,7 +34,7 @@ export const getSelections = () => {
 	if (hash) {
 		let selections = hash.split("_");
 		const filtersIndex = selections.findIndex((s) => s.includes("filters"));
-		if (filtersIndex) {
+		if (filtersIndex !== -1) {
 			const filtersSection = selections[filtersIndex];
 			return filtersSection;
 		}

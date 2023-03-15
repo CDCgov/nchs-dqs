@@ -545,7 +545,7 @@ export class LandingPage {
 		this.selections = hashTab.getSelections();
 		let filters = [];
 		if (this.selections) {
-			if (this.selections.includes("filters")) {
+			if (typeof this.selections === "string" && this.selections.includes("filters")) {
 				filters = this.selections.split("=")[1].split("&");
 				filters.forEach((filter) => {
 					$(`#filter${filter}`).prop("checked", true);
