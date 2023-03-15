@@ -34,11 +34,41 @@ a {
 		// }
 	}
 }
+#usMapLegendContainer {
+	margin-top: 25px;
+	margin-right: 20px;
+	width: 12%;
+	color: #333;
+	text-align: center;
+	font-family: "Open Sans";
 
-#us-map-legend > div > input {
-	cursor: pointer;
+	#us-map-legend-title {
+		font-size: 20px;
+		font-weight: bold;
+	}
+
+	#mapLegendPeriod {
+		white-space: nowrap;
+		font-weight: bold;
+	}
+
+	#us-map-legend {
+		> div {
+			align-items: center;
+			margin: 10px 0;
+		}
+
+		.squareCheckbox {
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			border: 1px solid black;
+			border-radius: 4px;
+			padding: 3px;
+			background-clip: content-box;
+		}
+	}
 }
-
 .homeSmallGroup {
 	border: 1px solid lightgray;
 	padding-top: 2px;
@@ -85,7 +115,7 @@ a {
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
-	padding: 28px 0;
+	padding: 28px 0 6px 0;
 }
 
 .homeSelectorText {
@@ -177,7 +207,10 @@ a {
 }
 
 #us-map-container {
-	text-align: center;
+	display: flex;
+	flex-direction: row;
+	background-color: white;
+	padding-top: 25px;
 }
 
 #nchs-table-container {

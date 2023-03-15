@@ -9,7 +9,7 @@ export class MainEvents {
 
 	stopAnimation = () => {
 		clearInterval(this.animationInterval);
-		$("#animatePlayIcon").css("fill", "black");
+		$("#animatePlayIcon").css("fill", "white");
 		$(".animatePauseIcon").css("fill", "none");
 		appState.ACTIVE_TAB.animating = false;
 		$("#mapPlayButtonContainer").hide();
@@ -28,13 +28,19 @@ export class MainEvents {
 				let next = appState.ACTIVE_TAB.currentTimePeriodIndex;
 				const { length } = allYears;
 
-				const moveNext = () => {
+				const moveNext = (restart) => {
+					if (!restart && next === 0) {
+						this.stopAnimation();
+						return;
+					}
 					next++;
 					if (next === length) next = 0;
-					appState.ACTIVE_TAB.updateStartPeriod(allYears[next].value);
+					const { value } = allYears[next];
+					appState.ACTIVE_TAB.updateStartPeriod(value);
+					appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 				};
 				appState.ACTIVE_TAB.animating = true;
-				moveNext();
+				moveNext(next === 0);
 				this.animationInterval = setInterval(() => moveNext(), 1000);
 			});
 
@@ -76,7 +82,12 @@ export class MainEvents {
 			.off("click", "#showAllSubgroupsSlider")
 			.on("click", "#showAllSubgroupsSlider", (e) =>
 				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget)
-			);
+			)
+			.off("click", "#mapBinningSlider")
+			.on("click", "#mapBinningSlider", (e) => {
+				const { checked } = e.currentTarget;
+				appState.ACTIVE_TAB.updateBinningMethod(checked);
+			});
 
 		const resetTopics = () => {
 			$(".filterCheckbox").prop("checked", false);
@@ -107,9 +118,6 @@ export class MainEvents {
 			$(".timePeriodContainer").css("display", "flex");
 			$("#show-one-period-checkbox").prop("disabled", false);
 		});
-
-		$(document).on("click", "#classNBreaks", (e) => appState.ACTIVE_TAB.updateClassifyType(e.target.value));
-		$(document).on("click", "#classQuartiles", (e) => appState.ACTIVE_TAB.updateClassifyType(e.target.value));
 
 		$(document)
 			.off("click", "#dwn-chart-img")
@@ -149,6 +157,15 @@ export class MainEvents {
 					$("#filterResults").html(message);
 				} else {
 					$("#filterResults").html("All");
+				}
+			})
+			.off("click keyup", ".viewFootnotes")
+			.on("click keyup", ".viewFootnotes", (e) => {
+				if (!e.key || (e.type === "keyup" && e.key === "Enter")) {
+					e.stopPropagation();
+					document.getElementById("pageFooterTable").scrollIntoView();
+					if ($("#pageFooterTable .table-toggle").hasClass("closed"))
+						$("#pageFooterTable .table-toggle").trigger("click");
 				}
 			});
 
