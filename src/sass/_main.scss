@@ -34,13 +34,13 @@ a {
 		// }
 	}
 }
-#usMapLegendContainer {
+.usMapLegendContainer {
 	margin-top: 25px;
 	margin-right: 20px;
 	width: 12%;
 	color: #333;
 	text-align: center;
-	font-family: "Open Sans";
+	// font-family: "Open Sans";
 
 	#us-map-legend-title {
 		font-size: 20px;
@@ -211,6 +211,23 @@ a {
 	flex-direction: row;
 	background-color: white;
 	padding-top: 25px;
+}
+
+#chartContainer {
+	background-color: white;
+	color: #333;
+	text-align: center;
+	background-color: white;
+	// font-family: "Open Sans";
+
+	#chartLegend {
+		margin-top: 25px;
+	}
+
+	#chartLegendTitle {
+		font-size: 20px;
+		font-weight: bold;
+	}
 }
 
 #nchs-table-container {

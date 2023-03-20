@@ -143,7 +143,7 @@ export class LandingPage {
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
 		DataCache.mapLegendColors = ["#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
-		DataCache.noDataColorHexVal = "#e0e0e0";
+		DataCache.noDataColorHexVal = "#fff";
 
 		functions.addHtmlTooltips();
 
@@ -296,6 +296,18 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").hide();
 		}
 
+		const subgroupValues = this.subgroupDropdown.getSelectedOptionValues();
+		$("#chartLegendContent").empty();
+
+		subgroupValues.forEach((g, i) => {
+			$("#chartLegendContent").append(`
+				<div class="legendItems" style="display: flex; flex-direction: row; align-items: center; padding: 5px;">
+					<div id="legendItem-${i}" style="width: 15%"></div>
+					<div id="legendText-${i}" class="legendText" style="width: 85%; text-align: left;">${g}</div>
+				</div>
+				`);
+		});
+
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
@@ -308,6 +320,7 @@ export class LandingPage {
 			this.groupDropdown.text()
 		);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
+		this.chartConfig.subGroups = subgroupValues;
 
 		$(`#${this.chartConfig.vizId}`).empty();
 		this.genChart = new GenChart(this.chartConfig);
@@ -322,9 +335,13 @@ export class LandingPage {
 
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chartLegendTitle").html(group);
 	}
 
 	renderDataVisualizations = () => {
+		$(".unreliableNote").hide();
+		$(".unreliableFootnote").hide();
+
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
@@ -444,31 +461,48 @@ export class LandingPage {
 	}
 
 	updateFootnotes(footnotesIdArray) {
-		const sourceTextNotes = [...footnotesIdArray].filter((d) => d.toString().startsWith("SC"));
-		let sourceText = "";
-		if (sourceTextNotes.length) {
-			sourceText = sourceTextNotes
-				.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
-				.join("");
-		}
-		$("#source-text-map").html(sourceText);
-		$("#source-text-chart").html(sourceText);
-
-		// now update the footnotes on the page
+		// update the footnotes on the page
 		let footerNotes = "";
-		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "NA");
+		let unreliableNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) === "NA");
 		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
+		const replaceLabel = {
+			SC: "Data Source",
+			FN: "Footnote",
+			NT: "Methodology",
+			NA: "Reliability",
+		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
-				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
+				.map(
+					(f) =>
+						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
+							this.footnoteMap[f]
+						)}</p>`
+				)
 				.join("");
+
+			const unreliableNotes =
+				unreliableNotesArray?.length === 0
+					? ""
+					: unreliableNotesArray
+							.map(
+								(f) =>
+									`<p class="unreliableFootnote"><strong>${
+										replaceLabel[f.substring(0, 2)]
+									}</strong>: ${functions.link_i_fy(this.footnoteMap[f])}</p>`
+							)
+							.join("");
+
+			footerNotes = unreliableNotes + footerNotes;
 			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 		} else {
 			$("#pageFooterTable").hide();
 		}
 		$("#pageFooter").html(footerNotes);
+		$(".unreliableFootnote").hide();
 	}
 
 	topicDropdownChange = (value) => {
@@ -616,7 +650,7 @@ export class LandingPage {
 		this.selections = hashTab.getSelections();
 		let filters = [];
 		if (this.selections) {
-			if (this.selections.includes("filters")) {
+			if (typeof this.selections === "string" && this.selections.includes("filters")) {
 				filters = this.selections.split("=")[1].split("&");
 				filters.forEach((filter) => {
 					$(`#filter${filter}`).prop("checked", true);
@@ -940,6 +974,11 @@ export class LandingPage {
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
 
+		if (tableData.some((d) => d.flag === "*" || d.flag === "---")) {
+			$(".unreliableNote").show();
+			$(".unreliableFootnote").show();
+		}
+
 		tableData = tableData.map((d) => ({
 			year: d.year,
 			column: `${d.stub_label}${
@@ -1007,7 +1046,7 @@ export class LandingPage {
 			<tr>
 				<th tabindex="0">${d}</th>
 				${columns.map((c) => {
-					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "";
+					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "---";
 					return `<td tabindex="0">${value.includes("NaN") ? value.replaceAll("NaN", "") : value}</td>`;
 				})}</tr>`;
 			$(body).append(row);
@@ -1110,6 +1149,5 @@ export class LandingPage {
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
-		// $(".buttons-csv.buttons-html5").html("");
 	}
 }
