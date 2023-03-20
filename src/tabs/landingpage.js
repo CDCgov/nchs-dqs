@@ -10,15 +10,18 @@ import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
 import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
+import { dhcsGroups } from "../components/landingPage/dhcs";
 
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
 		this.nhisData = null;
+		this.dhcsData = null;
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
-		this.dataTopic = "obesity-child"; // default
+		// this.dataTopic = "access-care"; // default
+		this.dataTopic = "emergency-department-visits-for-all-diagnoses"; // default
 		this.groupId = 0;
 		this.startPeriod = null;
 		this.startYear = null; // first year of the first period
@@ -54,6 +57,7 @@ export class LandingPage {
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (id) => {
+		console.log("GOT ID", id);
 		const dataId = id.split("nhis-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		const filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
@@ -64,6 +68,7 @@ export class LandingPage {
 				group = group.get(f.group_byid);
 			}
 			if (group) {
+				console.log("got group", group);
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 				const percent =
 					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
@@ -95,12 +100,69 @@ export class LandingPage {
 		return returnData;
 	};
 
-	getSelectedSocrataData = async (config) => {
+	getDhcsData = async (id) => {
+		console.log("GOT ID", id);
+		const dataId = id.split("dhcs-")[1];
+		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+
+		// console.log("MEASURE TYPES", [
+		// 	...new Set(
+		// 		this.dhcsData.map((d) => `${d.group},${d.measure_type},${d.group_id},${d.measuretype_id}`).flat(1)
+		// 	),
+		// ]);
+		// console.log(this.dhcsData.filter((d) => d.measure_type === "By primary diagnosis"));
+
+		const filteredToIndicator = this.dhcsData.filter((d) => d.measure === dataId);
+		console.log("filtered indicator", filteredToIndicator);
+		const returnData = [];
+		filteredToIndicator.forEach((f) => {
+			let group = dhcsGroups[f.group];
+
+			if (group instanceof Map) {
+				group = group.get(f.group_id);
+			}
+			if (group) {
+				console.log("got group", group);
+
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: null,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.measure_type,
+					panel_num: f.measure_id,
+					se: null,
+					stub_label: f.group,
+					stub_name: group.group,
+					stub_name_num: group.groupId,
+					unit: "Percent of population",
+					unit_num: 1,
+					year: f.year,
+					year_num: "",
+					age: group.group.includes("Age Group") ? f.group : "N/A",
+				});
+			}
+		});
+
+		console.log("generated return data", returnData);
+		console.log([...new Set(returnData.map((r) => r.panel))]);
+
+		DataCache[`data-${dataId}`] = returnData;
+		return returnData;
+	};
+
+	getSelectedSocrataData = async (config) => {;
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
 
 		if (config.socrataId.startsWith("nhis")) {
 			return this.getNhisData(config.socrataId);
+		}
+
+		if (config.socrataId.startsWith("dhcs")) {
+			return this.getDhcsData(config.socrataId);
 		}
 
 		try {
@@ -114,8 +176,8 @@ export class LandingPage {
 				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+				metaUrl = `http://localhost/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
+				dataUrl = `http://localhost/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -518,6 +580,11 @@ export class LandingPage {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
+		} else if (this.config.socrataId.startsWith("dhcs") && !this.dhcsData) {
+			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
+				this.dhcsData = data;
+				this.getData(topicChange);
+			});
 		} else {
 			this.getData(topicChange);
 		}
@@ -656,6 +723,7 @@ export class LandingPage {
 	initClassificationDropdown() {
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
+		console.log("GENERATED ALL TOPICS", allTopics);
 		// now sort them in id order
 		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;

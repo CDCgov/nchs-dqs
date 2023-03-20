@@ -1,5 +1,6 @@
 import { modal, allFilters } from "./modal";
 import { nhisHash, nhisTopics } from "./nhis";
+import { dhcsTopics } from "./dhcs";
 
 const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
@@ -248,6 +249,10 @@ export const topicLookup = {
 		socrataId: "f8fd-33mw",
 		private: "1",
 	},
+	dhcs: {
+		socrataId: "pcav-mejc",
+		private: "1",
+	},
 
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
@@ -375,6 +380,19 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 0,
 	},
+	"epidemiology-health": {
+		dataUrl: "https://data.cdc.gov/resource/pcav-mejc.json",
+		socrataId: "pcav-mejc",
+		private: "1",
+		chartTitle: "Epidemiology and Health Metrics",
+		filters:
+			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: true,
+		hasClassification: true,
+		topicGroup: 17,
+	},
 };
 
 nhisTopics.forEach((t) => {
@@ -384,6 +402,21 @@ nhisTopics.forEach((t) => {
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: true,
+		hasClassification: true,
+		topicGroup: t.topicGroup,
+	};
+});
+
+dhcsTopics.forEach((t) => {
+	topicLookup[t.id] = {
+		dataUrl: "https://data.cdc.gov/NCHS/",
+		socrataId: `dhcs-${t.text}`,
+		isDhcsData: true,
+		chartTitle: t.text,
+		filters: allFilters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -410,6 +443,7 @@ export const topicGroups = [
 	"Sensory Impairments", // 14
 	"Tobacco usage", // 15
 	"Vaccination", // 16
+	"Epidemiology Health", // 17
 ];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -933,6 +967,17 @@ export const hashLookup = [
 ];
 // add all NHIS topic to hashLookup
 nhisTopics
+	.map((t) => t.id)
+	.forEach((id) => {
+		hashLookup.push({
+			hash: id,
+			value: id,
+			groupOptions: nhisHash.groupOptions,
+			classificationOptions: nhisHash.classificationOptions,
+		});
+	});
+
+dhcsTopics
 	.map((t) => t.id)
 	.forEach((id) => {
 		hashLookup.push({
