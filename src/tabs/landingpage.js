@@ -67,9 +67,7 @@ export class LandingPage {
 		filteredToIndicator.forEach((f) => {
 			let group = nhisGroups[f.group];
 			if (group instanceof Map) {
-				console.log("BEFORE GROUP", group);
 				group = group.get(f.group_byid);
-				console.log("AFTER GROUP", group);
 			}
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
@@ -104,23 +102,24 @@ export class LandingPage {
 	};
 
 	getDhcsData = async (id) => {
-		console.log("GOT ID", id);
 		const dataId = id.split("dhcs-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-		// let groups = {}
-		// this.dhcsData.forEach((d) => {
-		// 	groups[`${d.measure_type}-${d.groupby}`] = {
-		// 		group: d.groupby,
-		// 		classification: d.measure_type
-		// 	};
-		// });
 
-		// console.log("NEW GROJPS", JSON.stringify(groups, null, 4));
+		// const groupedData = this.dhcsData.reduce((prev, curr) => {
+		// 	prev[`${curr.measuretype_id}_${curr.subgroup}`] = {
+		// 		group: curr.groupby,
+		// 		classification: curr.measure_type
+		// 	}
+
+		// 	return prev;
+		// }, {});
+
+		// console.log("GROUPED DATA", JSON.stringify(groupedData, null, 4));
 
 		const filteredToIndicator = this.dhcsData.filter((d) => d.measure === dataId);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = dhcsGroups[`${f.measure_type}-${f.groupby}`];
+			let group = dhcsGroups[`${f.measuretype_id}_${f.subgroup}`];
 			if (group) {
 				returnData.push({
 					estimate: f.estimate,
@@ -130,13 +129,13 @@ export class LandingPage {
 					footnote_id_list: f.footnote_id,
 					indicator: f.measure,
 					panel: group.classification,
-					panel_num: parseInt(f.measuretype_id, 10),
+					panel_num: f.measuretype_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
-					stub_name_num: parseInt(f.groupby_id, 10),
+					stub_name_num: f.groupby_id,
 					unit: "Percent of population",
-					unit_num: 1,
+					unit_num: f.estimatetype_id,
 					year: f.year,
 					year_num: "",
 					age: group.group.includes("By age") ? f.group : "N/A",
@@ -491,6 +490,7 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by classification, unit, and group
 	getFilteredYearData() {
+		console.log("CURRENT GROUP ID", this.groupId);
 		const filteredData = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
@@ -719,7 +719,6 @@ export class LandingPage {
 	initClassificationDropdown() {
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
-		console.log("GENERATED ALL TOPICS", allTopics);
 		// now sort them in id order
 		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;

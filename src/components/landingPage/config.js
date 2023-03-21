@@ -380,19 +380,6 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
-	"epidemiology-health": {
-		dataUrl: "https://data.cdc.gov/resource/pcav-mejc.json",
-		socrataId: "pcav-mejc",
-		private: "1",
-		chartTitle: "Epidemiology and Health Metrics",
-		filters:
-			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
-		classificationId: 1,
-		yAxisUnitId: 1,
-		hasCI: true,
-		hasClassification: true,
-		topicGroup: 17,
-	},
 };
 
 nhisTopics.forEach((t) => {
