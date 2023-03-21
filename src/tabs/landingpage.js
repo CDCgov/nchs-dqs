@@ -20,8 +20,8 @@ export class LandingPage {
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
-		// this.dataTopic = "access-care"; // default
-		this.dataTopic = "emergency-department-visits-for-all-diagnoses"; // default
+		this.dataTopic = "access-care"; // default
+		// this.dataTopic = "emergency-department-visits-for-all-diagnoses"; // default
 		this.groupId = 0;
 		this.startPeriod = null;
 		this.startYear = null; // first year of the first period
@@ -65,10 +65,11 @@ export class LandingPage {
 		filteredToIndicator.forEach((f) => {
 			let group = nhisGroups[f.group];
 			if (group instanceof Map) {
+				console.log("BEFORE GROUP", group);
 				group = group.get(f.group_byid);
+				console.log("AFTER GROUP", group);
 			}
 			if (group) {
-				console.log("got group", group);
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 				const percent =
 					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
@@ -104,50 +105,42 @@ export class LandingPage {
 		console.log("GOT ID", id);
 		const dataId = id.split("dhcs-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+		// let groups = {}
+		// this.dhcsData.forEach((d) => {
+		// 	groups[`${d.measure_type}-${d.groupby}`] = {
+		// 		group: d.groupby,
+		// 		classification: d.measure_type
+		// 	};
+		// });
 
-		// console.log("MEASURE TYPES", [
-		// 	...new Set(
-		// 		this.dhcsData.map((d) => `${d.group},${d.measure_type},${d.group_id},${d.measuretype_id}`).flat(1)
-		// 	),
-		// ]);
-		// console.log(this.dhcsData.filter((d) => d.measure_type === "By primary diagnosis"));
+		// console.log("NEW GROJPS", JSON.stringify(groups, null, 4));
 
 		const filteredToIndicator = this.dhcsData.filter((d) => d.measure === dataId);
-		console.log("filtered indicator", filteredToIndicator);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = dhcsGroups[f.group];
-
-			if (group instanceof Map) {
-				group = group.get(f.group_id);
-			}
+			let group = dhcsGroups[`${f.measure_type}-${f.groupby}`];
 			if (group) {
-				console.log("got group", group);
-
 				returnData.push({
 					estimate: f.estimate,
-					estimate_lci: null,
-					estimate_uci: null,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
 					flag: null,
 					footnote_id_list: f.footnote_id,
 					indicator: f.measure,
-					panel: f.measure_type,
-					panel_num: f.measure_id,
+					panel: group.classification,
+					panel_num: parseInt(f.measuretype_id, 10),
 					se: null,
-					stub_label: f.group,
-					stub_name: group.group,
-					stub_name_num: group.groupId,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: parseInt(f.groupby_id, 10),
 					unit: "Percent of population",
 					unit_num: 1,
 					year: f.year,
 					year_num: "",
-					age: group.group.includes("Age Group") ? f.group : "N/A",
+					age: group.group.includes("By age") ? f.group : "N/A",
 				});
 			}
 		});
-
-		console.log("generated return data", returnData);
-		console.log([...new Set(returnData.map((r) => r.panel))]);
 
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
@@ -524,6 +517,7 @@ export class LandingPage {
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
+				.filter((f) => this.footnoteMap[f])
 				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
 				.join("");
 			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right

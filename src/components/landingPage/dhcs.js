@@ -1,46 +1,62 @@
 export const dhcsGroups = {
-	Total: {
-		group: "Total",
+    "By reason for visit-Total": {
+        "group": "Total",
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By sex": {
+        "group": "By sex",
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By age": {
+        "group": "By age",
+	    groupId: 1,
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By race/ethnicity": {
+        "group": "By race/ethnicity",
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By region": {
+        "group": "By region",
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By metropolitan statistical area (MSA)": {
+        "group": "By metropolitan statistical area (MSA)",
+        "classification": "By reason for visit"
+    },
+    "By reason for visit-By primary payment source": {
+        "group": "By primary payment source",
+        "classification": "By reason for visit"
+    },
+    "By primary diagnosis-Total": {
+        "group": "Total",
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By sex": {
+        "group": "By sex",
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By age": {
+        "group": "By age",
 		groupId: 1,
-		classification: "By reason for visit",
-		classificationId: 0,
-	},
-	"By sex": {
-		group: "By sex",
-		groupId: 3,
-		classification: "By reason for visit",
-		classificationId: 0,
-	},
-	"By age": {
-		group: "By age",
-		groupId: 2,
-		classification: "By reason for visit",
-		classificationId: 0,
-	},
-	"By race/ethnicity": {
-		group: "By race/ethnicity",
-		groupId: 4,
-		classification: "By reason for visit",
-		classificationId: 0,
-	},
-	"By region": {
-		group: "By region",
-		groupId: 6,
-		classification: "By reason for visit",
-		classificationId: 0,
-	},
-	"By metropolitan statistical area (MSA)": {
-		group: "By metropolitan statistical area (MSA)",
-		groupId: 5,
-		classification: "By reason for visit",
-		classificationId: 2,
-	},
-	"By primary payment source": {
-		group: "By primary payment source",
-		groupId: 7,
-		classification: "By reason for visit",
-		classificationId: 2,
-	},
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By race/ethnicity": {
+        "group": "By race/ethnicity",
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By region": {
+        "group": "By region",
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By metropolitan statistical area (MSA)": {
+        "group": "By metropolitan statistical area (MSA)",
+        "classification": "By primary diagnosis"
+    },
+    "By primary diagnosis-By primary payment source": {
+        "group": "By primary payment source",
+        "classification": "By primary diagnosis"
+    }
 };
 // export const dhcsGroups = [
 // 	{
