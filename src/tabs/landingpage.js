@@ -18,7 +18,7 @@ export class LandingPage {
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
-		this.dataTopic = "obesity-child"; // default
+		this.dataTopic = "angina-pectoris"; // default
 		this.groupId = 0;
 		this.startPeriod = null;
 		this.startYear = null; // first year of the first period
@@ -54,9 +54,13 @@ export class LandingPage {
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (id) => {
-		const dataId = id.split("nhis-")[1];
+		let dataId = id.split("nhis-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-		const filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		if (filteredToIndicator.length === 0) {
+			dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
+			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
 			let group = nhisGroups[f.group];
@@ -639,7 +643,7 @@ export class LandingPage {
 			containerId: "topicDropdown",
 			ariaLabel: "select a topic",
 			options: options.sort((a, b) => a.text.localeCompare(b.text)),
-			selectedValue: this.selections?.topic,
+			selectedValue: this.dataTopic,
 		});
 		this.topicDropdown.render();
 
