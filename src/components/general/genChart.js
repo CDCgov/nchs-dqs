@@ -590,7 +590,7 @@ export class GenChart {
 					.entries(allIncomingData);
 
 				fullNestedData.forEach((nd, i) => {
-					lines[i] = d3.line().defined((d) => d.estimate !== null);
+					lines[i] = d3.line().defined((d) => d.estimate);
 					const lineGroup = svg
 						.append("g")
 						.attr("class", nd.key.replace(/[\W_]+/g, ""))
@@ -847,7 +847,7 @@ export class GenChart {
 							.data(p.data)
 							.enter()
 							.append("text")
-							.text((d) => (d[p.chartProperties.bars] === null ? "No data available" : ""))
+							.text((d) => (!d[p.chartProperties.bars] ? "No data available" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
@@ -864,7 +864,7 @@ export class GenChart {
 							.data(p.data)
 							.enter()
 							.append("text")
-							.text((d) => (d[p.chartProperties.bars] === null ? "for current selections" : ""))
+							.text((d) => (!d[p.chartProperties.bars] ? "for current selections" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))

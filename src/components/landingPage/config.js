@@ -245,7 +245,7 @@ export const topicLookup = {
 		private: "1",
 	},
 	nhis: {
-		socrataId: "f8fd-33mw",
+		socrataId: "4u68-shzr",
 		private: "1",
 	},
 

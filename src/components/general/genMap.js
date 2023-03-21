@@ -197,8 +197,8 @@ export class GenMap {
 
 			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
 			if (crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
+			if (flag === "*" && estimate && index > -1) return binColor;
+			if (flag === "N/A" && !estimate) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
 			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
@@ -210,9 +210,9 @@ export class GenMap {
 
 			const index = DataCache.mapLegendColors.indexOf(binColor);
 			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
-			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
+			if ((flag === "*" && !estimate) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
+			if (flag === "*" && estimate && index > -1) return binColor;
+			if (flag === "N/A" && !estimate) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
 			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
