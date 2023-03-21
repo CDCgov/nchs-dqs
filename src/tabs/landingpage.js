@@ -274,6 +274,7 @@ export class LandingPage {
 		}
 
 		this.flattenedFilteredData = stateData;
+		this.updateFootnotes(stateData);
 
 		const mapVizId = "us-map";
 		let map = new GenMap({
@@ -304,6 +305,7 @@ export class LandingPage {
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		this.updateFootnotes(chartData);
 
 		this.chartConfig = functions.getAllChartProps(
 			chartData,
@@ -415,17 +417,6 @@ export class LandingPage {
 			}));
 		}
 
-		const allFootnoteIdsArray = [
-			...new Set(
-				data
-					.map((d) => d.footnote_id_list)
-					.join(",")
-					.split(",")
-			),
-		];
-
-		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
-
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
 			return [...data].map((d) => ({
@@ -447,8 +438,17 @@ export class LandingPage {
 			: filteredData;
 	}
 
-	updateFootnotes(footnotesIdArray) {
-		const sourceTextNotes = [...footnotesIdArray].filter((d) => d.toString().startsWith("SC"));
+	updateFootnotes(data) {
+		const allFootnoteIdsArray = [
+			...new Set(
+				data
+					.map((d) => d.footnote_id_list)
+					.join(",")
+					.split(",")
+			),
+		];
+
+		const sourceTextNotes = [...allFootnoteIdsArray].filter((d) => d.toString().startsWith("SC"));
 		let sourceText = "";
 		if (sourceTextNotes.length) {
 			sourceText = sourceTextNotes
@@ -460,7 +460,7 @@ export class LandingPage {
 
 		// now update the footnotes on the page
 		let footerNotes = "";
-		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		let footerNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) !== "SC");
 		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
@@ -937,6 +937,7 @@ export class LandingPage {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
 		}
+		this.updateFootnotes(tableData);
 
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
