@@ -590,7 +590,7 @@ export class GenChart {
 					.entries(allIncomingData);
 
 				fullNestedData.forEach((nd, i) => {
-					lines[i] = d3.line().defined((d) => d.estimate);
+					lines[i] = d3.line().defined((d) => d.estimate && d.flag !== "*");
 					const lineGroup = svg
 						.append("g")
 						.attr("class", nd.key.replace(/[\W_]+/g, ""))

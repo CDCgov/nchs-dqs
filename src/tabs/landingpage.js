@@ -73,7 +73,7 @@ export class LandingPage {
 					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.outcome_or_indicator,
 					panel: group.classification,
