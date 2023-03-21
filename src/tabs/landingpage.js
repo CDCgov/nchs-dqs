@@ -4,6 +4,7 @@ import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
+import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
 import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
@@ -933,6 +934,24 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
+		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
+
+		if (this.config.hasCI) {
+			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
+			keys.push("estimate_lci", "estimate_uci");
+		}
+
+		cols.push("Flag");
+		keys.push("flag");
+
+		this.csv = {
+			data: tableData,
+			dataKeys: keys,
+			title: this.config.chartTitle,
+			headers: cols,
+		};
+
 		if (!$("#showAllSubgroupsSlider").is(":checked")) {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
@@ -1113,7 +1132,9 @@ export class LandingPage {
 		});
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
-		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
-		// $(".buttons-csv.buttons-html5").html("");
+	}
+
+	exportCSV() {
+		downloadCSV(this.csv);
 	}
 }
