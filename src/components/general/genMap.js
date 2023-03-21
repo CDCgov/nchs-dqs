@@ -431,7 +431,7 @@ export class GenMap {
 		// if (needReliabilityCallout) {
 		if (true) {
 			const chartContainerWidth = $("#us-map").width();
-			const callOutWidth = chartContainerWidth / 3 + 30;
+			const callOutWidth = chartContainerWidth / 2 + 30;
 			const headerFontSize = 18;
 			const callOutHeight = 4 * headerFontSize;
 			const labelSize = 0.89 * headerFontSize;
