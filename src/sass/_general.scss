@@ -171,6 +171,10 @@ div.genSearch {
 		margin: 3px 0 !important;
 	}
 
+	i.fa-times {
+		cursor: pointer;
+	}
+
 	#genDropdownSearch {
 		&.genDropdownOpened {
 			display: block;
@@ -191,7 +195,6 @@ div.genSearch {
 			position: absolute;
 			right: 10px;
 			top: 8px;
-			cursor: pointer;
 		}
 
 		a {

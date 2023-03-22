@@ -267,8 +267,9 @@ export class TopicDropdown {
 						this.#search();
 					} else if (key === "Tab" || key === "ArrowDown") {
 						e.preventDefault();
-						if ($("#clearSearch").length) $("#clearSearch").trigger("focus");
-						else $(".genDropdownOption:visible:first").trigger("focus");
+						if ($(`#${this.props.containerId} .clearSearch`).length)
+							$(`#${this.props.containerId} .clearSearch`).trigger("focus");
+						else $(`#${this.props.containerId} .genDropdownOption:visible:first`).trigger("focus");
 					}
 				}
 			})
@@ -279,7 +280,7 @@ export class TopicDropdown {
 				if (key === "Enter" || (key === " " && !open)) {
 					e.preventDefault();
 					if (open) {
-						if (e.target.id !== "clearSearch") this.#handleSelectionMade();
+						if (!e.target.classList.contains("clearSearch")) this.#handleSelectionMade();
 					} else {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
@@ -308,8 +309,8 @@ export class TopicDropdown {
 				$(e.currentTarget).addClass("genOptionSelected");
 			})
 
-			.off("click keypress", "#clearSearch")
-			.on("click keypress", "#clearSearch", (e) => {
+			.off("click keypress", `#${this.props.containerId} .clearSearch`)
+			.on("click keypress", `#${this.props.containerId} .clearSearch`, (e) => {
 				e.preventDefault();
 				this.#resetOptions();
 			});
@@ -457,7 +458,7 @@ export class TopicDropdown {
 		const lowercaseSearch = this.searchText.toLowerCase();
 		let matchIndex;
 		if (this.searchText.length) {
-			$("#genDropdownSearch").css("caret-color", "transparent");
+			$(`#${this.props.containerId} #genDropdownSearch`).css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				if (
@@ -507,7 +508,7 @@ export class TopicDropdown {
 			if (countOfVisibleTopicGroups === 0) {
 				$(`#${this.props.containerId} #genDropdownSearch > a`)
 					.html(
-						`No matching results found <i id="clearSearch" class="fas fa-times" aria-label="reset search" tabindex="0"></i>`
+						`No matching results found <i class="clearSearch fas fa-times" aria-label="reset search" tabindex="0"></i>`
 					)
 					.attr("aria-label", "No matching results found");
 			} else $(`#${this.props.containerId} #genDropdownSearch > a`).html(this.searchText);

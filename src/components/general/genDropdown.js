@@ -271,6 +271,12 @@ export class GenDropdown {
 					e.preventDefault();
 					this.#handleSelectionMade();
 				}
+			})
+			// clear search
+			.off("click keypress", `#${this.props.containerId} .clearSearch`)
+			.on("click keypress", `#${this.props.containerId} .clearSearch`, (e) => {
+				e.preventDefault();
+				this.#resetOptions();
 			});
 	};
 
@@ -389,7 +395,7 @@ export class GenDropdown {
 		const html = $(this.selectedOptionEl).find("a").html();
 		$(`#${this.props.containerId}-select > a`).html(html);
 		$(this.selectedOptionEl).addClass("genOptionSelected");
-		$(`#${this.props.containerId}-select`).focus();
+		$(`#${this.props.containerId}-select`).css("caret-color", "inherit").focus();
 	};
 
 	#search = (c) => {
@@ -397,6 +403,7 @@ export class GenDropdown {
 		const lowercaseSearch = this.searchText.toLowerCase();
 		let matchIndex;
 		if (this.searchText.length) {
+			$(`#${this.props.containerId}-select`).css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				if (
@@ -422,8 +429,16 @@ export class GenDropdown {
 						.focus();
 				}
 			});
-		}
+		} else $(`#${this.props.containerId}-select`).css("caret-color", "inherit");
+
 		if (matchIndex === undefined) {
+			$(`#${this.props.containerId}-select > a`)
+				.html(
+					`No matching results found <i class="clearSearch fas fa-times" aria-label="reset search" tabindex="0"></i>`
+				)
+				.attr("aria-label", "No matching results found")
+				.attr("style", "display: flex; align-items: center; justify-content: space-between;");
+		} else {
 			$(`#${this.props.containerId}-select > a`).html(
 				`<span style="font-weight: bold;">${this.searchText}</span>`
 			);
