@@ -147,7 +147,7 @@ export class LandingPage {
 		return returnData;
 	};
 
-	getSelectedSocrataData = async (config) => {;
+	getSelectedSocrataData = async (config) => {
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
 
