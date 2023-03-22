@@ -629,7 +629,12 @@ export const nhisTopics = [
 		topicGroup: 3,
 	},
 	{ id: "disability-status-(composite)", text: "Disability status (composite)", topicGroup: 0 },
-	{ id: "doctor-visit", text: "Doctor visit among adults (NHIS)", indicator: "Doctor visit", topicGroup: 1 },
+	{
+		id: "doctor-visit",
+		text: "Doctor visit among adults (NHIS)",
+		indicator: "Doctor visit among adults",
+		topicGroup: 1,
+	},
 	{
 		id: "ever-received-a-pneumococcal-vaccination",
 		text: "Ever received a pneumococcal vaccination",

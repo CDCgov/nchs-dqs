@@ -241,7 +241,7 @@ export const topicLookup = {
 		private: "1",
 	},
 	nhisFootnotes: {
-		socrataId: "dm8v-ubmw",
+		socrataId: "pr96-nsm2",
 		private: "1",
 	},
 	nhis: {
