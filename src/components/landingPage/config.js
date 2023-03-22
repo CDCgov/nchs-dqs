@@ -12,12 +12,19 @@ export const chartAndTableSelectors = `
 					<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
 					<span class="slider round"></span>
 				</label>
-			</div>				
+			</div>
 			<div id="ciTableSlider">
-				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>					
+				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
 				<label class="switch">
 					<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
 					<span id="ciTableHover" class="slider round"></span>
+				</label>
+			</div>			
+			<div id="mapBinningTypeSelector">
+				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles based on the most recent available period</label>
+				<label class="switch">
+					<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
+					<span class="slider round"></span>
 				</label>
 			</div>
 		</div>
@@ -157,26 +164,26 @@ export const tabContent = `
 			<li><a href="#chart-tab"><i class="fas fa-chart-line fa-fw me-2"></i> Chart</a></li>
 			<li><a href="#table-tab"><i class="fas fa-table fa-fw me-2"></i> Table</a></li>
 		</ul>
+		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-				<div class="adjustUnitContainer">
-					<div id="estimateTypeDropdownMap" class="genDropdown">
-						<div id="estimateTypeDropdownMap-label" for="estimateTypeDropdownMap-select"class="select-label">Estimate Type</div>
-					</div>
-				</div>
-				<fieldset class="breaksContainer">
-					<div class="btnToggle">
-						<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-						<label role="button" for="classNBreaks">Natural Breaks</label>
-						<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-						<label role="button" for="classQuartiles">Quartiles</label>
-					</div>
-				</fieldset>			
-				<div id="us-map-container">
+				<div id="mapSelectors"></div>
+				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
+					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
 					<div id="us-map" class="general-chart"></div>
-					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
-					<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
+					<div id="usMapLegendContainer">
+						<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
+							<div style="display: inline-block; text-align: left;" tabindex="0">
+								Data classified<br />
+								using <a class="viewFootnotes" tabindex="0">quartiles</a><br />
+								based on<br />
+								<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
+							</div>
+							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
+						</div>
+					</div>
 				</div>
 				<br />
 				<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
@@ -246,25 +253,25 @@ export const topicLookup = {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
 		private: "1",
-		chartTitle: "Obesity among Children",
+		chartTitle: "Obesity among Children (HUS)",
 		filters: "AsianPacific,Black,Children,Hispanic,Poverty,White",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 5,
+		topicGroup: 0,
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
 		socrataId: "23va-ejrn",
 		private: "1",
-		chartTitle: "Obesity among Adults",
+		chartTitle: "Obesity among Adults (HUS)",
 		filters: "Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 5,
+		topicGroup: 0,
 	},
 	suicide: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/u9f7-4q6s",
@@ -276,19 +283,19 @@ export const topicLookup = {
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
-		topicGroup: 4,
+		topicGroup: 1,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
 		socrataId: "k99r-jkp7",
 		private: "1",
-		chartTitle: "Initial injury-related visits to hospital emergency departments",
+		chartTitle: "Initial injury-related visits to hospital emergency departments (HUS)",
 		filters: "Adults,Older,Children,Male,Female",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
-		topicGroup: 10,
+		topicGroup: 1,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
@@ -301,7 +308,8 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
-		topicGroup: 4,
+		binGranularity: 0.1,
+		topicGroup: 1,
 	},
 	birthweight: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
@@ -314,13 +322,14 @@ export const topicLookup = {
 		hasCI: false,
 		hasMap: true,
 		hasClassification: true,
-		topicGroup: 11,
+		binGranularity: 0.01,
+		topicGroup: 1,
 	},
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
 		socrataId: "2g8y-scu5",
 		private: "1",
-		chartTitle: "Medicaid coverage among persons under age 65",
+		chartTitle: "Medicaid coverage among persons under age 65 (HUS)",
 		filters:
 			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
 		classificationId: "NA",
@@ -339,32 +348,32 @@ export const topicLookup = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
-		topicGroup: 4,
+		topicGroup: 1,
 	},
 	"ambulatory-care": {
 		dataUrl: "https://data.cdc.gov/resource/tz8d-jy2e.json",
 		socrataId: "tz8d-jy2e",
 		private: "1",
-		chartTitle: "Ambulatory Care Visits",
+		chartTitle: "Ambulatory Care Visits (HUS)",
 		filters: "Adults,Black,Children,Female,Male,Older,Region,White",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
-		topicGroup: 10,
+		topicGroup: 1,
 	},
 	"access-care": {
 		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
 		socrataId: "nt5r-ak33",
 		private: "1",
-		chartTitle: "Access to Care",
+		chartTitle: "Access to Care (HUS)",
 		filters:
 			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 0,
+		topicGroup: 3,
 	},
 };
 
@@ -384,23 +393,13 @@ nhisTopics.forEach((t) => {
 });
 
 export const topicGroups = [
-	"Access to care", // 0
-	"Cancer", // 1
-	"Circulatory system", // 2
-	"Coverage", // 3
-	"Death", // 4
-	"Endocrine system", // 5
-	"Health Status", // 6
-	"Mental Health", // 7
-	"Musculoskeletal system", // 8
-	"Nervous system", // 9
-	"Outpatient Visit", // 10
-	"Perinatal period", // 11
-	"Prescription Medication", // 12
-	"Respiratory system", // 13
-	"Sensory Impairments", // 14
-	"Tobacco usage", // 15
-	"Vaccination", // 16
+	"Diseases and conditions", // 0
+	"Epidemiology and health metrics", // 1
+	"Health behavior and risks", // 2
+	"Health systems", // 3
+	"Mental Health	", // 4
+	"Oral Health", // 5
+	"Prevention, control, and treatment", // 6
 ];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

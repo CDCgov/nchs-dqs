@@ -17,6 +17,11 @@ html {
 	scroll-behavior: smooth;
 }
 
+// don't allow jquery-ui to override our font
+html .ui-widget {
+	font-family: "Open Sans", apple-system, blinkmacsystemfont, "Segoe UI", "Helvetica Neue", arial, sans-serif;
+}
+
 body:not(:-moz-handler-blocked) fieldset {
 	display: table-cell;
 }

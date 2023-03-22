@@ -718,9 +718,11 @@ export class GenChart {
 									.attr(
 										"width",
 										hz
-											? (d) =>
-													xScale(xScale.domain().slice(-1)) -
-													xScale(d[p.chartProperties.bars])
+											? (d) => {
+													const end = xScale(xScale.domain().slice(-1));
+													const start = xScale(d[p.chartProperties.bars]) ?? 0;
+													return end - start;
+											  }
 											: xScale.bandwidth()
 									)
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))

@@ -68,12 +68,15 @@ fieldset {
 }
 
 @media screen and (min-width: $large-screen-min-width) {
-	#us-map-time-slider,
+	#us-map-time-slider {
+		width: 12%;
+	}
 	#us-map {
+		width: 76%;
 		display: flex !important;
 		justify-content: center !important;
 		svg {
-			flex-basis: 80%;
+			flex-basis: 100%;
 			overflow-clip-margin: content-box;
 		}
 	}
