@@ -37,9 +37,6 @@ export class GenChart {
 		}
 		let fullNestedData;
 
-		let allIncomingData = p.data.filter((d) => !Number.isNaN(d.estimate)); // this has to be used for the LEGENDS
-		// and for reliability, filter out any null data
-
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
 				genTooltip.mouseover(d3.select(this), ["data"]);
@@ -587,10 +584,10 @@ export class GenChart {
 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
-					.entries(allIncomingData);
+					.entries(p.data);
 
 				fullNestedData.forEach((nd, i) => {
-					lines[i] = d3.line().defined((d) => d.estimate && d.flag !== "*");
+					lines[i] = d3.line().defined((d) => d.estimate);
 					const lineGroup = svg
 						.append("g")
 						.attr("class", nd.key.replace(/[\W_]+/g, ""))
@@ -1366,14 +1363,14 @@ export class GenChart {
 				});
 				legendData.reverse();
 			} else if (p.usesBars) {
-				allIncomingData = allIncomingData.map((d) => ({
+				p.data = p.data.map((d) => ({
 					...d,
 					assignedLegendColor: !d.estimate
 						? ""
 						: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
 				}));
 
-				allIncomingData.forEach((d, i) => {
+				p.data.forEach((d, i) => {
 					legendData[i] = {
 						stroke: d.assignedLegendColor,
 						dashArrayScale: 0,
