@@ -134,7 +134,7 @@ export class LandingPage {
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
 					stub_name_num: f.groupby_id,
-					unit: "Percent of population",
+					unit: f.estimate_type,
 					unit_num: f.estimatetype_id,
 					year: f.year,
 					year_num: "",
@@ -591,16 +591,17 @@ export class LandingPage {
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, mapData] = data;
+				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes];
+					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
