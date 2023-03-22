@@ -1010,7 +1010,7 @@ export class GenChart {
 										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
 										.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
 										.attr("ry", d3.max([5, d3.min([offset, 1])]))
-										.style("opacity", 1);
+										.style("opacity", 0.85);
 								},
 								(update) => {
 									update
