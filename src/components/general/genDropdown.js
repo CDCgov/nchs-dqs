@@ -391,6 +391,7 @@ export class GenDropdown {
 	};
 
 	#resetOptions = () => {
+		this.searchText = "";
 		$(this.listItems).removeClass("genOptionSelected").attr("hidden", false);
 		const html = $(this.selectedOptionEl).find("a").html();
 		$(`#${this.props.containerId}-select > a`).html(html);
