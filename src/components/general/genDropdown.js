@@ -361,6 +361,7 @@ export class GenDropdown {
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
+		$(`#${this.props.containerId} .genDropdownSelected`).toggleClass("genDropdownOpened");
 		if (!this.isMobile) this.#setCaret();
 		this.#scrollIntoView();
 	};
@@ -392,6 +393,8 @@ export class GenDropdown {
 
 	#resetOptions = () => {
 		this.searchText = "";
+		$(`#${this.props.containerId} .genDropdownSelected`).removeClass("chevronHidden");
+
 		$(this.listItems).removeClass("genOptionSelected").attr("hidden", false);
 		const html = $(this.selectedOptionEl).find("a").html();
 		$(`#${this.props.containerId}-select > a`).html(html);
@@ -439,6 +442,8 @@ export class GenDropdown {
 				)
 				.attr("aria-label", "No matching results found")
 				.attr("style", "display: flex; align-items: center; justify-content: space-between;");
+			$(`#${this.props.containerId} .genDropdownSelected`).addClass("chevronHidden");
+			$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
 		} else {
 			$(`#${this.props.containerId}-select > a`).html(
 				`<span style="font-weight: bold;">${this.searchText}</span>`

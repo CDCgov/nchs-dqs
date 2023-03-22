@@ -392,6 +392,8 @@ export class TopicDropdown {
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
+		$(`#${this.props.containerId} .genDropdownSelected`).toggleClass("genDropdownOpened");
+
 		const topicWidth = $(`#${this.props.containerId}`).width();
 		const topicHeight = $(`#${this.props.containerId}`).height();
 		$(`#${this.props.containerId} #genDropdownSearch`)
