@@ -554,7 +554,7 @@ export class LandingPage {
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 
-		if (this.config.socrataId.startsWith("nhis") && !this.nhisData) {
+		if (this.config.socrataId.startsWith("nhis")) {
 			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
 				this.nhisData = data;
 				this.getData(topicChange);
