@@ -146,7 +146,7 @@ export class LandingPage {
 
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
-		DataCache.mapLegendColors = ["#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
+		DataCache.mapLegendColors = config.colors.mapLegendColors;
 		DataCache.noDataColorHexVal = "#fff";
 
 		functions.addHtmlTooltips();
