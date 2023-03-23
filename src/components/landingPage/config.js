@@ -251,11 +251,11 @@ export const topicLookup = {
 		private: "1",
 	},
 	nhisFootnotes: {
-		socrataId: "dm8v-ubmw",
+		socrataId: "pr96-nsm2",
 		private: "1",
 	},
 	nhis: {
-		socrataId: "f8fd-33mw",
+		socrataId: "4u68-shzr",
 		private: "1",
 	},
 

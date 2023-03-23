@@ -64,34 +64,30 @@ export class LandingPage {
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.group];
+			let group = nhisGroups[f.subgroup];
 			if (group instanceof Map) {
 				group = group.get(f.group_byid);
 			}
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				const percent =
-					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
-						? f.percentage
-						: null;
 				returnData.push({
-					estimate: percent,
+					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.outcome_or_indicator,
 					panel: group.classification,
 					panel_num: group.classificationId,
 					se: null,
-					stub_label: f.group,
+					stub_label: f.subgroup,
 					stub_name: group.group,
 					stub_name_num: group.groupId,
 					unit: "Percent of population",
 					unit_num: 1,
 					year: f.year,
 					year_num: "",
-					age: group.group.includes("Age Group") ? f.group : "N/A",
+					age: group.group.includes("Age Group") ? f.subgroup : "N/A",
 				});
 			}
 		});
