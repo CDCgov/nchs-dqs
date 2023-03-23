@@ -1,6 +1,5 @@
 import { modal, allFilters } from "./modal";
 import { nhisHash, nhisTopics } from "./nhis";
-import { dhcsTopics } from "./dhcs";
 
 const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
@@ -389,25 +388,10 @@ export const topicLookup = {
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `nhis-${t.text}`,
+		socrataId: `${t.prefix || `nhis`}-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
-		classificationId: 1,
-		yAxisUnitId: 1,
-		hasCI: true,
-		hasClassification: true,
-		topicGroup: t.topicGroup,
-	};
-});
-
-dhcsTopics.forEach((t) => {
-	topicLookup[t.id] = {
-		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `dhcs-${t.text}`,
-		isDhcsData: true,
-		chartTitle: t.text,
-		filters: allFilters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -947,17 +931,6 @@ export const hashLookup = [
 ];
 // add all NHIS topic to hashLookup
 nhisTopics
-	.map((t) => t.id)
-	.forEach((id) => {
-		hashLookup.push({
-			hash: id,
-			value: id,
-			groupOptions: nhisHash.groupOptions,
-			classificationOptions: nhisHash.classificationOptions,
-		});
-	});
-
-dhcsTopics
 	.map((t) => t.id)
 	.forEach((id) => {
 		hashLookup.push({

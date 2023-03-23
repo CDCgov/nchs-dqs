@@ -10,13 +10,11 @@ import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
 import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
-import { dhcsGroups } from "../components/landingPage/dhcs";
 
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
 		this.nhisData = null;
-		this.dhcsData = null;
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
@@ -105,7 +103,7 @@ export class LandingPage {
 		const dataId = id.split("dhcs-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 
-		const filteredToIndicator = this.dhcsData.filter((d) => d.measure === dataId);
+		const filteredToIndicator = this.nhisData.filter((d) => d.measure === dataId);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
 			returnData.push({
@@ -476,7 +474,6 @@ export class LandingPage {
 
 	// Pull all the available years, filtering by classification, unit, and group
 	getFilteredYearData() {
-		console.log("CURRENT GROUP ID", this.groupId);
 		const filteredData = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
@@ -562,9 +559,9 @@ export class LandingPage {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
-		} else if (this.config.socrataId.startsWith("dhcs") && !this.dhcsData) {
+		} else if (this.config.socrataId.startsWith("dhcs")) {
 			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
-				this.dhcsData = data;
+				this.nhisData = data;
 				this.getData(topicChange);
 			});
 		} else {
