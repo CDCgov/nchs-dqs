@@ -172,7 +172,7 @@ export const tabContent = `
 					<div id="mapDownloadTitle"></div>
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
 					<div id="us-map" class="general-chart"></div>
-					<div id="usMapLegendContainer">
+					<div class="usMapLegendContainer">
 						<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
 							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
 							<div style="display: inline-block; text-align: left;" tabindex="0">
@@ -186,16 +186,25 @@ export const tabContent = `
 					</div>
 				</div>
 				<br />
-				<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
+				<div tabindex="0" class="source-text unreliableNote">Some estimates are considered not reliable. <a class="viewFootnotes">See Notes</a> for more details.</div>
 			</div>
 		</div>
 		<!-- end map wrapper -->
 		<div id="chart-tab" aria-labelledby="ex-with-icons-tab-2">
 			<div class="content-wrapper">
-				<div id="chartSelectors"></div>
-				<div id="chart-container"></div>
+				<div id="chartSelectors"></div>				
+				<div id="chartContainer" class="row">
+					<div id="chart-container" class="col-10"></div>
+					<div id="chartLegend" class="col-2">
+						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+							<div id="chartLegendTitle" tabindex="0"></div>
+							<hr style="margin: 0 10px" />
+							<div id="chartLegendContent"></div>							
+						</div>
+					</div>
+				</div>
 				<br />
-				<div tabindex="0" class="source-text" id="source-text-chart"><b>Source</b>: Data are unavailable for selections chosen.</div>
+				<div tabindex="0" class="source-text unreliableNote">Some estimates are considered not reliable. <a class="viewFootnotes">See Notes</a> for more details.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
@@ -205,6 +214,7 @@ export const tabContent = `
 				<div id="tableResultsCount" style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
 				<div class="expanded-data-table"></div>
 				<br />
+				<div tabindex="0" class="source-text unreliableNote">Symbols (e.g. * and ---) are used as reliability indicators. <a class="viewFootnotes">See Notes</a> for more details.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
@@ -228,7 +238,7 @@ export const tabContent = `
 
 	<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px; margin-bottom: 15px">
 		<div role="button" aria-label="footnotes" class="table-toggle closed" id="footer-table-toggle" tabindex="0">
-			<h4 class="table-title">Footnotes</h4>
+			<h4 class="table-title">Notes</h4>
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-plus"></i></div>
 		</div>
 		<div id="pageFooter" class="data-table closed"></div>

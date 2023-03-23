@@ -36,6 +36,7 @@ export const getProps = (props) => {
 		usesTwoLineXAxisLabels: props.usesTwoLineXAxisLabels || false, // doubles the calculated margin-bottom; handle algorithm of how to split the label with genChart returned values; e.g. MIS-C "Patients by Race & Ethnicity" chart
 		usesDateCallout: props.usesDateCallout || false, // adds a dashed line and label to give info about a specific date in a date range chart
 		usesDomainCallout: props.usesDomainCallout || false, // adds a dashed line and label to give info about a specific domain y value in on the chart
+		usesReliabilityCallout: props.usesReliabilityCallout || false, // adds a callout below chart to explain reliability of data
 		/* ************************************************************************ */
 		/* Optional properties	with no consequence by leaving out of constructor   */
 		legendCoordinatePercents: props.legendCoordinatePercents, // e.g. [0.1, 0.2] translated top left of legend by x=10%, y=20% of svg's width/height (not the entire viz); can be negative
@@ -139,6 +140,7 @@ export const getProps = (props) => {
 // usesTwoLineXAxisLabels: true,
 // usesDateCallout: true,
 // usesDomainCallout: true,
+// usesReliabilityCallout: true,
 // legendCoordinatePercents: ,
 // leftLegendText: ,
 // left2LegendText: ,
