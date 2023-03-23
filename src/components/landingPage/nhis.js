@@ -629,7 +629,12 @@ export const nhisTopics = [
 		topicGroup: 3,
 	},
 	{ id: "disability-status-(composite)", text: "Disability status (composite)", topicGroup: 0 },
-	{ id: "doctor-visit", text: "Doctor visit among adults (NHIS)", indicator: "Doctor visit", topicGroup: 1 },
+	{
+		id: "doctor-visit",
+		text: "Doctor visit among adults (NHIS)",
+		indicator: "Doctor visit among adults",
+		topicGroup: 1,
+	},
 	{
 		id: "ever-received-a-pneumococcal-vaccination",
 		text: "Ever received a pneumococcal vaccination",
@@ -641,7 +646,7 @@ export const nhisTopics = [
 		indicator: "Exchange-based coverage coverage at time of interview",
 		topicGroup: 3,
 	},
-	{ id: "fair-or-Less-than-100%-FPL-health-status", text: "Fair or Less than 100% FPL health status", topicGroup: 1 },
+	// { id: "fair-or-Less-than-100%-FPL-health-status", text: "Fair or Less than 100% FPL health status", topicGroup: 1 },
 	{
 		id: "fair-or-poor-health-status",
 		text: "Fair or poor health status among adults",

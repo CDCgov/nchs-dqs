@@ -25,10 +25,12 @@ import { getProps } from "./chart/props";
 export class GenChart {
 	constructor(providedProps) {
 		this.props = getProps(providedProps);
+		this.subGroups = providedProps.subGroups;
 	}
 
 	render() {
 		const p = this.props;
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -37,8 +39,7 @@ export class GenChart {
 		}
 		let fullNestedData;
 
-		let allIncomingData = p.data.filter((d) => !Number.isNaN(d.estimate)); // this has to be used for the LEGENDS
-		// and for reliability, filter out any null data
+		let needReliabilityCallout = false;
 
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
@@ -159,21 +160,29 @@ export class GenChart {
 		// these 4 params keeps everything sized/positioned correctly regardless of screen resolution
 		const { fullSvgWidth, overallScale, svgHeightRatio, svgScale } = getGenSvgScale(p.vizId);
 
+		const symbolSize = fullSvgWidth / 6;
+		const symbols = [
+			d3.symbol().type(d3.symbolCircle).size(symbolSize),
+			d3.symbol().type(d3.symbolSquare).size(symbolSize),
+			d3.symbol().type(d3.symbolTriangle).size(symbolSize),
+			d3.symbol().type(d3.symbolDiamond).size(symbolSize),
+			d3.symbol().type(d3.symbolStar).size(symbolSize),
+			d3.symbol().type(d3.symbolCross).size(symbolSize),
+			d3.symbol().type(d3.symbolWye).size(symbolSize),
+		];
+
 		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
 		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
 		// this scaling often makes the title sizes too big on Mobile
-		if (appState.currentDeviceType === "mobile") {
-			if (axisTitleFontSize > 14) {
-				// knock it back down
-				axisTitleFontSize = 14;
-			}
-		}
+
+		if (axisTitleFontSize > 18) axisTitleFontSize = 18;
+		if (appState.currentDeviceType === "mobile" && axisTitleFontSize > 14) axisTitleFontSize = 14;
 
 		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
 		// this scaling makes the label sizes too big
-		if (axisLabelFontSize > 12) {
+		if (axisLabelFontSize > 16) {
 			// knock it back down
-			axisLabelFontSize = 12;
+			axisLabelFontSize = 16;
 		}
 
 		// loop through all y-axis tick labels to find the longest string
@@ -190,7 +199,7 @@ export class GenChart {
 		if (p.usesLeftAxisTitle) {
 			// with bigger font size - always split the left axis title
 			splitText = splitTitle(
-				$("#unit-num-select-chart :selected").text(),
+				$("#estimateTypeDropdown-select > a").text(),
 				fullSvgWidth * svgHeightRatio,
 				axisLabelFontSize
 			);
@@ -429,7 +438,7 @@ export class GenChart {
 			// xAxis
 			if (p.usesXAxisTitle) {
 				let splitBarTitle = [];
-				const title = p.barLayout.horizontal ? $("#unit-num-select-chart :selected").text() : p.bottomAxisTitle;
+				const title = p.barLayout.horizontal ? $("#estimateTypeDropdown-select > a").text() : p.bottomAxisTitle;
 
 				// split the title, based on title length vs space available
 				splitBarTitle = splitTitle(title, chartWidth, axisLabelFontSize);
@@ -584,13 +593,28 @@ export class GenChart {
 			let lineGroups = [];
 			let lineGroupPaths = [];
 			if (p.usesMultiLineLeftAxis) {
+				const hatchSize = 8; // 8px of color, 2px of whitespace, rotated 30 degrees, as defined below...
+				p.multiLineColors.forEach((c, i) => {
+					svg.append("defs")
+						.append("pattern")
+						.attr("id", `diagonalHatch-${i}`)
+						.attr("patternUnits", "userSpaceOnUse")
+						.attr("width", hatchSize * 0.8)
+						.attr("height", hatchSize)
+						.attr("patternTransform", "rotate(30)")
+						.append("rect")
+						.attr("width", hatchSize / 2)
+						.attr("height", hatchSize)
+						.attr("fill", c);
+				});
+
 				fullNestedData = d3
 					.nest()
 					.key((d) => d[p.multiLineLeftAxisKey])
-					.entries(allIncomingData);
+					.entries(p.data);
 
 				fullNestedData.forEach((nd, i) => {
-					lines[i] = d3.line().defined((d) => d.estimate !== null);
+					lines[i] = d3.line().defined((d) => d.estimate);
 					const lineGroup = svg
 						.append("g")
 						.attr("class", nd.key.replace(/[\W_]+/g, ""))
@@ -733,7 +757,10 @@ export class GenChart {
 											: (d) => chartHeight - yScaleLeft(d[p.chartProperties.yLeft1])
 									)
 									.attr("x", (d) => xScale(d[p.chartProperties.bars]))
-									.attr("fill", "black")
+									.attr("fill", (d, i) => {
+										const unreliable = d.flag && d.flag !== "N/A";
+										return unreliable ? `url(#diagonalHatch-${i})` : p.barColors[i];
+									})
 									.attr("opacity", "0");
 							},
 							(update) => {
@@ -756,6 +783,24 @@ export class GenChart {
 				}
 
 				if (p.usesBars) {
+					const barDataValues = p.data.map((d) => d.stub_label);
+					let lineIndex = 0;
+					this.subGroups.forEach((legendItem, i) => {
+						if (barDataValues.includes(legendItem)) {
+							d3.select(`#legendItem-${i}`)
+								.append("svg")
+								.attr("width", 24)
+								.attr("height", 12)
+								.append("rect")
+								.attr("width", 24)
+								.attr("height", 10)
+								.attr("transform", "translate(0, -1)")
+								.style("fill", p.barColors[lineIndex])
+								.style("opacity", 0.85);
+							lineIndex++;
+						}
+					});
+
 					bars.selectAll("rect")
 						.data(p.data)
 						.join(
@@ -767,11 +812,14 @@ export class GenChart {
 									.attr("width", hz ? (d) => xScale(d[p.chartProperties.bars]) : xScale.bandwidth())
 									.attr("fill", (d, i) => {
 										if (p.barColors) {
-											// save the color used
 											d.assignedLegendColor = p.barColors[i];
-											return d.flag && d.flag !== "N/A"
-												? `url(#diagonalHatch-${i})`
-												: p.barColors[i];
+											const unreliable = d.flag && d.flag !== "N/A";
+											if (unreliable) {
+												needReliabilityCallout = true;
+												$(".unreliableNote").show();
+												$(".unreliableFootnote").show();
+											}
+											return unreliable ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
 										if (
 											p.finalDataPointsDaysCount &&
@@ -847,7 +895,7 @@ export class GenChart {
 							.data(p.data)
 							.enter()
 							.append("text")
-							.text((d) => (d[p.chartProperties.bars] === null ? "No data available" : ""))
+							.text((d) => (!d[p.chartProperties.bars] ? "No data available" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
@@ -864,7 +912,7 @@ export class GenChart {
 							.data(p.data)
 							.enter()
 							.append("text")
-							.text((d) => (d[p.chartProperties.bars] === null ? "for current selections" : ""))
+							.text((d) => (!d[p.chartProperties.bars] ? "for current selections" : ""))
 							.attr("fill", "black")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
@@ -945,6 +993,24 @@ export class GenChart {
 				}
 
 				if (p.usesMultiLineLeftAxis) {
+					const nestedDataValues = nestedData.map((d) => d.key);
+					let lineIndex = 0;
+					this.subGroups.forEach((legendItem, i) => {
+						if (nestedDataValues.includes(legendItem)) {
+							d3.select(`#legendItem-${i}`)
+								.append("svg")
+								.attr("width", 24)
+								.attr("height", 24)
+								.append("path")
+								.attr("class", "symbolPoints")
+								.attr("transform", `translate(12, 12)`)
+								.style("fill", multiLineColors(lineIndex))
+								.attr("d", symbols[lineIndex])
+								.style("opacity", 0.85);
+							lineIndex++;
+						}
+					});
+
 					nestedData.forEach((nd, i) => {
 						lines[i]
 							.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
@@ -973,15 +1039,13 @@ export class GenChart {
 
 						lineGroupPaths[i].attr("d", lines[i](nd.values));
 						lineGroups[i]
-							.selectAll("ellipse")
+							.selectAll("p")
 							.data(nd.values, (d) => d[p.chartProperties.xAxis])
 							.join(
 								(enter) => {
 									enter
 										.append("ellipse") // adding hover over ellipses
-										.filter(function (d) {
-											return d.estimate;
-										})
+										.filter((d) => d.estimate)
 										.style("fill", multiLineColors(i))
 										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
 										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
@@ -989,27 +1053,24 @@ export class GenChart {
 										.attr("ry", d3.max([5, d3.min([offset, 15])]))
 										.style("opacity", 0); // this makes it invisible
 									enter
-										.append("ellipse") // add always visible "point" (TT)
-										// filter out the nulls at last possible moment (TT)
-										.filter(function (d) {
-											return d.estimate;
+										.append("path")
+										.attr("class", "symbolPoints")
+										.attr("d", symbols[i])
+										.attr("transform", (d) => {
+											return `translate(${
+												xScale(d[p.chartProperties.xAxis]) + offset
+											}, ${yScaleLeft(d[p.chartProperties.yLeft1])})`;
 										})
-										// change to a function and set based on the "flag"
-										.style("fill", function (d) {
-											if (d.flag === "*") {
-												return "white"; // creates circle that appears "empty" for "*" flag
+										.attr("stroke", (d) => (d.flag !== undefined ? multiLineColors(i) : "white"))
+										.style("fill", (d) => {
+											const unreliable = d.flag && d.flag !== "N/A";
+											if (unreliable) {
+												needReliabilityCallout = true;
+												$(".unreliableNote").show();
+												$(".unreliableFootnote").show();
 											}
-											return multiLineColors(i); // fills in the dot with line color
+											return unreliable ? `url(#diagonalHatch-${i})` : multiLineColors(i);
 										})
-										.style("stroke", function (d) {
-											if (d.flag !== undefined) {
-												return multiLineColors(i);
-											}
-										})
-										.attr("cx", (d) => xScale(d[p.chartProperties.xAxis]) + offset)
-										.attr("cy", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-										.attr("rx", d3.max([5, 1])) // 5 = point width in pixels
-										.attr("ry", d3.max([5, d3.min([offset, 1])]))
 										.style("opacity", 0.85);
 								},
 								(update) => {
@@ -1283,7 +1344,7 @@ export class GenChart {
 				d3.selectAll(`#${svgId} .y.axis.right .tick text`).attr("fill", p.rightAxisColor);
 
 				d3.selectAll(
-					`#${svgId} ellipse, #${svgId} ellipse, #${svgId} rect.bar, #${svgId} rect.hover-bar, #${svgId} rect.stacked-bar`
+					`#${svgId} .symbolPoints, #${svgId} ellipse, #${svgId} ellipse, #${svgId} rect.bar, #${svgId} rect.hover-bar, #${svgId} rect.stacked-bar`
 				)
 					.on("mouseover", mouseover)
 					.on("mousemove", mousemove)
@@ -1366,14 +1427,14 @@ export class GenChart {
 				});
 				legendData.reverse();
 			} else if (p.usesBars) {
-				allIncomingData = allIncomingData.map((d) => ({
+				p.data = p.data.map((d) => ({
 					...d,
 					assignedLegendColor: !d.estimate
 						? ""
 						: p.data.find((e) => e.stub_label === d.stub_label).assignedLegendColor,
 				}));
 
-				allIncomingData.forEach((d, i) => {
+				p.data.forEach((d, i) => {
 					legendData[i] = {
 						stroke: d.assignedLegendColor,
 						dashArrayScale: 0,
@@ -1411,192 +1472,74 @@ export class GenChart {
 					text: p.rightLegendText,
 				});
 			}
-
-			if (!legendData.length) return;
-			// to get the px size needed for the longest legend label and use that to evenly position legend items
-			// we add a temporary element, query size, and then remove it
-			const longestLegendTextLength = d3.max([...legendData].map((ld) => ld.text.length));
-			svg.append("g")
-				.attr("id", "longestLegendItem")
-				.append("text")
-				.attr("font-size", axisLabelFontSize)
-				.text(legendData.filter((l) => l.text.length === longestLegendTextLength)[0].text);
-			const longestLegendLabel = document.getElementById("longestLegendItem").getBoundingClientRect().width + 30; // 30 extra for checkbox
-			document.getElementById("longestLegendItem").remove();
-
-			let legendRow = 1;
-			let itemsOnRowIndex = 0;
-			let currentLegendRowLength = 0;
-			const unit = axisLabelFontSize;
-			const spacing = 5 * unit + longestLegendLabel;
-
-			const neededLegendsWidth = longestLegendLabel * legendData.length + spacing * (legendData.length - 1);
-			let legendDimensions = $("#xaxis")[0].getBoundingClientRect();
-
-			let legendTx = margin.left;
-			if (legendDimensions.width < neededLegendsWidth) {
-				legendDimensions = $("#chart-container-svg")[0].getBoundingClientRect();
-				legendTx = 0;
-			}
-
-			let legendTy = svgHeight;
-			if (legendData.length > 10) {
-				legendTy += 20;
-				if (svgWidth < 550) {
-					legendTy += 20;
-				}
-			}
-
-			legendData.forEach((d, i) => {
-				const legendId = d.text.replace(/ /g, "_");
-				const legendItem = svg
-					.append("g")
-					.attr("class", `${svgId}-legendItem`)
-					.attr("id", legendId)
-					.attr("transform", () => {
-						const tx = `translate(${itemsOnRowIndex * spacing + legendTx}, ${
-							legendTy + 1.1 * unit * legendRow
-						})`;
-						currentLegendRowLength += spacing;
-						itemsOnRowIndex++;
-						if (currentLegendRowLength + spacing > chartWidth + xMargin) {
-							legendRow++;
-							itemsOnRowIndex = 0;
-							currentLegendRowLength = 0;
-						}
-						return tx;
-					});
-
-				legendItem
-					.append("line")
-					.attr("x1", 0)
-					.attr("y1", 0)
-					.attr("x2", 2 * unit)
-					.attr("y2", 0)
-					.attr("stroke", d.stroke)
-					.attr("stroke-width", unit / 5)
-					.attr("stroke-dasharray", d.dashArrayScale)
-					.attr("cursor", "default");
-
-				// now draw the legend item text last
-				legendItem
-					.append("g")
-					.append("text")
-					.attr("class", "legendText")
-					.attr("x", 2.5 * unit)
-					.attr("y", unit * 0.4)
-					.text(d.text)
-					.attr("font-size", axisLabelFontSize)
-					.attr("cursor", "default");
-			});
-
-			// get all legend items and find the longest then set each legend container's size to match
-			const legendElements = $(`.${svgId}-legendItem`);
-			const rightmostLegendEdge = d3.max([...legendElements].map((el) => el.getBoundingClientRect().right));
-			const legendRight = legendDimensions.right;
-			const maxAllowedLegendRight = legendDimensions.left + 0.98 * legendDimensions.width;
-			const minAllowedLegendLeft = legendDimensions.left + 0.02 * legendDimensions.width;
-
-			let offSetCorrection =
-				rightmostLegendEdge <= maxAllowedLegendRight
-					? (legendRight - rightmostLegendEdge) / 2
-					: legendDimensions.width * 0.02;
-
-			const updateLegendItemPosition = (offSetCorrection, drag = false) => {
-				if (drag) {
-					if (
-						(offSetCorrection > 0 &&
-							$(`.${svgId}-legendItem`)
-								.toArray()
-								.some((d) => d.getBoundingClientRect().left >= minAllowedLegendLeft - 1)) ||
-						(offSetCorrection < 0 &&
-							$(`.${svgId}-legendItem`)
-								.toArray()
-								.every((d) => d.getBoundingClientRect().right <= maxAllowedLegendRight + 1))
-					)
-						return;
-				}
-
-				$(`.${svgId}-legendItem`).each(function () {
-					const [x, y] = $(this)[0]
-						.getAttribute("transform")
-						.replace("translate(", "")
-						.replace(")", "")
-						.split(",");
-
-					$(this)[0].setAttribute(
-						"transform",
-						`translate(${parseInt(x, 10) + offSetCorrection}, ${parseInt(y, 10)})`
-					);
-				});
-			};
-			updateLegendItemPosition(offSetCorrection);
-
-			if (rightmostLegendEdge > maxAllowedLegendRight) {
-				let legendMoveStart;
-				$(`.${svgId}-legendItem`).draggable({
-					start: (e) => {
-						legendMoveStart = e.clientX;
-					},
-					drag: (e) => {
-						const moveDifference = e.clientX - legendMoveStart;
-						updateLegendItemPosition(moveDifference, true);
-						legendMoveStart = e.clientX;
-					},
-				});
-
-				d3.selectAll(`.${svgId}-legendItem`)
-					.on("touchstart", () => {
-						legendMoveStart = d3.event.touches[0].clientX;
-					})
-					.on("touchmove", () => {
-						const moveDifference = d3.event.touches[0].clientX - legendMoveStart;
-						updateLegendItemPosition(moveDifference, true);
-						legendMoveStart = d3.event.touches[0].clientX;
-					});
-
-				d3.selectAll(`.${svgId}-legendItem text.legendText`).attr("cursor", "all-scroll");
-			}
-
-			let legendHeight = (legendRow + 1) * axisLabelFontSize * 1.1;
-			let centerX = chartCenterX;
-			if (svgWidth < 700) centerX -= margin.left / 2;
-			if (legendData.length > 10) {
-				let text = "Chart allows up to 10 selections.";
-				if (svgWidth >= 550) text += " Deselect default options to change the chart.";
-				else legendTy -= 20;
-
-				svg.append("g")
-					.attr("transform", `translate(0, ${legendTy})`)
-					.append("text")
-					.attr("id", "selectTenTxt")
-					.attr("x", centerX)
-					.attr("y", -6)
-					.attr("data-html2canvas-ignore", "")
-					.attr("text-anchor", "middle")
-					.style("fill", "black")
-					.style("font-size", "14px")
-					.text(text);
-
-				legendHeight += 20;
-				if (svgWidth < 550) {
-					legendHeight += 20;
-					svg.append("g")
-						.attr("transform", `translate(0, ${legendTy + 20})`)
-						.append("text")
-						.attr("id", "selectTenTxt")
-						.attr("x", centerX)
-						.attr("y", -6)
-						.attr("data-html2canvas-ignore", "")
-						.attr("text-anchor", "middle")
-						.style("fill", "black")
-						.style("font-size", "14px")
-						.text("Deselect default options to change the chart.");
-				}
-			}
-
-			svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
 		}
+		let legendHeight = 0;
+		if (p.usesReliabilityCallout && needReliabilityCallout) {
+			const chartContainerWidth = $("#chartContainer").width();
+			const callOutWidth = chartContainerWidth / 3;
+			const callOutHeight = 4 * axisTitleFontSize;
+			const labelSize = 0.89 * axisTitleFontSize;
+
+			const callOutGroup = svg
+				.append("g")
+				.attr("transform", `translate(${chartContainerWidth / 2}, ${svgHeight})`);
+
+			callOutGroup
+				.append("rect")
+				.attr("x", -callOutWidth / 2)
+				.attr("width", callOutWidth)
+				.attr("height", callOutHeight)
+				.attr("fill", "none")
+				.attr("stroke", "black");
+
+			legendHeight += callOutHeight + 20;
+
+			callOutGroup
+				.append("text")
+				.attr("transform", `translate(0, ${1.5 * labelSize})`)
+				.attr("text-anchor", "middle")
+				.attr("font-size", axisTitleFontSize)
+				.attr("font-weight", "bold")
+				.text("Reliability");
+
+			const reliabilityInfo = callOutGroup
+				.append("g")
+				.attr("transform", `translate(0, ${2.5 * labelSize})`)
+				.attr("text-anchor", "middle");
+
+			const reliabilityInfoRectWidth = callOutWidth / 5;
+			reliabilityInfo
+				.append("rect")
+				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
+				.attr("width", reliabilityInfoRectWidth)
+				.attr("height", labelSize)
+				.attr("fill", "black");
+
+			reliabilityInfo
+				.append("text")
+				.attr(
+					"transform",
+					`translate(${-callOutWidth / 2 + 25 + reliabilityInfoRectWidth}, ${0.8 * labelSize})`
+				)
+				.attr("text-anchor", "start")
+				.attr("font-size", labelSize)
+				.text("Reliable");
+
+			reliabilityInfo
+				.append("rect")
+				.attr("transform", `translate(20, 0)`)
+				.attr("width", reliabilityInfoRectWidth)
+				.attr("height", labelSize)
+				.attr("fill", "url(#diagonalHatch-7)");
+
+			reliabilityInfo
+				.append("text")
+				.attr("transform", `translate(${reliabilityInfoRectWidth + 25}, ${0.8 * labelSize})`)
+				.attr("text-anchor", "start")
+				.attr("font-size", labelSize)
+				.text("Not Reliable");
+		}
+		svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
 
 		return {
 			data: p.data,

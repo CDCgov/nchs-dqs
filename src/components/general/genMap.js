@@ -181,13 +181,13 @@ export class GenMap {
 			genTooltip.mouseout(d3.select(this));
 		}
 
-		const bgColors = ["#ffffff", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
+		const bgColors = ["#e0e0e0", "#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
 
 		function getColor(bin) {
 			const binColor = bgColors[bin]; // this IS based on position of the bin to the color
 			if (DataCache.mapLegendColors.indexOf(binColor) !== -1)
 				return { bgColor: binColor, checkboxColor: binColor }; // COLOR FOUND !!
-			return { bgColor: binColor, checkboxColor: "#ffffff" }; // COLOR NOT FOUND - so NOT ACTIVE
+			return { bgColor: binColor, checkboxColor: "#e0e0e0" }; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		function getColorFromDProps(d) {
@@ -197,10 +197,10 @@ export class GenMap {
 
 			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
 			if (crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
+			if (flag === "*" && estimate && index > -1) return binColor;
+			if (flag === "N/A" && !estimate) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
-			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
+			return "#e0e0e0"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// the territories don't have Properties off the d object - so just duplicated function and removed the properties
@@ -210,11 +210,11 @@ export class GenMap {
 
 			const index = DataCache.mapLegendColors.indexOf(binColor);
 			if (flag === "- - -") return DataCache.noDataColorHexVal; // ignore bin set to light gray
-			if ((flag === "*" && estimate === null) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
-			if (flag === "*" && estimate !== null && index > -1) return binColor;
-			if (flag === "N/A" && estimate === null) return DataCache.noDataColorHexVal; // no data record found
+			if ((flag === "*" && !estimate) || d.crosshatch) return "url(#crossHatch)"; // ignore bin set to dark gray
+			if (flag === "*" && estimate && index > -1) return binColor;
+			if (flag === "N/A" && !estimate) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
-			return "#ffffff"; // COLOR NOT FOUND - so NOT ACTIVE
+			return "#e0e0e0"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
@@ -233,14 +233,27 @@ export class GenMap {
 		svg.append("defs")
 			.append("pattern")
 			.attr("id", "crossHatch")
-			.attr("width", 8)
-			.attr("height", 8)
+			.attr("width", 12)
+			.attr("height", 12)
 			.attr("patternUnits", "userSpaceOnUse")
 			.attr("patternTransform", "rotate(45)")
 			.append("rect")
-			.attr("width", 2) // sets the thickness of the crosshatching
-			.attr("height", 8)
-			.attr("fill", "#bbb")
+			.attr("width", 4) // sets the thickness of the crosshatching
+			.attr("height", 12)
+			.attr("fill", "#fff")
+			.attr("transform", "translate(0,0)");
+
+		svg.append("defs")
+			.append("pattern")
+			.attr("id", "blackCrossHatch")
+			.attr("width", 12)
+			.attr("height", 12)
+			.attr("patternUnits", "userSpaceOnUse")
+			.attr("patternTransform", "rotate(45)")
+			.append("rect")
+			.attr("width", 4) // sets the thickness of the crosshatching
+			.attr("height", 12)
+			.attr("fill", "#000")
 			.attr("transform", "translate(0,0)");
 
 		// join the data of STATES with the incoming data topic data
@@ -272,6 +285,8 @@ export class GenMap {
 			}
 
 			if (theFlag === "*") {
+				$(".unreliableNote").show();
+				$(".unreliableFootnote").show();
 				geometries.push({
 					arcs: g.arcs,
 					type: g.type,
@@ -294,7 +309,6 @@ export class GenMap {
 		const path = d3.geoPath().projection(projection);
 
 		svg.attr("viewBox", [0, 0, width, svgHeight]);
-		// svg.attr("viewBox", [0, 0, width, svgHeight]).attr("preserveAspectRatio", "xMinYMin meet");
 
 		svg.append("g")
 			.attr("id", "states")
@@ -413,6 +427,77 @@ export class GenMap {
 
 		genTooltip.render();
 
+		let legendHeight = 0;
+		// if (needReliabilityCallout) {
+		if (true) {
+			const chartContainerWidth = $("#us-map").width();
+			const callOutWidth = chartContainerWidth / 2;
+			const headerFontSize = 18;
+			const callOutHeight = 4 * headerFontSize;
+			const labelSize = 0.89 * headerFontSize;
+
+			const callOutGroup = svg
+				.append("g")
+				.attr("transform", `translate(${chartContainerWidth / 2}, ${svgHeight})`);
+
+			callOutGroup
+				.append("rect")
+				.attr("x", -callOutWidth / 2)
+				.attr("width", callOutWidth)
+				.attr("height", callOutHeight)
+				.attr("fill", "none")
+				.attr("stroke", "black");
+
+			legendHeight += callOutHeight + 20;
+
+			callOutGroup
+				.append("text")
+				.attr("transform", `translate(0, ${1.5 * labelSize})`)
+				.attr("text-anchor", "middle")
+				.attr("font-size", headerFontSize)
+				.attr("font-weight", "bold")
+				.text("Reliability");
+
+			const reliabilityInfo = callOutGroup
+				.append("g")
+				.attr("transform", `translate(0, ${2.5 * labelSize})`)
+				.attr("text-anchor", "middle");
+
+			const reliabilityInfoRectWidth = callOutWidth / 5;
+			reliabilityInfo
+				.append("rect")
+				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
+				.attr("width", reliabilityInfoRectWidth)
+				.attr("height", labelSize)
+				.attr("fill", "black");
+
+			reliabilityInfo
+				.append("text")
+				.attr(
+					"transform",
+					`translate(${-callOutWidth / 2 + 25 + reliabilityInfoRectWidth}, ${0.8 * labelSize})`
+				)
+				.attr("text-anchor", "start")
+				.attr("font-size", labelSize)
+				.text("Reliable");
+
+			reliabilityInfo
+				.append("rect")
+				.attr("transform", `translate(20, 0)`)
+				.attr("width", reliabilityInfoRectWidth)
+				.attr("height", labelSize)
+				.attr("fill", "url(#blackCrossHatch)");
+
+			reliabilityInfo
+				.append("text")
+				.attr("transform", `translate(${reliabilityInfoRectWidth + 25}, ${0.8 * labelSize})`)
+				.attr("text-anchor", "start")
+				.attr("font-size", labelSize)
+				.text("Not Reliable");
+		}
+
+		svg.attr("viewBox", [0, 0, width, svgHeight + legendHeight]);
+
 		loadMapLegend();
 		addEventListeners(); // detect clicks
 
@@ -440,9 +525,9 @@ export class GenMap {
 				$(e.target).removeClass("checked").removeAttr("checked").attr("style", "background-color: transparent");
 			else $(e.target).addClass("checked").attr("checked", true).attr("style", `background-color: ${color}`);
 
-			if (color === "#e0e0e0") {
-				if (checked) DataCache.noDataColorHexVal = "#ffffff";
-				else DataCache.noDataColorHexVal = "#e0e0e0";
+			if (color === "#fff") {
+				if (checked) DataCache.noDataColorHexVal = "#e0e0e0";
+				else DataCache.noDataColorHexVal = "#fff";
 			}
 
 			// Add or Remove that color to/from the Active list of colors
@@ -481,7 +566,7 @@ export class GenMap {
 
 			// No Data Box is First
 			legendItemObj = {
-				bgColor: "#e0e0e0",
+				bgColor: "#fff",
 				checkboxColor: DataCache.noDataColorHexVal,
 				DisplayLabel: "No Data",
 				ItemValue: mNoDataFlagID.toString(), // 12Apr2021 DIAB-13
@@ -520,11 +605,11 @@ export class GenMap {
 						<div class="row">							
 							<div class="col-3 col-offset-1">
 								<div id=${legendId}
-									 class="squareCheckbox ${leg.checkboxColor !== "#ffffff" ? "checked" : ""}"
+									 class="squareCheckbox ${leg.checkboxColor !== "#e0e0e0" ? "checked" : ""}"
 									 data-color=${leg.bgColor}
 									 tabindex="0"
 									 role="checkbox"
-									  ${leg.checkboxColor !== "#ffffff" ? "checked" : ""}									 
+									  ${leg.checkboxColor !== "#e0e0e0" ? "checked" : ""}									 
 									 style="background-color: ${leg.checkboxColor};">&nbsp;
 								</div>
 							</div>
