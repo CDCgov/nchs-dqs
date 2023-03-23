@@ -474,7 +474,7 @@ export class LandingPage {
 			FN: "Footnotes",
 			NT: "Methodology",
 			NA: "Reliability",
-			NH: "NHIS00",
+			NH: "Footnotes",
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
