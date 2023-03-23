@@ -474,9 +474,10 @@ export class LandingPage {
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		const replaceLabel = {
 			SC: "Data Source",
-			FN: "Footnote",
+			FN: "Footnotes",
 			NT: "Methodology",
 			NA: "Reliability",
+			NH: "NHIS00",
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
