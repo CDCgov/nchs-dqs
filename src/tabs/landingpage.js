@@ -105,42 +105,28 @@ export class LandingPage {
 		const dataId = id.split("dhcs-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 
-		// const groupedData = this.dhcsData.reduce((prev, curr) => {
-		// 	prev[`${curr.measuretype_id}_${curr.subgroup}`] = {
-		// 		group: curr.groupby,
-		// 		classification: curr.measure_type
-		// 	}
-
-		// 	return prev;
-		// }, {});
-
-		// console.log("GROUPED DATA", JSON.stringify(groupedData, null, 4));
-
 		const filteredToIndicator = this.dhcsData.filter((d) => d.measure === dataId);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = dhcsGroups[`${f.measuretype_id}_${f.subgroup}`];
-			if (group) {
-				returnData.push({
-					estimate: f.estimate,
-					estimate_lci: f.lower_95_ci,
-					estimate_uci: f.upper_95_ci,
-					flag: null,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: group.classification,
-					panel_num: f.measuretype_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.groupby,
-					stub_name_num: f.groupby_id,
-					unit: f.estimate_type,
-					unit_num: f.estimatetype_id,
-					year: f.year,
-					year_num: "",
-					age: group.group.includes("By age") ? f.group : "N/A",
-				});
-			}
+			returnData.push({
+				estimate: f.estimate,
+				estimate_lci: f.lower_95_ci,
+				estimate_uci: f.upper_95_ci,
+				flag: null,
+				footnote_id_list: f.footnote_id,
+				indicator: f.measure,
+				panel: f.measure_type,
+				panel_num: f.measuretype_id,
+				se: null,
+				stub_label: f.subgroup,
+				stub_name: f.groupby,
+				stub_name_num: f.groupby_id,
+				unit: f.estimate_type,
+				unit_num: f.estimatetype_id,
+				year: f.year,
+				year_num: "",
+				age: f.groupby.includes("By age") ? f.group : "N/A",
+			});
 		});
 
 		DataCache[`data-${dataId}`] = returnData;
