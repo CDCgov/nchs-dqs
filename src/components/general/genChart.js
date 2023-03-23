@@ -1061,7 +1061,11 @@ export class GenChart {
 												xScale(d[p.chartProperties.xAxis]) + offset
 											}, ${yScaleLeft(d[p.chartProperties.yLeft1])})`;
 										})
-										.attr("stroke", (d) => (d.flag !== undefined ? multiLineColors(i) : "white"))
+										.attr("stroke", (d) =>
+											d.flag !== undefined && d[p.chartProperties.yLeft1]
+												? multiLineColors(i)
+												: "white"
+										)
 										.style("fill", (d) => {
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
@@ -1069,7 +1073,13 @@ export class GenChart {
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
-											return unreliable ? `url(#diagonalHatch-${i})` : multiLineColors(i);
+											const hasValue = d[p.chartProperties.yLeft1];
+											console.log(hasValue);
+											return !hasValue
+												? "white"
+												: unreliable
+												? `url(#diagonalHatch-${i})`
+												: multiLineColors(i);
 										})
 										.style("opacity", 0.85);
 								},
