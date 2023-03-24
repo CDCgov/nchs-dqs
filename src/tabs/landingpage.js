@@ -55,21 +55,42 @@ export class LandingPage {
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (id) => {
+		console.log("getNhisData: " + id);
+		console.log("this.nhisData: ", this.nhisData);
 		let dataId = id.split("nhis-")[1];
+		let prefix = id.split("nhis-")[0];
+		if (!dataId) {
+			prefix = id.split("cshs-")[0];
+			dataId = id.split("cshs-")[1];
+		}
+		console.log("dataId: ", dataId);
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		console.log("filteredToIndicator: ", filteredToIndicator);
 		if (filteredToIndicator.length === 0) {
-			dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
+			dataId = nhisTopics.find((t) => t.text === id.split(`${prefix}-`)[1])?.indicator;
 			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.subgroup];
+			// let group = nhisGroups[f.subgroup];
+			// console.log('f: ', f);
+			let group = nhisGroups[f.group || f.subgroup];
+
+			// console.log('group: ', group);
 			if (group instanceof Map) {
 				group = group.get(f.group_byid);
 			}
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				const percent =
+					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
+						? f.percentage
+						: null;
+				// console.log("ci[0]: ", ci[0])
+				// console.log("ci[1]: ", ci[1])
+				// stub_label: f.subgroup,
+
 				returnData.push({
 					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
@@ -80,7 +101,7 @@ export class LandingPage {
 					panel: group.classification,
 					panel_num: group.classificationId,
 					se: null,
-					stub_label: f.subgroup,
+					stub_label: f.group || f.subgroup,
 					stub_name: group.group,
 					stub_name_num: group.groupId,
 					unit: "Percent of population",
@@ -97,6 +118,8 @@ export class LandingPage {
 	};
 
 	getSelectedSocrataData = async (config) => {
+		console.log({ config });
+		console.log("SOCRATA get topic", config.socrataId);
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
 
@@ -104,9 +127,10 @@ export class LandingPage {
 			return this.getNhisData(config.socrataId);
 		}
 
+		if (config.socrataId.startsWith("cshs")) {
+			return this.getNhisData(config.socrataId);
+		}
 		try {
-			console.log("SOCRATA get topic", config.socrataId);
-
 			let [metaData, jsonData] = [];
 			let metaUrl, dataUrl;
 
@@ -115,8 +139,8 @@ export class LandingPage {
 				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+				metaUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
+				dataUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -125,8 +149,9 @@ export class LandingPage {
 			]);
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
+			console.log("columns: ", columns);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-
+			console.log("nchsData: ", nchsData);
 			DataCache[`data-${config.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
@@ -531,6 +556,7 @@ export class LandingPage {
 
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
+		console.log("updateTopic this.config: ", this.config);
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
@@ -549,12 +575,18 @@ export class LandingPage {
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 
-		if (this.config.socrataId.startsWith("nhis") && !this.nhisData) {
+		if (this.config.socrataId.startsWith("nhis")) {
 			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
+		} else if (this.config.socrataId.startsWith("cshs")) {
+			this.getSelectedSocrataData(config.topicLookup.cshs).then((data) => {
+				this.nhisData = data;
+				this.getData(topicChange);
+			});
 		} else {
+			console.log("log topicChange: ", topicChange);
 			this.getData(topicChange);
 		}
 	}
@@ -611,6 +643,7 @@ export class LandingPage {
 					this.showBarChart = true;
 				}
 				this.setAllSelectDropdowns(); // includes time periods
+				// console.log('then 1')
 
 				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
@@ -660,6 +693,7 @@ export class LandingPage {
 			} else this.dataTopic = this.selections.topic;
 		}
 
+		// filter & map topic entries that have a 'chartTitle' property for the 'Topic' dropdown
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
 			const title = k[1].chartTitle;
@@ -670,7 +704,7 @@ export class LandingPage {
 					topicGroup: k[1].topicGroup,
 				});
 		});
-
+		console.log("topics options: ", options);
 		this.topicDropdown = new TopicDropdown({
 			containerId: "topicDropdown",
 			ariaLabel: "select a topic",
@@ -690,13 +724,14 @@ export class LandingPage {
 
 	// Classification
 	initClassificationDropdown() {
+		console.log("socrataData: ", this.socrataData);
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
 		// now sort them in id order
 		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
-
+		console.log("classification allTopics: ", allTopics);
 		const options = allTopics.map((d) => ({
 			text: d.panel,
 			value: d.panel_num,
@@ -708,6 +743,7 @@ export class LandingPage {
 			options,
 			selectedValue: this.selections?.classification,
 		});
+		console.log("classification options: ", options);
 		this.classificationDropdown.render();
 		this.config.classificationId = this.classificationDropdown.value();
 

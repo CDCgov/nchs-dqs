@@ -258,7 +258,10 @@ export const topicLookup = {
 		socrataId: "4u68-shzr",
 		private: "1",
 	},
-
+	cshs: {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -385,12 +388,24 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
+	"child-summary": {
+		dataUrl: "https://data.cdc.gov/resource/rkv8-xf9z.json",
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		chartTitle: "NHIS Children Summary Statistics",
+		filters: "",
+		yAxisUnitId: 1,
+		hasCI: true,
+		hasClassification: true,
+		topicGroup: 18,
+	},
 };
 
+// load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `nhis-${t.text}`,
+		socrataId: `${t.prefix || `nhis`}-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
