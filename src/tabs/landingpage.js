@@ -4,6 +4,7 @@ import { GenChart } from "../components/general/genChart";
 import { GenMap } from "../components/general/genMap";
 import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
+import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
 import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
@@ -63,34 +64,30 @@ export class LandingPage {
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.group];
+			let group = nhisGroups[f.subgroup];
 			if (group instanceof Map) {
 				group = group.get(f.group_byid);
 			}
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				const percent =
-					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
-						? f.percentage
-						: null;
 				returnData.push({
-					estimate: percent,
+					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.outcome_or_indicator,
 					panel: group.classification,
 					panel_num: group.classificationId,
 					se: null,
-					stub_label: f.group,
+					stub_label: f.subgroup,
 					stub_name: group.group,
 					stub_name_num: group.groupId,
 					unit: "Percent of population",
 					unit_num: 1,
 					year: f.year,
 					year_num: "",
-					age: group.group.includes("Age Group") ? f.group : "N/A",
+					age: group.group.includes("Age Group") ? f.subgroup : "N/A",
 				});
 			}
 		});
@@ -183,7 +180,7 @@ export class LandingPage {
 		this.events = new MainEvents(this.animationInterval);
 		this.events.registerEvents(); // add any click events inside here
 		DataCache.mapLegendColors = ["#a1dab4", "#41b6c4", "#2c7fb8", "#253494"];
-		DataCache.noDataColorHexVal = "#e0e0e0";
+		DataCache.noDataColorHexVal = "#fff";
 
 		functions.addHtmlTooltips();
 
@@ -310,6 +307,7 @@ export class LandingPage {
 		}
 
 		this.flattenedFilteredData = stateData;
+		this.updateFootnotes(stateData);
 
 		const mapVizId = "us-map";
 		let map = new GenMap({
@@ -336,10 +334,23 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").hide();
 		}
 
+		const subgroupValues = this.subgroupDropdown.getSelectedOptionValues();
+		$("#chartLegendContent").empty();
+
+		subgroupValues.forEach((g, i) => {
+			$("#chartLegendContent").append(`
+				<div class="legendItems" style="display: flex; flex-direction: row; align-items: center; padding: 5px;">
+					<div id="legendItem-${i}" style="width: 15%"></div>
+					<div id="legendText-${i}" class="legendText" style="width: 85%; text-align: left;">${g}</div>
+				</div>
+				`);
+		});
+
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		this.updateFootnotes(chartData);
 
 		this.chartConfig = functions.getAllChartProps(
 			chartData,
@@ -348,6 +359,7 @@ export class LandingPage {
 			this.groupDropdown.text()
 		);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
+		this.chartConfig.subGroups = subgroupValues;
 
 		$(`#${this.chartConfig.vizId}`).empty();
 		this.genChart = new GenChart(this.chartConfig);
@@ -362,9 +374,13 @@ export class LandingPage {
 
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chartLegendTitle").html(group);
 	}
 
 	renderDataVisualizations = () => {
+		$(".unreliableNote").hide();
+		$(".unreliableFootnote").hide();
+
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
@@ -451,17 +467,6 @@ export class LandingPage {
 			}));
 		}
 
-		const allFootnoteIdsArray = [
-			...new Set(
-				data
-					.map((d) => d.footnote_id_list)
-					.join(",")
-					.split(",")
-			),
-		];
-
-		this.updateFootnotes(allFootnoteIdsArray, this.dataTopic);
-
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
 			return [...data].map((d) => ({
@@ -483,33 +488,59 @@ export class LandingPage {
 			: filteredData;
 	}
 
-	updateFootnotes(footnotesIdArray) {
-		const sourceTextNotes = [...footnotesIdArray].filter((d) => d.toString().startsWith("SC"));
-		let sourceText = "";
-		if (sourceTextNotes.length) {
-			sourceText = sourceTextNotes
-				.map((d) => `<div></div><b>Source</b>: ${d}: ${functions.linkify(this.footnoteMap[d])}</div>`)
-				.join("");
-		}
-		$("#source-text-map").html(sourceText);
-		$("#source-text-chart").html(sourceText);
+	updateFootnotes(data) {
+		const allFootnoteIdsArray = [
+			...new Set(
+				data
+					.map((d) => d.footnote_id_list)
+					.join(",")
+					.split(",")
+			),
+		];
 
 		// now update the footnotes on the page
 		let footerNotes = "";
-		let footerNotesArray = [...footnotesIdArray].filter((d) => d.substring(0, 2) !== "SC");
+		let footerNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) !== "NA");
+		let unreliableNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) === "NA");
 		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
+		const replaceLabel = {
+			SC: "Data Source",
+			FN: "Footnotes",
+			NT: "Methodology",
+			NA: "Reliability",
+			NH: "Footnotes",
+		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
-				.filter((f) => this.footnoteMap[f])
-				.map((f) => `<p class='footnote-text'>${f}: ${functions.linkify(this.footnoteMap[f])}</p>`)
+				.map(
+					(f) =>
+						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
+							this.footnoteMap[f]
+						)}</p>`
+				)
 				.join("");
+
+			const unreliableNotes =
+				unreliableNotesArray?.length === 0
+					? ""
+					: unreliableNotesArray
+							.map(
+								(f) =>
+									`<p class="unreliableFootnote"><strong>${
+										replaceLabel[f.substring(0, 2)]
+									}</strong>: ${functions.link_i_fy(this.footnoteMap[f])}</p>`
+							)
+							.join("");
+
+			footerNotes = unreliableNotes + footerNotes;
 			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 		} else {
 			$("#pageFooterTable").hide();
 		}
 		$("#pageFooter").html(footerNotes);
+		$(".unreliableFootnote").hide();
 	}
 
 	topicDropdownChange = (value) => {
@@ -976,16 +1007,40 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
+		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
+
+		if (this.config.hasCI) {
+			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
+			keys.push("estimate_lci", "estimate_uci");
+		}
+
+		cols.push("Flag");
+		keys.push("flag");
+
+		this.csv = {
+			data: tableData,
+			dataKeys: keys,
+			title: this.config.chartTitle,
+			headers: cols,
+		};
+
 		if (!$("#showAllSubgroupsSlider").is(":checked")) {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
 		}
+		this.updateFootnotes(tableData);
 
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
+
+		if (tableData.some((d) => d.flag === "*" || d.flag === "---")) {
+			$(".unreliableNote").show();
+			$(".unreliableFootnote").show();
+		}
 
 		tableData = tableData.map((d) => ({
 			year: d.year,
@@ -1054,7 +1109,7 @@ export class LandingPage {
 			<tr>
 				<th tabindex="0">${d}</th>
 				${columns.map((c) => {
-					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "";
+					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "---";
 					return `<td tabindex="0">${value.includes("NaN") ? value.replaceAll("NaN", "") : value}</td>`;
 				})}</tr>`;
 			$(body).append(row);
@@ -1157,6 +1212,9 @@ export class LandingPage {
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
-		// $(".buttons-csv.buttons-html5").html("");
+	}
+
+	exportCSV() {
+		downloadCSV(this.csv);
 	}
 }

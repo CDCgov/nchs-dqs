@@ -141,12 +141,17 @@ export class TopicDropdown {
 	//			 (1) trigger the change event(default, just pass .value([some value]) or
 	//			 (2) only update what is shown in the dropdown, pass .value([some value], false)
 	value = (value, triggerChange = true) => {
-		if (!value && value !== "") return $(this.selectedOption).data("val");
+		if (!value && value !== "") {
+			return $(this.selectedOption).data("val");
+		}
+
 		$(this.selectedOption).removeClass("genOptionSelected");
 		const newSelection = $(`${this.listItems}[data-val="${value}"]`);
 		$(newSelection).addClass("genOptionSelected");
-		if (triggerChange) this.#handleSelectionMade(false);
-		else {
+
+		if (triggerChange) {
+			this.#handleSelectionMade(false);
+		} else {
 			const newText = $(newSelection).html()?.trim();
 			$(`#${this.props.containerId} .genDropdownSelected`).html(newText);
 		}
@@ -171,20 +176,28 @@ export class TopicDropdown {
 		if (this.props.firstOptObj) {
 			if (this.props.selectedValue === this.props.firstOptObj.returnValue) {
 				this.#hideFirst();
-			} else this.#showFirst();
+			} else {
+				this.#showFirst();
+			}
 		}
 
 		// EVENT HANDLERS
 		$(document)
 			.off("click keydown", `#${this.props.containerId}-select`)
 			.on("click", `#${this.props.containerId}-select`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
+
 				e.stopPropagation();
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
 				);
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened"); // close subgroup dropdown
-				if (e.currentTarget.id !== "genDropdownSearch") this.#toggleOpenClose();
+
+				if (e.currentTarget.id !== "genDropdownSearch") {
+					this.#toggleOpenClose();
+				}
 			})
 			.on("keydown", `#${this.props.containerId}-select`, (e) => {
 				const { key } = e;
@@ -198,7 +211,10 @@ export class TopicDropdown {
 			.off("keydown", `#${this.props.containerId}`)
 			.on("keydown", `#${this.props.containerId}`, (e) => {
 				const targetId = e.target.id;
-				if (this.disabled || targetId === "refineTopicList") return;
+				if (this.disabled || targetId === "refineTopicList") {
+					return;
+				}
+
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (!open && (key === "Enter" || key === " ")) {
@@ -212,7 +228,9 @@ export class TopicDropdown {
 					if (this.searchText.length) {
 						this.searchText = "";
 						this.#resetOptions();
-					} else if (open) this.#toggleOpenClose();
+					} else if (open) {
+						this.#toggleOpenClose();
+					}
 				} else if (key === "ArrowDown" || key === "ArrowUp") {
 					e.preventDefault();
 					const currentSelected = $(this.selectedOption);
@@ -233,23 +251,28 @@ export class TopicDropdown {
 					if (key === "ArrowUp" && previous.length) {
 						$(currentSelected).removeClass("genOptionSelected");
 						$(previous).addClass("genOptionSelected");
-						if (!open) this.#handleSelectionMade(false);
-						else {
+						if (!open) {
+							this.#handleSelectionMade(false);
+						} else {
 							const { top } = $(previous)[0].getBoundingClientRect();
 							const scrollTop = $(dropdown).scrollTop();
-							if (top < dropdownDims.top)
+							if (top < dropdownDims.top) {
 								$(dropdown).scrollTop(scrollTop - dropdownDims.bottom + top + 40);
-							$(previous).focus();
+							}
+							$(previous).trigger("focus");
 						}
 					} else if (key === "ArrowDown" && next.length) {
 						$(currentSelected).removeClass("genOptionSelected");
 						$(next).addClass("genOptionSelected");
-						if (!open) this.#handleSelectionMade(false);
-						else {
+
+						if (!open) {
+							this.#handleSelectionMade(false);
+						} else {
 							const { bottom } = $(next)[0].getBoundingClientRect();
 							const scrollTop = $(dropdown).scrollTop();
-							if (bottom > dropdownDims.bottom)
+							if (bottom > dropdownDims.bottom) {
 								$(dropdown).scrollTop(bottom - dropdownDims.top + scrollTop - 40);
+							}
 							$(next).focus();
 						}
 					}
@@ -258,7 +281,9 @@ export class TopicDropdown {
 
 			.off("keypress keydown", `#${this.props.containerId} #genDropdownSearch`)
 			.on("keydown", `#${this.props.containerId} #genDropdownSearch`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (open) {
@@ -267,19 +292,24 @@ export class TopicDropdown {
 						this.#search();
 					} else if (key === "Tab" || key === "ArrowDown") {
 						e.preventDefault();
-						if ($("#clearSearch").length) $("#clearSearch").trigger("focus");
-						else $(".genDropdownOption:visible:first").trigger("focus");
+						if ($(`#${this.props.containerId} .clearSearch`).length) {
+							$(`#${this.props.containerId} .clearSearch`).trigger("focus");
+						} else {
+							$(`#${this.props.containerId} .genDropdownOption:visible:first`).trigger("focus");
+						}
 					}
 				}
 			})
 			.on("keypress", `#${this.props.containerId} #genDropdownSearch`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (key === "Enter" || (key === " " && !open)) {
 					e.preventDefault();
 					if (open) {
-						if (e.target.id !== "clearSearch") this.#handleSelectionMade();
+						if (!e.target.classList.contains("clearSearch")) this.#handleSelectionMade();
 					} else {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
@@ -291,7 +321,9 @@ export class TopicDropdown {
 					e.preventDefault();
 					this.#toggleOpenClose();
 				} else {
-					if (!open) this.#toggleOpenClose();
+					if (!open) {
+						this.#toggleOpenClose();
+					}
 					e.preventDefault();
 					this.#search(key);
 				}
@@ -308,8 +340,8 @@ export class TopicDropdown {
 				$(e.currentTarget).addClass("genOptionSelected");
 			})
 
-			.off("click keypress", "#clearSearch")
-			.on("click keypress", "#clearSearch", (e) => {
+			.off("click keypress", `#${this.props.containerId} .clearSearch`)
+			.on("click keypress", `#${this.props.containerId} .clearSearch`, (e) => {
 				e.preventDefault();
 				this.#resetOptions();
 			});
@@ -351,15 +383,22 @@ export class TopicDropdown {
 
 	// takes an array of string containing dropdown values to remove the class "disabled" from
 	enableValues = (values) => {
-		if (values === "all") $(this.listItems).removeClass("disabled");
-		else values.forEach((v) => $(`${this.listItems}[data-val="${v}"]`).removeClass("disabled"));
+		if (values === "all") {
+			$(this.listItems).removeClass("disabled");
+		} else {
+			values.forEach((v) => $(`${this.listItems}[data-val="${v}"]`).removeClass("disabled"));
+		}
 	};
 
 	// ///////////////////////////////////////////// //
 	// 				PRIVATE METHODS					 //
 	// ///////////////////////////////////////////// //
 	#closeOtherOpenDropdown = (target) => {
-		if (!target) return; // this should never happen but just in case
+		if (!target) {
+			// this should never happen but just in case
+			return;
+		}
+
 		$(target).find(".genOptionSelected").removeClass("genOptionSelected"); // a hover-over may have selected an option so we need to remove that
 		const previouslySelectedText = $(target).parent().find("a").html().trim();
 		const children = $(target).find("a");
@@ -386,11 +425,15 @@ export class TopicDropdown {
 		}
 		const scrollTop = $(window).scrollTop();
 		const scrollDifference = windowHeight - scrollTop;
-		if (dropdownBottom > windowHeight) $(window).scrollTop(dropdownBottom - scrollDifference + 20);
+		if (dropdownBottom > windowHeight) {
+			$(window).scrollTop(dropdownBottom - scrollDifference + 20);
+		}
 	};
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
+		$(`#${this.props.containerId} .genDropdownSelected`).toggleClass("genDropdownOpened");
+
 		const topicWidth = $(`#${this.props.containerId}`).width();
 		const topicHeight = $(`#${this.props.containerId}`).height();
 		$(`#${this.props.containerId} #genDropdownSearch`)
@@ -430,11 +473,22 @@ export class TopicDropdown {
 		$(`#${this.props.containerId}-select > a`).html(text);
 		$(".genDropdownOption").attr("hidden", false);
 		const firstOption = this.props.firstOptObj;
-		if (firstOption)
-			if (firstOption.returnValue === value) this.#hideFirst();
-			else this.#showFirst();
-		if (toggle) this.#toggleOpenClose();
-		if (this.props.chartContainerId) this.updateSliderDomain();
+		if (firstOption) {
+			if (firstOption.returnValue === value) {
+				this.#hideFirst();
+			} else {
+				this.#showFirst();
+			}
+		}
+
+		if (toggle) {
+			this.#toggleOpenClose();
+		}
+
+		if (this.props.chartContainerId) {
+			this.updateSliderDomain();
+		}
+
 		this.#updateAriaLabel(text);
 		this.selectionMadeAction(value);
 		$(`#${this.props.containerId}-select`).focus();
@@ -457,7 +511,7 @@ export class TopicDropdown {
 		const lowercaseSearch = this.searchText.toLowerCase();
 		let matchIndex;
 		if (this.searchText.length) {
-			$("#genDropdownSearch").css("caret-color", "transparent");
+			$(`#${this.props.containerId} #genDropdownSearch`).css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				if (
@@ -472,7 +526,9 @@ export class TopicDropdown {
 					$(`#${this.props.containerId} #genDropdownSearch > a`).html(`
 							<span>${remaining[0]}</span><span style="font-weight: bold;">${this.searchText}</span><span>${remaining[1]}</span>
 						`);
-				} else $(item).attr("hidden", true);
+				} else {
+					$(item).attr("hidden", true);
+				}
 
 				const selected = $(this.selectedOption);
 				if ($(selected).is(":hidden")) {
@@ -484,15 +540,20 @@ export class TopicDropdown {
 			});
 			topicGroups.forEach((group, i) => {
 				const filteredOut = $(`#topicGroup${i}`).hasClass("genOptionFilteredOut");
-				if (filteredOut) return;
+				if (filteredOut) {
+					return;
+				}
 				const someVisible = $(`.topicGroup${i} :visible`).length > 0;
 				if (group.toLowerCase().includes(lowercaseSearch) || someVisible) {
 					$("#topicGroup" + i).attr("hidden", false);
-					if (group.toLowerCase().includes(lowercaseSearch))
+					if (group.toLowerCase().includes(lowercaseSearch)) {
 						$(".topicGroup" + i)
 							.not(".genOptionFilteredOut")
 							.attr("hidden", false);
-				} else $("#topicGroup" + i).attr("hidden", true);
+					}
+				} else {
+					$("#topicGroup" + i).attr("hidden", true);
+				}
 			});
 		} else {
 			$(`#${this.props.containerId} #genDropdownSearch`)
@@ -507,10 +568,12 @@ export class TopicDropdown {
 			if (countOfVisibleTopicGroups === 0) {
 				$(`#${this.props.containerId} #genDropdownSearch > a`)
 					.html(
-						`No matching results found <i id="clearSearch" class="fas fa-times" aria-label="reset search" tabindex="0"></i>`
+						`No matching results found <i class="clearSearch fas fa-times" aria-label="reset search" tabindex="0"></i>`
 					)
 					.attr("aria-label", "No matching results found");
-			} else $(`#${this.props.containerId} #genDropdownSearch > a`).html(this.searchText);
+			} else {
+				$(`#${this.props.containerId} #genDropdownSearch > a`).html(this.searchText);
+			}
 		}
 		const topicHeight = $(`#${this.props.containerId}`).height();
 		const searchHeight = $(`#${this.props.containerId} #genDropdownSearch`).height();
@@ -531,7 +594,11 @@ export class TopicDropdown {
 		const first = this.props.firstOptObj;
 		const firstEl = $(`${this.listItems}:first`);
 		$(`#${this.props.containerId}-select > a`).removeClass("placeholder");
-		if (first.returnText) $(firstEl).html(`<a>${first.returnText}</a>`);
+
+		if (first.returnText) {
+			$(firstEl).html(`<a>${first.returnText}</a>`);
+		}
+
 		$(firstEl).show();
 	};
 }

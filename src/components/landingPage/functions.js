@@ -93,7 +93,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 	const propertyLookup = {
 		// list properties needed in tooltip body and give their line titles and datum types
 		year: {
-			title: "Time Period: ",
+			title: "Year: ",
 			datumType: "string",
 		},
 		estimate: {
@@ -121,7 +121,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 			datumType: "string",
 		},
 		stub_label: {
-			title: "Stub Label: ",
+			title: "",
 			datumType: "string",
 		},
 		age: {
@@ -133,21 +133,20 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 			datumType: "string",
 		},
 		estimate_lci: {
-			title: "95% confidence LCI: ",
+			title: "Lower 95% CI: ",
 			datumType: "string",
 		},
 		estimate_uci: {
-			title: "95% confidence UCI: ",
+			title: "Upper 95% CI: ",
 			datumType: "string",
 		},
 		"": { title: "", datumType: "empty" },
 	};
 
-	const headerProps = ["stub_name", "stub_label"];
-	let bodyProps = ["panel", "unit", chartValueProperty];
+	const headerProps = ["stub_label", ""];
+	let bodyProps = ["year", chartValueProperty];
 	if (hasCI) bodyProps.push("estimate_uci", "estimate_lci");
-	bodyProps.push("year", "age", "flag");
-
+	bodyProps.push("flag");
 	return {
 		propertyLookup,
 		headerProps,
@@ -170,18 +169,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
 	const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-	const colors = [
-		"#6A3D9A",
-		"#A35200",
-		"#E31A1C",
-		"#298023",
-		"#1B6CA1",
-		"#549CC9",
-		"#A880BC",
-		"#E67300",
-		"#FC5D5A",
-		"#62A02C",
-	];
+	const colors = ["#7201b9", "#9D6a3d", "#ed0004", "#098800", "#004f83", "#9e0000", "#a55e86", "black"];
 
 	return {
 		data,
@@ -191,9 +179,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 			bars: "estimate",
 		},
 		enableCI: config.enableCI,
-		usesLegend: true,
-		legendBottom: true,
-		usesDateDomainSlider: false,
+		usesReliabilityCallout: true,
 		usesBars: showBarChart,
 		usesHoverBars: showBarChart,
 		barLayout: showBarChart ? { horizontal: true, size: 60 } : { horizontal: false, size: null },
@@ -205,7 +191,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 		usesLeftAxisTitle: !showBarChart,
 		usesBottomAxis: !showBarChart,
 		usesTopAxis: showBarChart,
-		usesXAxisTitle: true,
+		usesXAxisTitle: showBarChart,
 		usesDateAsXAxis: !showBarChart,
 		needsScaleTime: !showBarChart && needsScaleTime,
 		bottomAxisTitle: xAxisTitle,
@@ -219,7 +205,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 	};
 };
 
-export const linkify = (t) => {
+export const link_i_fy = (t) => {
 	const m = t.match(/(\b(https?|http|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi);
 	if (!m) return t;
 	const a = [];

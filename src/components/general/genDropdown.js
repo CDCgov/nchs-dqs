@@ -143,12 +143,16 @@ export class GenDropdown {
 	//			 (1) trigger the change event(default, just pass .value([some value]) or
 	//			 (2) only update what is shown in the dropdown, pass .value([some value], false)
 	value = (value, triggerChange = true) => {
-		if (!value && value !== "") return $(this.selectedOption).data("val");
+		if (!value && value !== "") {
+			return $(this.selectedOption).data("val");
+		}
+
 		$(this.selectedOption).removeClass("genOptionSelected");
 		const newSelection = $(`${this.listItems}[data-val="${value}"]`);
 		$(newSelection).addClass("genOptionSelected");
-		if (triggerChange) this.#handleSelectionMade(false);
-		else {
+		if (triggerChange) {
+			this.#handleSelectionMade(false);
+		} else {
 			const newText = $(newSelection).html()?.trim();
 			$(`#${this.props.containerId} .genDropdownSelected > a`).html(newText);
 		}
@@ -166,7 +170,9 @@ export class GenDropdown {
 		if (this.props.firstOptObj) {
 			if (this.props.selectedValue === this.props.firstOptObj.returnValue) {
 				this.#hideFirst();
-			} else this.#showFirst();
+			} else {
+				this.#showFirst();
+			}
 		}
 
 		// EVENT HANDLERS
@@ -176,7 +182,9 @@ export class GenDropdown {
 			.off("keypress keydown", `#${this.props.containerId}`)
 			.on("click", `#${this.props.containerId}-select > a`, () => $(`#${this.props.containerId}-select`).focus())
 			.on("click", `#${this.props.containerId}-select`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
 				e.stopPropagation();
 				$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 					this.#closeOtherOpenDropdown(el)
@@ -185,13 +193,16 @@ export class GenDropdown {
 				this.#toggleOpenClose();
 			})
 			.on("keypress", `#${this.props.containerId}`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (key === "Enter" || (key === " " && !open)) {
 					e.preventDefault();
-					if (open) this.#handleSelectionMade();
-					else {
+					if (open) {
+						this.#handleSelectionMade();
+					} else {
 						$(`.genDropdownOpened:not('#${this.props.containerId} .genDropdownOpened')`).each((i, el) =>
 							this.#closeOtherOpenDropdown(el)
 						);
@@ -202,13 +213,17 @@ export class GenDropdown {
 					e.preventDefault();
 					this.#toggleOpenClose();
 				} else {
-					if (!open) this.#toggleOpenClose();
+					if (!open) {
+						this.#toggleOpenClose();
+					}
 					e.preventDefault();
 					this.#search(key);
 				}
 			})
 			.on("keydown", `#${this.props.containerId}`, (e) => {
-				if (this.disabled) return;
+				if (this.disabled) {
+					return;
+				}
 				const { key } = e;
 				const open = $(this.dropdownSection).hasClass("genDropdownOpened");
 				if (key === "Backspace" && open) {
@@ -216,12 +231,16 @@ export class GenDropdown {
 					if (!this.searchText.length) {
 						this.#resetOptions();
 						this.#toggleOpenClose();
-					} else this.#search();
+					} else {
+						this.#search();
+					}
 				} else if (key === "Delete" || key === "Escape") {
 					if (this.searchText.length) {
 						this.searchText = "";
 						this.#resetOptions();
-					} else if (open) this.#toggleOpenClose();
+					} else if (open) {
+						this.#toggleOpenClose();
+					}
 				} else if (key === "ArrowDown" || key === "ArrowUp") {
 					e.preventDefault();
 					const currentSelected = $(this.selectedOption);
@@ -234,19 +253,22 @@ export class GenDropdown {
 					if (key === "ArrowUp" && previous.length) {
 						$(currentSelected).removeClass("genOptionSelected");
 						$(previous).addClass("genOptionSelected");
-						if (!open) this.#handleSelectionMade(false);
-						else {
+						if (!open) {
+							this.#handleSelectionMade(false);
+						} else {
 							const { top } = $(previous)[0].getBoundingClientRect();
 							const scrollTop = $(dropdown).scrollTop();
-							if (top < dropdownDims.top)
+							if (top < dropdownDims.top) {
 								$(dropdown).scrollTop(scrollTop - dropdownDims.bottom + top + 40);
+							}
 							$(previous).focus();
 						}
 					} else if (key === "ArrowDown" && next.length) {
 						$(currentSelected).removeClass("genOptionSelected");
 						$(next).addClass("genOptionSelected");
-						if (!open) this.#handleSelectionMade(false);
-						else {
+						if (!open) {
+							this.#handleSelectionMade(false);
+						} else {
 							const { bottom } = $(next)[0].getBoundingClientRect();
 							const scrollTop = $(dropdown).scrollTop();
 							if (bottom > dropdownDims.bottom)
@@ -271,6 +293,12 @@ export class GenDropdown {
 					e.preventDefault();
 					this.#handleSelectionMade();
 				}
+			})
+			// clear search
+			.off("click keypress", `#${this.props.containerId} .clearSearch`)
+			.on("click keypress", `#${this.props.containerId} .clearSearch`, (e) => {
+				e.preventDefault();
+				this.#resetOptions();
 			});
 	};
 
@@ -299,26 +327,33 @@ export class GenDropdown {
 
 	// takes an array of string containing dropdown values to remove the class "disabled" from
 	enableValues = (values) => {
-		if (values === "all") $(this.listItems).removeClass("disabled");
-		else values.forEach((v) => $(`${this.listItems}[data-val="${v}"]`).removeClass("disabled"));
+		if (values === "all") {
+			$(this.listItems).removeClass("disabled");
+		} else {
+			values.forEach((v) => $(`${this.listItems}[data-val="${v}"]`).removeClass("disabled"));
+		}
 	};
 
 	// ///////////////////////////////////////////// //
 	// 				PRIVATE METHODS					 //
 	// ///////////////////////////////////////////// //
 	#closeOtherOpenDropdown = (target) => {
-		if (!target) return; // this should never happen but just in case
+		if (!target) {
+			// this should never happen but just in case
+			return;
+		}
 
 		$(target).find(".genOptionSelected").removeClass("genOptionSelected"); // a hover-over may have selected an option so we need to remove that
 		const previouslySelectedText = $(target).parent().find("a").html().trim();
 		const children = $(target).find("a");
-		if (target.id !== "genDropdownSearch")
+		if (target.id !== "genDropdownSearch") {
 			children.each((i, el) => {
 				if ($(el).html().trim() === previouslySelectedText) {
 					$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
 					return false; // exit the loop
 				}
 			});
+		}
 		$(target).removeClass("genDropdownOpened"); // close the dropdown
 	};
 
@@ -350,12 +385,17 @@ export class GenDropdown {
 		}
 		const scrollTop = $(window).scrollTop();
 		const scrollDifference = windowHeight - scrollTop;
-		if (dropdownBottom > windowHeight) $(window).scrollTop(dropdownBottom - scrollDifference + 20);
+		if (dropdownBottom > windowHeight) {
+			$(window).scrollTop(dropdownBottom - scrollDifference + 20);
+		}
 	};
 
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
-		if (!this.isMobile) this.#setCaret();
+		$(`#${this.props.containerId} .genDropdownSelected`).toggleClass("genDropdownOpened");
+		if (!this.isMobile) {
+			this.#setCaret();
+		}
 		this.#scrollIntoView();
 	};
 
@@ -374,22 +414,37 @@ export class GenDropdown {
 		$(`#${this.props.containerId}-select > a`).html(text);
 		$(".genDropdownOption").attr("hidden", false);
 		const firstOption = this.props.firstOptObj;
-		if (firstOption)
-			if (firstOption.returnValue === value) this.#hideFirst();
-			else this.#showFirst();
-		if (toggle) this.#toggleOpenClose();
-		if (this.props.chartContainerId) this.updateSliderDomain();
+
+		if (firstOption) {
+			if (firstOption.returnValue === value) {
+				this.#hideFirst();
+			} else {
+				this.#showFirst();
+			}
+		}
+
+		if (toggle) {
+			this.#toggleOpenClose();
+		}
+
+		if (this.props.chartContainerId) {
+			this.updateSliderDomain();
+		}
+
 		this.#updateAriaLabel(text);
 		this.selectionMadeAction(value);
 		$(`#${this.props.containerId}-select`).focus();
 	};
 
 	#resetOptions = () => {
+		this.searchText = "";
+		$(`#${this.props.containerId} .genDropdownSelected`).removeClass("chevronHidden");
+
 		$(this.listItems).removeClass("genOptionSelected").attr("hidden", false);
 		const html = $(this.selectedOptionEl).find("a").html();
 		$(`#${this.props.containerId}-select > a`).html(html);
 		$(this.selectedOptionEl).addClass("genOptionSelected");
-		$(`#${this.props.containerId}-select`).focus();
+		$(`#${this.props.containerId}-select`).css("caret-color", "inherit").focus();
 	};
 
 	#search = (c) => {
@@ -397,6 +452,7 @@ export class GenDropdown {
 		const lowercaseSearch = this.searchText.toLowerCase();
 		let matchIndex;
 		if (this.searchText.length) {
+			$(`#${this.props.containerId}-select`).css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				if (
@@ -411,7 +467,9 @@ export class GenDropdown {
 					$(`#${this.props.containerId}-select > a`).html(`
 							<span>${remaining[0]}</span><span style="font-weight: bold;">${this.searchText}</span><span>${remaining[1]}</span>
 						`);
-				} else $(item).attr("hidden", true);
+				} else {
+					$(item).attr("hidden", true);
+				}
 
 				const selected = $(this.selectedOption);
 				if ($(selected).is(":hidden")) {
@@ -422,8 +480,20 @@ export class GenDropdown {
 						.focus();
 				}
 			});
+		} else {
+			$(`#${this.props.containerId}-select`).css("caret-color", "inherit");
 		}
+
 		if (matchIndex === undefined) {
+			$(`#${this.props.containerId}-select > a`)
+				.html(
+					`No matching results found <i class="clearSearch fas fa-times" aria-label="reset search" tabindex="0"></i>`
+				)
+				.attr("aria-label", "No matching results found")
+				.attr("style", "display: flex; align-items: center; justify-content: space-between;");
+			$(`#${this.props.containerId} .genDropdownSelected`).addClass("chevronHidden");
+			$(`#${this.props.containerId} .genDropdownOpened`).removeClass("genDropdownOpened");
+		} else {
 			$(`#${this.props.containerId}-select > a`).html(
 				`<span style="font-weight: bold;">${this.searchText}</span>`
 			);
@@ -442,7 +512,11 @@ export class GenDropdown {
 		const first = this.props.firstOptObj;
 		const firstEl = $(`${this.listItems}:first`);
 		$(`#${this.props.containerId}-select > a`).removeClass("placeholder");
-		if (first.returnText) $(firstEl).html(`<a>${first.returnText}</a>`);
+
+		if (first.returnText) {
+			$(firstEl).html(`<a>${first.returnText}</a>`);
+		}
+
 		$(firstEl).show();
 	};
 }

@@ -187,7 +187,7 @@ export class GenTooltip {
 			.join("p")
 			.attr("class", "generalTooltip tip-info")
 			.style("display", (d) => (d[0] === "" && d[1] === "" ? "none" : "block"))
-			.html((d) => `<strong>${d[0]}</strong>${d[1]}`);
+			.html((d) => `<strong>${d[0]}</strong>${Number.isNaN(d[1]) ? "N/A" : d[1]}`);
 
 		const tipHeight = d3.select(`#${this.vizId} .generalTooltip`)._groups[0][0].offsetHeight;
 		const tipWidth = d3.select(`#${this.vizId} .generalTooltip`)._groups[0][0].offsetWidth;
