@@ -125,7 +125,7 @@ export class MainEvents {
 				const chartTitle = document.getElementById("chart-title").textContent;
 				if (appState.ACTIVE_TAB.activeTabNumber === 1) {
 					const params = {
-						contentContainer: "chart-container",
+						contentContainer: "chartContainer",
 						downloadButton: "dwn-chart-img",
 						imageSaveName: chartTitle,
 					};
