@@ -73,11 +73,8 @@ export class LandingPage {
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			// let group = nhisGroups[f.subgroup];
-			// console.log('f: ', f);
 			let group = nhisGroups[f.group || f.subgroup];
 
-			// console.log('group: ', group);
 			if (group instanceof Map) {
 				group = group.get(f.group_byid);
 			}
@@ -87,9 +84,6 @@ export class LandingPage {
 					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
 						? f.percentage
 						: null;
-				// console.log("ci[0]: ", ci[0])
-				// console.log("ci[1]: ", ci[1])
-				// stub_label: f.subgroup,
 
 				returnData.push({
 					estimate: f.percentage,
@@ -643,7 +637,6 @@ export class LandingPage {
 					this.showBarChart = true;
 				}
 				this.setAllSelectDropdowns(); // includes time periods
-				// console.log('then 1')
 
 				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
