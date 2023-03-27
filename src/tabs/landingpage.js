@@ -96,7 +96,6 @@ export class LandingPage {
 	};
 
 	getSelectedSocrataData = async (localConfig) => {
-		console.log("global config is", config);
 		let nchsData = DataCache[`data-${localConfig.socrataId}`];
 		if (nchsData) return nchsData;
 
