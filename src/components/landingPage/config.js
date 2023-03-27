@@ -1,5 +1,5 @@
 import { modal, allFilters } from "./modal";
-import { nhisHash, nhisTopics } from "./nhis";
+import { nhisHash, nhisTopics, nhisGroups } from "./nhis";
 
 const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
@@ -257,10 +257,75 @@ export const topicLookup = {
 	nhis: {
 		socrataId: "4u68-shzr",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			if (filteredToIndicator.length === 0) {
+				dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			}
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				let group = nhisGroups[f.subgroup];
+				if (group instanceof Map) {
+					group = group.get(f.group_byid);
+				}
+				if (group) {
+					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+					returnData.push({
+						estimate: f.percentage,
+						estimate_lci: ci[0].trim(),
+						estimate_uci: ci[1].trim(),
+						flag: f.flag,
+						footnote_id_list: f.footnote_id_list,
+						indicator: f.outcome_or_indicator,
+						panel: group.classification,
+						panel_num: group.classificationId,
+						se: null,
+						stub_label: f.subgroup,
+						stub_name: group.group,
+						stub_name_num: group.groupId,
+						unit: "Percent of population",
+						unit_num: 1,
+						year: f.year,
+						year_num: "",
+						age: group.group.includes("Age Group") ? f.subgroup : "N/A",
+					});
+				}
+			});
+
+			return returnData;
+		},
 	},
 	dhcs: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
+					flag: null,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.measure_type,
+					panel_num: f.measuretype_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: f.groupby_id,
+					unit: f.estimate_type,
+					unit_num: f.estimatetype_id,
+					year: f.year,
+					year_num: "",
+					age: f.groupby.includes("By age") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
 	},
 	dhcsFootnotes: {
 		socrataId: "42t3-uyny",
@@ -398,7 +463,7 @@ export const topicLookup = {
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `${t.prefix || `nhis`}-${t.text}`,
+		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
@@ -407,6 +472,7 @@ nhisTopics.forEach((t) => {
 		hasCI: true,
 		hasClassification: true,
 		topicGroup: t.topicGroup,
+		topicLookupId: t.prefix || "nhis",
 	};
 });
 
