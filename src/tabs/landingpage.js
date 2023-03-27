@@ -63,42 +63,11 @@ export class LandingPage {
 		return returnData;
 	};
 
-	getDhcsData = async (id) => {
-		const dataId = id.split("dhcs-")[1];
-		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-
-		const filteredToIndicator = this.nhisData.filter((d) => d.measure === dataId);
-		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			returnData.push({
-				estimate: f.estimate,
-				estimate_lci: f.lower_95_ci,
-				estimate_uci: f.upper_95_ci,
-				flag: null,
-				footnote_id_list: f.footnote_id,
-				indicator: f.measure,
-				panel: f.measure_type,
-				panel_num: f.measuretype_id,
-				se: null,
-				stub_label: f.subgroup,
-				stub_name: f.groupby,
-				stub_name_num: f.groupby_id,
-				unit: f.estimate_type,
-				unit_num: f.estimatetype_id,
-				year: f.year,
-				year_num: "",
-				age: f.groupby.includes("By age") ? f.group : "N/A",
-			});
-		});
-
-		DataCache[`data-${dataId}`] = returnData;
-		return returnData;
-	};
-
 	getSelectedSocrataData = async (localConfig) => {
 		let nchsData = DataCache[`data-${localConfig.socrataId}`];
 		if (nchsData) return nchsData;
 
+		// if there's a specific lookup id with a mapper
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
 			return this.getNhisData(
 				localConfig.socrataId,
