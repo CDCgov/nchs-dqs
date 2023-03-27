@@ -388,17 +388,6 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
-	"child-summary": {
-		dataUrl: "https://data.cdc.gov/resource/rkv8-xf9z.json",
-		socrataId: "rkv8-xf9z",
-		private: "1",
-		chartTitle: "NHIS Children Summary Statistics",
-		filters: "",
-		yAxisUnitId: 1,
-		hasCI: true,
-		hasClassification: true,
-		topicGroup: 18,
-	},
 };
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
