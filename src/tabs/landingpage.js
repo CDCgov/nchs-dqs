@@ -448,6 +448,7 @@ export class LandingPage {
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
+				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
 						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
@@ -460,6 +461,7 @@ export class LandingPage {
 				unreliableNotesArray?.length === 0
 					? ""
 					: unreliableNotesArray
+							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
 									`<p class="unreliableFootnote"><strong>${
@@ -520,7 +522,6 @@ export class LandingPage {
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 
 		if (this.config.isNhisData) {
-			console.log("GOT LOADING CONFIG", this.config);
 			this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then((data) => {
 				this.nhisData = data;
 				this.getData(topicChange);
