@@ -865,4 +865,24 @@ export const nhisTopics = [
 		topicGroup: 1,
 		prefix: "dhcs",
 	},
+
+	// start NHANES
+	{
+		id: "obesity-nhanes",
+		text: "Obesity (NHANES)",
+		topicGroup: 0,
+		prefix: "nhanes",
+	},
+	{
+		id: "high-total-cholesterol",
+		text: "High Total Cholesterol",
+		topicGroup: 0,
+		prefix: "nhanes",
+	},
+	{
+		id: "hypertension",
+		text: "Hypertension",
+		topicGroup: 0,
+		prefix: "nhanes",
+	},
 ];

@@ -331,7 +331,39 @@ export const topicLookup = {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
+	nhanes: {
+		socrataId: "i2dc-ja7d",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: null,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group : "N/A",
+				});
+			});
 
+			console.log("GENERATED RTURN DATA", returnData[0])
+
+			return returnData;
+		},
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
