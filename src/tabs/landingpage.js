@@ -55,18 +55,16 @@ export class LandingPage {
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (id) => {
-		console.log("getNhisData: " + id);
-		console.log("this.nhisData: ", this.nhisData);
 		let dataId = id.split("nhis-")[1];
 		let prefix = id.split("nhis-")[0];
 		if (!dataId) {
 			prefix = id.split("cshs-")[0];
 			dataId = id.split("cshs-")[1];
 		}
-		console.log("dataId: ", dataId);
+
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
-		console.log("filteredToIndicator: ", filteredToIndicator);
+
 		if (filteredToIndicator.length === 0) {
 			dataId = nhisTopics.find((t) => t.text === id.split(`${prefix}-`)[1])?.indicator;
 			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
@@ -112,8 +110,6 @@ export class LandingPage {
 	};
 
 	getSelectedSocrataData = async (config) => {
-		console.log({ config });
-		console.log("SOCRATA get topic", config.socrataId);
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
 
@@ -143,10 +139,9 @@ export class LandingPage {
 			]);
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
-			console.log("columns: ", columns);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-			console.log("nchsData: ", nchsData);
 			DataCache[`data-${config.socrataId}`] = nchsData;
+
 			return nchsData;
 		} catch (err) {
 			console.error("Error fetching data", err);
@@ -550,7 +545,7 @@ export class LandingPage {
 
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
-		console.log("updateTopic this.config: ", this.config);
+
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
 		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
@@ -580,7 +575,6 @@ export class LandingPage {
 				this.getData(topicChange);
 			});
 		} else {
-			console.log("log topicChange: ", topicChange);
 			this.getData(topicChange);
 		}
 	}
@@ -697,7 +691,7 @@ export class LandingPage {
 					topicGroup: k[1].topicGroup,
 				});
 		});
-		console.log("topics options: ", options);
+
 		this.topicDropdown = new TopicDropdown({
 			containerId: "topicDropdown",
 			ariaLabel: "select a topic",
@@ -717,14 +711,13 @@ export class LandingPage {
 
 	// Classification
 	initClassificationDropdown() {
-		console.log("socrataData: ", this.socrataData);
 		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
 		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
 		// now sort them in id order
 		allTopics.sort((a, b) => {
 			return a.panel_num - b.panel_num;
 		});
-		console.log("classification allTopics: ", allTopics);
+
 		const options = allTopics.map((d) => ({
 			text: d.panel,
 			value: d.panel_num,
@@ -736,7 +729,7 @@ export class LandingPage {
 			options,
 			selectedValue: this.selections?.classification,
 		});
-		console.log("classification options: ", options);
+
 		this.classificationDropdown.render();
 		this.config.classificationId = this.classificationDropdown.value();
 
