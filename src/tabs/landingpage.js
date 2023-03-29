@@ -1173,12 +1173,9 @@ export class LandingPage {
 
 		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
 		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
-<<<<<<< HEAD
-=======
 	}
 
 	exportCSV() {
 		downloadCSV(this.csv);
->>>>>>> 9c52d2aedd92402a29581c8ab7ffdaa55f4e8116
 	}
 }
