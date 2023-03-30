@@ -74,17 +74,18 @@ export class LandingPage {
 			let group = nhisGroups[f.group || f.subgroup];
 
 			if (group instanceof Map) {
-				group = group.get(f.group_byid);
+				group = group.get(f.group_byid || f.group_by_id);
 			}
+
 			if (group) {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 				const percent =
 					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
 						? f.percentage
 						: null;
-
+				const stubLabel = f.group || f.subgroup;
 				returnData.push({
-					estimate: f.percentage,
+					estimate: f.percentage || "",
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
 					flag: f.flag,
@@ -93,7 +94,7 @@ export class LandingPage {
 					panel: group.classification,
 					panel_num: group.classificationId,
 					se: null,
-					stub_label: f.group || f.subgroup,
+					stub_label: stubLabel,
 					stub_name: group.group,
 					stub_name_num: group.groupId,
 					unit: "Percent of population",

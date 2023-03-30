@@ -214,7 +214,7 @@ export const nhisGroups = {
 		[
 			"20",
 			{
-				group: "Health insurance coverage 65+",
+				group: "Health insurance coverage 65",
 				groupId: 9,
 				classification: "Socio-economic status",
 				classificationId: 2,
@@ -222,6 +222,15 @@ export const nhisGroups = {
 		],
 		[
 			"19",
+			{
+				group: "Health insurance coverage under 65",
+				groupId: 8,
+				classification: "Socio-economic status",
+				classificationId: 2,
+			},
+		],
+		[
+			"10",
 			{
 				group: "Health insurance coverage under 65",
 				groupId: 8,
@@ -252,7 +261,7 @@ export const nhisGroups = {
 		[
 			"20",
 			{
-				group: "Health insurance coverage 65+",
+				group: "Health insurance coverage 65",
 				groupId: 9,
 				classification: "Socio-economic status",
 				classificationId: 2,
@@ -260,6 +269,15 @@ export const nhisGroups = {
 		],
 		[
 			"19",
+			{
+				group: "Health insurance coverage under 65",
+				groupId: 8,
+				classification: "Socio-economic status",
+				classificationId: 2,
+			},
+		],
+		[
+			"10",
 			{
 				group: "Health insurance coverage under 65",
 				groupId: 8,
