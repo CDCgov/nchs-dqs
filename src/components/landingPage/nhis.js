@@ -1,4 +1,3 @@
-
 // These are subgroups!
 export const nhisGroups = {
 	Total: {
@@ -733,87 +732,92 @@ export const nhisTopics = [
 		topicGroup: 3,
 	},
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 6 },
-	{ id: "current-asthma-among-children", text: "Current asthma among children", topicGroup: 0 },
+	{ id: "current-asthma-among-children", text: "Current asthma among children", topicGroup: 0, prefix: "cshs" },
 	{
 		id: "daily-feelings-of-worry,-nervousness,-or-anxiety",
 		text: "Daily feelings of worry, nervousness, or anxiety",
 		topicGroup: 4,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
 		text: "Delayed getting medical care due to cost among children",
 		topicGroup: 3,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
-	{ id: "doctor-visit-among-children", text: "Doctor visit among children", topicGroup: 1, prefix: 'cshs' },
-	{ id: "ever-having-a-learning-disability", text: "Ever having a learning disability", topicGroup: 0, prefix: 'cshs' },
-	{ id: "ever-having-asthma", text: "Ever having asthma", topicGroup: 0, prefix: 'cshs' },
+	{ id: "doctor-visit-among-children", text: "Doctor visit among children", topicGroup: 1, prefix: "cshs" },
+	{
+		id: "ever-having-a-learning-disability",
+		text: "Ever having a learning disability",
+		topicGroup: 0,
+		prefix: "cshs",
+	},
+	{ id: "ever-having-asthma", text: "Ever having asthma", topicGroup: 0, prefix: "cshs" },
 	{
 		id: "ever-having-attention-deficit/hyperactivity-disorder",
 		text: "Ever having attention-deficit/hyperactivity disorder",
 		topicGroup: 0,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "fair-or-poor-health-status-among-children",
 		text: "Fair or poor health status among children",
 		topicGroup: 1,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "has-a-usual-place-of-care-among-children",
 		text: "Has a usual place of care among children",
 		topicGroup: 3,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "missing-11-or-more-school-days-due-to-illness-or-injury",
 		text: "Missing 11 or more school days due to illness or injury",
 		topicGroup: 1,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "prescription-medication-use-among-children",
 		text: "Prescription medication use among children",
 		topicGroup: 6,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "receipt-of-influenza-vaccination-among-children",
 		text: "Receipt of influenza vaccination among children",
 		topicGroup: 6,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "receive-services-for-mental-health-problems",
 		text: "Receive services for mental health problems",
 		topicGroup: 4,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "receiving-special-education-or-early-intervention-services",
 		text: "Receiving special education or early intervention services",
 		topicGroup: 6,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "two-or-more-hospital-emergency-department-visits-among-children",
 		text: "Two or more hospital emergency department visits among children",
 		topicGroup: 3,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
 		text: "Two or more urgent care center or retail health clinic visits among children",
 		topicGroup: 3,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
 	{
 		id: "uninsured-at-time-of-interview-among-children",
 		text: "Uninsured at time of interview among children",
 		topicGroup: 3,
-		prefix: 'cshs'
+		prefix: "cshs",
 	},
-	{ id: "well-child-check-up", text: "Well child check-up", topicGroup: 6, prefix: 'cshs' },
+	{ id: "well-child-check-up", text: "Well child check-up", topicGroup: 6, prefix: "cshs" },
 ];
