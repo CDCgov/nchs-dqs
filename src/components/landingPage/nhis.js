@@ -818,8 +818,8 @@ export const nhisTopics = [
 		prefix: "dhcs",
 	},
 	{
-		id: "emergency-department-visits-for-headache-pain-in",
-		text: "Emergency department visits for headache, pain in",
+		id: "emergency-department-visits-for-headache-pain-in-head",
+		text: "Emergency department visits for headache, pain in head",
 		topicGroup: 1,
 		prefix: "dhcs",
 	},
