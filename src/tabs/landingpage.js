@@ -107,7 +107,7 @@ export class LandingPage {
 				estimate: f.estimate,
 				estimate_lci: f.lower_95_ci,
 				estimate_uci: f.upper_95_ci,
-				flag: null,
+				flag: f.flag,
 				footnote_id_list: f.footnote_id,
 				indicator: f.measure,
 				panel: f.measure_type,
@@ -511,6 +511,7 @@ export class LandingPage {
 			NT: "Methodology",
 			NA: "Reliability",
 			NH: "Footnotes",
+			DH: "Footnotes",
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
