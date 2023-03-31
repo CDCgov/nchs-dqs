@@ -752,9 +752,8 @@ export const nhisTopics = [
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 6 },
 	{ id: "current-asthma-among-children", text: "Current asthma among children", topicGroup: 0, prefix: "cshs" },
 	{
-		id: "daily-feelings-of-worry,-nervousness,-or-anxiety",
-		text: " Daily feelings of worry, nervousness, or anxiety among children",
-		indicator: "Daily feelings of worry, nervousness, or anxiety",
+		id: "daily-feelings-of-worry-nervousness-or-anxiety",
+		text: "Daily feelings of worry, nervousness, or anxiety among children",
 		topicGroup: 4,
 		prefix: "cshs",
 	},

@@ -57,9 +57,11 @@ export class LandingPage {
 	getNhisData = (id) => {
 		let dataId = id.split("nhis-")[1];
 		let prefix = id.split("nhis-")[0];
+		let isCshs = false;
 		if (!dataId) {
 			prefix = id.split("cshs-")[0];
 			dataId = id.split("cshs-")[1];
+			isCshs = true;
 		}
 
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
@@ -70,41 +72,60 @@ export class LandingPage {
 			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
 		}
 		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.group || f.subgroup];
-
-			if (group instanceof Map) {
-				group = group.get(f.group_byid || f.group_by_id);
-			}
-
-			if (group) {
+		if (isCshs) {
+			filteredToIndicator.forEach((f) => {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				const percent =
-					f.percentage !== "999" && f.percentage !== "888" && f.percentage !== "777" && f.percentage !== "555"
-						? f.percentage
-						: null;
-				const stubLabel = f.group || f.subgroup;
 				returnData.push({
-					estimate: f.percentage || "",
+					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
 					flag: f.flag,
-					footnote_id_list: f.footnote_id_list || f.footnote_id,
+					footnote_id_list: f.footnote_id,
 					indicator: f.outcome_or_indicator,
-					panel: group.classification,
-					panel_num: group.classificationId,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
 					se: null,
-					stub_label: stubLabel,
-					stub_name: group.group,
-					stub_name_num: group.groupId,
-					unit: "Percent of population",
-					unit_num: 1,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
 					year: f.year,
 					year_num: "",
-					age: group.group.includes("Age Group") ? f.subgroup : "N/A",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
 				});
-			}
-		});
+			});
+		} else {
+			filteredToIndicator.forEach((f) => {
+				let group = nhisGroups[f.subgroup];
+				if (group instanceof Map) {
+					group = group.get(f.group_by_id);
+				}
+
+				if (group) {
+					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+					returnData.push({
+						estimate: f.percentage,
+						estimate_lci: ci[0].trim(),
+						estimate_uci: ci[1].trim(),
+						flag: f.flag,
+						footnote_id_list: f.footnote_id,
+						indicator: f.outcome_or_indicator,
+						panel: group.classification,
+						panel_num: group.classificationId,
+						se: null,
+						stub_label: f.subgroup,
+						stub_name: group.group,
+						stub_name_num: group.groupId,
+						unit: "Percent of population",
+						unit_num: 1,
+						year: f.year,
+						year_num: "",
+						age: group.group.includes("Age Group") ? f.subgroup : "N/A",
+					});
+				}
+			});
+		}
 
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
