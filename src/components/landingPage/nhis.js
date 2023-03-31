@@ -754,6 +754,7 @@ export const nhisTopics = [
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
 		text: "Daily feelings of worry, nervousness, or anxiety among children",
+		indicator: "Daily feelings of worry, nervousness, or anxiety",
 		topicGroup: 4,
 		prefix: "cshs",
 	},
