@@ -143,18 +143,19 @@ export class LandingPage {
 	};
 
 	getSelectedSocrataData = async (config) => {
-		let nchsData = DataCache[`data-${config.socrataId}`];
+		const { socrataId } = config;
+		let nchsData = DataCache[`data-${socrataId}`];
 		if (nchsData) return nchsData;
 
-		if (config.socrataId.startsWith("nhis")) {
-			return this.getNhisData(config.socrataId);
+		if (socrataId.startsWith("nhis")) {
+			return this.getNhisData(socrataId);
 		}
 
-		if (config.socrataId.startsWith("cshs")) {
-			return this.getNhisData(config.socrataId);
+		if (socrataId.startsWith("cshs")) {
+			return this.getNhisData(socrataId);
 		}
-		if (config.socrataId.startsWith("dhcs")) {
-			return this.getDhcsData(config.socrataId);
+		if (socrataId.startsWith("dhcs")) {
+			return this.getDhcsData(socrataId);
 		}
 
 		try {
@@ -162,12 +163,12 @@ export class LandingPage {
 			let metaUrl, dataUrl;
 
 			if (config.private == 0) {
-				metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
-				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+				metaUrl = `https://data.cdc.gov/api/views/${socrataId}`;
+				dataUrl = `https://data.cdc.gov/resource/${socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=1&p=${config.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=0&p=${config.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -177,7 +178,7 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-			DataCache[`data-${config.socrataId}`] = nchsData;
+			DataCache[`data-${socrataId}`] = nchsData;
 
 			return nchsData;
 		} catch (err) {
@@ -585,7 +586,7 @@ export class LandingPage {
 		this.config = config.topicLookup[dataTopic];
 
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
-		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
+		const hasMap = !!this.config.hasMap; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);

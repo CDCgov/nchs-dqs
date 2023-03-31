@@ -753,7 +753,8 @@ export const nhisTopics = [
 	{ id: "current-asthma-among-children", text: "Current asthma among children", topicGroup: 0, prefix: "cshs" },
 	{
 		id: "daily-feelings-of-worry,-nervousness,-or-anxiety",
-		text: "Daily feelings of worry, nervousness, or anxiety",
+		text: " Daily feelings of worry, nervousness, or anxiety among children",
+		indicator: "Daily feelings of worry, nervousness, or anxiety",
 		topicGroup: 4,
 		prefix: "cshs",
 	},
@@ -809,7 +810,8 @@ export const nhisTopics = [
 	},
 	{
 		id: "receive-services-for-mental-health-problems",
-		text: "Receive services for mental health problems",
+		text: "Receive services for mental health problems among children",
+		indicator: "Receive services for mental health problems",
 		topicGroup: 4,
 		prefix: "cshs",
 	},
