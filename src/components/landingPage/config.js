@@ -258,6 +258,14 @@ export const topicLookup = {
 		socrataId: "4u68-shzr",
 		private: "1",
 	},
+	dhcs: {
+		socrataId: "pcav-mejc",
+		private: "1",
+	},
+	dhcsFootnotes: {
+		socrataId: "42t3-uyny",
+		private: "1",
+	},
 
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
@@ -390,7 +398,7 @@ export const topicLookup = {
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `nhis-${t.text}`,
+		socrataId: `${t.prefix || `nhis`}-${t.text}`,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
