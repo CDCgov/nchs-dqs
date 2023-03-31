@@ -110,6 +110,38 @@ export class LandingPage {
 		return returnData;
 	};
 
+	getDhcsData = async (id) => {
+		const dataId = id.split("dhcs-")[1];
+		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+
+		const filteredToIndicator = this.nhisData.filter((d) => d.measure === dataId);
+		const returnData = [];
+		filteredToIndicator.forEach((f) => {
+			returnData.push({
+				estimate: f.estimate,
+				estimate_lci: f.lower_95_ci,
+				estimate_uci: f.upper_95_ci,
+				flag: f.flag,
+				footnote_id_list: f.footnote_id,
+				indicator: f.measure,
+				panel: f.measure_type,
+				panel_num: f.measuretype_id,
+				se: null,
+				stub_label: f.subgroup,
+				stub_name: f.groupby,
+				stub_name_num: f.groupby_id,
+				unit: f.estimate_type,
+				unit_num: f.estimatetype_id,
+				year: f.year,
+				year_num: "",
+				age: f.groupby.includes("By age") ? f.group : "N/A",
+			});
+		});
+
+		DataCache[`data-${dataId}`] = returnData;
+		return returnData;
+	};
+
 	getSelectedSocrataData = async (config) => {
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
@@ -121,6 +153,10 @@ export class LandingPage {
 		if (config.socrataId.startsWith("cshs")) {
 			return this.getNhisData(config.socrataId);
 		}
+		if (config.socrataId.startsWith("dhcs")) {
+			return this.getDhcsData(config.socrataId);
+		}
+
 		try {
 			let [metaData, jsonData] = [];
 			let metaUrl, dataUrl;
@@ -490,6 +526,7 @@ export class LandingPage {
 			NT: "Methodology",
 			NA: "Reliability",
 			NH: "Footnotes",
+			DH: "Footnotes",
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
@@ -575,6 +612,11 @@ export class LandingPage {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
+		} else if (this.config.socrataId.startsWith("dhcs")) {
+			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
+				this.nhisData = data;
+				this.getData(topicChange);
+			});
 		} else {
 			this.getData(topicChange);
 		}
@@ -586,16 +628,16 @@ export class LandingPage {
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, cshsFootnotes, mapData] = data;
-
+				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, cshsFootnotes, mapData] = data;
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes, ...cshsFootnotes];
+					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes, ...cshsFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
