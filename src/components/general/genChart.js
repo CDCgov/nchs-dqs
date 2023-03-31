@@ -1074,7 +1074,6 @@ export class GenChart {
 												$(".unreliableFootnote").show();
 											}
 											const hasValue = d[p.chartProperties.yLeft1];
-											console.log(hasValue);
 											return !hasValue
 												? "white"
 												: unreliable

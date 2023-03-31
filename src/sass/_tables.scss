@@ -60,62 +60,116 @@
 	margin-bottom: 4px !important;
 }
 
-.table.table-bordered:not(#nchs-table) {
-	th {
-		border-left: none !important;
+.expanded-data-table {
+	max-width: 40em;
+	max-height: 20em;
+	overflow: scroll;
+	position: relative;
+
+	#nchs-table {
+		position: relative;
+		border-collapse: collapse;
+
+		thead th {
+			border-bottom: 1px solid #333;
+			position: -webkit-sticky; /* for Safari */
+			position: sticky;
+			top: 0;
+			// background: #000;
+			// color: #fff;
+		}
+
+		thead th:first-child {
+			left: 0;
+			z-index: 1;
+		}
+
+		thead th {
+			left: 0;
+			z-index: 1;
+		}
+
+		tbody th {
+			position: -webkit-sticky; /* for Safari */
+			position: sticky;
+			left: 0;
+			background: #fff;
+			border-right: 1px solid #ccc;
+		}
 	}
 }
 
+#nchsHeaderTable {
+	background-color: #e0e0e0;
+	margin-left: 5px;
+	margin-right: 5px;
+	border-bottom: 1px solid #333;
+	font-size: 18px;
+}
+
+#tableYearHeader {
+	border-right: 1px solid #333;
+	padding: 0 4px;
+}
+
+#tableEstimateHeader {
+	padding: 0 4px;
+}
+
 .expanded-data-table {
-	div.dataTables_wrapper div.dataTables_filter {
-		input {
-			width: 100%;
-		}
-		label {
-			width: 100%;
-			display: flex;
-			align-items: center;
-		}
-	}
-	width: 100%;
-	overflow-x: hidden;
+	width: -moz-fit-content;
+	width: fit-content;
+	max-width: 90vw;
+	max-height: 80vh;
+	overflow: auto;
 	background-color: white;
-	padding: 5px;
+	margin: 0 5px;
 	border-width: 1px;
-
-	.dataTables_filter {
-		margin-bottom: 3px;
-	}
-
 	color: #333;
+	position: relative;
 
-	thead {
-		border-bottom: 1px solid #333;
+	#nchs-table {
+		position: relative;
+		thead {
+			border-bottom: 1px solid #333;
 
-		> tr {
-			vertical-align: bottom;
-			// border-left: 10px solid red;
+			> tr {
+				vertical-align: bottom;
+				th {
+					position: -webkit-sticky; /* for Safari */
+					position: sticky;
+					top: 0;
+					border: 1px solid lightgrey;
+					padding: 0 4px;
+					background-color: #fff; // this allows header to stay on top with the z-index
+					z-index: 1;
 
-			&:first-child {
-				background-color: #e0e0e0;
+					&:first-child {
+						border-left: none;
+						left: 0;
+						z-index: 2; // stay on top both scroll directions
+					}
+				}
 			}
 		}
-	}
 
-	th {
-		font: bold 18pt "Open Sans", sans-serif !important;
-
-		&:first-child {
-			border-right: 1px solid #333;
+		td {
+			padding: 0 4px;
+			white-space: nowrap;
+			border: 1px solid lightgrey;
 		}
-	}
-	td {
-		font: normal 17pt "Open Sans", sans-serif !important;
-		white-space: nowrap;
-	}
-	tbody th {
-		white-space: nowrap;
-		border-left-color: white !important;
+		tbody th {
+			font-weight: bold;
+			white-space: nowrap;
+			border: 1px solid lightgrey;
+			border-left: none;
+			padding: 0 4px;
+			text-align: center;
+			position: -webkit-sticky; /* for Safari */
+			position: sticky;
+			left: 0;
+			z-index: 1;
+		}
 	}
 }
 

@@ -1053,50 +1053,17 @@ export class LandingPage {
 			}`,
 		}));
 
-		if (tableData.every((d) => !d.data || d.data === "NaN")) {
-			$("#tableResultsCount").hide();
-			$(".expanded-data-table")
-				.empty()
-				.html(
-					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options. Select at least one Subgroup.</div>`
-				);
-			return;
-		}
-		$("#tableResultsCount").show();
-
 		const columns = [...new Set(tableData.map((d) => d.column))];
 		const years = [...new Set(tableData.map((d) => d.year))];
-		const allResultsCount = columns.length * years.length;
-		$("#fullTableCount").html(allResultsCount);
-		$("#filteredTableCount").html(allResultsCount);
 		let tableId = "nchs-table";
 
+		$("#tableEstimateHeader").html(`Estimate${showCI ? " (Confidence Interval)" : ""}`);
+
 		$(".expanded-data-table").empty().html(`
-			<!--<div class="row genSearch">
-				<div class="col-12" style="width: 100%; display: flex; align-items: center; position: relative;">
-					<i class="fa fa-search" style="padding: 0 6px;"></i>
-					<input
-						id="search-table"
-						class="form-control form-control-sm"
-						style="width: 100%; border: 1px solid lightgrey;"
-						type="text"
-						placeholder="Search this table"
-						value="${search ?? ""}" />
-					<i  role="button"
-						tabindex="0"
-						class="fa fa-times-circle"
-						id="clear-search-table" style="padding: 0 6px; cursor: pointer; position: absolute; right: 0.6em; font-size: 1.5em; color: grey;"
-						aria-label="press enter to reset table to all results"></i>
-				</div>
-			</div>-->
-			<table id="nchs-table" class="table table-bordered">
-				<thead>
+			<table id="nchs-table">
+				<thead>					
 					<tr>
-						<th style="position: sticky; left: 0; z-index: 3; background-color: #e0e0e0;" class="dtfc-fixed-left">Year</th>
-						<th colspan="${columns.length}">Estimate${showCI ? " (Confidence Interval)" : ""}</th>
-					</tr>
-					<tr>
-						<th style="left: 1px !important;"></th>
+						<th></th>
 						${columns.map((c, i) => `<th class="headerValue" data-index=${i + 1}>${c}</th>`).join("")}
 					</tr>
 				</thead>
@@ -1116,106 +1083,12 @@ export class LandingPage {
 			$(body).append(row);
 		});
 
-		// $("#clear-search-table").hide();
-		this.dataTable = $("#nchs-table")
-			.DataTable({
-				bAutoWidth: false,
-				bInfo: false,
-				paging: false,
-				scrollX: "auto",
-				scrollY: "auto",
-				fixedColumns: {
-					left: 1,
-				},
-				fixedHeader: true,
-				searching: false,
-				dom: "tB",
-				buttons: ["csv"],
-			})
-			.columns.adjust();
-
-		// const filter = $("div.dataTables_filter");
-		// $(filter).parent().parent().find("div:first").remove();
-		// $(filter).parent().removeClass().addClass("col-12");
-		// $(filter).find("label").prepend("<i class='fa fa-search' style='padding: 0 6px'></i>");
-
-		// let allWordsInHeaderValues = [];
-		// $(".headerValue").each((i, d) => {
-		// 	const words = $(d).text().split(" ");
-		// 	words.forEach((w) => {
-		// 		if (!allWordsInHeaderValues.includes(w)) allWordsInHeaderValues.push(w);
-		// 	});
-		// });
-		// allWordsInHeaderValues = allWordsInHeaderValues.map((d) => d.replace(":", "").toLowerCase());
-
-		// const clearIndices = columns.map((d, i) => i + 1);
-
-		// const hideShowColumns = (search) => {
-		// 	clearIndices.forEach((i) => {
-		// 		const column = this.dataTable.column(i);
-		// 		column.visible(true);
-		// 	});
-
-		// 	if (search === "") {
-		// 		$("#clear-search-table").hide();
-		// 		$("#filteredTableCount").html(allResultsCount);
-		// 		return;
-		// 	}
-		// 	const searchIsFullWordInHeader = allWordsInHeaderValues.includes(search.toLowerCase());
-		// 	$(".dataTables_scrollHeadInner .headerValue").each((i, d) => {
-		// 		const column = this.dataTable.column(i + 1);
-		// 		const wordsInHeader = $(d)
-		// 			.text()
-		// 			.split(" ")
-		// 			.map((d) => d.replace(":", "").toLowerCase());
-		// 		if (searchIsFullWordInHeader && !wordsInHeader.includes(search.toLowerCase())) column.visible(false);
-		// 		else if (!searchIsFullWordInHeader && !wordsInHeader.some((w) => w.includes(search.toLowerCase())))
-		// 			column.visible(false);
-		// 	});
-		// 	// check if user has filtered out all columns
-		// 	const visibleColumns = this.dataTable
-		// 		.columns()
-		// 		.visible()
-		// 		.filter((d) => d === true);
-		// 	if (visibleColumns.length === 1) {
-		// 		this.renderDataTable(data, search);
-		// 		return;
-		// 	}
-
-		// 	$("#filteredTableCount").html($(".dataTables_scrollHeadInner .headerValue").length * years.length);
-		// };
-
-		// $("#search-table")
-		// 	.autocomplete({
-		// 		source: allWordsInHeaderValues,
-		// 		select: (event, ui) => {
-		// 			$("#search-table").val(ui.item.value);
-		// 			$("#search-table").trigger("keyup");
-		// 			hideShowColumns(ui.item.value);
-		// 		},
-		// 		response: (event, ui) => {
-		// 			if (!ui.content.length) ui.content.push({ value: "", label: "No results found" });
-		// 		},
-		// 	})
-		// 	.on("keyup", (e) => {
-		// 		if ($("#search-table").val() === "") {
-		// 			hideShowColumns("");
-		// 			return;
-		// 		}
-		// 		if (e.keyCode === 13) {
-		// 			hideShowColumns($("#search-table").val());
-		// 			$("#search-table").autocomplete("close");
-		// 		} else if (e.keyCode === 27 && $("#search-table").val() !== "") $("#search-table").val("");
-		// 		else $("#clear-search-table").show();
-		// 	});
-
-		// $("#clear-search-table").on("click", () => {
-		// 	$("#search-table").val("");
-		// 	hideShowColumns("");
-		// });
-
-		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
-		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
+		const yearHeaderWidth = $("#tableYearHeader").width();
+		// debugger;
+		$("#nchs-table > tbody th").first().width(yearHeaderWidth);
+		const tableWidth = $("#nchs-table").width();
+		$("#nchsHeaderTable").width(tableWidth);
+		$("#nchsHeaderTable th").first().width(yearHeaderWidth);
 	}
 
 	exportCSV() {

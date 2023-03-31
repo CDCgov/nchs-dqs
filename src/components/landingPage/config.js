@@ -199,7 +199,7 @@ export const tabContent = `
 						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
 							<div id="chartLegendTitle" tabindex="0"></div>
 							<hr style="margin: 0 10px" />
-							<div id="chartLegendContent"></div>							
+							<div id="chartLegendContent"></div>
 						</div>
 					</div>
 				</div>
@@ -211,7 +211,14 @@ export const tabContent = `
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div class="content-wrapper">
 				<div id="tableSelectors"></div>
-				<div id="tableResultsCount" style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
+				<table id="nchsHeaderTable" style="background-color: #e0e0e0;">
+					<thead>
+						<tr>
+							<th id="tableYearHeader">Year</th>
+							<th id="tableEstimateHeader"></th>
+						</tr>
+					</thead>
+				</table>
 				<div class="expanded-data-table"></div>
 				<br />
 				<div tabindex="0" class="source-text unreliableNote">Symbols (e.g. * and ---) are used as reliability indicators. <a class="viewFootnotes">See Notes</a> for more details.</div>
@@ -230,7 +237,7 @@ export const tabContent = `
 			<button tabindex="0" id="dwn-chart-img" class="theme-cyan btn" style="margin-right: 20px">
 				Download Image <i class="fas fa-image" aria-hidden="true"></i>
 			</button>
-			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">
+			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">				
 				Download Data <i class="fas fa-download" aria-hidden="true"></i>
 			</button>
 		</span>
