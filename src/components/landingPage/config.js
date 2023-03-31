@@ -262,6 +262,10 @@ export const topicLookup = {
 		socrataId: "rkv8-xf9z",
 		private: "1",
 	},
+	cshsFootnotes: {
+		socrataId: "7kgb-btmk",
+		private: "1",
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",

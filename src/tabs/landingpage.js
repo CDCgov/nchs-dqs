@@ -89,7 +89,7 @@ export class LandingPage {
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
 					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
+					footnote_id_list: f.footnote_id_list || f.footnote_id,
 					indicator: f.outcome_or_indicator,
 					panel: group.classification,
 					panel_num: group.classificationId,
@@ -585,16 +585,17 @@ export class LandingPage {
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, mapData] = data;
+				let [socrataData, footNotes, nhisFootnotes, cshsFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes];
+					allFootNotes = [...footNotes, ...nhisFootnotes, ...cshsFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
