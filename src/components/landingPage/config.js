@@ -297,7 +297,7 @@ export const topicLookup = {
 			return returnData;
 		},
 	},
-	cshs: {
+	"children-summary-statistics": {
 		socrataId: "rkv8-xf9z",
 		private: "1",
 		dataMapper: (data, dataId) => {
@@ -333,7 +333,7 @@ export const topicLookup = {
 		socrataId: "7kgb-btmk",
 		private: "1",
 	},
-	dhcs: {
+	"dhcs-emergency-department-visits": {
 		socrataId: "pcav-mejc",
 		private: "1",
 		dataMapper: (data, dataId) => {
@@ -368,7 +368,7 @@ export const topicLookup = {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
-	nhanes: {
+	"nhanes-chronic-conditions": {
 		socrataId: "i2dc-ja7d",
 		private: "1",
 		dataMapper: (data, dataId) => {
@@ -399,7 +399,7 @@ export const topicLookup = {
 			return returnData;
 		},
 	},
-	"j4m9-2puq": {
+	"nhanes-dietary-behaviors": {
 		socrataId: "j4m9-2puq",
 		private: "1",
 		dataMapper: (data, dataId) => {
@@ -571,7 +571,7 @@ nhisTopics.forEach((t) => {
 		hasCI: true,
 		hasClassification: true,
 		topicGroup: t.topicGroup,
-		topicLookupId: t.prefix || "nhis",
+		topicLookupId: t.topicLookupKey || "nhis",
 	};
 });
 
