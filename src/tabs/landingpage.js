@@ -96,8 +96,6 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-			DataCache[`data-${socrataId}`] = nchsData;
-
 			DataCache[`data-${localConfig.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
