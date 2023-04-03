@@ -267,8 +267,9 @@ export const topicLookup = {
 			filteredToIndicator.forEach((f) => {
 				let group = nhisGroups[f.subgroup];
 				if (group instanceof Map) {
-					group = group.get(f.group_byid);
+					group = group.get(f.group_by_id);
 				}
+
 				if (group) {
 					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 					returnData.push({
@@ -276,7 +277,7 @@ export const topicLookup = {
 						estimate_lci: ci[0].trim(),
 						estimate_uci: ci[1].trim(),
 						flag: f.flag,
-						footnote_id_list: f.footnote_id_list,
+						footnote_id_list: f.footnote_id,
 						indicator: f.outcome_or_indicator,
 						panel: group.classification,
 						panel_num: group.classificationId,
@@ -295,6 +296,42 @@ export const topicLookup = {
 
 			return returnData;
 		},
+	},
+	cshs: {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	cshsFootnotes: {
+		socrataId: "7kgb-btmk",
+		private: "1",
 	},
 	dhcs: {
 		socrataId: "pcav-mejc",
@@ -358,8 +395,6 @@ export const topicLookup = {
 					age: f.group_by.includes("By age") ? f.group : "N/A",
 				});
 			});
-
-			console.log("GENERATED RTURN DATA", returnData[0])
 
 			return returnData;
 		},
@@ -492,6 +527,7 @@ export const topicLookup = {
 	},
 };
 
+// load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",

@@ -85,8 +85,8 @@ export class LandingPage {
 				dataUrl = `https://data.cdc.gov/resource/${localConfig.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `http://localhost/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
-				dataUrl = `http://localhost/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
+				metaUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
+				dataUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -96,6 +96,7 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
+			DataCache[`data-${socrataId}`] = nchsData;
 
 			DataCache[`data-${localConfig.socrataId}`] = nchsData;
 			return nchsData;
@@ -445,6 +446,7 @@ export class LandingPage {
 			NT: "Methodology",
 			NA: "Reliability",
 			NH: "Footnotes",
+			DH: "Footnotes",
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
@@ -503,8 +505,9 @@ export class LandingPage {
 
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
+
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
-		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
+		const hasMap = !!this.config.hasMap; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
@@ -536,17 +539,17 @@ export class LandingPage {
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, mapData] = data;
-
+				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, cshsFootnotes, mapData] = data;
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes];
+					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes, ...cshsFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -633,6 +636,7 @@ export class LandingPage {
 			} else this.dataTopic = this.selections.topic;
 		}
 
+		// filter & map topic entries that have a 'chartTitle' property for the 'Topic' dropdown
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
 			const title = k[1].chartTitle;
@@ -681,6 +685,7 @@ export class LandingPage {
 			options,
 			selectedValue: this.selections?.classification,
 		});
+
 		this.classificationDropdown.render();
 		this.config.classificationId = this.classificationDropdown.value();
 
