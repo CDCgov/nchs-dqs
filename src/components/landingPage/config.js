@@ -301,7 +301,7 @@ export const topicLookup = {
 		socrataId: "rkv8-xf9z",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
