@@ -6,7 +6,7 @@ import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
-import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
+import { nhisTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
@@ -64,32 +64,26 @@ export class LandingPage {
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.subgroup];
-			if (group instanceof Map) {
-				group = group.get(f.group_byid);
-			}
-			if (group) {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.outcome_or_indicator,
-					panel: group.classification,
-					panel_num: group.classificationId,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: group.group,
-					stub_name_num: group.groupId,
-					unit: "Percent of population",
-					unit_num: 1,
-					year: f.year,
-					year_num: "",
-					age: group.group.includes("Age Group") ? f.subgroup : "N/A",
-				});
-			}
+			const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+			returnData.push({
+				estimate: f.percentage,
+				estimate_lci: ci[0].trim(),
+				estimate_uci: ci[1].trim(),
+				flag: f.flag,
+				footnote_id_list: f.footnote_id_list,
+				indicator: f.outcome_or_indicator,
+				panel: f.subtopic,
+				panel_num: f.subtopicid,
+				se: null,
+				stub_label: f.subgroup,
+				stub_name: f.group_by,
+				stub_name_num: f.group_byid,
+				unit: f.unit,
+				unit_num: f.unit_id,
+				year: f.year,
+				year_num: "",
+				age: f.group_by.includes("By age") ? f.group_by : "N/A",
+			});
 		});
 
 		DataCache[`data-${dataId}`] = returnData;
@@ -274,7 +268,7 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").show();
 		}
 
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		let stateData = [...data];
 
@@ -288,7 +282,7 @@ export class LandingPage {
 
 		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
 		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
 
 		let classified;
@@ -372,8 +366,8 @@ export class LandingPage {
 		if (this.showBarChart) this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
 		else this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
 
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 		$("#chartLegendTitle").html(group);
 	}
 
@@ -584,7 +578,7 @@ export class LandingPage {
 		else this.groupId = 0;
 
 		// set the chart title
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (this.config.socrataId.startsWith("nhis")) {
 			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
@@ -1032,8 +1026,8 @@ export class LandingPage {
 		}
 		this.updateFootnotes(tableData);
 
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
@@ -1063,7 +1057,7 @@ export class LandingPage {
 			<table id="nchs-table">
 				<thead>					
 					<tr>
-						<th></th>
+						<th>&nbsp;</th>
 						${columns.map((c, i) => `<th class="headerValue" data-index=${i + 1}>${c}</th>`).join("")}
 					</tr>
 				</thead>
@@ -1083,12 +1077,7 @@ export class LandingPage {
 			$(body).append(row);
 		});
 
-		const yearHeaderWidth = $("#tableYearHeader").width();
-		// debugger;
-		$("#nchs-table > tbody th").first().width(yearHeaderWidth);
-		const tableWidth = $("#nchs-table").width();
-		$("#nchsHeaderTable").width(tableWidth);
-		$("#nchsHeaderTable th").first().width(yearHeaderWidth);
+		functions.adjustTableDimensions();
 	}
 
 	exportCSV() {
