@@ -210,7 +210,6 @@ export const tabContent = `
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
 			<div id="tableContentWrapper" class="content-wrapper">
-				<div style="overflow: hidden; width: 100%">
 				<div id="tableSelectors"></div>
 				<table id="nchsHeaderTable" style="background-color: #e0e0e0;">
 					<thead>
@@ -221,7 +220,6 @@ export const tabContent = `
 					</thead>
 				</table>
 				<div class="expanded-data-table"></div>
-				</div>
 				<br />
 				<div tabindex="0" class="source-text unreliableNote">Symbols (e.g. * and ---) are used as reliability indicators. <a class="viewFootnotes">See Notes</a> for more details.</div>
 			</div>

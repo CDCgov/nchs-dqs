@@ -290,13 +290,9 @@ export const binData = (data) => {
 };
 
 export const adjustTableDimensions = () => {
-	// ---- Reset all widths / heights previously set ---------
-	$("#nchsHeaderTable, #tableYearHeader, #nchs-table").width("unset");
-	$("#nchs-table > tbody th").first().width("unset");
-	$(".expanded-data-table").height("unset");
-
 	// ---- Adjust height ---------
 	// set table height so that all is visible from title down to possible footnote callout about flags
+	$(".expanded-data-table").height("unset");
 	const chartTitleTop = $(".chart-title").offset().top;
 	const tableTop = $(".expanded-data-table").offset().top;
 	const ninetyPercentWindowHeight = 0.9 * $(window).height();
@@ -313,55 +309,5 @@ export const adjustTableDimensions = () => {
 
 	// ---- Adjust width ---------
 	// set table's max-width to fit inside of tableContentWrapper and set width to fit-content
-	const contentWrapperWidth = $("#tableContentWrapper").width();
-	$(".expanded-data-table").css({
-		"max-width": contentWrapperWidth + "px",
-		width: "fit-content",
-	});
-
-	// If table-width is wider than the contentWrapperWidth, set remove fit-content to keep the container from expanding
-	let widthUnset = false;
-	let tableWidth = $("#nchs-table").width();
-	if (tableWidth > contentWrapperWidth) {
-		$(".expanded-data-table").css("width", "unset");
-		widthUnset = true;
-	}
-
-	// ---- Make the header row match width of table ---------
-	const yearsHeaderWidth = $("#tableYearHeader").width();
-	const yearsWidth = $("#nchs-table > tbody th").first().width();
-	let tableContainerWidth = $(".expanded-data-table").width();
-
-	// ---- Adjust Year and estimate to match the table  ---------
-	// if the Header is wider also bump up the table itself in case everything was squished as tight as possible
-	let column1Width;
-	if (yearsHeaderWidth > yearsWidth) {
-		if (widthUnset) {
-			$("#nchs-table").width(tableWidth + yearsHeaderWidth - yearsWidth);
-		} else {
-			tableContainerWidth += yearsHeaderWidth - yearsWidth;
-		}
-		$("#nchs-table > tbody th").first().width(yearsHeaderWidth);
-		column1Width = yearsHeaderWidth;
-	} else {
-		$("#tableYearHeader").width(yearsWidth);
-		column1Width = yearsWidth;
-	}
-
-	// ---- Finalize required widths ---------
-	$("#nchsHeaderTable").width(tableContainerWidth);
-	$("#tableYearHeader").width(column1Width);
-
-	// Making sure the 2nd column is not narrower than the table estimate header. This only happens when there is one column of data.
-	const countOfColumns = $("#nchs-table > thead th").length;
-	const column2Width = $("#nchs-table > thead th:nth-child(2)").width();
-	const tableEstimateHeaderWidth = $("#tableEstimateHeader").width();
-	const widthWidthScrollbar = document.getElementById("nchs-table").parentNode.offsetWidth;
-	const hasAScrollbar = widthWidthScrollbar - 5 > tableWidth; // magic number 5 fudges correctly in Chrome, perhaps not in other browsers
-
-	// Depending on whether the table has a scrollbar, the width of the table may or may not need adjusting
-	if (countOfColumns === 2 && tableEstimateHeaderWidth > column2Width + (hasAScrollbar ? 20 : 0)) {
-		// magic number 20 roughly estimates scrollbar width correctly in Chrome, perhaps not in other browsers
-		$("#nchs-table > thead th:nth-child(2)").width(tableEstimateHeaderWidth);
-	}
+	$("#tableYearHeader").width($("#nchs-table > tbody th").first().width());
 };

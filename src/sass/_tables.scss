@@ -61,6 +61,7 @@
 }
 
 #nchsHeaderTable {
+	width: 100%;
 	background-color: #e0e0e0;
 	border-bottom: 1px solid #333;
 	font-size: 18px;
@@ -85,6 +86,7 @@
 	position: relative;
 
 	#nchs-table {
+		width: 100%;
 		position: relative;
 		thead {
 			border-bottom: 1px solid #333;
@@ -100,11 +102,13 @@
 					padding: 0 4px;
 					background-color: #fff; // this allows header to stay on top with the z-index
 					z-index: 1;
+					min-width: 176px;
 
 					&:first-child {
 						border-left: none;
 						left: 0;
 						z-index: 2; // stay on top both scroll directions
+						min-width: 50px;
 					}
 				}
 			}
@@ -121,11 +125,11 @@
 			border: 1px solid lightgrey;
 			border-left: none;
 			padding: 0 4px;
-			text-align: center;
 			position: -webkit-sticky; /* for Safari */
 			position: sticky;
 			left: 0;
 			z-index: 1;
+			background-color: #fff; // this allows header to stay on top with the z-index
 		}
 	}
 }
