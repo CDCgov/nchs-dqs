@@ -994,4 +994,48 @@ export const nhisTopics = [
 		topicGroup: 0,
 		prefix: "nhanes",
 	},
+
+	// start NHANES Dietary behaviors
+	{
+		id: "calcium-intake",
+		text: "Calcium Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "dietary-fiber-intake",
+		text: "Dietary Fiber Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "iron-intake",
+		text: "Iron Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "potassium-intake",
+		text: "Potassium Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "saturated-fat-intake",
+		text: "Saturated Fat Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "sodium-intake",
+		text: "Sodium Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
+	{
+		id: "vitamin-d-intake",
+		text: "Vitamin D Intake",
+		topicGroup: 2,
+		prefix: "j4m9-2puq",
+	},
 ];

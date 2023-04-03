@@ -84,8 +84,8 @@ export class LandingPage {
 				dataUrl = `https://data.cdc.gov/resource/${localConfig.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
-				dataUrl = `http://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
