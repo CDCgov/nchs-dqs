@@ -260,7 +260,7 @@ export const topicLookup = {
 		dataMapper: (data, dataId) => {
 			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			if (filteredToIndicator.length === 0) {
-				dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
+				dataId = nhisTopics.find((t) => t.text === dataId)?.indicator;
 				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			}
 			const returnData = [];
@@ -273,11 +273,11 @@ export const topicLookup = {
 				if (group) {
 					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 					returnData.push({
-						estimate: f.percentage,
+						estimate: f.percentage || "",
 						estimate_lci: ci[0].trim(),
 						estimate_uci: ci[1].trim(),
 						flag: f.flag,
-						footnote_id_list: f.footnote_id,
+						footnote_id_list: f.footnote_id_list,
 						indicator: f.outcome_or_indicator,
 						panel: group.classification,
 						panel_num: group.classificationId,
@@ -379,7 +379,7 @@ export const topicLookup = {
 					estimate: f.percent,
 					estimate_lci: f.lower_95_ci_limit,
 					estimate_uci: f.upper_95_ci_limit,
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
 					panel: f.subtopic,

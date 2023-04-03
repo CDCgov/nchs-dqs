@@ -55,7 +55,6 @@ export class LandingPage {
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
 	getNhisData = (dataId, prefix, mapper) => {
-		console.log("got data id", dataId);
 		// if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		const returnData = mapper(this.nhisData, dataId);
 
