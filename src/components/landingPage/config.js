@@ -392,7 +392,7 @@ export const topicLookup = {
 					unit_num: f.estimate_type_id,
 					year: f.survey_years,
 					year_num: "",
-					age: f.group_by.includes("By age") ? f.group : "N/A",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
 				});
 			});
 
