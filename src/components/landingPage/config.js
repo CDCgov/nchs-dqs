@@ -254,7 +254,7 @@ export const topicLookup = {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	"nhis-adult": {
+	"nhis": {
 		socrataId: "4u68-shzr",
 		private: "1",
 		dataMapper: (data, dataId) => {
