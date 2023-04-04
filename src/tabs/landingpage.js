@@ -1047,6 +1047,16 @@ export class LandingPage {
 			}`,
 		}));
 
+		if (tableData.every((d) => !d.data || d.data === "NaN")) {
+			$("#tableResultsCount").hide();
+			$(".expanded-data-table")
+				.empty()
+				.html(
+					`<div style="text-align: center; margin: 30px; font-size: 1rem;">There are no data for your selections. Please change your options. Select at least one Subgroup.</div>`
+				);
+			return;
+		}
+
 		const columns = [...new Set(tableData.map((d) => d.column))];
 		const years = [...new Set(tableData.map((d) => d.year))];
 		let tableId = "nchs-table";

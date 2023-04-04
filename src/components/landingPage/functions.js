@@ -27,13 +27,8 @@ export const addHtmlTooltips = () => {
 	});
 
 	const editFiltersTooltip = new HtmlTooltip({
-		body: "Advanced filters to limit options in dropdown lists",
-		containerId: "dropdownSelectorGroup",
-	});
-
-	const removeFiltersTooltip = new HtmlTooltip({
-		body: "Clear advanced filters selections",
-		containerId: "dropdownSelectorGroup",
+		body: "Use this filter to narrow your search by populations or data systems.",
+		containerId: "topicDropdownGroup",
 	});
 
 	const ciToggleTooltip = new HtmlTooltip({
@@ -54,7 +49,6 @@ export const addHtmlTooltips = () => {
 
 	resetInfoTooltip.render();
 	editFiltersTooltip.render();
-	removeFiltersTooltip.render();
 	ciToggleTooltip.render();
 	refineTopicInfoTooltip.render();
 
@@ -63,16 +57,6 @@ export const addHtmlTooltips = () => {
 	$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
 	$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
 	$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
-	$("#resetInfo").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
-
-	$(".editFiltersIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
-	$(".editFiltersIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
-	$(".editFiltersIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
-	$(".editFiltersIcon").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
-
-	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
-	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
-	$(".clearFiltersIcons").mouseleave((e) => removeFiltersTooltip.mouseout(e));
 
 	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
 	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
@@ -85,6 +69,10 @@ export const addHtmlTooltips = () => {
 	$("#staticBinningLabel").mouseover((e) => staticBinningTooltip.mouseover(e));
 	$("#staticBinningLabel").mousemove((e) => staticBinningTooltip.mousemove(e));
 	$("#staticBinningLabel").mouseleave((e) => staticBinningTooltip.mouseout(e));
+
+	$("#refineTopicIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
+	$("#refineTopicIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
+	$("#refineTopicIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);

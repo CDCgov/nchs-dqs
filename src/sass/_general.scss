@@ -507,10 +507,23 @@ div.genDropdownSelected {
 	color: #333;
 }
 
+.heading5 {
+	font-size: 20px;
+	font-weight: bold;
+	color: #333;
+}
+
 .heading6 {
+	margin-top: 1rem;
 	font-size: 18px;
 	font-weight: bold;
 	color: #333;
+	text-align: center;
+
+	> div {
+		border-bottom: 1px solid #ddd;
+		width: 90%;
+	}
 }
 
 .selectableIcon {
@@ -531,5 +544,10 @@ div.genDropdownSelected {
 
 	input {
 		margin-right: 6px;
+	}
+
+	label {
+		white-space: normal;
+		transform: translateY(-5px);
 	}
 }

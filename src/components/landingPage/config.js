@@ -41,7 +41,7 @@ export const tabContent = `
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
 		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">-->
-		<div class="col homeSelectorGroup">
+		<div id="topicDropdownGroup" class="col homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -57,6 +57,7 @@ export const tabContent = `
 			<div class="row label-style timePeriodContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
 				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
+				<i id="refineTopicIcon" class="fas fa-info-circle" style="color: #555">&nbsp;</i>
 			</div>			
 		</div>
 		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->

@@ -147,13 +147,18 @@ export class MainEvents {
 			})
 			.off("click", ".filterCheckbox")
 			.on("click", ".filterCheckbox", () => {
+				const windowWidth = $(window).width();
 				const selected = $(".filterCheckbox:checkbox:checked").length;
 				if (selected) {
 					let message = "";
-					$(".filterCheckbox:checkbox:checked").each((i, el) => {
-						message += $(el).siblings("label").text() + " <b>OR</b> ";
-					});
-					message = message.slice(0, -11);
+					if (windowWidth < 1200) {
+						message = `${selected} selected`;
+					} else {
+						$(".filterCheckbox:checkbox:checked").each((i, el) => {
+							message += $(el).parent().siblings("label").text() + " <b>OR</b> ";
+						});
+						message = message.slice(0, -11);
+					}
 					$("#filterResults").html(message);
 				} else {
 					$("#filterResults").html("All");
