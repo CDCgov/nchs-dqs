@@ -224,21 +224,47 @@ export const resetTopicDropdownList = () => {
 };
 
 export const updateTopicDropdownList = () => {
+	const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS"];
+	// const dataSystems = ["HUS", "NCHS", "NHANES", "NHIS", "NHAMCS"];
+
 	const selectedFilters = $(".filterCheckbox:checked")
 		.map((i, el) => el.id.replace("filter", ""))
 		.toArray();
 
+	const selectedDataSystems = selectedFilters.filter((f) => dataSystems.includes(f));
+	const filtersWithoutDataSystems = selectedFilters.filter((f) => !dataSystems.includes(f));
+
+	// TODO: this is logic needs work. If a Data System is selected then only show topics in that (or those) data systems but continue to check
+	// the other filters to see if it needs to be filtered down more.
 	let needToChangeSelected = false;
 	if (selectedFilters.length) {
 		let firstFiltered;
 		const currentSelected = $("#topicDropdown-select .genOptionSelected").data("val");
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const availableFilters = $(el).data("filter").split(",");
+			const dataSystem = $(el).data("dataSystem");
 			const value = $(el).data("val");
+			// the selectedFilters may include a data system, if selected, which gets into the if statement below
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
-				$(el).show();
-				$(el).removeClass("genOptionFilteredOut");
+				if (selectedDataSystems.length && !selectedDataSystems.includes(dataSystem)) {
+					$(el).hide();
+					$(el).addClass("genOptionFilteredOut");
+					if (value === currentSelected) {
+						needToChangeSelected = true;
+						$(el).removeClass("genOptionSelected");
+					}
+				} else if (filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))) {
+					$(el).show();
+					$(el).removeClass("genOptionFilteredOut");
+				} else {
+					$(el).hide();
+					$(el).addClass("genOptionFilteredOut");
+					if (value === currentSelected) {
+						needToChangeSelected = true;
+						$(el).removeClass("genOptionSelected");
+					}
+				}
 			} else {
 				$(el).hide();
 				$(el).addClass("genOptionFilteredOut");
@@ -270,7 +296,9 @@ export const updateTopicDropdownList = () => {
 					.attr("hidden", true)
 					.addClass("genOptionFilteredOut");
 		});
-	} else resetTopicDropdownList();
+	} else {
+		resetTopicDropdownList();
+	}
 };
 
 export const binData = (data) => {

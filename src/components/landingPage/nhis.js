@@ -1,4 +1,4 @@
-export const nhisHash = {
+export const NHISHash = {
 	groupOptions: [
 		{
 			hash: "total",
@@ -97,7 +97,7 @@ export const nhisHash = {
 	],
 };
 
-export const nhisTopics = [
+const NHISAdult = [
 	{ id: "angina-pectoris", text: "Angina/angina pectoris", topicGroup: 0 },
 	{ id: "any-difficulty-communicating", text: "Any difficulty communicating", topicGroup: 0 },
 	{ id: "any-difficulty-hearing", text: "Any difficulty hearing", topicGroup: 0 },
@@ -177,7 +177,6 @@ export const nhisTopics = [
 		indicator: "Exchange-based coverage coverage at time of interview",
 		topicGroup: 3,
 	},
-	// { id: "fair-or-Less-than-100%-FPL-health-status", text: "Fair or Less than 100% FPL health status", topicGroup: 1 },
 	{
 		id: "fair-or-poor-health-status",
 		text: "Fair or poor health status among adults",
@@ -262,138 +261,123 @@ export const nhisTopics = [
 		topicGroup: 3,
 	},
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 6 },
+];
 
-	// start dhcs topics
+// NHAMCS topics
+const NHAMCSChild = [
 	{
 		id: "emergency-department-visits-for-all-diagnoses",
 		text: "Emergency department visits for all diagnoses",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-all-reasons-patient-reported",
 		text: "Emergency department visits for all reasons (patient reported)",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-accident-not-otherwise-specified",
 		text: "Emergency department visits for accident, not otherwise specified",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-back-symptoms",
 		text: "Emergency department visits for back symptoms",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-certain-infectious-and-parasitic-diseases",
 		text: "Emergency department visits for certain infectious and parasitic diseases",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-chest-pain-and-related-symptoms-not-referable-to-body-systems",
 		text: "Emergency department visits for chest pain and related symptoms (not referable to body systems)",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-cough",
 		text: "Emergency department visits for cough",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-circulatory-system",
 		text: "Emergency department visits for diseases of the circulatory system",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-digestive-system",
 		text: "Emergency department visits for diseases of the digestive system",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-genitourinary-system",
 		text: "Emergency department visits for diseases of the genitourinary system",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-musculoskeletal-system-and-connective-tissue",
 		text: "Emergency department visits for diseases of the musculoskeletal system and connective tissue",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-respiratory-system",
 		text: "Emergency department visits for diseases of the respiratory system",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-skin-and-subcutaneous-tissue",
 		text: "Emergency department visits for diseases of the skin and subcutaneous tissue",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-fever",
 		text: "Emergency department visits for fever",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-headache-pain-in-head",
 		text: "Emergency department visits for headache, pain in head",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-injury-and-poisoning",
 		text: "Emergency department visits for injury and poisoning",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-mental-behavioral-and-neurodevelopmental-disorders",
 		text: "Emergency department visits for mental, behavioral, and neurodevelopmental disorders",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-other-symptomsproblems-related-to-psychological-and-mental-disorders",
 		text: "Emergency department visits for other symptoms/problems related to psychological and mental disorders",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-pain-site-not-referable-to-a-specific-body-system",
 		text: "Emergency department visits for pain, site not referable to a specific body system",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-shortness-of-breath",
 		text: "Emergency department visits for shortness of breath",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-stomach-and-abdominal-pain-cramps-and-spasms",
 		text: "Emergency department visits for stomach and abdominal pain, cramps and spasms",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
 	{
 		id: "emergency-department-visits-for-symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
 		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
 		topicGroup: 1,
-		prefix: "dhcs",
 	},
+];
+
+export const NHISTopics = [
+	...NHISAdult.map((d) => ({ ...d, prefix: "NHIS" })),
+	...NHAMCSChild.map((d) => ({ ...d, prefix: "NHAMCS" })),
 ];

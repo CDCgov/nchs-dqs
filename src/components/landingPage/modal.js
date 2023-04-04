@@ -1,26 +1,3 @@
-const modalGroups = [
-	{
-		group: "demographic",
-		header: `<div class="col-12 heading6">Demographic</div><hr />`,
-		itemLayout: "col-xs-12, col-md-6",
-	},
-	{
-		group: "socioeconomic",
-		header: `<div class="col-xs-12 col-md-6 col-xl-12">Socio-economic</div><hr />`,
-		itemLayout: "col-xs-12, col-md-6",
-	},
-	{
-		group: "geographic",
-		header: `<div class="col-xs-12 col-md-6 col-xl-12">Socio-economic</div><hr />`,
-		itemLayout: "col-xs-12, col-md-6",
-	},
-	{
-		group: "dataSystems",
-		header: `<div class="col-12">Data Systems</div><hr />`,
-		itemLayout: "col-12",
-	},
-];
-
 const modalTopics = [
 	{
 		id: "filterIndian",
@@ -137,11 +114,11 @@ const modalTopics = [
 		text: "Health, United States (HUS)",
 		group: "dataSystems",
 	},
-	{
-		id: "filterNCHS",
-		text: "National Center for Health Statistics (NCHS)",
-		group: "dataSystems",
-	},
+	// { // this may be added in later ... currently the requirement of how it will be applied is being discussed
+	// 	id: "filterNCHS",
+	// 	text: "National Center for Health Statistics (NCHS)",
+	// 	group: "dataSystems",
+	// },
 	{
 		id: "filterNHANES",
 		text: "National Health and Nutrition Examination Survey (NHANES)",

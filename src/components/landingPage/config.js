@@ -1,7 +1,7 @@
 import { modal, allFilters } from "./modal";
-import { nhisHash, nhisTopics } from "./nhis";
+import { NHISHash, NHISTopics } from "./nhis";
 
-const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
+const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
 export const chartAndTableSelectors = `
 	<div id="chart-table-selectors">
@@ -258,19 +258,19 @@ export const topicLookup = {
 		socrataId: "m6mz-p2ij",
 		private: "1",
 	},
-	nhisFootnotes: {
+	NHISFootnotes: {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	nhis: {
+	NHIS: {
 		socrataId: "4u68-shzr",
 		private: "1",
 	},
-	dhcs: {
+	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
 	},
-	dhcsFootnotes: {
+	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
@@ -280,7 +280,8 @@ export const topicLookup = {
 		socrataId: "64sz-mcbq",
 		private: "1",
 		chartTitle: "Obesity among Children (HUS)",
-		filters: "AsianPacific,Black,Children,Hispanic,Poverty,White",
+		filters: "HUS,AsianPacific,Black,Children,Hispanic,Poverty,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -292,7 +293,8 @@ export const topicLookup = {
 		socrataId: "23va-ejrn",
 		private: "1",
 		chartTitle: "Obesity among Adults (HUS)",
-		filters: "Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		filters: "HUS,Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -304,7 +306,8 @@ export const topicLookup = {
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
-		filters: "Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		filters: "HUS,Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
@@ -316,7 +319,8 @@ export const topicLookup = {
 		socrataId: "k99r-jkp7",
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments (HUS)",
-		filters: "Adults,Older,Children,Male,Female",
+		filters: "HUS,Adults,Older,Children,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
@@ -328,7 +332,8 @@ export const topicLookup = {
 		socrataId: "bzax-vvbx",
 		private: "1",
 		chartTitle: "Infant Mortality",
-		filters: "Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		filters: "HUS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -342,7 +347,8 @@ export const topicLookup = {
 		socrataId: "3p8z-99bn",
 		private: "1",
 		chartTitle: "Low birthweight live births",
-		filters: "Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		filters: "HUS,Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -358,6 +364,7 @@ export const topicLookup = {
 		chartTitle: "Medicaid coverage among persons under age 65 (HUS)",
 		filters:
 			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+		dataSystem: "HUS",
 		classificationId: "NA",
 		yAxisUnitId: 2,
 		hasCI: true,
@@ -369,7 +376,8 @@ export const topicLookup = {
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		filters: "Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		filters: "HUS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -381,7 +389,8 @@ export const topicLookup = {
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits (HUS)",
-		filters: "Adults,Black,Children,Female,Male,Older,Region,White",
+		filters: "HUS,Adults,Black,Children,Female,Male,Older,Region,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -395,6 +404,7 @@ export const topicLookup = {
 		chartTitle: "Access to Care (HUS)",
 		filters:
 			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -403,13 +413,14 @@ export const topicLookup = {
 	},
 };
 
-nhisTopics.forEach((t) => {
+NHISTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `${t.prefix || `nhis`}-${t.text}`,
-		isNhisData: true,
+		socrataId: `${t.prefix || `NHIS`}-${t.text}`,
+		isNHISData: true,
 		chartTitle: t.text,
-		filters: nhisFilters,
+		filters: NHISFilters,
+		dataSystem: t.prefix,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -948,13 +959,11 @@ export const hashLookup = [
 	},
 ];
 // add all NHIS topic to hashLookup
-nhisTopics
-	.map((t) => t.id)
-	.forEach((id) => {
-		hashLookup.push({
-			hash: id,
-			value: id,
-			groupOptions: nhisHash.groupOptions,
-			classificationOptions: nhisHash.classificationOptions,
-		});
+NHISTopics.map((t) => t.id).forEach((id) => {
+	hashLookup.push({
+		hash: id,
+		value: id,
+		groupOptions: NHISHash.groupOptions,
+		classificationOptions: NHISHash.classificationOptions,
 	});
+});

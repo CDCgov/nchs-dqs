@@ -6,7 +6,7 @@ import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
-import { nhisTopics } from "../components/landingPage/nhis";
+import { NHISTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
@@ -15,7 +15,7 @@ import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMulti
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
-		this.nhisData = null;
+		this.NHISData = null;
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
@@ -54,13 +54,13 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
-	getNhisData = (id) => {
-		let dataId = id.split("nhis-")[1];
+	getNHISData = (id) => {
+		let dataId = id.split("NHIS-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+		let filteredToIndicator = this.NHISData.filter((d) => d.outcome_or_indicator === dataId);
 		if (filteredToIndicator.length === 0) {
-			dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
-			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+			dataId = NHISTopics.find((t) => t.text === id.split("NHIS-")[1])?.indicator;
+			filteredToIndicator = this.NHISData.filter((d) => d.outcome_or_indicator === dataId);
 		}
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
@@ -90,11 +90,11 @@ export class LandingPage {
 		return returnData;
 	};
 
-	getDhcsData = async (id) => {
-		const dataId = id.split("dhcs-")[1];
+	getNHAMCSData = async (id) => {
+		const dataId = id.split("NHAMCS-")[1];
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 
-		const filteredToIndicator = this.nhisData.filter((d) => d.measure === dataId);
+		const filteredToIndicator = this.NHISData.filter((d) => d.measure === dataId);
 		const returnData = [];
 		filteredToIndicator.forEach((f) => {
 			returnData.push({
@@ -126,12 +126,12 @@ export class LandingPage {
 		let nchsData = DataCache[`data-${config.socrataId}`];
 		if (nchsData) return nchsData;
 
-		if (config.socrataId.startsWith("nhis")) {
-			return this.getNhisData(config.socrataId);
+		if (config.socrataId.startsWith("NHIS")) {
+			return this.getNHISData(config.socrataId);
 		}
 
-		if (config.socrataId.startsWith("dhcs")) {
-			return this.getDhcsData(config.socrataId);
+		if (config.socrataId.startsWith("NHAMCS")) {
+			return this.getNHAMCSData(config.socrataId);
 		}
 
 		try {
@@ -580,14 +580,14 @@ export class LandingPage {
 		// set the chart title
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
-		if (this.config.socrataId.startsWith("nhis")) {
-			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
-				this.nhisData = data;
+		if (this.config.socrataId.startsWith("NHIS")) {
+			this.getSelectedSocrataData(config.topicLookup.NHIS).then((data) => {
+				this.NHISData = data;
 				this.getData(topicChange);
 			});
-		} else if (this.config.socrataId.startsWith("dhcs")) {
-			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
-				this.nhisData = data;
+		} else if (this.config.socrataId.startsWith("NHAMCS")) {
+			this.getSelectedSocrataData(config.topicLookup.NHAMCS).then((data) => {
+				this.NHISData = data;
 				this.getData(topicChange);
 			});
 		} else {
@@ -599,18 +599,18 @@ export class LandingPage {
 		Promise.all([
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
-			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
-			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHISFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, NHAMCSFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes];
+					allFootNotes = [...footNotes, ...NHISFootnotes, ...NHAMCSFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -719,7 +719,7 @@ export class LandingPage {
 		// add advanced filters to data-filter attribute
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const value = $(el).data("val");
-			$(el).data("filter", config.topicLookup[value].filters);
+			$(el).data({ filter: config.topicLookup[value].filters, dataSystem: config.topicLookup[value].dataSystem });
 		});
 
 		return filters.length > 0;
@@ -758,7 +758,7 @@ export class LandingPage {
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
 		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
-			nhisTopics.map((t) => t.id)
+			NHISTopics.map((t) => t.id)
 		);
 
 		let allGroupIds;
