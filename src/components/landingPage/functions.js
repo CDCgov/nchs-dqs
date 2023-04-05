@@ -169,7 +169,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
 	const needsScaleTime = scaleTimeIndicators.some((ind) => data[0]?.indicator.includes(ind));
-	const colors = ["#7201b9", "#9D6a3d", "#ed0004", "#098800", "#004f83", "#9e0000", "#a55e86", "black"];
+	const colors = ["#7201b9", "#9D6a3d", "#ed0004", "#098800", "#004f83", "#9e0000", "#a55e86", "#333"];
 
 	return {
 		data,

@@ -2,7 +2,7 @@
 	position: fixed;
 	pointer-events: none;
 	color: #555;
-	background: #f4f4f4;
+	background: #ebf7f5;
 	max-width: 350px;
 	padding: 5px;
 	display: inline-block;
@@ -219,8 +219,12 @@ div.genDropdownSelected {
 	border: 1px solid #ced4da;
 	border-radius: 0.25rem;
 
+	&#estimateTypeDropdown-select {
+		border-color: #bdbdbd !important;
+	}
+
 	&.disabled {
-		color: rgb(150, 150, 150) !important;
+		color: #bdbdbd !important;
 	}
 
 	> a {
@@ -326,7 +330,7 @@ div.genDropdownSelected {
 			}
 
 			&.disabled {
-				color: rgb(150, 150, 150) !important;
+				color: #bdbdbd !important;
 				pointer-events: none;
 			}
 		}
@@ -534,5 +538,24 @@ div.genDropdownSelected {
 
 	input {
 		margin-right: 6px;
+	}
+}
+
+// this is the final call to anchor and all within the site should use this
+a {
+	color: #075290 !important;
+	&:visited {
+		color: #800080 !important;
+	}
+	&:focus,
+	&:focus-visible {
+		outline: 2px solid #fe7419 !important;
+	}
+}
+
+button {
+	&:focus,
+	&:focus-visible {
+		outline: 2px solid #fe7419 !important;
 	}
 }

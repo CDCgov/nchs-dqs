@@ -6,19 +6,17 @@
 	width: 100%;
 	line-height: 38px;
 	cursor: pointer;
-	color: #007c91;
-	border-top: 3px solid #007c91;
-	border-bottom: 1px solid #007c91;
+	color: #555;
+	border-top: 3px solid #4ebaaa;
+	border-bottom: 1px solid #4ebaaa;
 
 	&.closed {
-		color: black;
-		border-top: 1px solid #007c91;
-		border-bottom: 1px solid #007c91;
+		border-top: 1px solid #4ebaaa;
+		border-bottom: 1px solid #4ebaaa;
 	}
 
 	&:hover {
 		background-color: #fbfbfb;
-		color: #007c91;
 	}
 }
 

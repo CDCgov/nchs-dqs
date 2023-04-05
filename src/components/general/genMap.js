@@ -89,7 +89,7 @@ export class GenMap {
 			.attr("height", 0.2 * axisLabelFontSize)
 			.attr("y", yScale(this.allDates[this.currentTimePeriodIndex]) + margin.top - 0.1 * axisLabelFontSize)
 			.attr("x", margin.left - 0.45 * axisLabelFontSize)
-			.attr("fill", "black");
+			.attr("fill", "#333");
 
 		const widthOfAxis = $(`#${svgId} .axis.left`)[0].getBoundingClientRect().width;
 		const playPauseOffset = svgWidth - widthOfAxis - axisLabelFontSize;
@@ -115,8 +115,8 @@ export class GenMap {
 			.append("circle")
 			.attr("class", "mapPlayButton")
 			.attr("r", 0.9 * axisLabelFontSize)
-			.attr("fill", "black")
-			.attr("stroke", "black")
+			.attr("fill", "#555")
+			.attr("stroke", "#555")
 			.attr("cx", -0.9 * axisLabelFontSize)
 			.attr("cy", -0.9 * axisLabelFontSize)
 			.style("cursor", "pointer");
@@ -218,7 +218,7 @@ export class GenMap {
 		}
 
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
-		const fontColors = ["#000000", "#000000", "#000000", "#000000", "#ffffff", "#ffffff", "#ffffff"];
+		const fontColors = ["#333", "#333", "#333", "#333", "#fff", "#fff", "#fff"];
 		const getFontColor = (bin) => fontColors[bin];
 		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
 		const territoriesHeight = 15;
@@ -253,7 +253,7 @@ export class GenMap {
 			.append("rect")
 			.attr("width", 4) // sets the thickness of the crosshatching
 			.attr("height", 12)
-			.attr("fill", "#000")
+			.attr("fill", "#333")
 			.attr("transform", "translate(0,0)");
 
 		// join the data of STATES with the incoming data topic data
@@ -317,7 +317,7 @@ export class GenMap {
 			.enter()
 			.append("path")
 			.attr("d", path)
-			.style("stroke", "#000")
+			.style("stroke", "#333")
 			.style("stroke-width", 0.4) // was 0.3
 			.style("fill", (d) => getColorFromDProps(d))
 			.attr("d.properties.flag", (d) => (d.properties.flag === "**" ? "*" : d.properties.flag));
@@ -446,7 +446,7 @@ export class GenMap {
 				.attr("width", callOutWidth)
 				.attr("height", callOutHeight)
 				.attr("fill", "none")
-				.attr("stroke", "black");
+				.attr("stroke", "#555");
 
 			legendHeight += callOutHeight + 20;
 
@@ -469,7 +469,7 @@ export class GenMap {
 				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
 				.attr("width", reliabilityInfoRectWidth)
 				.attr("height", labelSize)
-				.attr("fill", "black");
+				.attr("fill", "#333");
 
 			reliabilityInfo
 				.append("text")

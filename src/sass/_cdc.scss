@@ -54,13 +54,13 @@ a {
 
 .theme-cyan {
 	.btn {
-		background-color: #007c91 !important;
-		border-color: #007c91 !important;
+		background-color: #00695c !important;
+		border-color: #00695c !important;
 		color: #fff !important;
 		max-width: 530px !important;
 
 		&:hover {
-			background-color: #006578 !important;
+			background-color: #00554b !important;
 		}
 	}
 
@@ -264,7 +264,7 @@ footer .agency-footer {
 }
 
 footer .agency-footer a {
-	color: #000 !important;
+	color: #333 !important;
 	text-decoration: none;
 }
 
@@ -273,7 +273,7 @@ footer .agency-footer a:hover {
 }
 
 footer .agency-footer a.footer-ext svg {
-	fill: #000;
+	fill: #333;
 	float: left;
 }
 
@@ -283,7 +283,7 @@ footer .agency-footer a.footer-ext svg + span {
 }
 
 footer .agency-footer a.footer-ext svg {
-	fill: #000;
+	fill: #333;
 }
 
 .footer-wrapper a,
