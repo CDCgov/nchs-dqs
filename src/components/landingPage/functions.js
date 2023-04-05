@@ -254,7 +254,10 @@ export const updateTopicDropdownList = () => {
 						needToChangeSelected = true;
 						$(el).removeClass("genOptionSelected");
 					}
-				} else if (filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))) {
+				} else if (
+					!filtersWithoutDataSystems.length ||
+					filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))
+				) {
 					$(el).show();
 					$(el).removeClass("genOptionFilteredOut");
 				} else {
