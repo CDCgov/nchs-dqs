@@ -1058,4 +1058,13 @@ export const nhisTopics = [
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
 	},
+
+	// WONDER/HUS heart disease mortality
+	{
+		id: "death-rates-for-diseases-of-heart",
+		text: "Death rates for diseases of heart",
+		topicGroup: 1,
+		topicLookupKey: "wonder-hus-heart-disease-mortality",
+	},
+
 ];

@@ -423,6 +423,37 @@ export const topicLookup = {
 			return returnData;
 		},
 	},
+	"wonder-hus-heart-disease-mortality": {
+		socrataId: "w86r-2336",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.estimate_lci,
+					estimate_uci: f.estimate_uci,
+					flag: f.flag,
+					footnote_id_list: f.footnote,
+					indicator: f.indicator,
+					panel: f.panel,
+					panel_num: f.panel_num,
+					se: null,
+					stub_label: f.stub_label,
+					stub_name: f.stub_name,
+					stub_name_num: f.stub_name_num,
+					unit: f.unit,
+					unit_num: f.unit_num,
+					year: f.year,
+					year_num: f.year_num,
+					age: f.age || "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
