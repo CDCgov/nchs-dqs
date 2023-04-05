@@ -1067,4 +1067,35 @@ export const nhisTopics = [
 		topicLookupKey: "wonder-hus-heart-disease-mortality",
 	},
 
+	// NHANES oral health
+	{
+		id: "total-dental-caries-in-primary-teeth",
+		text: "Total Dental Caries in Primary Teeth",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+	},
+	{
+		id: "total-dental-caries-in-permanent-teeth",
+		text: "Total Dental Caries in Permanent Teeth",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+	},
+	{
+		id: "complete-tooth-loss",
+		text: "Complete Tooth Loss",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+	},
+	{
+		id: "untreated-dental-caries-in-primary-teeth",
+		text: "Untreated Dental Caries in Primary Teeth",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+	},
+	{
+		id: "untreated-dental-caries-in-permanent-teeth",
+		text: "Untreated Dental Caries in Permanent Teeth",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+	},
 ];
