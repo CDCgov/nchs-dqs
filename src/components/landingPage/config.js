@@ -166,7 +166,7 @@ export const tabContent = `
 		</ul>
 		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #ebf7f5; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
