@@ -40,8 +40,7 @@ export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">-->
-		<div class="col homeSelectorGroup">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -53,14 +52,12 @@ export const tabContent = `
 					</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
 				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
 			</div>			
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-			<div class="col homeSelectorGroup leftBorderSmallView">
+			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -70,14 +67,12 @@ export const tabContent = `
 					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer2">&nbsp;</div>
 			<div id="classificationDropdown" class="genDropdown">
 				<label for="classificationDropdown-select" id="classificationDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -87,14 +82,13 @@ export const tabContent = `
 					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="groupDropdown" class="genDropdown">
 				<label for="groupDropdown-select" id="groupDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -104,35 +98,31 @@ export const tabContent = `
 					<div class="mainSelText heading4">Subgroup</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="subgroupDropdown"></div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-		<div class="col homeSelectorGroup leftBorderSmallView">
+		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText">
+				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body2" aria-label="Choose from available time periods">Choose from available</div>
 					<div class="mainSelText heading4">Time Periods</div>
 				</div>
-			</div>
-			<div class="row" style="text-align: center">
-				<div class="col-12">
-					<div class="flexRow">
-					<!--<div style="margin-top: 0.4vw; line-height: 1vw">-->
+				<div class="col-xl-12 col-md-6 col-sm-12">
+					<div class="flexRow singlePeriod">
 						<input style="margin-right: 8px;" type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
 						<label class="label-style body2" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
-				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="startYearContainer-select" id="startYearContainer-label" class="body2">Start Period</label>
+				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center;">
+					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
 				</div>
-				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center" class="body2">
+				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center;">
 					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
@@ -142,7 +132,7 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 24px; color: #555">&nbsp;</i>
+			<i id="resetInfo" class="fas fa-info-circle">&nbsp;</i>
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>

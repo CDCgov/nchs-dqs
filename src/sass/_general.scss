@@ -161,6 +161,10 @@ div.genSearch {
 	position: relative;
 }
 
+#subgroupDropdown {
+	margin-bottom: 5px;
+}
+
 .genDropdown {
 	position: relative;
 	color: #333;
@@ -208,6 +212,9 @@ div.genDropdownSelected {
 	position: relative;
 	width: 100%;
 	padding: 4px 22px 4px 7px;
+	@media screen and (max-width: 1199px) {
+		padding: 8px 22px 8px 7px;
+	}
 	margin: 0;
 	font-weight: 400;
 	// color: #495057;
@@ -352,6 +359,9 @@ div.genDropdownSelected {
 	width: 100%;
 	margin: 0;
 	padding: 4px 22px 4px 7px;
+	@media screen and (max-width: 1199px) {
+		padding: 8px 22px 8px 7px;
+	}
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
 	background-repeat: no-repeat;
 	background-position: right 6px center;
@@ -388,10 +398,7 @@ div.genDropdownSelected {
 		top: 30px;
 		width: calc(100% + 2px);
 		left: -1px;
-
-		@include mobile-breakpoint {
-			left: 4px;
-		}
+		z-index: 1;
 	}
 
 	.genMsdOption {
@@ -538,6 +545,96 @@ div.genDropdownSelected {
 
 	input {
 		margin-right: 6px;
+	}
+
+	&.singlePeriod {
+		margin-top: 8px;
+
+		@media screen and (max-width: 1199px) and (min-width: 768px) {
+			justify-content: flex-start;
+		}
+	}
+}
+
+.timePeriodContainer {
+	@media screen and (max-width: 1199px) and (min-width: 768px) {
+		margin-top: 8px;
+	}
+}
+
+#startYearContainer,
+#endYearContainer {
+	@media screen and (max-width: 1500px) and (min-width: 1200px) {
+		padding: 0 3px;
+	}
+
+	#startYearContainer-select,
+	#endYearContainer-select {
+		@media screen and (max-width: 1500px) and (min-width: 1200px) {
+			font-size: 14px;
+		}
+	}
+}
+
+#topicDropdown-label {
+	@media screen and (max-width: 1199px) {
+		padding: 10px 0;
+	}
+}
+
+#resetInfo {
+	font-size: 24px;
+	color: #555;
+
+	@media screen and (max-width: 1199px) {
+		padding: 8px 5px;
+	}
+}
+
+#home-btn-reset {
+	@media screen and (max-width: 1199px) {
+		margin: 8px 0;
+	}
+}
+
+.data-table-container {
+	@media screen and (max-width: 1199px) {
+		padding: 2px 0;
+	}
+}
+
+.spacerContainer {
+	@media screen and (max-width: 1199px) {
+		display: none;
+	}
+}
+
+.spacerContainer1 {
+	height: 0;
+	@media screen and (max-width: 1199px) and (min-width: 768px) {
+		height: 16px;
+	}
+	@media screen and (max-width: 767px) {
+		height: 10px;
+	}
+}
+
+.spacerContainer2 {
+	height: 0;
+
+	@media screen and (min-width: 1200px) {
+		height: 24px;
+	}
+
+	@media screen and (max-width: 1199px) and (min-width: 768px) {
+		height: 40px;
+	}
+}
+
+#maxAllowedLabel {
+	height: 24px;
+	@media screen and (max-width: 1350px) and (min-width: 1200px) {
+		font-size: 14px;
 	}
 }
 

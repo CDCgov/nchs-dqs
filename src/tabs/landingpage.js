@@ -116,6 +116,14 @@ export class LandingPage {
 
 		functions.addHtmlTooltips();
 
+		const screenWidth = $(window).width();
+		if (screenWidth < 1200) {
+			$(".mainDropdown").removeClass("col");
+		}
+		if (screenWidth < 768) {
+			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
+		}
+
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
 			activate: (e) => {
