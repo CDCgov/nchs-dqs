@@ -362,189 +362,109 @@ const NHAMCSChild = [
 	{
 		id: "emergency-department-visits-for-all-diagnoses",
 		text: "Emergency department visits for all diagnoses",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-all-reasons-patient-reported",
 		text: "Emergency department visits for all reasons (patient reported)",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-accident-not-otherwise-specified",
 		text: "Emergency department visits for accident, not otherwise specified",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-back-symptoms",
 		text: "Emergency department visits for back symptoms",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-certain-infectious-and-parasitic-diseases",
 		text: "Emergency department visits for certain infectious and parasitic diseases",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-chest-pain-and-related-symptoms-not-referable-to-body-systems",
 		text: "Emergency department visits for chest pain and related symptoms (not referable to body systems)",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-cough",
 		text: "Emergency department visits for cough",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-circulatory-system",
 		text: "Emergency department visits for diseases of the circulatory system",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-digestive-system",
 		text: "Emergency department visits for diseases of the digestive system",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-genitourinary-system",
 		text: "Emergency department visits for diseases of the genitourinary system",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-musculoskeletal-system-and-connective-tissue",
 		text: "Emergency department visits for diseases of the musculoskeletal system and connective tissue",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-respiratory-system",
 		text: "Emergency department visits for diseases of the respiratory system",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-skin-and-subcutaneous-tissue",
 		text: "Emergency department visits for diseases of the skin and subcutaneous tissue",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-fever",
 		text: "Emergency department visits for fever",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-headache-pain-in-head",
 		text: "Emergency department visits for headache, pain in head",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-injury-and-poisoning",
 		text: "Emergency department visits for injury and poisoning",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-mental-behavioral-and-neurodevelopmental-disorders",
 		text: "Emergency department visits for mental, behavioral, and neurodevelopmental disorders",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-other-symptomsproblems-related-to-psychological-and-mental-disorders",
 		text: "Emergency department visits for other symptoms/problems related to psychological and mental disorders",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-pain-site-not-referable-to-a-specific-body-system",
 		text: "Emergency department visits for pain, site not referable to a specific body system",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-shortness-of-breath",
 		text: "Emergency department visits for shortness of breath",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-stomach-and-abdominal-pain-cramps-and-spasms",
 		text: "Emergency department visits for stomach and abdominal pain, cramps and spasms",
-		topicGroup: 1,
 	},
 	{
 		id: "emergency-department-visits-for-symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
 		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
-		topicGroup: 1,
 	},
 ];
 
 // start NHANES chronic conditions
-const NHANES = [
-	{
-		id: "obesity-nhanes",
-		text: "Obesity (NHANES)",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-		cdcDataId: "i2dc-ja7d",
-	},
-	{
-		id: "high-total-cholesterol",
-		text: "High Total Cholesterol",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-		cdcDataId: "i2dc-ja7d",
-	},
-	{
-		id: "hypertension",
-		text: "Hypertension",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-		cdcDataId: "i2dc-ja7d",
-	},
+const NHANESChronic = [
+	{ id: "obesity-nhanes", text: "Obesity (NHANES)" },
+	{ id: "high-total-cholesterol", text: "High Total Cholesterol" },
+	{ id: "hypertension", text: "Hypertension" },
+];
 
-	// start NHANES Dietary behaviors
-	{
-		id: "calcium-intake",
-		text: "Calcium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "dietary-fiber-intake",
-		text: "Dietary Fiber Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "iron-intake",
-		text: "Iron Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "potassium-intake",
-		text: "Potassium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "saturated-fat-intake",
-		text: "Saturated Fat Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "sodium-intake",
-		text: "Sodium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
-	{
-		id: "vitamin-d-intake",
-		text: "Vitamin D Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
-	},
+// start NHANES Dietary behaviors
+const NHANESDietary = [
+	{ id: "calcium-intake", text: "Calcium Intake" },
+	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake" },
+	{ id: "iron-intake", text: "Iron Intake" },
+	{ id: "potassium-intake", text: "Potassium Intake" },
+	{ id: "saturated-fat-intake", text: "Saturated Fat Intake" },
+	{ id: "sodium-intake", text: "Sodium Intake" },
+	{ id: "vitamin-d-intake", text: "Vitamin D Intake" },
 ];
 
 export const NHISTopics = [
@@ -555,6 +475,25 @@ export const NHISTopics = [
 		cdcDataId: "rkv8-xf9z",
 		dataSystem: "NHIS",
 	})),
-	...NHAMCSChild.map((d) => ({ ...d, topicLookupKey: "NHAMCS", cdcDataId: "pcav-mejc", dataSystem: "NHAMCS" })),
-	...NHANES.map((d) => ({ ...d, dataSystem: "NHANES" })),
+	...NHAMCSChild.map((d) => ({
+		...d,
+		topicLookupKey: "NHAMCS",
+		cdcDataId: "pcav-mejc",
+		dataSystem: "NHAMCS",
+		topicGroup: 1,
+	})),
+	...NHANESChronic.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-chronic-conditions",
+		cdcDataId: "i2dc-ja7d",
+	})),
+	...NHANESDietary.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
+	})),
 ];
