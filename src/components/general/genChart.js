@@ -1033,6 +1033,7 @@ export class GenChart {
 										.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
 										.y0((d) => yScaleLeft(d.estimate_lci))
 										.y1((d) => yScaleLeft(d.estimate_uci))
+										.defined((d) => d.estimate)
 										.curve(d3.curveCatmullRom)
 								);
 						}
@@ -1074,7 +1075,6 @@ export class GenChart {
 												$(".unreliableFootnote").show();
 											}
 											const hasValue = d[p.chartProperties.yLeft1];
-											console.log(hasValue);
 											return !hasValue
 												? "white"
 												: unreliable
