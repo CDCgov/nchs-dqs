@@ -57,35 +57,11 @@ export class HtmlTooltip {
 		else tip.select("h3").html("");
 		if (this.h4) tip.select("h4").html(this.h4);
 		else tip.select("h4").html("");
-		if (this.body) {
-			if (this.containerId === "refineInfoRow") {
-				sides = { x: "left", y: "bottom" };
-				const selected = $(".filterCheckbox:checkbox:checked").length;
-				if (selected) {
-					let modalMessage = "Show results for: ";
-					$(".filterCheckbox:checkbox:checked").each((i, el) => {
-						modalMessage += $(el).siblings("label").text() + " <b>OR</b> ";
-					});
-					this.body = modalMessage.slice(0, -11);
-				} else
-					this.body =
-						"E.g. Select <b>Female, Asian, Infant</b> to show all results for Female <b>OR</b> Asian <b>OR</b> Infant.";
-			}
-			tip.select(".tip-body").html(this.body);
-		} else tip.select(".tip-body").html("");
+		if (this.body) tip.select(".tip-body").html(this.body);
+		else tip.select(".tip-body").html("");
 
-		let tipHeight;
-		try {
-			tipHeight = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetHeight;
-		} catch (e) {
-			tipHeight = $(event.currentTarget)[0].offsetHeight;
-		}
-		let tipWidth;
-		try {
-			tipWidth = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetWidth;
-		} catch (e) {
-			tipWidth = $(event.currentTarget)[0].offsetWidth;
-		}
+		const tipHeight = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetHeight;
+		const tipWidth = d3.select(`#${this.containerId} .generalTooltip`)._groups[0][0].offsetWidth;
 
 		const { clientX, clientY } = event;
 		const widthToLeftBounds = clientX - leftBounds;

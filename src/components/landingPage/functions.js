@@ -27,13 +27,8 @@ export const addHtmlTooltips = () => {
 	});
 
 	const editFiltersTooltip = new HtmlTooltip({
-		body: "Advanced filters to limit options in dropdown lists",
-		containerId: "dropdownSelectorGroup",
-	});
-
-	const removeFiltersTooltip = new HtmlTooltip({
-		body: "Clear advanced filters selections",
-		containerId: "dropdownSelectorGroup",
+		body: "Use this filter to narrow your search by populations or data systems.",
+		containerId: "topicDropdownGroup",
 	});
 
 	const ciToggleTooltip = new HtmlTooltip({
@@ -54,7 +49,6 @@ export const addHtmlTooltips = () => {
 
 	resetInfoTooltip.render();
 	editFiltersTooltip.render();
-	removeFiltersTooltip.render();
 	ciToggleTooltip.render();
 	refineTopicInfoTooltip.render();
 
@@ -63,16 +57,6 @@ export const addHtmlTooltips = () => {
 	$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
 	$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
 	$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
-	$("#resetInfo").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
-
-	$(".editFiltersIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
-	$(".editFiltersIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
-	$(".editFiltersIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
-	$(".editFiltersIcon").mouseleave((e) => refineTopicInfoTooltip.mouseout(e));
-
-	$(".clearFiltersIcons").mouseover((e) => removeFiltersTooltip.mouseover(e));
-	$(".clearFiltersIcons").mousemove((e) => removeFiltersTooltip.mousemove(e));
-	$(".clearFiltersIcons").mouseleave((e) => removeFiltersTooltip.mouseout(e));
 
 	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
 	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
@@ -85,6 +69,10 @@ export const addHtmlTooltips = () => {
 	$("#staticBinningLabel").mouseover((e) => staticBinningTooltip.mouseover(e));
 	$("#staticBinningLabel").mousemove((e) => staticBinningTooltip.mousemove(e));
 	$("#staticBinningLabel").mouseleave((e) => staticBinningTooltip.mouseout(e));
+
+	$("#refineTopicIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
+	$("#refineTopicIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
+	$("#refineTopicIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
@@ -236,21 +224,50 @@ export const resetTopicDropdownList = () => {
 };
 
 export const updateTopicDropdownList = () => {
+	const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS"];
+	// const dataSystems = ["HUS", "NCHS", "NHANES", "NHIS", "NHAMCS"];
+
 	const selectedFilters = $(".filterCheckbox:checked")
 		.map((i, el) => el.id.replace("filter", ""))
 		.toArray();
 
+	const selectedDataSystems = selectedFilters.filter((f) => dataSystems.includes(f));
+	const filtersWithoutDataSystems = selectedFilters.filter((f) => !dataSystems.includes(f));
+
+	// TODO: this is logic needs work. If a Data System is selected then only show topics in that (or those) data systems but continue to check
+	// the other filters to see if it needs to be filtered down more.
 	let needToChangeSelected = false;
 	if (selectedFilters.length) {
 		let firstFiltered;
 		const currentSelected = $("#topicDropdown-select .genOptionSelected").data("val");
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const availableFilters = $(el).data("filter").split(",");
+			const dataSystem = $(el).data("dataSystem");
 			const value = $(el).data("val");
+			// the selectedFilters may include a data system, if selected, which gets into the if statement below
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
-				$(el).show();
-				$(el).removeClass("genOptionFilteredOut");
+				if (selectedDataSystems.length && !selectedDataSystems.includes(dataSystem)) {
+					$(el).hide();
+					$(el).addClass("genOptionFilteredOut");
+					if (value === currentSelected) {
+						needToChangeSelected = true;
+						$(el).removeClass("genOptionSelected");
+					}
+				} else if (
+					!filtersWithoutDataSystems.length ||
+					filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))
+				) {
+					$(el).show();
+					$(el).removeClass("genOptionFilteredOut");
+				} else {
+					$(el).hide();
+					$(el).addClass("genOptionFilteredOut");
+					if (value === currentSelected) {
+						needToChangeSelected = true;
+						$(el).removeClass("genOptionSelected");
+					}
+				}
 			} else {
 				$(el).hide();
 				$(el).addClass("genOptionFilteredOut");
@@ -282,9 +299,34 @@ export const updateTopicDropdownList = () => {
 					.attr("hidden", true)
 					.addClass("genOptionFilteredOut");
 		});
-	} else resetTopicDropdownList();
+	} else {
+		resetTopicDropdownList();
+	}
 };
 
 export const binData = (data) => {
 	return ClassifyData(data, "estimate", 4, 1);
+};
+
+export const adjustTableDimensions = () => {
+	// ---- Adjust height ---------
+	// set table height so that all is visible from title down to possible footnote callout about flags
+	$(".expanded-data-table").height("unset");
+	const chartTitleTop = $(".chart-title").offset().top;
+	const tableTop = $(".expanded-data-table").offset().top;
+	const ninetyPercentWindowHeight = 0.9 * $(window).height();
+	const calculatedTableHeight = ninetyPercentWindowHeight + chartTitleTop - tableTop;
+	$(".expanded-data-table").height(calculatedTableHeight);
+
+	// if table is shorter than allowed height, remove height restriction so it can collapse
+	const bottomOfTable = $(".expanded-data-table").offset().top + $(".expanded-data-table").height();
+	const bottomOfLastRow =
+		$(".expanded-data-table").find("tr").last().offset().top + $(".expanded-data-table").find("tr").last().height();
+	if (bottomOfTable > bottomOfLastRow) {
+		$(".expanded-data-table").height("unset");
+	}
+
+	// ---- Adjust width ---------
+	// set table's max-width to fit inside of tableContentWrapper and set width to fit-content
+	$("#tableYearHeader").width($("#nchs-table > tbody th").first().width());
 };

@@ -6,7 +6,7 @@ import * as hashTab from "../utils/hashTab";
 import { MainEvents } from "../eventhandlers/mainevents";
 import { downloadCSV } from "../utils/downloadCSV";
 import * as config from "../components/landingPage/config";
-import { nhisGroups, nhisTopics } from "../components/landingPage/nhis";
+import { NHISTopics } from "../components/landingPage/nhis";
 import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
@@ -15,7 +15,7 @@ import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMulti
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
-		this.nhisData = null;
+		this.NHISData = null;
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
@@ -54,10 +54,9 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
-	getNhisData = (dataId, prefix, mapper) => {
+	getNhisData = (dataId, mapper) => {
 		// if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		const returnData = mapper(this.nhisData, dataId);
-
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
 	};
@@ -68,11 +67,7 @@ export class LandingPage {
 
 		// if there's a specific lookup id with a mapper
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
-			return this.getNhisData(
-				localConfig.socrataId,
-				localConfig.topicLookupId,
-				config.topicLookup[localConfig.topicLookupId].dataMapper
-			);
+			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
 
 		try {
@@ -214,7 +209,7 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").show();
 		}
 
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		let stateData = [...data];
 
@@ -228,7 +223,7 @@ export class LandingPage {
 
 		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
 		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
 
 		let classified;
@@ -312,8 +307,8 @@ export class LandingPage {
 		if (this.showBarChart) this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
 		else this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
 
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 		$("#chartLegendTitle").html(group);
 	}
 
@@ -527,7 +522,7 @@ export class LandingPage {
 		else this.groupId = 0;
 
 		// set the chart title
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (this.config.isNhisData) {
 			this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then((data) => {
@@ -543,18 +538,19 @@ export class LandingPage {
 		Promise.all([
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
-			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHISFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
-			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, cshsFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, mapData] = data;
+
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes, ...cshsFootnotes];
+					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -641,7 +637,6 @@ export class LandingPage {
 			} else this.dataTopic = this.selections.topic;
 		}
 
-		// filter & map topic entries that have a 'chartTitle' property for the 'Topic' dropdown
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
 			const title = k[1].chartTitle;
@@ -664,7 +659,7 @@ export class LandingPage {
 		// add advanced filters to data-filter attribute
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const value = $(el).data("val");
-			$(el).data("filter", config.topicLookup[value].filters);
+			$(el).data({ filter: config.topicLookup[value].filters, dataSystem: config.topicLookup[value].dataSystem });
 		});
 
 		return filters.length > 0;
@@ -704,7 +699,7 @@ export class LandingPage {
 			this.flattenedFilteredData = this.getFlattenedFilteredData();
 
 		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
-			nhisTopics.map((t) => t.id)
+			NHISTopics.map((t) => t.id)
 		);
 
 		let allGroupIds;
@@ -972,8 +967,8 @@ export class LandingPage {
 		}
 		this.updateFootnotes(tableData);
 
-		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
-		$("#chart-subtitle").html(`<strong>Classification: ${this.classificationDropdown.text()}</strong>`);
+		$("#chart-title").html(`${this.config.chartTitle}`);
+		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
@@ -1002,41 +997,18 @@ export class LandingPage {
 				);
 			return;
 		}
-		$("#tableResultsCount").show();
 
 		const columns = [...new Set(tableData.map((d) => d.column))];
 		const years = [...new Set(tableData.map((d) => d.year))];
-		const allResultsCount = columns.length * years.length;
-		$("#fullTableCount").html(allResultsCount);
-		$("#filteredTableCount").html(allResultsCount);
 		let tableId = "nchs-table";
 
+		$("#tableEstimateHeader").html(`Estimate${showCI ? " (Confidence Interval)" : ""}`);
+
 		$(".expanded-data-table").empty().html(`
-			<div class="row genSearch">
-				<div class="col-12" style="width: 100%; display: flex; align-items: center; position: relative;">
-					<i class="fa fa-search" style="padding: 0 6px;"></i>
-					<input
-						id="search-table"
-						class="form-control form-control-sm"
-						style="width: 100%; border: 1px solid lightgrey;"
-						type="text"
-						placeholder="Search this table"
-						value="${search ?? ""}" />
-					<i  role="button"
-						tabindex="0"
-						class="fa fa-times-circle"
-						id="clear-search-table" style="padding: 0 6px; cursor: pointer; position: absolute; right: 0.6em; font-size: 1.5em; color: grey;"
-						aria-label="press enter to reset table to all results"></i>
-				</div>
-			</div>
-			<table id="nchs-table" class="table table-bordered">
-				<thead>
+			<table id="nchs-table">
+				<thead>					
 					<tr>
-						<th style="position: sticky; left: 0; z-index: 3; background-color: #e0e0e0;" class="dtfc-fixed-left">Year</th>
-						<th colspan="${columns.length}">Estimate${showCI ? " (Confidence Interval)" : ""}</th>
-					</tr>
-					<tr>
-						<th style="left: 1px !important;"></th>
+						<th>&nbsp;</th>
 						${columns.map((c, i) => `<th class="headerValue" data-index=${i + 1}>${c}</th>`).join("")}
 					</tr>
 				</thead>
@@ -1056,103 +1028,7 @@ export class LandingPage {
 			$(body).append(row);
 		});
 
-		$("#clear-search-table").hide();
-		this.dataTable = $("#nchs-table")
-			.DataTable({
-				bAutoWidth: false,
-				bInfo: false,
-				paging: false,
-				scrollX: "auto",
-				fixedColumns: {
-					left: 1,
-				},
-				searching: false,
-				dom: "tB",
-				buttons: ["csv"],
-			})
-			.columns.adjust();
-
-		const filter = $("div.dataTables_filter");
-		$(filter).parent().parent().find("div:first").remove();
-		$(filter).parent().removeClass().addClass("col-12");
-		$(filter).find("label").prepend("<i class='fa fa-search' style='padding: 0 6px'></i>");
-
-		let allWordsInHeaderValues = [];
-		$(".headerValue").each((i, d) => {
-			const words = $(d).text().split(" ");
-			words.forEach((w) => {
-				if (!allWordsInHeaderValues.includes(w)) allWordsInHeaderValues.push(w);
-			});
-		});
-		allWordsInHeaderValues = allWordsInHeaderValues.map((d) => d.replace(":", "").toLowerCase());
-		const clearIndices = columns.map((d, i) => i + 1);
-
-		const hideShowColumns = (search) => {
-			clearIndices.forEach((i) => {
-				const column = this.dataTable.column(i);
-				column.visible(true);
-			});
-
-			if (search === "") {
-				$("#clear-search-table").hide();
-				$("#filteredTableCount").html(allResultsCount);
-				return;
-			}
-			const searchIsFullWordInHeader = allWordsInHeaderValues.includes(search.toLowerCase());
-			$(".dataTables_scrollHeadInner .headerValue").each((i, d) => {
-				const column = this.dataTable.column(i + 1);
-				const wordsInHeader = $(d)
-					.text()
-					.split(" ")
-					.map((d) => d.replace(":", "").toLowerCase());
-				if (searchIsFullWordInHeader && !wordsInHeader.includes(search.toLowerCase())) column.visible(false);
-				else if (!searchIsFullWordInHeader && !wordsInHeader.some((w) => w.includes(search.toLowerCase())))
-					column.visible(false);
-			});
-			// check if user has filtered out all columns
-			const visibleColumns = this.dataTable
-				.columns()
-				.visible()
-				.filter((d) => d === true);
-			if (visibleColumns.length === 1) {
-				this.renderDataTable(data, search);
-				return;
-			}
-
-			$("#filteredTableCount").html($(".dataTables_scrollHeadInner .headerValue").length * years.length);
-		};
-
-		$("#search-table")
-			.autocomplete({
-				source: allWordsInHeaderValues,
-				select: (event, ui) => {
-					$("#search-table").val(ui.item.value);
-					$("#search-table").trigger("keyup");
-					hideShowColumns(ui.item.value);
-				},
-				response: (event, ui) => {
-					if (!ui.content.length) ui.content.push({ value: "", label: "No results found" });
-				},
-			})
-			.on("keyup", (e) => {
-				if ($("#search-table").val() === "") {
-					hideShowColumns("");
-					return;
-				}
-				if (e.keyCode === 13) {
-					hideShowColumns($("#search-table").val());
-					$("#search-table").autocomplete("close");
-				} else if (e.keyCode === 27 && $("#search-table").val() !== "") $("#search-table").val("");
-				else $("#clear-search-table").show();
-			});
-
-		$("#clear-search-table").on("click", () => {
-			$("#search-table").val("");
-			hideShowColumns("");
-		});
-
-		$("#btnTableExport").empty().append(`Download Data <i class="fas fa-download" aria-hidden="true"></i>`);
-		this.dataTable.buttons().container().appendTo($("#btnTableExport"));
+		functions.adjustTableDimensions();
 	}
 
 	exportCSV() {

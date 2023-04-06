@@ -1,32 +1,79 @@
-<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-	<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
-		<div class="adjustUnitContainer">
-			<div id="estimateTypeDropdownMap" class="genDropdown">
-				<div id="estimateTypeDropdownMap-label" for="estimateTypeDropdownMap-select" class="select-label">Estimate Type</div>
+<div class="row">
+	<div class="col-xs-12 col-xl-10">
+		<div class="row">
+			<div class="col-12 heading6">Demographic</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterIndian" />
+				<label for="filterIndian">American Indian or Alaska Native</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterInfants" />
+				<label for="filterInfants">Infants</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAsian" />
+				<label for="filterAsian">Asian</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterChildren" />
+				<label for="filterChildren">Children and Adolescents</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAsianPacific" />
+				<label for="filterAsianPacific">Asian or Pacific Islander</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAdults" />
+				<label for="filterAdults">Adults</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterBlack" />
+				<label for="filterBlack">Black or African American</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterOlder" />
+				<label for="filterOlder">Older Adults</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterHispanic" />
+				<label for="filterHispanic">Hispanic or Latino</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMale" />
+				<label for="filterMale">Male</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMultipleRace" />
+				<label for="filterMultipleRace">Multiple Race</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterFemale" />
+				<label for="filterFemale">Female</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterHawaiian1" />
+				<label for="filterHawaiian1">Native Hawaiian or Other Pacific Islander</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterFuncLimitStatus" />
+				<label for="filterFuncLimitStatus">Disability (Functional limitation Status)</label>
+			</div>
+
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterWhite1" />
+				<label for="filterWhite1">White</label>
+			</div>
+			<div class="col-6 nowrap flexRow left">
+				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMarital" />
+				<label for="filterMarital">Marital Status</label>
 			</div>
 		</div>
-		<fieldset class="breaksContainer">
-			<div class="btnToggle">
-				<input type="radio" name="classifyBy" value="natural" id="classNBreaks" checked="checked" />
-				<label role="button" for="classNBreaks">Natural Breaks</label>
-				<input type="radio" name="classifyBy" value="quartiles" id="classQuartiles" />
-				<label role="button" for="classQuartiles">Quartiles</label>
-			</div>
-		</fieldset>
-		<div id="us-map-container">
-			<div id="mapDownloadTitle"></div>
-			<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore style="margin-top: 0"></div>
-			<div id="us-map" class="general-chart"></div>
-			<div id="usMapLegendContainer">
-				<div id="us-map-legend-title" class="general-chart" style="margin-top: 0">Legend</div>
-				<div>Data classified</div>
-				<div>using <button type="button">quartile</button></div>
-				<div>based on</div>
-				<div id="mapLegendPeriod">2013 - 2015</div>
-				<div id="us-map-legend" class="general-chart" style="margin-top: 0"></div>
-			</div>
-		</div>
-		<br />
-		<div tabindex="0" class="source-text" id="source-text-map"><b>Source</b>: No source info available.</div>
 	</div>
 </div>
