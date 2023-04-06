@@ -55,10 +55,10 @@ export const getProps = (props) => {
 		rightDomainOverageScale: props.rightDomainOverageScale || 1.05, // same as above but for right axis
 		leftTickCount: props.leftTickCount || 6, // how many ticks shown on left axis; d3 may override this to best fit
 		rightTickCount: props.rightTickCount || 6, // how many ticks shown on right axis; d3 may override this to best fit
-		leftAxisColor: props.leftAxisColor || "black", // color applied to left axis title, tick labels, and tick lines
-		rightAxisColor: props.rightAxisColor || "black", // color applied to right axis title, tick labels, and tick lines
+		leftAxisColor: props.leftAxisColor || "#333", // color applied to left axis title, tick labels, and tick lines
+		rightAxisColor: props.rightAxisColor || "#333", // color applied to right axis title, tick labels, and tick lines
 		leftLine1Color: props.leftLine1Color, // color of line and ellipses (on hover) for left1 data; defaults to leftAxisColor when left blank
-		leftLine2Color: props.leftLine2Color || "black", // color of line and ellipses (on hover) for left2 data;
+		leftLine2Color: props.leftLine2Color || "#333", // color of line and ellipses (on hover) for left2 data;
 		rightLineColor: props.rightLineColor, // color of line and ellipses (on hover) for right axis data; defaults to rightAxisColor when left blank
 		left1DashArrayScale: props.left1DashArrayScale, // used when something other than a solid line is desired (e.g. a value of (2, 2) ... parens, not square brackets)
 		left2DashArrayScale: props.left2DashArrayScale, // same as above for leftLine2 line; an example is the dashed line in MIS-C line chart;
@@ -157,10 +157,10 @@ export const getProps = (props) => {
 // rightDomainOverageScale: ,
 // leftTickCount: 6,
 // rightTickCount: 6,
-// leftAxisColor: "black",
-// rightAxisColor: "black",
+// leftAxisColor: "#333",
+// rightAxisColor: "#333",
 // leftLine1Color: ,
-// leftLine2Color: "black",
+// leftLine2Color: "#333",
 // rightLineColor: ,
 // left1DashArrayScale: ,
 // left2DashArrayScale: ,
