@@ -54,99 +54,33 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
-	getNHISData = (id) => {
-		let dataId = id.split("NHIS-")[1];
-		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-		let filteredToIndicator = this.NHISData.filter((d) => d.outcome_or_indicator === dataId);
-		if (filteredToIndicator.length === 0) {
-			dataId = NHISTopics.find((t) => t.text === id.split("NHIS-")[1])?.indicator;
-			filteredToIndicator = this.NHISData.filter((d) => d.outcome_or_indicator === dataId);
-		}
-		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-			returnData.push({
-				estimate: f.percentage,
-				estimate_lci: ci[0].trim(),
-				estimate_uci: ci[1].trim(),
-				flag: f.flag,
-				footnote_id_list: f.footnote_id_list,
-				indicator: f.outcome_or_indicator,
-				panel: f.subtopic,
-				panel_num: f.subtopicid,
-				se: null,
-				stub_label: f.subgroup,
-				stub_name: f.group_by,
-				stub_name_num: f.group_byid,
-				unit: f.unit,
-				unit_num: f.unit_id,
-				year: f.year,
-				year_num: "",
-				age: f.group_by.includes("By age") ? f.group_by : "N/A",
-			});
-		});
-
+	getNhisData = (dataId, mapper) => {
+		// if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+		const returnData = mapper(this.nhisData, dataId);
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
 	};
 
-	getNHAMCSData = async (id) => {
-		const dataId = id.split("NHAMCS-")[1];
-		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-
-		const filteredToIndicator = this.NHISData.filter((d) => d.measure === dataId);
-		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			returnData.push({
-				estimate: f.estimate,
-				estimate_lci: f.lower_95_ci,
-				estimate_uci: f.upper_95_ci,
-				flag: f.flag,
-				footnote_id_list: f.footnote_id,
-				indicator: f.measure,
-				panel: f.measure_type,
-				panel_num: f.measuretype_id,
-				se: null,
-				stub_label: f.subgroup,
-				stub_name: f.groupby,
-				stub_name_num: f.groupby_id,
-				unit: f.estimate_type,
-				unit_num: f.estimatetype_id,
-				year: f.year,
-				year_num: "",
-				age: f.groupby.includes("By age") ? f.group : "N/A",
-			});
-		});
-
-		DataCache[`data-${dataId}`] = returnData;
-		return returnData;
-	};
-
-	getSelectedSocrataData = async (config) => {
-		let nchsData = DataCache[`data-${config.socrataId}`];
+	getSelectedSocrataData = async (localConfig) => {
+		let nchsData = DataCache[`data-${localConfig.socrataId}`];
 		if (nchsData) return nchsData;
 
-		if (config.socrataId.startsWith("NHIS")) {
-			return this.getNHISData(config.socrataId);
-		}
-
-		if (config.socrataId.startsWith("NHAMCS")) {
-			return this.getNHAMCSData(config.socrataId);
+		// if there's a specific lookup id with a mapper
+		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
+			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
 
 		try {
-			console.log("SOCRATA get topic", config.socrataId);
-
 			let [metaData, jsonData] = [];
 			let metaUrl, dataUrl;
 
-			if (config.private == 0) {
-				metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
-				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+			if (localConfig.private == 0) {
+				metaUrl = `https://data.cdc.gov/api/views/${localConfig.socrataId}`;
+				dataUrl = `https://data.cdc.gov/resource/${localConfig.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -156,8 +90,7 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-
-			DataCache[`data-${config.socrataId}`] = nchsData;
+			DataCache[`data-${localConfig.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
 			console.error("Error fetching data", err);
@@ -177,6 +110,14 @@ export class LandingPage {
 		DataCache.noDataColorHexVal = "#fff";
 
 		functions.addHtmlTooltips();
+
+		const screenWidth = $(window).width();
+		if (screenWidth < 1200) {
+			$(".mainDropdown").removeClass("col");
+		}
+		if (screenWidth < 768) {
+			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
+		}
 
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
@@ -509,6 +450,7 @@ export class LandingPage {
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
+				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
 						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
@@ -521,6 +463,7 @@ export class LandingPage {
 				unreliableNotesArray?.length === 0
 					? ""
 					: unreliableNotesArray
+							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
 									`<p class="unreliableFootnote"><strong>${
@@ -562,8 +505,9 @@ export class LandingPage {
 
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
+
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
-		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
+		const hasMap = !!this.config.hasMap; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
@@ -580,14 +524,9 @@ export class LandingPage {
 		// set the chart title
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
-		if (this.config.socrataId.startsWith("NHIS")) {
-			this.getSelectedSocrataData(config.topicLookup.NHIS).then((data) => {
-				this.NHISData = data;
-				this.getData(topicChange);
-			});
-		} else if (this.config.socrataId.startsWith("NHAMCS")) {
-			this.getSelectedSocrataData(config.topicLookup.NHAMCS).then((data) => {
-				this.NHISData = data;
+		if (this.config.isNhisData) {
+			this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then((data) => {
+				this.nhisData = data;
 				this.getData(topicChange);
 			});
 		} else {
@@ -600,17 +539,18 @@ export class LandingPage {
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHISFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, NHAMCSFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...NHAMCSFootnotes];
+					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -745,6 +685,7 @@ export class LandingPage {
 			options,
 			selectedValue: this.selections?.classification,
 		});
+
 		this.classificationDropdown.render();
 		this.config.classificationId = this.classificationDropdown.value();
 

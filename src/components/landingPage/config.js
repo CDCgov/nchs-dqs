@@ -40,8 +40,7 @@ export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">-->
-		<div id="topicDropdownGroup" class="col homeSelectorGroup">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -53,15 +52,13 @@ export const tabContent = `
 					</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
 				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
 				<i id="refineTopicIcon" class="fas fa-info-circle" style="color: #555">&nbsp;</i>
 			</div>			
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-			<div class="col homeSelectorGroup leftBorderSmallView">
+			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -71,14 +68,12 @@ export const tabContent = `
 					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer2">&nbsp;</div>
 			<div id="classificationDropdown" class="genDropdown">
 				<label for="classificationDropdown-select" id="classificationDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -88,14 +83,13 @@ export const tabContent = `
 					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="groupDropdown" class="genDropdown">
 				<label for="groupDropdown-select" id="groupDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -105,35 +99,31 @@ export const tabContent = `
 					<div class="mainSelText heading4">Subgroup</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="subgroupDropdown"></div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-		<div class="col homeSelectorGroup leftBorderSmallView">
+		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText">
+				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body2" aria-label="Choose from available time periods">Choose from available</div>
 					<div class="mainSelText heading4">Time Periods</div>
 				</div>
-			</div>
-			<div class="row" style="text-align: center">
-				<div class="col-12">
-					<div class="flexRow">
-					<!--<div style="margin-top: 0.4vw; line-height: 1vw">-->
+				<div class="col-xl-12 col-md-6 col-sm-12">
+					<div class="flexRow singlePeriod">
 						<input style="margin-right: 8px;" type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
 						<label class="label-style body2" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
-				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="startYearContainer-select" id="startYearContainer-label" class="body2">Start Period</label>
+				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center;">
+					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
 				</div>
-				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center" class="body2">
+				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center;">
 					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
@@ -143,7 +133,7 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 24px; color: #555">&nbsp;</i>
+			<i id="resetInfo" class="fas fa-info-circle">&nbsp;</i>
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>
@@ -167,7 +157,7 @@ export const tabContent = `
 		</ul>
 		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
@@ -265,16 +255,172 @@ export const topicLookup = {
 	NHIS: {
 		socrataId: "4u68-shzr",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			if (filteredToIndicator.length === 0) {
+				dataId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			}
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopicid,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_byid,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"children-summary-statistics": {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	cshsFootnotes: {
+		socrataId: "7kgb-btmk",
+		private: "1",
 	},
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
+					flag: null,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.measure_type,
+					panel_num: f.measuretype_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: f.groupby_id,
+					unit: f.estimate_type,
+					unit_num: f.estimatetype_id,
+					year: f.year,
+					year_num: "",
+					age: f.groupby.includes("By age") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
 	},
 	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
+	"nhanes-chronic-conditions": {
+		socrataId: "i2dc-ja7d",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
 
+			return returnData;
+		},
+	},
+	"nhanes-dietary-behaviors": {
+		socrataId: "j4m9-2puq",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.mean,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -413,19 +559,21 @@ export const topicLookup = {
 	},
 };
 
+// load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `${t.prefix || `NHIS`}-${t.text}`,
-		isNHISData: true,
+		socrataId: t.text,
+		isNhisData: true,
 		chartTitle: t.text,
 		filters: NHISFilters,
-		dataSystem: t.prefix,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
 		topicGroup: t.topicGroup,
+		topicLookupId: t.topicLookupKey,
+		dataSystem: t.dataSystem,
 	};
 });
 

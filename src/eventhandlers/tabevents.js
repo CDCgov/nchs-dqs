@@ -5,6 +5,7 @@ export const TabEvents = {
 	registerEvents() {
 		PageEvents.tableToggle();
 		PageEvents.closeDropdowns();
+		PageEvents.screenWidthChange();
 	},
 	tabHTMLHandler(hash) {
 		let hashSplit = hash.split("_");

@@ -60,11 +60,11 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 	);
 
 	return `		
-		<div style="display: flex;"><label id="maxAllowedLabel" style="color: transparent; margin: auto;" for="groupDropdown-select">The maximum allowed is 7.</label></div>
+		<div style="display: flex; justify-content: center"><label id="maxAllowedLabel" style="color: transparent" for="groupDropdown-select">The maximum allowed is 7.</label></div>
 		<div class="genMsdSelected ${leaveOpen ? "genDropdownOpened " : ""} ${disabled ? "disabled" : ""}">
 			<div id="genMsdTitle" class="${
 				disabled ? "disabled" : ""
-			}" style="padding: 0 5px;" tabindex="0" aria-label="filter by subgroup dropdown">${
+			}" style="width: 100%" tabindex="0" aria-label="filter by subgroup dropdown">${
 		disabled ? "N/A" : "Select Subgroups"
 	}</div>
 			<input 	type="text"

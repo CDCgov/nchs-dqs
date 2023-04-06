@@ -261,9 +261,118 @@ const NHISAdult = [
 		topicGroup: 3,
 	},
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 6 },
+	{
+		id: "current-asthma-among-children",
+		text: "Current asthma among children",
+		topicGroup: 0,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "daily-feelings-of-worry-nervousness-or-anxiety",
+		text: "Daily feelings of worry, nervousness, or anxiety among children",
+		indicator: "Daily feelings of worry, nervousness, or anxiety",
+		topicGroup: 4,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "delayed-getting-medical-care-due-to-cost-among-children",
+		text: "Delayed getting medical care due to cost among children",
+		topicGroup: 3,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "doctor-visit-among-children",
+		text: "Doctor visit among children",
+		topicGroup: 1,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "ever-having-a-learning-disability",
+		text: "Ever having a learning disability",
+		topicGroup: 0,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "ever-having-asthma",
+		text: "Ever having asthma",
+		topicGroup: 0,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "ever-having-attention-deficit/hyperactivity-disorder",
+		text: "Ever having attention-deficit/hyperactivity disorder",
+		topicGroup: 0,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "fair-or-poor-health-status-among-children",
+		text: "Fair or poor health status among children",
+		topicGroup: 1,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "has-a-usual-place-of-care-among-children",
+		text: "Has a usual place of care among children",
+		topicGroup: 3,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "missing-11-or-more-school-days-due-to-illness-or-injury",
+		text: "Missing 11 or more school days due to illness or injury",
+		topicGroup: 1,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "prescription-medication-use-among-children",
+		text: "Prescription medication use among children",
+		topicGroup: 6,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "receipt-of-influenza-vaccination-among-children",
+		text: "Receipt of influenza vaccination among children",
+		topicGroup: 6,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "receive-services-for-mental-health-problems",
+		text: "Receive services for mental health problems among children",
+		indicator: "Receive services for mental health problems",
+		topicGroup: 4,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "receiving-special-education-or-early-intervention-services",
+		text: "Receiving special education or early intervention services",
+		topicGroup: 6,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "two-or-more-hospital-emergency-department-visits-among-children",
+		text: "Two or more hospital emergency department visits among children",
+		topicGroup: 3,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
+		text: "Two or more urgent care center or retail health clinic visits among children",
+		topicGroup: 3,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "uninsured-at-time-of-interview-among-children",
+		text: "Uninsured at time of interview among children",
+		topicGroup: 3,
+		topicLookupKey: "children-summary-statistics",
+	},
+	{
+		id: "well-child-check-up",
+		text: "Well child check-up",
+		topicGroup: 6,
+		topicLookupKey: "children-summary-statistics",
+	},
 ];
 
-// NHAMCS topics
 const NHAMCSChild = [
 	{
 		id: "emergency-department-visits-for-all-diagnoses",
@@ -377,7 +486,74 @@ const NHAMCSChild = [
 	},
 ];
 
+// start NHANES chronic conditions
+const NHANES = [
+	{
+		id: "obesity-nhanes",
+		text: "Obesity (NHANES)",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-chronic-conditions",
+	},
+	{
+		id: "high-total-cholesterol",
+		text: "High Total Cholesterol",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-chronic-conditions",
+	},
+	{
+		id: "hypertension",
+		text: "Hypertension",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-chronic-conditions",
+	},
+
+	// start NHANES Dietary behaviors
+	{
+		id: "calcium-intake",
+		text: "Calcium Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "dietary-fiber-intake",
+		text: "Dietary Fiber Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "iron-intake",
+		text: "Iron Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "potassium-intake",
+		text: "Potassium Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "saturated-fat-intake",
+		text: "Saturated Fat Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "sodium-intake",
+		text: "Sodium Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+	{
+		id: "vitamin-d-intake",
+		text: "Vitamin D Intake",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+	},
+];
+
 export const NHISTopics = [
-	...NHISAdult.map((d) => ({ ...d, prefix: "NHIS" })),
-	...NHAMCSChild.map((d) => ({ ...d, prefix: "NHAMCS" })),
+	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", dataSystem: "NHIS" })),
+	...NHAMCSChild.map((d) => ({ ...d, topicLookupKey: "NHAMCS", dataSystem: "NHAMCS" })),
+	...NHANES.map((d) => ({ ...d, dataSystem: "NHANES" })),
 ];
