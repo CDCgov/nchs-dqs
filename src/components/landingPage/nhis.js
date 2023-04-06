@@ -478,18 +478,21 @@ const NHANES = [
 		text: "Obesity (NHANES)",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-chronic-conditions",
+		cdcDataId: "i2dc-ja7d",
 	},
 	{
 		id: "high-total-cholesterol",
 		text: "High Total Cholesterol",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-chronic-conditions",
+		cdcDataId: "i2dc-ja7d",
 	},
 	{
 		id: "hypertension",
 		text: "Hypertension",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-chronic-conditions",
+		cdcDataId: "i2dc-ja7d",
 	},
 
 	// start NHANES Dietary behaviors
@@ -498,48 +501,60 @@ const NHANES = [
 		text: "Calcium Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "dietary-fiber-intake",
 		text: "Dietary Fiber Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "iron-intake",
 		text: "Iron Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "potassium-intake",
 		text: "Potassium Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "saturated-fat-intake",
 		text: "Saturated Fat Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "sodium-intake",
 		text: "Sodium Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 	{
 		id: "vitamin-d-intake",
 		text: "Vitamin D Intake",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
 	},
 ];
 
 export const NHISTopics = [
-	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", dataSystem: "NHIS" })),
-	...NHISChild.map((d) => ({ ...d, topicLookupKey: "children-summary-statistics", dataSystem: "NHIS" })),
-	...NHAMCSChild.map((d) => ({ ...d, topicLookupKey: "NHAMCS", dataSystem: "NHAMCS" })),
+	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", cdcDataId: "4u68-shzr", dataSystem: "NHIS" })),
+	...NHISChild.map((d) => ({
+		...d,
+		topicLookupKey: "children-summary-statistics",
+		cdcDataId: "rkv8-xf9z",
+		dataSystem: "NHIS",
+	})),
+	...NHAMCSChild.map((d) => ({ ...d, topicLookupKey: "NHAMCS", cdcDataId: "pcav-mejc", dataSystem: "NHAMCS" })),
 	...NHANES.map((d) => ({ ...d, dataSystem: "NHANES" })),
 ];

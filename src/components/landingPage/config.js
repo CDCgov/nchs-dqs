@@ -562,7 +562,7 @@ export const topicLookup = {
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
 	topicLookup[t.id] = {
-		dataUrl: "https://data.cdc.gov/NCHS/",
+		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
