@@ -56,41 +56,76 @@ export class LandingPage {
 
 	getNhisData = (id) => {
 		let dataId = id.split("nhis-")[1];
+		let prefix = id.split("nhis-")[0];
+		let isCshs = false;
+		if (!dataId) {
+			prefix = id.split("cshs-")[0];
+			dataId = id.split("cshs-")[1];
+			isCshs = true;
+		}
+
 		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
 		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
+
 		if (filteredToIndicator.length === 0) {
-			dataId = nhisTopics.find((t) => t.text === id.split("nhis-")[1])?.indicator;
+			dataId = nhisTopics.find((t) => t.text === id.split(`${prefix}-`)[1])?.indicator;
 			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
 		}
 		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			let group = nhisGroups[f.subgroup];
-			if (group instanceof Map) {
-				group = group.get(f.group_byid);
-			}
-			if (group) {
+		if (isCshs) {
+			filteredToIndicator.forEach((f) => {
 				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
 				returnData.push({
 					estimate: f.percentage,
 					estimate_lci: ci[0].trim(),
 					estimate_uci: ci[1].trim(),
 					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
+					footnote_id_list: f.footnote_id,
 					indicator: f.outcome_or_indicator,
-					panel: group.classification,
-					panel_num: group.classificationId,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: group.group,
-					stub_name_num: group.groupId,
-					unit: "Percent of population",
-					unit_num: 1,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
 					year: f.year,
 					year_num: "",
-					age: group.group.includes("Age Group") ? f.subgroup : "N/A",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
 				});
-			}
-		});
+			});
+		} else {
+			filteredToIndicator.forEach((f) => {
+				let group = nhisGroups[f.subgroup];
+				if (group instanceof Map) {
+					group = group.get(f.group_by_id);
+				}
+
+				if (group) {
+					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+					returnData.push({
+						estimate: f.percentage,
+						estimate_lci: ci[0].trim(),
+						estimate_uci: ci[1].trim(),
+						flag: f.flag,
+						footnote_id_list: f.footnote_id,
+						indicator: f.outcome_or_indicator,
+						panel: group.classification,
+						panel_num: group.classificationId,
+						se: null,
+						stub_label: f.subgroup,
+						stub_name: group.group,
+						stub_name_num: group.groupId,
+						unit: "Percent of population",
+						unit_num: 1,
+						year: f.year,
+						year_num: "",
+						age: group.group.includes("Age Group") ? f.subgroup : "N/A",
+					});
+				}
+			});
+		}
 
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
@@ -129,30 +164,32 @@ export class LandingPage {
 	};
 
 	getSelectedSocrataData = async (config) => {
-		let nchsData = DataCache[`data-${config.socrataId}`];
+		const { socrataId } = config;
+		let nchsData = DataCache[`data-${socrataId}`];
 		if (nchsData) return nchsData;
 
-		if (config.socrataId.startsWith("nhis")) {
-			return this.getNhisData(config.socrataId);
+		if (socrataId.startsWith("nhis")) {
+			return this.getNhisData(socrataId);
 		}
 
-		if (config.socrataId.startsWith("dhcs")) {
-			return this.getDhcsData(config.socrataId);
+		if (socrataId.startsWith("cshs")) {
+			return this.getNhisData(socrataId);
+		}
+		if (socrataId.startsWith("dhcs")) {
+			return this.getDhcsData(socrataId);
 		}
 
 		try {
-			console.log("SOCRATA get topic", config.socrataId);
-
 			let [metaData, jsonData] = [];
 			let metaUrl, dataUrl;
 
 			if (config.private == 0) {
-				metaUrl = `https://data.cdc.gov/api/views/${config.socrataId}`;
-				dataUrl = `https://data.cdc.gov/resource/${config.socrataId}.json?$limit=50000`;
+				metaUrl = `https://data.cdc.gov/api/views/${socrataId}`;
+				dataUrl = `https://data.cdc.gov/resource/${socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${config.socrataId}&m=0&p=${config.private}`;
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=1&p=${config.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=0&p=${config.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -162,8 +199,8 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
+			DataCache[`data-${socrataId}`] = nchsData;
 
-			DataCache[`data-${config.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
 			console.error("Error fetching data", err);
@@ -568,8 +605,9 @@ export class LandingPage {
 
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
+
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
-		const hasMap = this.config.hasMap ? true : false; // undefined does not work with the .toggle() on the next line. Set to true or false;
+		const hasMap = !!this.config.hasMap; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
@@ -591,6 +629,11 @@ export class LandingPage {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
+		} else if (this.config.socrataId.startsWith("cshs")) {
+			this.getSelectedSocrataData(config.topicLookup.cshs).then((data) => {
+				this.nhisData = data;
+				this.getData(topicChange);
+			});
 		} else if (this.config.socrataId.startsWith("dhcs")) {
 			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
 				this.nhisData = data;
@@ -606,17 +649,17 @@ export class LandingPage {
 			this.getSelectedSocrataData(this.config),
 			this.getSelectedSocrataData(config.topicLookup.footnotes),
 			this.getSelectedSocrataData(config.topicLookup.nhisFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.dhcsFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, mapData] = data;
-
+				let [socrataData, footNotes, nhisFootnotes, dhcsFootnotes, cshsFootnotes, mapData] = data;
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes];
+					allFootNotes = [...footNotes, ...nhisFootnotes, ...dhcsFootnotes, ...cshsFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -703,6 +746,7 @@ export class LandingPage {
 			} else this.dataTopic = this.selections.topic;
 		}
 
+		// filter & map topic entries that have a 'chartTitle' property for the 'Topic' dropdown
 		const options = [];
 		Object.entries(config.topicLookup).forEach((k) => {
 			const title = k[1].chartTitle;
@@ -751,6 +795,7 @@ export class LandingPage {
 			options,
 			selectedValue: this.selections?.classification,
 		});
+
 		this.classificationDropdown.render();
 		this.config.classificationId = this.classificationDropdown.value();
 

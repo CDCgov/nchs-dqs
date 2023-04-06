@@ -258,6 +258,14 @@ export const topicLookup = {
 		socrataId: "4u68-shzr",
 		private: "1",
 	},
+	cshs: {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+	},
+	cshsFootnotes: {
+		socrataId: "7kgb-btmk",
+		private: "1",
+	},
 	dhcs: {
 		socrataId: "pcav-mejc",
 		private: "1",
@@ -395,6 +403,7 @@ export const topicLookup = {
 	},
 };
 
+// load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
