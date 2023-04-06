@@ -54,142 +54,38 @@ export class LandingPage {
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
 
-	getNhisData = (id) => {
-		let dataId = id.split("nhis-")[1];
-		let prefix = id.split("nhis-")[0];
-		let isCshs = false;
-		if (!dataId) {
-			prefix = id.split("cshs-")[0];
-			dataId = id.split("cshs-")[1];
-			isCshs = true;
-		}
-
-		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-		let filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
-
-		if (filteredToIndicator.length === 0) {
-			dataId = nhisTopics.find((t) => t.text === id.split(`${prefix}-`)[1])?.indicator;
-			filteredToIndicator = this.nhisData.filter((d) => d.outcome_or_indicator === dataId);
-		}
-		const returnData = [];
-		if (isCshs) {
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
-		} else {
-			filteredToIndicator.forEach((f) => {
-				let group = nhisGroups[f.subgroup];
-				if (group instanceof Map) {
-					group = group.get(f.group_by_id);
-				}
-
-				if (group) {
-					const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-					returnData.push({
-						estimate: f.percentage,
-						estimate_lci: ci[0].trim(),
-						estimate_uci: ci[1].trim(),
-						flag: f.flag,
-						footnote_id_list: f.footnote_id,
-						indicator: f.outcome_or_indicator,
-						panel: group.classification,
-						panel_num: group.classificationId,
-						se: null,
-						stub_label: f.subgroup,
-						stub_name: group.group,
-						stub_name_num: group.groupId,
-						unit: "Percent of population",
-						unit_num: 1,
-						year: f.year,
-						year_num: "",
-						age: group.group.includes("Age Group") ? f.subgroup : "N/A",
-					});
-				}
-			});
-		}
+	getNhisData = (dataId, prefix, mapper) => {
+		// if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
+		const returnData = mapper(this.nhisData, dataId);
 
 		DataCache[`data-${dataId}`] = returnData;
 		return returnData;
 	};
 
-	getDhcsData = async (id) => {
-		const dataId = id.split("dhcs-")[1];
-		if (DataCache[`data-${dataId}`]) return DataCache[`data-${dataId}`];
-
-		const filteredToIndicator = this.nhisData.filter((d) => d.measure === dataId);
-		const returnData = [];
-		filteredToIndicator.forEach((f) => {
-			returnData.push({
-				estimate: f.estimate,
-				estimate_lci: f.lower_95_ci,
-				estimate_uci: f.upper_95_ci,
-				flag: f.flag,
-				footnote_id_list: f.footnote_id,
-				indicator: f.measure,
-				panel: f.measure_type,
-				panel_num: f.measuretype_id,
-				se: null,
-				stub_label: f.subgroup,
-				stub_name: f.groupby,
-				stub_name_num: f.groupby_id,
-				unit: f.estimate_type,
-				unit_num: f.estimatetype_id,
-				year: f.year,
-				year_num: "",
-				age: f.groupby.includes("By age") ? f.group : "N/A",
-			});
-		});
-
-		DataCache[`data-${dataId}`] = returnData;
-		return returnData;
-	};
-
-	getSelectedSocrataData = async (config) => {
-		const { socrataId } = config;
-		let nchsData = DataCache[`data-${socrataId}`];
+	getSelectedSocrataData = async (localConfig) => {
+		let nchsData = DataCache[`data-${localConfig.socrataId}`];
 		if (nchsData) return nchsData;
 
-		if (socrataId.startsWith("nhis")) {
-			return this.getNhisData(socrataId);
-		}
-
-		if (socrataId.startsWith("cshs")) {
-			return this.getNhisData(socrataId);
-		}
-		if (socrataId.startsWith("dhcs")) {
-			return this.getDhcsData(socrataId);
+		// if there's a specific lookup id with a mapper
+		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
+			return this.getNhisData(
+				localConfig.socrataId,
+				localConfig.topicLookupId,
+				config.topicLookup[localConfig.topicLookupId].dataMapper
+			);
 		}
 
 		try {
 			let [metaData, jsonData] = [];
 			let metaUrl, dataUrl;
 
-			if (config.private == 0) {
-				metaUrl = `https://data.cdc.gov/api/views/${socrataId}`;
-				dataUrl = `https://data.cdc.gov/resource/${socrataId}.json?$limit=50000`;
+			if (localConfig.private == 0) {
+				metaUrl = `https://data.cdc.gov/api/views/${localConfig.socrataId}`;
+				dataUrl = `https://data.cdc.gov/resource/${localConfig.socrataId}.json?$limit=50000`;
 			} else {
 				//t is Socrata ID, m is metadata and p is private
-				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=1&p=${config.private}`;
-				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${socrataId}&m=0&p=${config.private}`;
+				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
+				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -199,8 +95,7 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
-			DataCache[`data-${socrataId}`] = nchsData;
-
+			DataCache[`data-${localConfig.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
 			console.error("Error fetching data", err);
@@ -552,6 +447,7 @@ export class LandingPage {
 		};
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
+				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
 						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
@@ -564,6 +460,7 @@ export class LandingPage {
 				unreliableNotesArray?.length === 0
 					? ""
 					: unreliableNotesArray
+							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
 									`<p class="unreliableFootnote"><strong>${
@@ -624,18 +521,8 @@ export class LandingPage {
 		// set the chart title
 		$("#chart-title").html(`<strong>${this.config.chartTitle}</strong>`);
 
-		if (this.config.socrataId.startsWith("nhis")) {
-			this.getSelectedSocrataData(config.topicLookup.nhis).then((data) => {
-				this.nhisData = data;
-				this.getData(topicChange);
-			});
-		} else if (this.config.socrataId.startsWith("cshs")) {
-			this.getSelectedSocrataData(config.topicLookup.cshs).then((data) => {
-				this.nhisData = data;
-				this.getData(topicChange);
-			});
-		} else if (this.config.socrataId.startsWith("dhcs")) {
-			this.getSelectedSocrataData(config.topicLookup.dhcs).then((data) => {
+		if (this.config.isNhisData) {
+			this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then((data) => {
 				this.nhisData = data;
 				this.getData(topicChange);
 			});
