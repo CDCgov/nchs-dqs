@@ -25,4 +25,22 @@ export const PageEvents = {
 			$(".genDropdownOpened").removeClass("genDropdownOpened");
 		});
 	},
+
+	// check for screen width change
+	screenWidthChange() {
+		setTimeout(() => {
+			$(window).on("resize", () => {
+				if (window.innerWidth < 1200) {
+					$(".mainDropdown").removeClass("col");
+				} else {
+					$(".mainDropdown").addClass("col");
+				}
+				if (window.innerWidth < 768) {
+					$(".fa-arrow-circle-right").addClass("fa-rotate-90");
+				} else {
+					$(".fa-arrow-circle-right").removeClass("fa-rotate-90");
+				}
+			});
+		}, 1000);
+	},
 };

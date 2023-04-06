@@ -15,23 +15,10 @@ a {
 	text-align: right;
 	align-self: center;
 	color: #0033a1;
-	transform: translateY(1vw);
+	transform: translateY(2px);
 
 	i {
 		font-size: 26px;
-		// font-size: 2vw;
-
-		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-		// 	font-size: 3vw;
-		// }
-
-		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-		// 	font-size: 4vw;
-		// }
-
-		// @media screen and (max-width: $mobile-max-width-2) {
-		// 	font-size: 5vw;
-		// }
 	}
 }
 .usMapLegendContainer {
@@ -73,23 +60,11 @@ a {
 	padding-top: 2px;
 	padding-bottom: 2px;
 	padding-left: 0;
-	font-size: 1vw;
-	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-		font-size: 1.4vw;
-	}
-
-	@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-		font-size: 1.9vw;
-	}
-
-	@media screen and (max-width: $mobile-max-width-2) {
-		font-size: 3vw;
-	}
 }
 
 .homeSelectorGroup {
 	border: 1px solid lightgray;
-	padding-top: 0.8vw;
+	padding-top: 12px;
 	border-bottom: 0;
 }
 
@@ -98,13 +73,13 @@ a {
 }
 
 .leftBorderMediumView {
-	@media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
+	@media screen and (max-width: 1199px) and (min-width: 768px) {
 		border-left: 1px solid lightgray !important;
 	}
 }
 
 .leftBorderSmallView {
-	@media screen and (max-width: $tablet-min-width) {
+	@media screen and (max-width: 767px) {
 		border-left: 1px solid lightgray !important;
 	}
 }
@@ -121,53 +96,17 @@ a {
 	.preSelText {
 		font-size: 18px;
 		color: #333;
-		// font-size: 1vw;
-
-		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-		// 	font-size: 1.5vw;
-		// }
-
-		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-		// 	font-size: 2vw;
-		// }
-
-		// @media screen and (max-width: $mobile-max-width-2) {
-		// 	font-size: 2.5vw;
-		// }
 	}
 
 	.mainSelText {
 		font-size: 28px;
-		line-height: 1vw;
+		line-height: 16px;
 		color: #333;
-		// font-size: 1.5vw;
-		// line-height: 1vw;
 
-		// > span {
-		// 	float: right;
-		// 	height: 0;
-
-		// }
-
-		// i {
-		// 	line-height: 0;
-		// 	color: grey;
-		// }
-
-		// @media screen and (max-width: $large-screen-min-width-4) and (min-width: $tablet-min-width) {
-		// 	font-size: 2.25vw;
-		// 	line-height: 1.5vw;
-		// }
-
-		// @media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
-		// 	font-size: 3vw;
-		// 	line-height: 2vw;
-		// }
-
-		// @media screen and (max-width: $mobile-max-width-2) {
-		// 	font-size: 3.75vw;
-		// 	line-height: 2.5vw;
-		// }
+		@media screen and (max-width: 1500px) and (min-width: 1200px) {
+			font-size: 24px;
+			line-height: 13px;
+		}
 	}
 }
 
@@ -184,8 +123,6 @@ a {
 	background: white;
 	font-family: Open Sans, sans-serif;
 	font-weight: 600;
-	// font-size: 16px;
-	// font-size: 0.8em;
 	padding-left: 0.6em;
 	padding-right: 0.6em;
 }

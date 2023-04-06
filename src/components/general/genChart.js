@@ -884,7 +884,7 @@ export class GenChart {
 								.attr("y2", (d) => yScaleLeft(d[p.chartProperties.yLeft1]) + whiskerOffset)
 								.attr("x1", (d) => xScale(d.estimate_lci) + margin.left)
 								.attr("x2", (d) => xScale(d.estimate_uci) + margin.left)
-								.attr("stroke", "black")
+								.attr("stroke", "#333")
 								.attr("stroke-width", 3);
 						});
 					}
@@ -896,7 +896,7 @@ export class GenChart {
 							.enter()
 							.append("text")
 							.text((d) => (!d[p.chartProperties.bars] ? "No data available" : ""))
-							.attr("fill", "black")
+							.attr("fill", "#333")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
 							.attr(
@@ -913,7 +913,7 @@ export class GenChart {
 							.enter()
 							.append("text")
 							.text((d) => (!d[p.chartProperties.bars] ? "for current selections" : ""))
-							.attr("fill", "black")
+							.attr("fill", "#333")
 							.attr("font-size", axisLabelFontSize)
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
 							.attr(
@@ -1074,7 +1074,6 @@ export class GenChart {
 												$(".unreliableFootnote").show();
 											}
 											const hasValue = d[p.chartProperties.yLeft1];
-											console.log(hasValue);
 											return !hasValue
 												? "white"
 												: unreliable
@@ -1500,7 +1499,7 @@ export class GenChart {
 				.attr("width", callOutWidth)
 				.attr("height", callOutHeight)
 				.attr("fill", "none")
-				.attr("stroke", "black");
+				.attr("stroke", "#333");
 
 			legendHeight += callOutHeight + 20;
 
@@ -1523,7 +1522,7 @@ export class GenChart {
 				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
 				.attr("width", reliabilityInfoRectWidth)
 				.attr("height", labelSize)
-				.attr("fill", "black");
+				.attr("fill", "#333");
 
 			reliabilityInfo
 				.append("text")
