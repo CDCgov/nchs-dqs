@@ -1,5 +1,5 @@
 import { modal, allFilters } from "./modal";
-import { nhisHash, nhisTopics } from "./nhis";
+import { nhisHash, nhisTopics, nhisGroups } from "./nhis";
 
 const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
@@ -156,7 +156,7 @@ export const tabContent = `
 		</ul>
 		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
@@ -244,19 +244,175 @@ export const topicLookup = {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	nhis: {
+	"nhis": {
 		socrataId: "4u68-shzr",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			if (filteredToIndicator.length === 0) {
+				dataId = nhisTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			}
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopicid,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_byid,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
 	},
-	dhcs: {
+	"children-summary-statistics": {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	cshsFootnotes: {
+		socrataId: "7kgb-btmk",
+		private: "1",
+	},
+	"dhcs-emergency-department-visits": {
 		socrataId: "pcav-mejc",
 		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
+					flag: null,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.measure_type,
+					panel_num: f.measuretype_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: f.groupby_id,
+					unit: f.estimate_type,
+					unit_num: f.estimatetype_id,
+					year: f.year,
+					year_num: "",
+					age: f.groupby.includes("By age") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
 	},
 	dhcsFootnotes: {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
+	"nhanes-chronic-conditions": {
+		socrataId: "i2dc-ja7d",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
 
+			return returnData;
+		},
+	},
+	"nhanes-dietary-behaviors": {
+		socrataId: "j4m9-2puq",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.mean,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -385,10 +541,11 @@ export const topicLookup = {
 	},
 };
 
+// load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 nhisTopics.forEach((t) => {
 	topicLookup[t.id] = {
 		dataUrl: "https://data.cdc.gov/NCHS/",
-		socrataId: `${t.prefix || `nhis`}-${t.text}`,
+		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters: nhisFilters,
@@ -397,6 +554,7 @@ nhisTopics.forEach((t) => {
 		hasCI: true,
 		hasClassification: true,
 		topicGroup: t.topicGroup,
+		topicLookupId: t.topicLookupKey || "nhis",
 	};
 });
 

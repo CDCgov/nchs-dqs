@@ -14,8 +14,8 @@ a {
 .homeIcon {
 	text-align: right;
 	align-self: center;
-	color: #0033a1;
 	transform: translateY(2px);
+	color: #555;
 
 	i {
 		font-size: 26px;
@@ -48,7 +48,7 @@ a {
 			cursor: pointer;
 			width: 20px;
 			height: 20px;
-			border: 1px solid black;
+			border: 1px solid #e0e0e0;
 			border-radius: 4px;
 			padding: 3px;
 			background-clip: content-box;
@@ -116,12 +116,11 @@ a {
 }
 
 .btn-reset {
-	border: 1px solid #185eaa;
-	color: #185eaa;
+	border: 1px solid #333;
+	color: #333;
 	border-radius: 25px;
 	line-height: 80%;
 	background: white;
-	font-family: Open Sans, sans-serif;
 	font-weight: 600;
 	padding-left: 0.6em;
 	padding-right: 0.6em;
@@ -139,7 +138,7 @@ a {
 
 .content-wrapper {
 	padding: 0 4vw;
-	background-color: #b3d2ce;
+	background-color: #ceece7;
 }
 
 #us-map-container {
@@ -271,6 +270,7 @@ a {
 button.disabled {
 	pointer-events: none;
 	cursor: default;
+	background-color: #bdbdbd;
 }
 
 #tabs {
@@ -288,8 +288,8 @@ button.disabled {
 	float: none !important;
 	display: inline-block;
 	border: none;
-	padding-top: 4px;
-	padding-bottom: 0 !important;
+	border-radius: 6px;
+	padding: 0 !important;
 	margin: 0 !important;
 	width: 30%;
 	height: 100% !important;
@@ -298,25 +298,24 @@ button.disabled {
 	a {
 		background-color: white;
 		width: 100% !important;
-		border: 1px solid #f6f6f6;
-		border-top: 0;
-		color: #08548e !important;
+		border: 2px solid #cfcfcf !important;
+		border-radius: 5px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+		border-bottom-color: white !important;
+		color: #555 !important;
 	}
 
 	&.ui-state-active {
-		padding-top: 0;
-
 		a {
-			background-color: #b3d2ce !important;
-			border-top: 5px solid #8ab9bb;
-			border-top-left-radius: 2px;
-			border-top-right-radius: 2px;
+			background-color: #ceece7 !important;
+			border-bottom-color: #ceece7 !important;
 		}
 	}
 
 	&:hover {
 		a {
-			color: #064572 !important;
+			color: #000 !important;
 			font-weight: bolder;
 		}
 	}

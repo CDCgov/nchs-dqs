@@ -449,7 +449,7 @@ export class TopicDropdown {
 			top: `${totalHeight - (windowWidth < 1200 ? 37 : 17)}px`,
 		});
 		if ($(this.dropdownSection).hasClass("genDropdownOpened")) {
-			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #000");
+			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #333");
 			$(`#${this.props.containerId} #genDropdownSearch`).html("<a id='genDdSearchAnchor'>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
 		} else {
