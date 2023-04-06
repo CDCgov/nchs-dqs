@@ -40,7 +40,7 @@ export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
+		<div id="topicDropdownGroup" class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -258,8 +258,8 @@ export const topicLookup = {
 		dataMapper: (data, dataId) => {
 			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			if (filteredToIndicator.length === 0) {
-				dataId = NHISTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
 			}
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
