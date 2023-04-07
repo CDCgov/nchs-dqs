@@ -448,14 +448,6 @@ const NHAMCSChild = [
 		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
 	},
 
-	// WONDER/HUS heart disease mortality
-	{
-		id: "death-rates-for-diseases-of-heart",
-		text: "Death rates for diseases of heart",
-		topicGroup: 1,
-		topicLookupKey: "wonder-hus-heart-disease-mortality",
-	},
-
 	// NHANES oral health
 	{
 		id: "total-dental-caries-in-primary-teeth",
