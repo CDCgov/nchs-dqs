@@ -1,492 +1,4 @@
-// These are subgroups!
-export const nhisGroups = {
-	Total: {
-		group: "Total",
-		groupId: 0,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"18-34 years": {
-		group: "Age Groups with 65+",
-		groupId: 1,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"35-49 years": {
-		group: "Age Groups with 65+",
-		groupId: 1,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"50-64 years": {
-		group: "Age Groups with 65+",
-		groupId: 1,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"65 years and over": {
-		group: "Age Groups with 65+",
-		groupId: 1,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"18-44 years": {
-		group: "Age Groups with 75+",
-		groupId: 2,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"45-64 years": {
-		group: "Age Groups with 75+",
-		groupId: 2,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"65-74 years": {
-		group: "Age Groups with 75+",
-		groupId: 2,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"75 years and over": {
-		group: "Age Groups with 75+",
-		groupId: 2,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Little to no social vulnerability": {
-		group: "CDC Social Vulnerability Index",
-		groupId: 3,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Low social vulnerability": {
-		group: "CDC Social Vulnerability Index",
-		groupId: 3,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Medium social vulnerability": {
-		group: "CDC Social Vulnerability Index",
-		groupId: 3,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"High social vulnerability": {
-		group: "CDC Social Vulnerability Index",
-		groupId: 3,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"White, single race": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Black or African American, single race": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"American Indian or Alaska Native, single race": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Asian, single race": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Native Hawaiian or Other Pacific Islander, single race": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Black or African American and White": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"American Indian or Alaska Native and White": {
-		group: "Race",
-		groupId: 13,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"With disability": {
-		group: "Disability Status",
-		groupId: 4,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Without disability": {
-		group: "Disability Status",
-		groupId: 4,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Less than high school diploma": {
-		group: "Education",
-		groupId: 5,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"High school diploma or GED": {
-		group: "Education",
-		groupId: 5,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Some college": {
-		group: "Education",
-		groupId: 5,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"College degree or higher": {
-		group: "Education",
-		groupId: 5,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	Employed: {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Not employed": {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Full-time": {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Part-time": {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Not employed but has worked previously": {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Not employed and has never worked": {
-		group: "Employment Status",
-		groupId: 6,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Less than 100% FPL": {
-		group: "Family Income",
-		groupId: 7,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"100% to less than 200% FPL": {
-		group: "Family Income",
-		groupId: 7,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"200% and greater FPL": {
-		group: "Family Income",
-		groupId: 7,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	Private: new Map([
-		[
-			"20",
-			{
-				group: "Health insurance coverage 65",
-				groupId: 9,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-		[
-			"19",
-			{
-				group: "Health insurance coverage under 65",
-				groupId: 8,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-		[
-			"10",
-			{
-				group: "Health insurance coverage under 65",
-				groupId: 8,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-	]),
-	"Medicare and Medicaid": {
-		group: "Health insurance coverage 65+",
-		groupId: 9,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Medicare Advantage": {
-		group: "Health insurance coverage 65+",
-		groupId: 9,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Medicare only (no Advantage)": {
-		group: "Health insurance coverage 65+",
-		groupId: 9,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Other coverage": new Map([
-		[
-			"20",
-			{
-				group: "Health insurance coverage 65",
-				groupId: 9,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-		[
-			"19",
-			{
-				group: "Health insurance coverage under 65",
-				groupId: 8,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-		[
-			"10",
-			{
-				group: "Health insurance coverage under 65",
-				groupId: 8,
-				classification: "Socio-economic status",
-				classificationId: 2,
-			},
-		],
-	]),
-	"Medicaid or other public": {
-		group: "Health insurance coverage under 65",
-		groupId: 8,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	Uninsured: {
-		group: "Health insurance coverage under 65",
-		groupId: 8,
-		classification: "Socio-economic status",
-		classificationId: 2,
-	},
-	"Hispanic or Latino": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Mexican or Mexican American": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Not Hispanic or Latino": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Not Hispanic or Latino, White, single race": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Not Hispanic or Latino, Black or African American, single race": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Other, non-Hispanic": {
-		group: "Hispanic or Latino origin and race",
-		groupId: 10,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Married: {
-		group: "Marital Status",
-		groupId: 11,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Widowed: {
-		group: "Marital Status",
-		groupId: 11,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Divorced or separated": {
-		group: "Marital Status",
-		groupId: 11,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Never married": {
-		group: "Marital Status",
-		groupId: 11,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Living with a partner": {
-		group: "Marital Status",
-		groupId: 11,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"U.S.-born": {
-		group: "Nativity",
-		groupId: 12,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Foreign-born": {
-		group: "Nativity",
-		groupId: 12,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Male: {
-		group: "Sex",
-		groupId: 14,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Female: {
-		group: "Sex",
-		groupId: 14,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Gay/lesbian": {
-		group: "Sexual Orientation",
-		groupId: 15,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Straight: {
-		group: "Sexual Orientation",
-		groupId: 15,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Bisexual: {
-		group: "Sexual Orientation",
-		groupId: 15,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	Veteran: {
-		group: "Veteran status",
-		groupId: 16,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Non-veteran": {
-		group: "Veteran status",
-		groupId: 16,
-		classification: "Demographic Characteristics",
-		classificationId: 0,
-	},
-	"Large MSA": {
-		group: "Metropolitan statistical area status",
-		groupId: 17,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Small MSA": {
-		group: "Metropolitan statistical area status",
-		groupId: 17,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Not in MSA": {
-		group: "Metropolitan statistical area status",
-		groupId: 17,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	Northeast: {
-		group: "Region",
-		groupId: 18,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	Midwest: {
-		group: "Region",
-		groupId: 18,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	South: {
-		group: "Region",
-		groupId: 18,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	West: {
-		group: "Region",
-		groupId: 18,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Large central metro": {
-		group: "Urbanicity",
-		groupId: 19,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Large fringe metro": {
-		group: "Urbanicity",
-		groupId: 19,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	"Medium and small metro": {
-		group: "Urbanicity",
-		groupId: 19,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-	Nonmetropolitan: {
-		group: "Urbanicity",
-		groupId: 19,
-		classification: "Geographic Characteristics",
-		classificationId: 1,
-	},
-};
-
-export const nhisHash = {
+export const NHISHash = {
 	groupOptions: [
 		{
 			hash: "total",
@@ -585,7 +97,7 @@ export const nhisHash = {
 	],
 };
 
-export const nhisTopics = [
+const NHISAdult = [
 	{ id: "angina-pectoris", text: "Angina/angina pectoris", topicGroup: 0 },
 	{ id: "any-difficulty-communicating", text: "Any difficulty communicating", topicGroup: 0 },
 	{ id: "any-difficulty-hearing", text: "Any difficulty hearing", topicGroup: 0 },
@@ -665,7 +177,6 @@ export const nhisTopics = [
 		indicator: "Exchange-based coverage coverage at time of interview",
 		topicGroup: 3,
 	},
-	// { id: "fair-or-Less-than-100%-FPL-health-status", text: "Fair or Less than 100% FPL health status", topicGroup: 1 },
 	{
 		id: "fair-or-poor-health-status",
 		text: "Fair or poor health status among adults",
@@ -750,313 +261,191 @@ export const nhisTopics = [
 		topicGroup: 3,
 	},
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 6 },
+];
+
+const NHISChild = [
 	{
 		id: "current-asthma-among-children",
 		text: "Current asthma among children",
 		topicGroup: 0,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
 		text: "Daily feelings of worry, nervousness, or anxiety among children",
 		indicator: "Daily feelings of worry, nervousness, or anxiety",
 		topicGroup: 4,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
 		text: "Delayed getting medical care due to cost among children",
 		topicGroup: 3,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "doctor-visit-among-children",
 		text: "Doctor visit among children",
 		topicGroup: 1,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "ever-having-a-learning-disability",
 		text: "Ever having a learning disability",
 		topicGroup: 0,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "ever-having-asthma",
 		text: "Ever having asthma",
 		topicGroup: 0,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "ever-having-attention-deficit/hyperactivity-disorder",
 		text: "Ever having attention-deficit/hyperactivity disorder",
 		topicGroup: 0,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "fair-or-poor-health-status-among-children",
 		text: "Fair or poor health status among children",
 		topicGroup: 1,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "has-a-usual-place-of-care-among-children",
 		text: "Has a usual place of care among children",
 		topicGroup: 3,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "missing-11-or-more-school-days-due-to-illness-or-injury",
 		text: "Missing 11 or more school days due to illness or injury",
 		topicGroup: 1,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "prescription-medication-use-among-children",
 		text: "Prescription medication use among children",
 		topicGroup: 6,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "receipt-of-influenza-vaccination-among-children",
 		text: "Receipt of influenza vaccination among children",
 		topicGroup: 6,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "receive-services-for-mental-health-problems",
 		text: "Receive services for mental health problems among children",
 		indicator: "Receive services for mental health problems",
 		topicGroup: 4,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "receiving-special-education-or-early-intervention-services",
 		text: "Receiving special education or early intervention services",
 		topicGroup: 6,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "two-or-more-hospital-emergency-department-visits-among-children",
 		text: "Two or more hospital emergency department visits among children",
 		topicGroup: 3,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
 		text: "Two or more urgent care center or retail health clinic visits among children",
 		topicGroup: 3,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "uninsured-at-time-of-interview-among-children",
 		text: "Uninsured at time of interview among children",
 		topicGroup: 3,
-		topicLookupKey: "children-summary-statistics",
 	},
 	{
 		id: "well-child-check-up",
 		text: "Well child check-up",
 		topicGroup: 6,
-		topicLookupKey: "children-summary-statistics",
 	},
+];
 
-	// start dhcs-emergency-department-visits topics
+const NHAMCSChild = [
 	{
 		id: "emergency-department-visits-for-all-diagnoses",
 		text: "Emergency department visits for all diagnoses",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-all-reasons-patient-reported",
 		text: "Emergency department visits for all reasons (patient reported)",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-accident-not-otherwise-specified",
 		text: "Emergency department visits for accident, not otherwise specified",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-back-symptoms",
 		text: "Emergency department visits for back symptoms",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-certain-infectious-and-parasitic-diseases",
 		text: "Emergency department visits for certain infectious and parasitic diseases",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-chest-pain-and-related-symptoms-not-referable-to-body-systems",
 		text: "Emergency department visits for chest pain and related symptoms (not referable to body systems)",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-cough",
 		text: "Emergency department visits for cough",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-circulatory-system",
 		text: "Emergency department visits for diseases of the circulatory system",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-digestive-system",
 		text: "Emergency department visits for diseases of the digestive system",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-genitourinary-system",
 		text: "Emergency department visits for diseases of the genitourinary system",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-musculoskeletal-system-and-connective-tissue",
 		text: "Emergency department visits for diseases of the musculoskeletal system and connective tissue",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-respiratory-system",
 		text: "Emergency department visits for diseases of the respiratory system",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-diseases-of-the-skin-and-subcutaneous-tissue",
 		text: "Emergency department visits for diseases of the skin and subcutaneous tissue",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-fever",
 		text: "Emergency department visits for fever",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-headache-pain-in-head",
 		text: "Emergency department visits for headache, pain in head",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-injury-and-poisoning",
 		text: "Emergency department visits for injury and poisoning",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-mental-behavioral-and-neurodevelopmental-disorders",
 		text: "Emergency department visits for mental, behavioral, and neurodevelopmental disorders",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-other-symptomsproblems-related-to-psychological-and-mental-disorders",
 		text: "Emergency department visits for other symptoms/problems related to psychological and mental disorders",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-pain-site-not-referable-to-a-specific-body-system",
 		text: "Emergency department visits for pain, site not referable to a specific body system",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-shortness-of-breath",
 		text: "Emergency department visits for shortness of breath",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-stomach-and-abdominal-pain-cramps-and-spasms",
 		text: "Emergency department visits for stomach and abdominal pain, cramps and spasms",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
 	},
 	{
 		id: "emergency-department-visits-for-symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
 		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
-		topicGroup: 1,
-		topicLookupKey: "dhcs-emergency-department-visits",
-	},
-
-	// start NHANES chronic conditions
-	{
-		id: "obesity-nhanes",
-		text: "Obesity (NHANES)",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-	},
-	{
-		id: "high-total-cholesterol",
-		text: "High Total Cholesterol",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-	},
-	{
-		id: "hypertension",
-		text: "Hypertension",
-		topicGroup: 0,
-		topicLookupKey: "nhanes-chronic-conditions",
-	},
-
-	// start NHANES Dietary behaviors
-	{
-		id: "calcium-intake",
-		text: "Calcium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "dietary-fiber-intake",
-		text: "Dietary Fiber Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "iron-intake",
-		text: "Iron Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "potassium-intake",
-		text: "Potassium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "saturated-fat-intake",
-		text: "Saturated Fat Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "sodium-intake",
-		text: "Sodium Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
-	},
-	{
-		id: "vitamin-d-intake",
-		text: "Vitamin D Intake",
-		topicGroup: 2,
-		topicLookupKey: "nhanes-dietary-behaviors",
 	},
 
 	// WONDER/HUS heart disease mortality
@@ -1098,4 +487,53 @@ export const nhisTopics = [
 		topicGroup: 5,
 		topicLookupKey: "nhanes-oral-health",
 	},
+];
+
+// start NHANES chronic conditions
+const NHANESChronic = [
+	{ id: "obesity-nhanes", text: "Obesity (NHANES)" },
+	{ id: "high-total-cholesterol", text: "High Total Cholesterol" },
+	{ id: "hypertension", text: "Hypertension" },
+];
+
+// start NHANES Dietary behaviors
+const NHANESDietary = [
+	{ id: "calcium-intake", text: "Calcium Intake" },
+	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake" },
+	{ id: "iron-intake", text: "Iron Intake" },
+	{ id: "potassium-intake", text: "Potassium Intake" },
+	{ id: "saturated-fat-intake", text: "Saturated Fat Intake" },
+	{ id: "sodium-intake", text: "Sodium Intake" },
+	{ id: "vitamin-d-intake", text: "Vitamin D Intake" },
+];
+
+export const NHISTopics = [
+	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", cdcDataId: "4u68-shzr", dataSystem: "NHIS" })),
+	...NHISChild.map((d) => ({
+		...d,
+		topicLookupKey: "children-summary-statistics",
+		cdcDataId: "rkv8-xf9z",
+		dataSystem: "NHIS",
+	})),
+	...NHAMCSChild.map((d) => ({
+		...d,
+		topicLookupKey: "NHAMCS",
+		cdcDataId: "pcav-mejc",
+		dataSystem: "NHAMCS",
+		topicGroup: 1,
+	})),
+	...NHANESChronic.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-chronic-conditions",
+		cdcDataId: "i2dc-ja7d",
+	})),
+	...NHANESDietary.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 2,
+		topicLookupKey: "nhanes-dietary-behaviors",
+		cdcDataId: "j4m9-2puq",
+	})),
 ];

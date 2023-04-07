@@ -6,19 +6,17 @@
 	width: 100%;
 	line-height: 38px;
 	cursor: pointer;
-	color: #007c91;
-	border-top: 3px solid #007c91;
-	border-bottom: 1px solid #007c91;
+	color: #555;
+	border-top: 3px solid #4ebaaa;
+	border-bottom: 1px solid #4ebaaa;
 
 	&.closed {
-		color: black;
-		border-top: 1px solid #007c91;
-		border-bottom: 1px solid #007c91;
+		border-top: 1px solid #4ebaaa;
+		border-bottom: 1px solid #4ebaaa;
 	}
 
 	&:hover {
 		background-color: #fbfbfb;
-		color: #007c91;
 	}
 }
 
@@ -60,62 +58,77 @@
 	margin-bottom: 4px !important;
 }
 
-.table.table-bordered:not(#nchs-table) {
-	th {
-		border-left: none !important;
-	}
+#nchsHeaderTable {
+	width: 100%;
+	background-color: #e0e0e0;
+	border-bottom: 1px solid #333;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+#tableYearHeader {
+	border-right: 1px solid #333;
+	padding: 0 4px;
+}
+
+#tableEstimateHeader {
+	padding: 0 4px;
 }
 
 .expanded-data-table {
-	div.dataTables_wrapper div.dataTables_filter {
-		input {
-			width: 100%;
-		}
-		label {
-			width: 100%;
-			display: flex;
-			align-items: center;
-		}
-	}
-	width: 100%;
-	overflow-x: hidden;
+	overflow: auto;
 	background-color: white;
-	padding: 5px;
+	margin: 0;
 	border-width: 1px;
-
-	.dataTables_filter {
-		margin-bottom: 3px;
-	}
-
 	color: #333;
+	position: relative;
 
-	thead {
-		border-bottom: 1px solid #333;
+	#nchs-table {
+		width: 100%;
+		position: relative;
+		thead {
+			border-bottom: 1px solid #333;
 
-		> tr {
-			vertical-align: bottom;
-			// border-left: 10px solid red;
+			> tr {
+				vertical-align: bottom;
+				th {
+					position: -webkit-sticky; /* for Safari */
+					position: sticky;
+					top: 0;
+					border: 1px solid lightgrey;
+					border-top: none;
+					padding: 0 4px;
+					background-color: #fff; // this allows header to stay on top with the z-index
+					z-index: 1;
+					min-width: 176px;
 
-			&:first-child {
-				background-color: #e0e0e0;
+					&:first-child {
+						border-left: none;
+						left: 0;
+						z-index: 2; // stay on top both scroll directions
+						min-width: 50px;
+					}
+				}
 			}
 		}
-	}
 
-	th {
-		font: bold 18pt "Open Sans", sans-serif !important;
-
-		&:first-child {
-			border-right: 1px solid #333;
+		td {
+			padding: 0 4px;
+			white-space: nowrap;
+			border: 1px solid lightgrey;
 		}
-	}
-	td {
-		font: normal 17pt "Open Sans", sans-serif !important;
-		white-space: nowrap;
-	}
-	tbody th {
-		white-space: nowrap;
-		border-left-color: white !important;
+		tbody th {
+			font-weight: bold;
+			white-space: nowrap;
+			border: 1px solid lightgrey;
+			border-left: none;
+			padding: 0 4px;
+			position: -webkit-sticky; /* for Safari */
+			position: sticky;
+			left: 0;
+			z-index: 1;
+			background-color: #fff; // this allows header to stay on top with the z-index
+		}
 	}
 }
 
