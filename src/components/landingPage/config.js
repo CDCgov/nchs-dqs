@@ -359,6 +359,10 @@ export const topicLookup = {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
+	NHANESFootnotes: {
+		socrataId: "vv6f-2hmj",
+		private: "1",
+	},
 	"nhanes-chronic-conditions": {
 		socrataId: "i2dc-ja7d",
 		private: "1",
