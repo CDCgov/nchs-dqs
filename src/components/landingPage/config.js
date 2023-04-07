@@ -745,6 +745,22 @@ export const hashLookup = [
 				hash: "sex-age-and-race-and-hispanic-origin",
 				value: "7",
 			},
+			{
+				hash: "sex-and-single-race",
+				value: "8",
+			},
+			{
+				hash: "sex-age-and-single-race",
+				value: "9",
+			},
+			{
+				hash: "sex-and-single-race-hispanic-origin",
+				value: "10",
+			},
+			{
+				hash: "sex-age-and-single-race-hispanic-origin",
+				value: "11",
+			},
 		],
 		classificationOptions: [
 			{
