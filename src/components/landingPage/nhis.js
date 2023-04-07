@@ -447,38 +447,6 @@ const NHAMCSChild = [
 		id: "emergency-department-visits-for-symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
 		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
 	},
-
-	// NHANES oral health
-	{
-		id: "total-dental-caries-in-primary-teeth",
-		text: "Total Dental Caries in Primary Teeth",
-		topicGroup: 5,
-		topicLookupKey: "nhanes-oral-health",
-	},
-	{
-		id: "total-dental-caries-in-permanent-teeth",
-		text: "Total Dental Caries in Permanent Teeth",
-		topicGroup: 5,
-		topicLookupKey: "nhanes-oral-health",
-	},
-	{
-		id: "complete-tooth-loss",
-		text: "Complete Tooth Loss",
-		topicGroup: 5,
-		topicLookupKey: "nhanes-oral-health",
-	},
-	{
-		id: "untreated-dental-caries-in-primary-teeth",
-		text: "Untreated Dental Caries in Primary Teeth",
-		topicGroup: 5,
-		topicLookupKey: "nhanes-oral-health",
-	},
-	{
-		id: "untreated-dental-caries-in-permanent-teeth",
-		text: "Untreated Dental Caries in Permanent Teeth",
-		topicGroup: 5,
-		topicLookupKey: "nhanes-oral-health",
-	},
 ];
 
 // start NHANES chronic conditions
@@ -497,6 +465,30 @@ const NHANESDietary = [
 	{ id: "saturated-fat-intake", text: "Saturated Fat Intake" },
 	{ id: "sodium-intake", text: "Sodium Intake" },
 	{ id: "vitamin-d-intake", text: "Vitamin D Intake" },
+];
+
+// NHANES oral health
+const NHANESOralHealth = [
+	{
+		id: "total-dental-caries-in-primary-teeth",
+		text: "Total Dental Caries in Primary Teeth",
+	},
+	{
+		id: "total-dental-caries-in-permanent-teeth",
+		text: "Total Dental Caries in Permanent Teeth",
+	},
+	{
+		id: "complete-tooth-loss",
+		text: "Complete Tooth Loss",
+	},
+	{
+		id: "untreated-dental-caries-in-primary-teeth",
+		text: "Untreated Dental Caries in Primary Teeth",
+	},
+	{
+		id: "untreated-dental-caries-in-permanent-teeth",
+		text: "Untreated Dental Caries in Permanent Teeth",
+	},
 ];
 
 export const NHISTopics = [
@@ -527,5 +519,12 @@ export const NHISTopics = [
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
 		cdcDataId: "j4m9-2puq",
+	})),
+	...NHANESOralHealth.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+		cdcDataId: "i3dq-buv5",
 	})),
 ];
