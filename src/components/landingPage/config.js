@@ -452,7 +452,7 @@ export const topicLookup = {
 		topicGroup: 0,
 	},
 	suicide: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/u9f7-4q6s",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/e8w2-ekn5",
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
@@ -522,7 +522,7 @@ export const topicLookup = {
 		topicGroup: 3,
 	},
 	"drug-overdose": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/52ij-h8yw",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/gp4d-kizt",
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
@@ -535,7 +535,7 @@ export const topicLookup = {
 		topicGroup: 1,
 	},
 	"ambulatory-care": {
-		dataUrl: "https://data.cdc.gov/resource/tz8d-jy2e.json",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Visits-to-physician-offices-hospital-outpatien/tz8d-jy2e",
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits (HUS)",
@@ -548,7 +548,7 @@ export const topicLookup = {
 		topicGroup: 1,
 	},
 	"access-care": {
-		dataUrl: "https://data.cdc.gov/resource/nt5r-ak33.json",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Delay-or-nonreceipt-of-needed-medical-care-pre/nt5r-ak33",
 		socrataId: "nt5r-ak33",
 		private: "1",
 		chartTitle: "Access to Care (HUS)",
@@ -566,7 +566,7 @@ export const topicLookup = {
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
 	topicLookup[t.id] = {
-		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
+		dataUrl: t.dataUrl,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
