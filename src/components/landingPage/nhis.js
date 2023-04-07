@@ -467,6 +467,18 @@ const NHANESDietary = [
 	{ id: "vitamin-d-intake", text: "Vitamin D Intake" },
 ];
 
+// NHANES Infectious disease
+const NHANESInfectious = [
+	{
+		id: "herpes-simplex-virus-type-1-hsv-1",
+		text: "Herpes Simplex Virus Type 1 (HSV-1)",
+	},
+	{
+		id: "herpes-simplex-virus-type-2-hsv-2",
+		text: "Herpes Simplex Virus Type 2 (HSV-2)",
+	},
+];
+
 export const NHISTopics = [
 	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", cdcDataId: "4u68-shzr", dataSystem: "NHIS" })),
 	...NHISChild.map((d) => ({
@@ -495,5 +507,12 @@ export const NHISTopics = [
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
 		cdcDataId: "j4m9-2puq",
+	})),
+	...NHANESInfectious.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 0,
+		topicLookupKey: "nhanes-infectious-disease",
+		cdcDataId: "fuy5-tcrb",
 	})),
 ];
