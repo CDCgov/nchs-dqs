@@ -1,7 +1,7 @@
 import { modal, allFilters } from "./modal";
-import { nhisHash, nhisTopics, nhisGroups } from "./nhis";
+import { NHISHash, NHISTopics } from "./nhis";
 
-const nhisFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
+const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
 export const chartAndTableSelectors = `
 	<div id="chart-table-selectors">
@@ -40,8 +40,7 @@ export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
 	<div id="dropdownSelectorGroup" class="row">
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup">-->
-		<div class="col homeSelectorGroup">
+		<div id="topicDropdownGroup" class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -53,14 +52,13 @@ export const tabContent = `
 					</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
 				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
+				<i id="refineTopicIcon" class="fas fa-info-circle" style="color: #555">&nbsp;</i>
 			</div>			
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-			<div class="col homeSelectorGroup leftBorderSmallView">
+			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -70,14 +68,12 @@ export const tabContent = `
 					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer2">&nbsp;</div>
 			<div id="classificationDropdown" class="genDropdown">
 				<label for="classificationDropdown-select" id="classificationDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -87,14 +83,13 @@ export const tabContent = `
 					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="groupDropdown" class="genDropdown">
 				<label for="groupDropdown-select" id="groupDropdown-label">&nbsp;</label>
 			</div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderMediumView leftBorderSmallView">-->		
-		<div class="col homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
@@ -104,35 +99,31 @@ export const tabContent = `
 					<div class="mainSelText heading4">Subgroup</div>
 				</div>
 			</div>
-			<div class="row label-style" style="margin-top: 0.4vw; line-height: 1vw"></div>
-			<div class="row label-style timePeriodContainer">&nbsp;</div>
+			<div class="row spacerContainer">&nbsp;</div>
+			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="subgroupDropdown"></div>
 		</div>
-		<!--<div class="col-lg-3 col-md-6 col-sm-12 homeSelectorGroup leftBorderSmallView">-->
-		<div class="col homeSelectorGroup leftBorderSmallView">
+		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
-				<div class="col-10 homeSelectorText">
+				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body2" aria-label="Choose from available time periods">Choose from available</div>
 					<div class="mainSelText heading4">Time Periods</div>
 				</div>
-			</div>
-			<div class="row" style="text-align: center">
-				<div class="col-12">
-					<div class="flexRow">
-					<!--<div style="margin-top: 0.4vw; line-height: 1vw">-->
+				<div class="col-xl-12 col-md-6 col-sm-12">
+					<div class="flexRow singlePeriod">
 						<input style="margin-right: 8px;" type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
 						<label class="label-style body2" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
-				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center">
-					<label for="startYearContainer-select" id="startYearContainer-label" class="body2">Start Period</label>
+				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center;">
+					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
 				</div>
-				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center" class="body2">
+				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center;">
 					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
 				</div>
 			</div>
@@ -142,14 +133,14 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<i id="resetInfo" class="fas fa-info-circle" style="font-size: 24px; color: #555">&nbsp;</i>
+			<i id="resetInfo" class="fas fa-info-circle">&nbsp;</i>
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>
 	<br />
 
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center">
-		<span id="chart-title" class="chart-title"></span><br />
+		<span id="chart-title" class="chart-title"></span><br style="display: block; content:''; margin-top: -4px" />
 		<span id="chart-subtitle"></span>
 	</div>
 
@@ -166,7 +157,7 @@ export const tabContent = `
 		</ul>
 		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #b3d2ce; margin-top: 0px; padding-top: 1px">
+			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">					
 					<div id="mapDownloadTitle"></div>
@@ -199,7 +190,7 @@ export const tabContent = `
 						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
 							<div id="chartLegendTitle" tabindex="0"></div>
 							<hr style="margin: 0 10px" />
-							<div id="chartLegendContent"></div>							
+							<div id="chartLegendContent"></div>
 						</div>
 					</div>
 				</div>
@@ -209,9 +200,16 @@ export const tabContent = `
 			<!-- end chart wrapper -->
 		</div>
 		<div id="table-tab" aria-labelledby="ex-with-icons-tab-3">
-			<div class="content-wrapper">
+			<div id="tableContentWrapper" class="content-wrapper">
 				<div id="tableSelectors"></div>
-				<div id="tableResultsCount" style="font-weight: 600">Displaying <span id="filteredTableCount"></span> of <span id="fullTableCount"></span> Results</div>
+				<table id="nchsHeaderTable" style="background-color: #e0e0e0;">
+					<thead>
+						<tr>
+							<th id="tableYearHeader">Year</th>
+							<th id="tableEstimateHeader"></th>
+						</tr>
+					</thead>
+				</table>
 				<div class="expanded-data-table"></div>
 				<br />
 				<div tabindex="0" class="source-text unreliableNote">Symbols (e.g. * and ---) are used as reliability indicators. <a class="viewFootnotes">See Notes</a> for more details.</div>
@@ -230,7 +228,7 @@ export const tabContent = `
 			<button tabindex="0" id="dwn-chart-img" class="theme-cyan btn" style="margin-right: 20px">
 				Download Image <i class="fas fa-image" aria-hidden="true"></i>
 			</button>
-			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">
+			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">				
 				Download Data <i class="fas fa-download" aria-hidden="true"></i>
 			</button>
 		</span>
@@ -250,18 +248,18 @@ export const topicLookup = {
 		socrataId: "m6mz-p2ij",
 		private: "1",
 	},
-	nhisFootnotes: {
+	NHISFootnotes: {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	"nhis": {
+	NHIS: {
 		socrataId: "4u68-shzr",
 		private: "1",
 		dataMapper: (data, dataId) => {
 			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			if (filteredToIndicator.length === 0) {
-				dataId = nhisTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
 			}
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
@@ -326,7 +324,7 @@ export const topicLookup = {
 		socrataId: "7kgb-btmk",
 		private: "1",
 	},
-	"dhcs-emergency-department-visits": {
+	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
 		dataMapper: (data, dataId) => {
@@ -357,7 +355,7 @@ export const topicLookup = {
 			return returnData;
 		},
 	},
-	dhcsFootnotes: {
+	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
 		private: "1",
 	},
@@ -432,7 +430,8 @@ export const topicLookup = {
 		socrataId: "64sz-mcbq",
 		private: "1",
 		chartTitle: "Obesity among Children (HUS)",
-		filters: "AsianPacific,Black,Children,Hispanic,Poverty,White",
+		filters: "HUS,AsianPacific,Black,Children,Hispanic,Poverty,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -444,7 +443,8 @@ export const topicLookup = {
 		socrataId: "23va-ejrn",
 		private: "1",
 		chartTitle: "Obesity among Adults (HUS)",
-		filters: "Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		filters: "HUS,Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -456,7 +456,8 @@ export const topicLookup = {
 		socrataId: "u9f7-4q6s",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
-		filters: "Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		filters: "HUS,Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
@@ -468,7 +469,8 @@ export const topicLookup = {
 		socrataId: "k99r-jkp7",
 		private: "1",
 		chartTitle: "Initial injury-related visits to hospital emergency departments (HUS)",
-		filters: "Adults,Older,Children,Male,Female",
+		filters: "HUS,Adults,Older,Children,Male,Female",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
@@ -480,7 +482,8 @@ export const topicLookup = {
 		socrataId: "bzax-vvbx",
 		private: "1",
 		chartTitle: "Infant Mortality",
-		filters: "Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		filters: "HUS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -494,7 +497,8 @@ export const topicLookup = {
 		socrataId: "3p8z-99bn",
 		private: "1",
 		chartTitle: "Low birthweight live births",
-		filters: "Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		filters: "HUS,Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -510,6 +514,7 @@ export const topicLookup = {
 		chartTitle: "Medicaid coverage among persons under age 65 (HUS)",
 		filters:
 			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+		dataSystem: "HUS",
 		classificationId: "NA",
 		yAxisUnitId: 2,
 		hasCI: true,
@@ -521,7 +526,8 @@ export const topicLookup = {
 		socrataId: "52ij-h8yw",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
-		filters: "Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		filters: "HUS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -533,7 +539,8 @@ export const topicLookup = {
 		socrataId: "tz8d-jy2e",
 		private: "1",
 		chartTitle: "Ambulatory Care Visits (HUS)",
-		filters: "Adults,Black,Children,Female,Male,Older,Region,White",
+		filters: "HUS,Adults,Black,Children,Female,Male,Older,Region,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
@@ -547,6 +554,7 @@ export const topicLookup = {
 		chartTitle: "Access to Care (HUS)",
 		filters:
 			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -556,19 +564,20 @@ export const topicLookup = {
 };
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
-nhisTopics.forEach((t) => {
+NHISTopics.forEach((t) => {
 	topicLookup[t.id] = {
-		dataUrl: "https://data.cdc.gov/NCHS/",
+		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
-		filters: nhisFilters,
+		filters: NHISFilters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
 		topicGroup: t.topicGroup,
-		topicLookupId: t.topicLookupKey || "nhis",
+		topicLookupId: t.topicLookupKey,
+		dataSystem: t.dataSystem,
 	};
 });
 
@@ -1102,13 +1111,11 @@ export const hashLookup = [
 	},
 ];
 // add all NHIS topic to hashLookup
-nhisTopics
-	.map((t) => t.id)
-	.forEach((id) => {
-		hashLookup.push({
-			hash: id,
-			value: id,
-			groupOptions: nhisHash.groupOptions,
-			classificationOptions: nhisHash.classificationOptions,
-		});
+NHISTopics.map((t) => t.id).forEach((id) => {
+	hashLookup.push({
+		hash: id,
+		value: id,
+		groupOptions: NHISHash.groupOptions,
+		classificationOptions: NHISHash.classificationOptions,
 	});
+});
