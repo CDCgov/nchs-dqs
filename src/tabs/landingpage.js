@@ -541,16 +541,17 @@ export class LandingPage {
 			this.getSelectedSocrataData(config.topicLookup.NHISFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHANESFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes];
+					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
 					DataCache.Footnotes = allFootNotes;
 				}
 
