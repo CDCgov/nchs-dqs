@@ -561,6 +561,21 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
+	"community-hospital-beds": {
+		dataUrl: " https://data.cdc.gov/resource/udap-6a7e.json",
+		socrataId: "udap-6a7e",
+		private: "1",
+		chartTitle: "Community Hospital Beds",
+		filters: "HUS",
+		dataSystem: "HUS",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: true,
+		hasClassification: true,
+		binGranularity: 0.1,
+		topicGroup: 1,
+	},
 };
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
