@@ -1,78 +1,73 @@
-<div class="row">
-	<div class="col-xs-12 col-xl-10">
-		<div class="row">
-			<div class="col-12 heading6">Demographic</div>
+<div id="chart-table-selectors">
+	<div class="viewSelectorsToggle viewSelectorsClosed">
+		<div>View Options</div>
+	</div>
+	<div class="hideShowViewSelectors">
+		<div id="viewSlidersContainer">
+			<div id="subGroupsSelectorsSection" class="viewSliders" style="">
+				<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
+				<label class="switch">
+					<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups" />
+					<span class="slider round"></span>
+				</label>
+			</div>
+			<div id="ciTableSlider" class="viewSliders">
+				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
+				<label class="switch">
+					<input id="confidenceIntervalSlider" tabindex="0" type="checkbox" aria-label="show all subgroups" />
+					<span id="ciTableHover" class="slider round"></span>
+				</label>
 
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterIndian" />
-				<label for="filterIndian">American Indian or Alaska Native</label>
+				<div id="ciTableSlider-tooltip" class="generalTooltip tooltip" style="visibility: hidden; display: none">
+					<div class="tip-header">
+						<h3></h3>
+						<h4></h4>
+					</div>
+					<div class="tip-body"></div>
+				</div>
 			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterInfants" />
-				<label for="filterInfants">Infants</label>
+			<div id="mapBinningTypeSelector" class="viewSliders" style="display: none">
+				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px"
+					>Show quartiles based on the most recent available period</label
+				>
+				<label class="switch">
+					<input id="mapBinningSlider" tabindex="0" type="checkbox" checked="" aria-label="show quartiles base on the most recent available period" />
+					<span class="slider round"></span>
+				</label>
 			</div>
+		</div>
+		<div id="estimateDropdownContainer">
+			<div id="estimateTypeDropdown" class="genDropdown">
+				<div
+					id="estimateTypeDropdown-label"
+					for="estimateTypeDropdown-select"
+					class="select-label"
+					aria-label="estimate type, currently selected is Deaths per 100,000 resident population, crude"
+				>
+					Estimate Type
+				</div>
 
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAsian" />
-				<label for="filterAsian">Asian</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterChildren" />
-				<label for="filterChildren">Children and Adolescents</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAsianPacific" />
-				<label for="filterAsianPacific">Asian or Pacific Islander</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterAdults" />
-				<label for="filterAdults">Adults</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterBlack" />
-				<label for="filterBlack">Black or African American</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterOlder" />
-				<label for="filterOlder">Older Adults</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterHispanic" />
-				<label for="filterHispanic">Hispanic or Latino</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMale" />
-				<label for="filterMale">Male</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMultipleRace" />
-				<label for="filterMultipleRace">Multiple Race</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterFemale" />
-				<label for="filterFemale">Female</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterHawaiian1" />
-				<label for="filterHawaiian1">Native Hawaiian or Other Pacific Islander</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterFuncLimitStatus" />
-				<label for="filterFuncLimitStatus">Disability (Functional limitation Status)</label>
-			</div>
-
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterWhite1" />
-				<label for="filterWhite1">White</label>
-			</div>
-			<div class="col-6 nowrap flexRow left">
-				<input type="checkbox" class="filterCheckbox selectableIcon" id="filterMarital" />
-				<label for="filterMarital">Marital Status</label>
+				<div
+					id="estimateTypeDropdown-select"
+					class="genDropdownSelected"
+					tabindex="0"
+					role="listbox"
+					aria-labelledby="estimateTypeDropdown-label"
+					contenteditable="true"
+				>
+					<a>Deaths per 100,000 resident population, crude</a>
+					<div class="genDropdownOptions">
+						<div
+							class="genDropdownOption genOptionSelected"
+							data-val="2"
+							role="option"
+							aria-label="Deaths per 100,000 resident population, crude"
+							tabindex="0"
+						>
+							<a>Deaths per 100,000 resident population, crude</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

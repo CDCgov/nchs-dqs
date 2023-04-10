@@ -84,12 +84,57 @@ a {
 	}
 }
 
+.viewSelectorsToggle {
+	display: none;
+	width: 100%;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 11l6-6 6 6'/%3e%3c/svg%3e");
+	background-repeat: no-repeat;
+	background-position: right 6px center;
+	background-size: 16px 12px;
+
+	&.viewSelectorsClosed {
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+	}
+
+	@media screen and (max-width: 767px) {
+		display: flex;
+		justify-content: right;
+		align-items: center;
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+
+	div {
+		width: 100px;
+		margin-right: 25px;
+		pointer-events: none;
+	}
+}
+
 #chart-table-selectors {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
 	padding: 28px 0 6px 0;
+
+	@media screen and (max-width: 767px) {
+		padding-top: 0px;
+	}
+}
+
+.hideShowViewSelectors {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+
+	@media screen and (max-width: 767px) {
+		padding-top: 0px;
+		display: none;
+		flex-direction: column;
+	}
 }
 
 .homeSelectorText {

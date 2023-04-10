@@ -5,32 +5,37 @@ const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a
 
 export const chartAndTableSelectors = `
 	<div id="chart-table-selectors">
-		<div>
-			<div id="subGroupsSelectorsSection">
-				<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
-				<label class="switch">
-					<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
-					<span class="slider round"></span>
-				</label>
-			</div>
-			<div id="ciTableSlider">
-				<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
-				<label class="switch">
-					<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
-					<span id="ciTableHover" class="slider round"></span>
-				</label>
-			</div>			
-			<div id="mapBinningTypeSelector">
-				<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles based on the most recent available period</label>
-				<label class="switch">
-					<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
-					<span class="slider round"></span>
-				</label>
-			</div>
+		<div class="viewSelectorsToggle viewSelectorsClosed">
+			<div>View Options</div>
 		</div>
-		<div>
-			<div id="estimateTypeDropdown" class="genDropdown">
-				<div id="estimateTypeDropdown-label" for="estimateTypeDropdown-select"class="select-label">Estimate Type</div>
+		<div class="hideShowViewSelectors">
+			<div id="viewSlidersContainer">
+				<div id="subGroupsSelectorsSection" class="viewSliders">
+					<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
+					<label class="switch">
+						<input id="showAllSubgroupsSlider" tabindex="0" type="checkbox" aria-label="show all subgroups">
+						<span class="slider round"></span>
+					</label>
+				</div>
+				<div id="ciTableSlider" class="viewSliders">
+					<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
+					<label class="switch">
+						<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
+						<span id="ciTableHover" class="slider round"></span>
+					</label>
+				</div>			
+				<div id="mapBinningTypeSelector" class="viewSliders">
+					<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles based on the most recent available period</label>
+					<label class="switch">
+						<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
+						<span class="slider round"></span>
+					</label>
+				</div>
+			</div>
+			<div id="estimateDropdownContainer">
+				<div id="estimateTypeDropdown" class="genDropdown">
+					<div id="estimateTypeDropdown-label" for="estimateTypeDropdown-select"class="select-label">Estimate Type</div>
+				</div>
 			</div>
 		</div>
 	</div>
