@@ -284,7 +284,8 @@ export class LandingPage {
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
-		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label) && d.flag !== "- - -"); // remove undefined data
+
 		this.updateFootnotes(chartData);
 
 		this.chartConfig = functions.getAllChartProps(
@@ -545,13 +546,20 @@ export class LandingPage {
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -572,12 +580,6 @@ export class LandingPage {
 					year_pt: functions.getYear(d.year),
 					// assignedLegendColor: "#FFFFFF",
 				}));
-
-				// for line chart and bar chart, REMOVE the undefined data entirely
-				if (!this.config.hasMap) {
-					// remove flag = "- - -" data
-					this.socrataData = this.socrataData.filter((d) => d.flag !== "- - -"); // remove undefined data
-				}
 
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
@@ -935,7 +937,7 @@ export class LandingPage {
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
-	renderDataTable(data, search) {
+	renderDataTable(data) {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#subGroupsSelectorsSection").show();
@@ -974,7 +976,7 @@ export class LandingPage {
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
 
-		if (tableData.some((d) => d.flag === "*" || d.flag === "---")) {
+		if (tableData.some((d) => d.flag)) {
 			$(".unreliableNote").show();
 			$(".unreliableFootnote").show();
 		}
