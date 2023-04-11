@@ -328,7 +328,8 @@ export const topicLookup = {
 		socrataId: "pcav-mejc",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
@@ -337,9 +338,9 @@ export const topicLookup = {
 					estimate_uci: f.upper_95_ci,
 					flag: null,
 					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.measure_type,
-					panel_num: f.measuretype_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
