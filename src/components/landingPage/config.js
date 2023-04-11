@@ -574,7 +574,7 @@ export const topicLookup = {
 		hasMap: true,
 		hasClassification: true,
 		binGranularity: 0.1,
-		topicGroup: 1,
+		topicGroup: 3,
 	},
 };
 
