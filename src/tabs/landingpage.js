@@ -545,13 +545,20 @@ export class LandingPage {
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
 					DataCache.Footnotes = allFootNotes;
 				}
 
@@ -927,6 +934,7 @@ export class LandingPage {
 		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect();
+		this.updateEnableCI(0);
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
@@ -935,7 +943,7 @@ export class LandingPage {
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
-	renderDataTable(data, search) {
+	renderDataTable(data) {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#subGroupsSelectorsSection").show();
