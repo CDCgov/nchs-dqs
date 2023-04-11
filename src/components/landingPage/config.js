@@ -335,7 +335,7 @@ export const topicLookup = {
 					estimate: f.estimate,
 					estimate_lci: f.lower_95_ci,
 					estimate_uci: f.upper_95_ci,
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id,
 					indicator: f.measure,
 					panel: f.measure_type,
