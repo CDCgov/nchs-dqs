@@ -532,7 +532,7 @@ export class GenMap {
 			if (windowWidth >= 1500) callOutWidth = chartContainerWidth / 2;
 			else if (windowWidth >= 1200) callOutWidth = chartContainerWidth / 1.5;
 			else callOutWidth = chartContainerWidth - 20;
-			const headerFontSize = 18;
+			const headerFontSize = windowWidth < 400 ? 16 : 18;
 			const callOutHeight = 4 * headerFontSize;
 			const labelSize = 0.89 * headerFontSize;
 
@@ -565,7 +565,9 @@ export class GenMap {
 				.attr("transform", `translate(0, ${2.5 * labelSize})`)
 				.attr("text-anchor", "middle");
 
-			const reliabilityInfoRectWidth = callOutWidth / 5;
+			const reliabilityInfoRectWidth =
+				windowWidth < 350 ? callOutWidth / 8 : windowWidth < 500 ? callOutWidth / 6 : callOutWidth / 5;
+
 			reliabilityInfo
 				.append("rect")
 				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
@@ -585,14 +587,17 @@ export class GenMap {
 
 			reliabilityInfo
 				.append("rect")
-				.attr("transform", `translate(20, 0)`)
+				.attr("transform", `translate(${windowWidth < 500 ? -5 : 20}, 0)`)
 				.attr("width", reliabilityInfoRectWidth)
 				.attr("height", labelSize)
 				.attr("fill", "url(#blackCrossHatch)");
 
 			reliabilityInfo
 				.append("text")
-				.attr("transform", `translate(${reliabilityInfoRectWidth + 25}, ${0.8 * labelSize})`)
+				.attr(
+					"transform",
+					`translate(${reliabilityInfoRectWidth + (windowWidth < 500 ? 0 : 25)}, ${0.8 * labelSize})`
+				)
 				.attr("text-anchor", "start")
 				.attr("font-size", labelSize)
 				.text("Not Reliable");
