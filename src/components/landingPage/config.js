@@ -327,6 +327,57 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		classifications: [
+			{ hash: "accident-not-otherwise-specified", value: "3" },
+			{ hash: "certain-infectious-and-parasitic-diseases", value: "5" },
+			{
+				hash: "chest-pain-and-related-symptoms-not-referable-to-body-systems",
+				value: "6",
+			},
+			{ hash: "cough", value: "7" },
+			{ hash: "diseases-of-the-circulatory-system", value: "8" },
+			{ hash: "diseases-of-the-digestive-system", value: "9" },
+			{ hash: "diseases-of-the-genitourinary-system", value: "10" },
+			{ hash: "diseases-of-the-respiratory-system", value: "12" },
+			{
+				hash: "diseases-of-the-musculoskeletal-system-and-connective-tissue",
+				value: "11",
+			},
+			{ hash: "fever", value: "14" },
+			{ hash: "diseases-of-the-skin-and-subcutaneous-tissue", value: "13" },
+			{ hash: "headache-pain-in-head", value: "15" },
+			{ hash: "injury-and-poisoning", value: "16" },
+			{
+				hash: "mental-behavioral-and-neurodevelopmental-disorders",
+				value: "17",
+			},
+			{ hash: "shortness-of-breath", value: "20" },
+			{
+				hash: "other-symptomsproblems-related-to-psychological-and-mental-disorders",
+				value: "18",
+			},
+			{
+				hash: "pain-site-not-referable-to-a-specific-body-system",
+				value: "19",
+			},
+			{ hash: "stomach-and-abdominal-pain-cramps-and-spasms", value: "21" },
+			{ hash: "all-diagnoses", value: "1" },
+			{
+				hash: "symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
+				value: "22",
+			},
+			{ hash: "all-reasons-patient-reported", value: "2" },
+			{ hash: "back-symptoms", value: "4" },
+		],
+		groups: [
+			{ hash: "total", value: "1" },
+			{ hash: "by-sex", value: "3" },
+			{ hash: "by-age", value: "2" },
+			{ hash: "by-raceethnicity", value: "4" },
+			{ hash: "by-region", value: "6" },
+			{ hash: "by-metropolitan-statistical-area-msa", value: "5" },
+			{ hash: "by-primary-payment-source", value: "7" },
+		],
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
@@ -1109,6 +1160,18 @@ export const hashLookup = [
 				value: "13",
 			},
 		],
+	},
+	{
+		hash: "by-reason-for-visit",
+		value: "by-reason-for-visit",
+		classificationOptions: topicLookup.NHAMCS.classifications,
+		groupOptions: topicLookup.NHAMCS.groups,
+	},
+	{
+		hash: "by-primary-diagnosis",
+		value: "by-primary-diagnosis",
+		classificationOptions: topicLookup.NHAMCS.classifications,
+		groupOptions: topicLookup.NHAMCS.groups,
 	},
 ];
 // add all NHIS topic to hashLookup
