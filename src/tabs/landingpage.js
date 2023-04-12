@@ -853,12 +853,13 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
-
-		const startPeriodOptions = this.selections?.viewSinglePeriod
-			? this.allYearsOptions
-			: this.allYearsOptions.slice(0, -1);
+		const onlyOneTimePeriod = this.allYearsOptions.length === 1;
+		const startPeriodOptions =
+			this.selections?.viewSinglePeriod || onlyOneTimePeriod
+				? this.allYearsOptions
+				: this.allYearsOptions.slice(0, -1);
 		this.initStartPeriodDropdown(startPeriodOptions);
-		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
+		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
 		this.currentTimePeriodIndex = 0;
 	}
 
