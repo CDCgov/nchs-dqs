@@ -185,8 +185,8 @@ export const tabContent = `
 			<div class="content-wrapper">
 				<div id="chartSelectors"></div>				
 				<div id="chartContainer" class="row">
-					<div id="chart-container" class="col-10"></div>
-					<div id="chartLegend" class="col-2">
+					<div id="chart-container" class="col-xxl-10 col-xl-9 col-lg-12"></div>
+					<div id="chartLegend" class="col-xxl-2 col-xl-3 col-lg-12">
 						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
 							<div id="chartLegendTitle" tabindex="0"></div>
 							<hr style="margin: 0 10px" />

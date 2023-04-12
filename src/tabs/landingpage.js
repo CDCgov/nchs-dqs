@@ -274,9 +274,9 @@ export class LandingPage {
 
 		subgroupValues.forEach((g, i) => {
 			$("#chartLegendContent").append(`
-				<div class="legendItems" style="display: flex; flex-direction: row; align-items: center; padding: 5px;">
-					<div id="legendItem-${i}" style="width: 15%"></div>
-					<div id="legendText-${i}" class="legendText" style="width: 85%; text-align: left;">${g}</div>
+				<div class="legendItems">
+					<div id="legendItem-${i}" class="legendItem"></div>
+					<div id="legendText-${i}" class="legendText">${g}</div>
 				</div>
 				`);
 		});
@@ -545,13 +545,20 @@ export class LandingPage {
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
 					DataCache.Footnotes = allFootNotes;
 				}
 

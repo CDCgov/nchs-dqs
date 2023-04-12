@@ -156,11 +156,52 @@ a {
 
 	#chartLegend {
 		margin-top: 25px;
+		margin-bottom: 10px;
+
+		@media screen and (max-width: 1199px) {
+			margin-top: 0;
+		}
+
+		#chartLegendContent {
+			@media screen and (max-width: 1199px) {
+				display: flex;
+				flex-wrap: wrap;
+			}
+
+			.legendItems {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				padding: 5px;
+
+				@media screen and (max-width: 1199px) {
+					width: 33%;
+				}
+
+				@media screen and (max-width: 767px) {
+					width: 100%;
+				}
+
+				.legendItem {
+					width: 15%;
+				}
+
+				.legendText {
+					width: 85%;
+					text-align: left;
+				}
+			}
+		}
 	}
 
 	#chartLegendTitle {
 		font-size: 20px;
 		font-weight: bold;
+		padding: 0 5px;
+	}
+
+	.legendItems > div {
+		margin-right: 5px;
 	}
 }
 
