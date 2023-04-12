@@ -21,40 +21,7 @@ a {
 		font-size: 26px;
 	}
 }
-.usMapLegendContainer {
-	margin-top: 25px;
-	margin-right: 20px;
-	width: 12%;
-	color: #333;
-	text-align: center;
 
-	#us-map-legend-title {
-		font-size: 20px;
-		font-weight: bold;
-	}
-
-	#mapLegendPeriod {
-		white-space: nowrap;
-		font-weight: bold;
-	}
-
-	#us-map-legend {
-		> div {
-			align-items: center;
-			margin: 10px 0;
-		}
-
-		.squareCheckbox {
-			cursor: pointer;
-			width: 20px;
-			height: 20px;
-			border: 1px solid #e0e0e0;
-			border-radius: 4px;
-			padding: 3px;
-			background-clip: content-box;
-		}
-	}
-}
 .homeSmallGroup {
 	border: 1px solid lightgray;
 	padding-top: 2px;
@@ -90,6 +57,7 @@ a {
 	justify-content: space-between;
 	align-items: center;
 	padding: 28px 0 6px 0;
+	margin-bottom: 10px;
 }
 
 .homeSelectorText {
@@ -139,13 +107,6 @@ a {
 .content-wrapper {
 	padding: 0 4vw;
 	background-color: #ceece7;
-}
-
-#us-map-container {
-	display: flex;
-	flex-direction: row;
-	background-color: white;
-	padding-top: 25px;
 }
 
 #chartContainer {
@@ -326,7 +287,10 @@ button.disabled {
 	margin-top: -5px !important;
 }
 
-.da-maplegend-box,
+.mapLegendBox {
+	line-height: 16px;
+}
+
 .mapAnimateAxisPoint {
 	font-size: 1em;
 	@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {

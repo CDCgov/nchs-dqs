@@ -258,7 +258,7 @@ export class LandingPage {
 		});
 		map.render();
 		$("#us-map-time-slider").empty();
-		map.renderTimeSeriesAxisSelector();
+		map.renderTimeSeriesAxisSelector(this.currentTimePeriodIndex);
 	}
 
 	renderChart(data) {
@@ -545,13 +545,20 @@ export class LandingPage {
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
 					DataCache.Footnotes = allFootNotes;
 				}
 
