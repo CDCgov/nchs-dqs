@@ -293,6 +293,9 @@ export const topicLookup = {
 	"children-summary-statistics": {
 		socrataId: "rkv8-xf9z",
 		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
+			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
 			const returnData = [];
