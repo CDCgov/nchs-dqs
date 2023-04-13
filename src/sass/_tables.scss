@@ -144,7 +144,18 @@
 
 .tableSliderLabel {
 	width: 210px;
-	// font-weight: 600;
+}
+
+@media screen and (max-width: 767px) {
+	#viewSlidersContainer {
+		width: 100%;
+	}
+	.viewSliders {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+	}
 }
 
 .switch {
@@ -152,6 +163,11 @@
 	display: inline-block;
 	width: 30px;
 	height: 20px;
+
+	@media screen and (max-width: 1199px) {
+		margin-top: 7px;
+		margin-bottom: 7px;
+	}
 }
 
 .switch input {

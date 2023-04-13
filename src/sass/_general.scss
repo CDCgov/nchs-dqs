@@ -226,6 +226,10 @@ div.genDropdownSelected {
 
 	&#estimateTypeDropdown-select {
 		border-color: #bdbdbd !important;
+
+		// @media screen and (max-width: 767px) {
+		// 	width: 100%;
+		// }
 	}
 
 	&.disabled {
@@ -495,11 +499,19 @@ div.genDropdownSelected {
 	}
 }
 
+#estimateDropdownContainer {
+	@media screen and (max-width: 767px) {
+		width: 100%;
+	}
+}
+
 #estimateTypeDropdownMap,
 #estimateTypeDropdown {
 	width: 440px;
-	@media screen and (max-width: 440px) {
+	@media screen and (max-width: 767px) {
 		width: 100%;
+		padding-left: 0;
+		padding-right: 0;
 	}
 }
 
