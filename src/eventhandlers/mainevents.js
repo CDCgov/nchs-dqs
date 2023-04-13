@@ -17,6 +17,26 @@ export class MainEvents {
 
 	registerEvents = () => {
 		$(document)
+			.off("click", "#mapBackward")
+			.on("click", "#mapBackward", () => {
+				this.stopAnimation();
+				const { currentTimePeriodIndex, allYearsOptions } = appState.ACTIVE_TAB;
+				const nextIndex =
+					currentTimePeriodIndex === 0 ? allYearsOptions.length - 1 : currentTimePeriodIndex - 1;
+				const { value } = allYearsOptions[nextIndex];
+				appState.ACTIVE_TAB.updateStartPeriod(value);
+				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
+			})
+			.off("click", "#mapForward")
+			.on("click", "#mapForward", () => {
+				this.stopAnimation();
+				const { currentTimePeriodIndex, allYearsOptions } = appState.ACTIVE_TAB;
+				const nextIndex =
+					currentTimePeriodIndex === allYearsOptions.length - 1 ? 0 : currentTimePeriodIndex + 1;
+				const { value } = allYearsOptions[nextIndex];
+				appState.ACTIVE_TAB.updateStartPeriod(value);
+				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
+			})
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
 				if (appState.ACTIVE_TAB.animating) {

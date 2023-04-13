@@ -230,7 +230,7 @@ export class LandingPage {
 		}
 
 		const allDates = this.allYearsOptions.map((d) => d.value);
-		stateData = stateData.filter((d) => d.year_pt === this.startYear);
+		stateData = stateData.filter((d) => d.year_pt == this.startYear);
 
 		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
 		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
@@ -240,12 +240,10 @@ export class LandingPage {
 		let classified;
 		let staticBin;
 		if (this.staticBinning) {
-			stateData = stateData.map((d) => {
-				return {
-					...d,
-					class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
-				};
-			});
+			stateData = stateData.map((d) => ({
+				...d,
+				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
+			}));
 			staticBin = JSON.parse(JSON.stringify(this.legend));
 			staticBin[1].min = "min";
 			staticBin[4].max = "max";
@@ -271,7 +269,7 @@ export class LandingPage {
 		});
 		map.render();
 		$("#us-map-time-slider").empty();
-		map.renderTimeSeriesAxisSelector();
+		map.renderTimeSeriesAxisSelector(this.currentTimePeriodIndex);
 	}
 
 	renderChart(data) {

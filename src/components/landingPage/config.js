@@ -162,24 +162,19 @@ export const tabContent = `
 		</ul>
 		<!-- map wrapper -->
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
-			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
+			<div id="mapContentWrapper" class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">
-					<div id="mapDownloadTitle" style="width: 100%"></div>
-					<div id="usMapContent">
-						<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
-						<div id="us-map" class="general-chart"></div>
-						<div class="usMapLegendContainer">
-							<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
-								<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
-								<div style="display: inline-block; text-align: left;" tabindex="0">
-									Data classified<br />
-									using <a class="viewFootnotes" tabindex="0">quartiles</a><br />
-									based on<br />
-									<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
-								</div>
-								<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
+					<div id="mapDownloadTitle" style="width: 0"></div>
+					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
+					<div id="us-map" class="general-chart"></div>
+					<div class="usMapLegendContainer">
+						<div> <!-- styling found in main.scss #usMapLegendContainer > div -->
+							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
+							<div style="display: inline-block; text-align: left;" tabindex="0">
+								Data classified using <a class="viewFootnotes" tabindex="0">quartiles</a> based on <span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
 							</div>
+							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
 						</div>
 					</div>
 				</div>

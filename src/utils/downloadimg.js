@@ -48,7 +48,7 @@ export const downLoadMap2 = () => {
 				let titleChart = clone.getElementById("chart-title").textContent;
 				clone.getElementById(
 					"mapDownloadTitle"
-				).innerHTML = `<div style='line-height: 46.7057px; font-size: 42.4597px; text-align: center; padding: 10px 0;'>${titleChart}</div>`;
+				).innerHTML = `<div style='width: 100%; line-height: 46.7057px; font-size: 42.4597px; text-align: center; padding: 10px 0;'>${titleChart}</div>`;
 			},
 		}).then((canvas) => {
 			let titleChart = document.getElementById("chart-title").textContent;

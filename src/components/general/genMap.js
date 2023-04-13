@@ -1,7 +1,6 @@
 import * as d3 from "../../lib/d3.min";
 import { DataCache } from "../../utils/datacache";
 import { GenTooltip } from "./genTooltip";
-import { getGenSvgScale } from "../../utils/genSvgScale";
 
 export class GenMap {
 	constructor(props) {
@@ -17,7 +16,7 @@ export class GenMap {
 		this.stableBuckets = props.stableBuckets;
 	}
 
-	renderTimeSeriesAxisSelector() {
+	renderTimeSeriesAxisSelector(timerPeriodIndex) {
 		const svgId = "us-map-time-slider-svg";
 
 		// setup fontSizes
@@ -27,11 +26,12 @@ export class GenMap {
 		const remDiv = viz.append("div").attr("line-height", "1rem").attr("display", "none");
 		const rem = parseFloat(remDiv.style("line-height"), 10);
 
-		const { fullSvgWidth } = getGenSvgScale("us-map-time-slider");
+		const fullSvgWidth = parseInt(d3.select("#us-map-time-slider").style("width"), 10);
 		// const axisLabelFontSize = 0.6 * rem;
 		const axisLabelFontSize = 16;
 		const svgWidth = fullSvgWidth;
-		const svgHeight = $("#us-map-svg").height();
+		const windowWidth = $(window).width();
+		const svgHeight = windowWidth >= 1200 ? $("#us-map-svg").height() : 40;
 
 		// setup margins, widths, and heights
 		const margin = {
@@ -52,116 +52,208 @@ export class GenMap {
 
 		// set up axes
 		const yAxis = d3.axisLeft(yScale).tickSize(5);
-		const svg = viz.append("svg").attr("viewBox", [0, 0, svgWidth, svgHeight]).attr("id", svgId);
+		const svg = viz
+			.append("svg")
+			.attr("viewBox", [0, 0, svgWidth, svgHeight])
+			.attr("id", svgId)
+			.style("overflow", "visible");
 
-		svg.append("g")
-			.attr("class", "axis left")
-			.attr("transform", `translate(${margin.left}, ${margin.top})`)
-			.call(yAxis);
+		let smallAnimator;
+		if (windowWidth >= 1200) {
+			svg.append("g")
+				.attr("class", "axis left")
+				.attr("transform", `translate(${margin.left}, ${margin.top})`)
+				.call(yAxis);
 
-		d3.selectAll(`#${svgId} .axis.left text`).attr("text-anchor", "end");
-		d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
+			d3.selectAll(`#${svgId} .axis.left text`).attr("text-anchor", "end");
+			d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
 
-		d3.selectAll(`#${svgId} .axis text`)
-			.filter((d, i) => i === this.currentTimePeriodIndex)
-			.attr("font-weight", "bold");
+			d3.selectAll(`#${svgId} .axis text`)
+				.filter((d, i) => i === this.currentTimePeriodIndex)
+				.attr("font-weight", "bold");
 
-		// axis marker overlay (so clicking near a marker triggers a stop on that time-period)
-		svg.append("g")
-			.selectAll("rect")
-			.data(this.allDates)
-			.enter()
-			.append("rect")
-			.attr("class", "mapAnimateAxisPoint")
-			.attr("height", yScale.step())
-			.attr("width", margin.left)
-			.attr("y", (d) => yScale(d) + margin.top - 0.1 * axisLabelFontSize - yScale.step() / 2)
-			.attr("x", 0.2 * axisLabelFontSize)
-			.attr("fill", "transparent")
-			.attr("data-index", (d, i) => i)
-			.attr("cursor", "pointer");
+			// axis marker overlay (so clicking near a marker triggers a stop on that time-period)
+			svg.append("g")
+				.selectAll("rect")
+				.data(this.allDates)
+				.enter()
+				.append("rect")
+				.attr("class", "mapAnimateAxisPoint")
+				.attr("height", yScale.step())
+				.attr("width", margin.left)
+				.attr("y", (d) => yScale(d) + margin.top - 0.1 * axisLabelFontSize - yScale.step() / 2)
+				.attr("x", 0.2 * axisLabelFontSize)
+				.attr("fill", "transparent")
+				.attr("data-index", (d, i) => i)
+				.attr("cursor", "pointer");
 
-		// axis marker for which time-period is being displayed
-		svg.append("g")
-			.append("rect")
-			.attr("class", "mapAnimateAxisPoint")
-			.attr("width", 0.9 * axisLabelFontSize)
-			.attr("height", 0.2 * axisLabelFontSize)
-			.attr("y", yScale(this.allDates[this.currentTimePeriodIndex]) + margin.top - 0.1 * axisLabelFontSize)
-			.attr("x", margin.left - 0.45 * axisLabelFontSize)
-			.attr("fill", "#333");
+			// axis marker for which time-period is being displayed
+			svg.append("g")
+				.append("rect")
+				.attr("class", "mapAnimateAxisPoint")
+				.attr("width", 0.9 * axisLabelFontSize)
+				.attr("height", 0.2 * axisLabelFontSize)
+				.attr("y", yScale(this.allDates[this.currentTimePeriodIndex]) + margin.top - 0.1 * axisLabelFontSize)
+				.attr("x", margin.left - 0.45 * axisLabelFontSize)
+				.attr("fill", "#333");
 
-		const widthOfAxis = $(`#${svgId} .axis.left`)[0].getBoundingClientRect().width;
-		const playPauseOffset = svgWidth - widthOfAxis - axisLabelFontSize;
+			const widthOfAxis = $(`#${svgId} .axis.left`)[0].getBoundingClientRect().width;
+			const playPauseOffset = svgWidth - widthOfAxis - axisLabelFontSize;
 
-		const animate = svg
-			.append("g")
-			.attr("transform", `translate(${playPauseOffset}, ${margin.top + 0.8 * axisLabelFontSize})`);
+			const animate = svg
+				.append("g")
+				.attr("transform", `translate(${playPauseOffset}, ${margin.top + 0.8 * axisLabelFontSize})`);
 
-		// outer circle containing play/pause 'icons' that gives the illusion of a an active button
-		animate
-			.append("circle")
-			.attr("class", "mapPlayButton")
-			.attr("id", "mapPlayButtonContainer")
-			.attr("r", 1.06 * axisLabelFontSize)
-			.attr("fill", "darkgrey")
-			.attr("cx", -0.9 * axisLabelFontSize)
-			.attr("cy", -0.9 * axisLabelFontSize)
-			.style("cursor", "pointer")
-			.style("display", this.animating ? "block" : "none");
+			// outer circle containing play/pause 'icons' that gives the illusion of a an active button
+			animate
+				.append("circle")
+				.attr("class", "mapPlayButton")
+				.attr("id", "mapPlayButtonContainer")
+				.attr("r", 1.06 * axisLabelFontSize)
+				.attr("fill", "#333")
+				.attr("cx", -0.9 * axisLabelFontSize)
+				.attr("cy", -0.9 * axisLabelFontSize)
+				.style("cursor", "pointer")
+				.style("display", this.animating ? "block" : "none");
 
-		// inner circle containing play/pause 'icons'
-		animate
-			.append("circle")
-			.attr("class", "mapPlayButton")
-			.attr("r", 0.9 * axisLabelFontSize)
-			.attr("fill", "#555")
-			.attr("stroke", "#555")
-			.attr("cx", -0.9 * axisLabelFontSize)
-			.attr("cy", -0.9 * axisLabelFontSize)
-			.style("cursor", "pointer");
+			// inner circle containing play/pause 'icons'
+			animate
+				.append("circle")
+				.attr("class", "mapPlayButton")
+				.attr("r", 0.9 * axisLabelFontSize)
+				.attr("fill", "#333")
+				.attr("stroke", "#333")
+				.attr("cx", -0.9 * axisLabelFontSize)
+				.attr("cy", -0.9 * axisLabelFontSize)
+				.style("cursor", "pointer");
 
-		// play icon (triangle)
-		animate
-			.append("path")
-			.attr("class", "mapPlayButton")
-			.attr("id", "animatePlayIcon")
-			.attr(
-				"d",
-				d3
-					.symbol()
-					.type(d3.symbolTriangle)
-					.size(4 * axisLabelFontSize)
-			)
-			.attr("fill", this.animating ? "none" : "white")
-			.attr("transform", `rotate(90), translate(${-0.94 * axisLabelFontSize}, ${0.94 * axisLabelFontSize})`);
+			// play icon (triangle)
+			animate
+				.append("path")
+				.attr("class", "mapPlayButton")
+				.attr("id", "animatePlayIcon")
+				.attr(
+					"d",
+					d3
+						.symbol()
+						.type(d3.symbolTriangle)
+						.size(4 * axisLabelFontSize)
+				)
+				.attr("fill", this.animating ? "none" : "white")
+				.attr("transform", `rotate(90), translate(${-0.94 * axisLabelFontSize}, ${0.94 * axisLabelFontSize})`);
 
-		// one of the pause rectangles
-		animate
-			.append("rect")
-			.attr("class", "animatePauseIcon")
-			.attr("x", -1.15 * axisLabelFontSize)
-			.attr("y", -1.3 * axisLabelFontSize)
-			.attr("width", 0.15 * axisLabelFontSize)
-			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "white" : "none");
+			// one of the pause rectangles
+			animate
+				.append("rect")
+				.attr("class", "animatePauseIcon")
+				.attr("x", -1.15 * axisLabelFontSize)
+				.attr("y", -1.3 * axisLabelFontSize)
+				.attr("width", 0.15 * axisLabelFontSize)
+				.attr("height", 0.7 * axisLabelFontSize)
+				.attr("fill", this.animating ? "white" : "none");
 
-		// the other pause rectangle
-		animate
-			.append("rect")
-			.attr("class", "animatePauseIcon")
-			.attr("x", -0.85 * axisLabelFontSize)
-			.attr("y", -1.3 * axisLabelFontSize)
-			.attr("width", 0.15 * axisLabelFontSize)
-			.attr("height", 0.7 * axisLabelFontSize)
-			.attr("fill", this.animating ? "white" : "none");
+			// the other pause rectangle
+			animate
+				.append("rect")
+				.attr("class", "animatePauseIcon")
+				.attr("x", -0.85 * axisLabelFontSize)
+				.attr("y", -1.3 * axisLabelFontSize)
+				.attr("width", 0.15 * axisLabelFontSize)
+				.attr("height", 0.7 * axisLabelFontSize)
+				.attr("fill", this.animating ? "white" : "none");
+		} else {
+			smallAnimator = svg.append("g").attr("transform", `translate(${svgWidth / 2 - 100}, 36)`);
+
+			const smallAnimateDateGroup = smallAnimator.append("g").attr("transform", `translate(20, 0)`);
+			smallAnimateDateGroup
+				.append("text")
+				.attr("id", "mapBackward")
+				.style("cursor", "pointer")
+				.attr("transform", `translate(0, -10)`)
+				.attr("fill", "#333")
+				.text("◀");
+
+			smallAnimateDateGroup
+				.append("text")
+				.attr("id", "mapForward")
+				.style("cursor", "pointer")
+				.attr("transform", `translate(150, -10)`)
+				.attr("fill", "#333")
+				.text("▶");
+
+			smallAnimateDateGroup
+				.append("text")
+				.attr("transform", `translate(80, -10)`)
+				.attr("text-anchor", "middle")
+				.attr("fill", "#333")
+				.text(this.allDates[timerPeriodIndex]);
+
+			const animate = smallAnimator.append("g");
+
+			// outer circle containing play/pause 'icons' that gives the illusion of a an active button
+			animate
+				.append("circle")
+				.attr("class", "mapPlayButton")
+				.attr("id", "mapPlayButtonContainer")
+				.attr("r", 1.06 * axisLabelFontSize)
+				.attr("fill", "#333")
+				.attr("cx", -0.9 * axisLabelFontSize)
+				.attr("cy", -0.9 * axisLabelFontSize)
+				.style("cursor", "pointer")
+				.style("display", this.animating ? "block" : "none");
+
+			// inner circle containing play/pause 'icons'
+			animate
+				.append("circle")
+				.attr("class", "mapPlayButton")
+				.attr("r", 0.9 * axisLabelFontSize)
+				.attr("fill", "#333")
+				.attr("stroke", "#333")
+				.attr("cx", -0.9 * axisLabelFontSize)
+				.attr("cy", -0.9 * axisLabelFontSize)
+				.style("cursor", "pointer");
+
+			// play icon (triangle)
+			animate
+				.append("path")
+				.attr("class", "mapPlayButton")
+				.attr("id", "animatePlayIcon")
+				.attr(
+					"d",
+					d3
+						.symbol()
+						.type(d3.symbolTriangle)
+						.size(4 * axisLabelFontSize)
+				)
+				.attr("fill", this.animating ? "none" : "white")
+				.attr("transform", `rotate(90), translate(${-0.94 * axisLabelFontSize}, ${0.94 * axisLabelFontSize})`);
+
+			// one of the pause rectangles
+			animate
+				.append("rect")
+				.attr("class", "animatePauseIcon")
+				.attr("x", -1.15 * axisLabelFontSize)
+				.attr("y", -1.3 * axisLabelFontSize)
+				.attr("width", 0.15 * axisLabelFontSize)
+				.attr("height", 0.7 * axisLabelFontSize)
+				.attr("fill", this.animating ? "white" : "none");
+
+			// the other pause rectangle
+			animate
+				.append("rect")
+				.attr("class", "animatePauseIcon")
+				.attr("x", -0.85 * axisLabelFontSize)
+				.attr("y", -1.3 * axisLabelFontSize)
+				.attr("width", 0.15 * axisLabelFontSize)
+				.attr("height", 0.7 * axisLabelFontSize)
+				.attr("fill", this.animating ? "white" : "none");
+		}
 	}
 
 	render() {
 		const topoJson = JSON.parse(JSON.stringify(this.topoJson)); // deep clone
 		const { geometries } = topoJson.objects.StatesAndTerritories;
 		let { mLegendData } = this;
-		const mSuppressedFlagID = -2;
 		const mNoDataFlagID = -1;
 		const svgId = `${this.mapVizId}-svg`;
 
@@ -220,9 +312,8 @@ export class GenMap {
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
 		const fontColors = ["#333", "#333", "#333", "#333", "#fff", "#fff", "#fff"];
 		const getFontColor = (bin) => fontColors[bin];
-		const { fullSvgWidth, overallScale } = getGenSvgScale(this.mapVizId);
+		const fullSvgWidth = parseInt(d3.select("#us-map").style("width"), 10);
 		const territoriesHeight = 15;
-
 		const width = fullSvgWidth;
 		const mapHeightRatio = 0.65;
 		const mapHeight = width * mapHeightRatio;
@@ -304,8 +395,14 @@ export class GenMap {
 		};
 
 		const states = topojson.feature(topoJson, stateGeoCollection);
-		// const projection = d3.geoAlbers().fitSize([width, svgHeight], states);
-		const projection = d3.geoAlbers().fitSize([width, mapHeight], states);
+		const projection = d3.geoAlbers();
+		const windowWidth = $(window).width();
+		if (windowWidth >= 1200) {
+			projection.fitSize([width, mapHeight], states);
+		} else {
+			projection.translate([width / 2, mapHeight / 2]).scale(1.15 * width);
+		}
+
 		const path = d3.geoPath().projection(projection);
 
 		svg.attr("viewBox", [0, 0, width, svgHeight]);
@@ -399,8 +496,8 @@ export class GenMap {
 			.attr("x", (d, i) => territoryRectWidth * i + territorySpaceBetween / 2)
 			.attr("width", territoryRectWidth * 0.8)
 			.attr("height", territoryRectHeight)
-			.attr("rx", 5 * overallScale)
-			.attr("ry", 5 * overallScale)
+			.attr("rx", 5)
+			.attr("ry", 5)
 			.attr("stroke-width", 0.7)
 			.attr("stroke", "#777")
 			.style("fill", (d) => getColorFromD(d));
@@ -431,8 +528,11 @@ export class GenMap {
 		// if (needReliabilityCallout) {
 		if (true) {
 			const chartContainerWidth = $("#us-map").width();
-			const callOutWidth = chartContainerWidth / 2;
-			const headerFontSize = 18;
+			let callOutWidth;
+			if (windowWidth >= 1500) callOutWidth = chartContainerWidth / 2;
+			else if (windowWidth >= 1200) callOutWidth = chartContainerWidth / 1.5;
+			else callOutWidth = chartContainerWidth - 20;
+			const headerFontSize = windowWidth < 400 ? 16 : 18;
 			const callOutHeight = 4 * headerFontSize;
 			const labelSize = 0.89 * headerFontSize;
 
@@ -446,7 +546,9 @@ export class GenMap {
 				.attr("width", callOutWidth)
 				.attr("height", callOutHeight)
 				.attr("fill", "none")
-				.attr("stroke", "#555");
+				.attr("stroke", "#e0e0e0")
+				.attr("stroke-width", 1)
+				.attr("rx", 5);
 
 			legendHeight += callOutHeight + 20;
 
@@ -463,7 +565,9 @@ export class GenMap {
 				.attr("transform", `translate(0, ${2.5 * labelSize})`)
 				.attr("text-anchor", "middle");
 
-			const reliabilityInfoRectWidth = callOutWidth / 5;
+			const reliabilityInfoRectWidth =
+				windowWidth < 350 ? callOutWidth / 8 : windowWidth < 500 ? callOutWidth / 6 : callOutWidth / 5;
+
 			reliabilityInfo
 				.append("rect")
 				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
@@ -483,14 +587,17 @@ export class GenMap {
 
 			reliabilityInfo
 				.append("rect")
-				.attr("transform", `translate(20, 0)`)
+				.attr("transform", `translate(${windowWidth < 500 ? -5 : 20}, 0)`)
 				.attr("width", reliabilityInfoRectWidth)
 				.attr("height", labelSize)
 				.attr("fill", "url(#blackCrossHatch)");
 
 			reliabilityInfo
 				.append("text")
-				.attr("transform", `translate(${reliabilityInfoRectWidth + 25}, ${0.8 * labelSize})`)
+				.attr(
+					"transform",
+					`translate(${reliabilityInfoRectWidth + (windowWidth < 500 ? 0 : 25)}, ${0.8 * labelSize})`
+				)
 				.attr("text-anchor", "start")
 				.attr("font-size", labelSize)
 				.text("Not Reliable");
@@ -601,9 +708,26 @@ export class GenMap {
 					let legendId = "legend-box-" + i;
 					// draw regular with color
 
-					legendGeneratedHTML += `
+					if (windowWidth < 1200) {
+						legendGeneratedHTML += `						
+							<div>
+								<div id=${legendId}
+									 class="squareCheckbox ${leg.checkboxColor !== "#e0e0e0" ? "checked" : ""}"
+									 data-color=${leg.bgColor}
+									 tabindex="0"
+									 role="checkbox"
+									  ${leg.checkboxColor !== "#e0e0e0" ? "checked" : ""}									 
+									 style="background-color: ${leg.checkboxColor};">&nbsp;
+								</div>
+								<label for=${legendId} class="mapLegendBox" aria-label='${leg.DisplayLabel.replace("-", "to")}'>${
+							leg.DisplayLabel
+						}</label>
+							</div>						
+        				`;
+					} else {
+						legendGeneratedHTML += `
 						<div class="row">							
-							<div class="col-3 col-offset-1">
+							<div class="col-3 col-offset-1" style="padding: 0 3px">
 								<div id=${legendId}
 									 class="squareCheckbox ${leg.checkboxColor !== "#e0e0e0" ? "checked" : ""}"
 									 data-color=${leg.bgColor}
@@ -613,11 +737,12 @@ export class GenMap {
 									 style="background-color: ${leg.checkboxColor};">&nbsp;
 								</div>
 							</div>
-							<div class="col-9"><label for=${legendId} aria-label='${leg.DisplayLabel.replace("-", "to")}'>${
-						leg.DisplayLabel
-					}</label></div>
+							<div class="col-9"><label for=${legendId} class="mapLegendBox" aria-label='${leg.DisplayLabel.replace("-", "to")}'>${
+							leg.DisplayLabel
+						}</label></div>
 						</div>
         				`;
+					}
 				});
 
 				// now add the legend to the map div
