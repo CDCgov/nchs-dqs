@@ -946,6 +946,7 @@ export class GenChart {
 					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
 					p.numberOfEquallySpacedDates = p.data.length + 1;
 				}
+
 				const allDateTicksButLast = xScale
 					.domain()
 					.filter((d, i) => !(i % Math.ceil(xScale.domain().length / (p.numberOfEquallySpacedDates - 1))))
@@ -1294,11 +1295,14 @@ export class GenChart {
 					if (p.needsScaleTime) {
 						// uses single years
 						if (appState.currentDeviceType === "desktop") {
+							const allDatesCount = [
+								...new Set(p.data.map((d) => d[p.chartProperties.xAxis].getFullYear())),
+							].length;
 							xAxis
 								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 5 !== 0 ? " " : genFormat(d, "year");
+									return i % 5 !== 0 && allDatesCount > 5 ? " " : genFormat(d, "year");
 								});
 						} else if (appState.currentDeviceType === "tablet") {
 							xAxis

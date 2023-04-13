@@ -327,19 +327,23 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
 					estimate: f.estimate,
 					estimate_lci: f.lower_95_ci,
 					estimate_uci: f.upper_95_ci,
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.measure_type,
-					panel_num: f.measuretype_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
@@ -357,6 +361,10 @@ export const topicLookup = {
 	},
 	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
+		private: "1",
+	},
+	NHANESFootnotes: {
+		socrataId: "vv6f-2hmj",
 		private: "1",
 	},
 	"nhanes-chronic-conditions": {
@@ -434,6 +442,37 @@ export const topicLookup = {
 					estimate_uci: f.upper_95_ci_limit,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-infectious-disease": {
+		socrataId: "fuy5-tcrb",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
 					panel: f.subtopic,
 					panel_num: f.subtopic_id,
@@ -540,7 +579,7 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Medicaid coverage among persons under age 65 (HUS)",
 		filters:
-			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+			"HUS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
 		dataSystem: "HUS",
 		classificationId: "NA",
 		yAxisUnitId: 2,
@@ -580,7 +619,7 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Access to Care (HUS)",
 		filters:
-			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+			"HUS,Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -588,16 +627,36 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
+	"community-hospital-beds": {
+		dataUrl: " https://data.cdc.gov/resource/udap-6a7e.json",
+		socrataId: "udap-6a7e",
+		private: "1",
+		chartTitle: "Community Hospital Beds",
+		filters: "HUS",
+		dataSystem: "HUS",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: true,
+		hasClassification: true,
+		binGranularity: 0.1,
+		topicGroup: 3,
+	},
 };
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
+	// check if the topic group has custom filters
+	let filters = NHISFilters;
+	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters) {
+		filters = topicLookup[t.topicLookupKey].filters;
+	}
 	topicLookup[t.id] = {
 		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
-		filters: NHISFilters,
+		filters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -771,6 +830,22 @@ export const hashLookup = [
 			{
 				hash: "sex-age-and-race-and-hispanic-origin",
 				value: "7",
+			},
+			{
+				hash: "sex-and-single-race",
+				value: "8",
+			},
+			{
+				hash: "sex-age-and-single-race",
+				value: "9",
+			},
+			{
+				hash: "sex-and-single-race-hispanic-origin",
+				value: "10",
+			},
+			{
+				hash: "sex-age-and-single-race-hispanic-origin",
+				value: "11",
 			},
 		],
 		classificationOptions: [
