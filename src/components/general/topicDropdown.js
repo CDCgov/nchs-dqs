@@ -414,7 +414,7 @@ export class TopicDropdown {
 	#scrollIntoView = () => {
 		const selectHeight = $(`#${this.props.containerId}-select`)[0].getBoundingClientRect().height;
 		const dropdownDims = $(this.dropdownSection)[0].getBoundingClientRect();
-		let dropdownHeight = dropdownDims.height;
+		const dropdownHeight = dropdownDims.height;
 		let dropdownBottom = dropdownDims.bottom;
 		const windowHeight = $(window).height();
 		const requiredHeight = dropdownHeight + selectHeight + 50; // 50 is for a label above, which may not exist or follow intended label class
@@ -428,6 +428,13 @@ export class TopicDropdown {
 		if (dropdownBottom > windowHeight) {
 			$(window).scrollTop(dropdownBottom - scrollDifference + 20);
 		}
+
+		// scroll to selected option if it is not in view
+		const selectedOption = $(this.dropdownSection).find(".genOptionSelected");
+		const selectedOptionTop = selectedOption[0].getBoundingClientRect().top;
+		const dropdownTop = dropdownDims.top;
+		const dropdownScrollTop = $(this.dropdownSection).scrollTop();
+		$(this.dropdownSection).scrollTop(selectedOptionTop - dropdownTop + dropdownScrollTop - dropdownHeight / 2);
 	};
 
 	#toggleOpenClose = () => {
@@ -452,11 +459,11 @@ export class TopicDropdown {
 			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #333");
 			$(`#${this.props.containerId} #genDropdownSearch`).html("<a id='genDdSearchAnchor'>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+			this.#scrollIntoView(); // scroll both the dropdown itself and the currently selected option into view
 		} else {
 			this.#resetOptions();
 			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
 		}
-		this.#scrollIntoView();
 	};
 
 	#updateAriaLabel = (text) => {
