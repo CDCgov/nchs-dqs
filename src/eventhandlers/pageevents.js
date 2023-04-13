@@ -28,17 +28,40 @@ export const PageEvents = {
 
 	// check for screen width change
 	screenWidthChange() {
+		let currentWidth = window.innerWidth;
+		const refreshBreakIndices = [
+			[0, 499],
+			[500, 767],
+			[768, 999],
+			[1000, 1199],
+			[1200, 1399],
+			[1400, 1599],
+			[1600, 1799],
+			[1800, 99999999999999],
+		];
+		let loadedBreak = refreshBreakIndices.findIndex((el) => el[0] < currentWidth && el[1] >= currentWidth);
+
 		setTimeout(() => {
 			$(window).on("resize", () => {
-				if (window.innerWidth < 1200) {
+				if (currentWidth < 1200) {
 					$(".mainDropdown").removeClass("col");
 				} else {
 					$(".mainDropdown").addClass("col");
 				}
-				if (window.innerWidth < 768) {
+				if (currentWidth < 768) {
 					$(".fa-arrow-circle-right").addClass("fa-rotate-90");
 				} else {
 					$(".fa-arrow-circle-right").removeClass("fa-rotate-90");
+				}
+				currentWidth = window.innerWidth;
+				const currentBreak = refreshBreakIndices.findIndex(
+					(el) => el[0] < currentWidth && el[1] >= currentWidth
+				);
+				if (currentBreak !== loadedBreak) {
+					loadedBreak = currentBreak;
+					setTimeout(() => {
+						appState.ACTIVE_TAB.renderDataVisualizations();
+					}, 300);
 				}
 			});
 		}, 1000);

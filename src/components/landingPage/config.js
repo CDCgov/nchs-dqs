@@ -159,20 +159,22 @@ export const tabContent = `
 		<div id="map-tab" aria-labelledby="ex-with-icons-tab-1">
 			<div class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
-				<div id="us-map-container">					
-					<div id="mapDownloadTitle"></div>
-					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
-					<div id="us-map" class="general-chart"></div>
-					<div class="usMapLegendContainer">
-						<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
-							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
-							<div style="display: inline-block; text-align: left;" tabindex="0">
-								Data classified<br />
-								using <a class="viewFootnotes" tabindex="0">quartiles</a><br />
-								based on<br />
-								<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
+				<div id="us-map-container">
+					<div id="mapDownloadTitle" style="width: 100%"></div>
+					<div id="usMapContent">
+						<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
+						<div id="us-map" class="general-chart"></div>
+						<div class="usMapLegendContainer">
+							<div style="width: 80%; margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
+								<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
+								<div style="display: inline-block; text-align: left;" tabindex="0">
+									Data classified<br />
+									using <a class="viewFootnotes" tabindex="0">quartiles</a><br />
+									based on<br />
+									<span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
+								</div>
+								<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
 							</div>
-							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
 						</div>
 					</div>
 				</div>
@@ -185,8 +187,8 @@ export const tabContent = `
 			<div class="content-wrapper">
 				<div id="chartSelectors"></div>				
 				<div id="chartContainer" class="row">
-					<div id="chart-container" class="col-10"></div>
-					<div id="chartLegend" class="col-2">
+					<div id="chart-container" class="col-xxl-10 col-xl-9 col-lg-12"></div>
+					<div id="chartLegend" class="col-xxl-2 col-xl-3 col-lg-12">
 						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
 							<div id="chartLegendTitle" tabindex="0"></div>
 							<hr style="margin: 0 10px" />
@@ -327,19 +329,23 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
 					estimate: f.estimate,
 					estimate_lci: f.lower_95_ci,
 					estimate_uci: f.upper_95_ci,
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.measure_type,
-					panel_num: f.measuretype_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
@@ -407,6 +413,68 @@ export const topicLookup = {
 					estimate_uci: f.upper_95_ci_limit,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-oral-health": {
+		socrataId: "i3dq-buv5",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-infectious-disease": {
+		socrataId: "fuy5-tcrb",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
 					panel: f.subtopic,
 					panel_num: f.subtopic_id,
@@ -561,16 +629,36 @@ export const topicLookup = {
 		hasClassification: true,
 		topicGroup: 3,
 	},
+	"community-hospital-beds": {
+		dataUrl: " https://data.cdc.gov/resource/udap-6a7e.json",
+		socrataId: "udap-6a7e",
+		private: "1",
+		chartTitle: "Community Hospital Beds",
+		filters: "HUS",
+		dataSystem: "HUS",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: true,
+		hasClassification: true,
+		binGranularity: 0.1,
+		topicGroup: 3,
+	},
 };
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
+	// check if the topic group has custom filters
+	let filters = NHISFilters;
+	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters) {
+		filters = topicLookup[t.topicLookupKey].filters;
+	}
 	topicLookup[t.id] = {
 		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
-		filters: NHISFilters,
+		filters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
@@ -744,6 +832,22 @@ export const hashLookup = [
 			{
 				hash: "sex-age-and-race-and-hispanic-origin",
 				value: "7",
+			},
+			{
+				hash: "sex-and-single-race",
+				value: "8",
+			},
+			{
+				hash: "sex-age-and-single-race",
+				value: "9",
+			},
+			{
+				hash: "sex-and-single-race-hispanic-origin",
+				value: "10",
+			},
+			{
+				hash: "sex-age-and-single-race-hispanic-origin",
+				value: "11",
 			},
 		],
 		classificationOptions: [
