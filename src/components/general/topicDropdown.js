@@ -428,6 +428,16 @@ export class TopicDropdown {
 		if (dropdownBottom > windowHeight) {
 			$(window).scrollTop(dropdownBottom - scrollDifference + 20);
 		}
+
+		// scroll to selected option if it is not in view
+		const selectedOption = $(this.dropdownSection).find(".genOptionSelected");
+		const selectedOptionTop = selectedOption[0].getBoundingClientRect().top;
+		const selectedOptionBottom = selectedOption[0].getBoundingClientRect().bottom;
+		if (selectedOptionTop < 0) {
+			$(window).scrollTop(selectedOptionTop + scrollTop - 25);
+		} else if (selectedOptionBottom > windowHeight) {
+			$(window).scrollTop(selectedOptionBottom - scrollDifference + 25);
+		}
 	};
 
 	#toggleOpenClose = () => {
@@ -452,11 +462,13 @@ export class TopicDropdown {
 			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #333");
 			$(`#${this.props.containerId} #genDropdownSearch`).html("<a id='genDdSearchAnchor'>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+
+			// scroll currently selected option into view
+			this.#scrollIntoView();
 		} else {
 			this.#resetOptions();
 			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
 		}
-		this.#scrollIntoView();
 	};
 
 	#updateAriaLabel = (text) => {
