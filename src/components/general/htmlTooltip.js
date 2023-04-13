@@ -43,6 +43,7 @@ export class HtmlTooltip {
 			x: event.clientX < centerX ? "left" : "right",
 			y: event.clientY < centerY ? "top" : "bottom",
 		};
+
 		return { sides, leftBounds: boundingBox.left };
 	};
 
@@ -51,7 +52,6 @@ export class HtmlTooltip {
 		let { sides, leftBounds } = this.getWhichSvgSides(event);
 
 		this.incomingElement.style.transform = "scale(1.1)";
-
 		const tip = d3.select(`#${this.containerId} .tooltip`);
 		if (this.h3) tip.select("h3").html(this.h3);
 		else tip.select("h3").html("");
@@ -67,8 +67,9 @@ export class HtmlTooltip {
 		const widthToLeftBounds = clientX - leftBounds;
 
 		// prevent tooltipWidth from going out of bounds for low resolution display
-		if (tipWidth > widthToLeftBounds && sides.x === "right") tip.style("width", widthToLeftBounds + "px");
-		else tip.style("width", "inherit");
+		if (tipWidth > widthToLeftBounds && sides.x === "right") {
+			tip.style("width", widthToLeftBounds + "px");
+		} else tip.style("width", tipWidth + "px");
 
 		tip.style("left", sides.x === "left" ? `${clientX + 10}px` : `${clientX - tipWidth - 10}px`)
 			.style("top", sides.y === "top" ? `${clientY + 10}px` : `${clientY - tipHeight - 10}px`)
