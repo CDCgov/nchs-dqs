@@ -165,7 +165,7 @@ export const tabContent = `
 			<div id="mapContentWrapper" class="content-wrapper" style="background-color: #ceece7; margin-top: 0px; padding-top: 1px">
 				<div id="mapSelectors"></div>
 				<div id="us-map-container">
-					<div id="mapDownloadTitle" style="width: 0"></div>
+					<div id="mapDownloadTitle" style="width: 100%"></div>
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
 					<div id="us-map" class="general-chart"></div>
 					<div class="usMapLegendContainer">

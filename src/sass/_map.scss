@@ -70,7 +70,7 @@ fieldset {
 #us-map-container {
 	display: flex;
 	flex-direction: row;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	background-color: white;
 	padding-top: 25px;
 }
@@ -86,7 +86,6 @@ fieldset {
 
 .usMapLegendContainer {
 	margin-top: 25px;
-	margin-right: 20px;
 	color: #333;
 	text-align: center;
 
@@ -160,12 +159,12 @@ fieldset {
 	}
 	.usMapLegendContainer {
 		width: 20%;
+		margin-right: 20px;
 	}
 }
 
 @media screen and (max-width: 1199px) {
 	#us-map-container {
-		flex-wrap: wrap;
 		padding: 0;
 	}
 	#us-map-time-slider {
