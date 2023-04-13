@@ -18,7 +18,6 @@
 import * as d3 from "../../lib/d3.min";
 import { GenTooltip } from "./genTooltip";
 import { genFormat } from "../../utils/genFormat";
-import { getGenSvgScale } from "../../utils/genSvgScale";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
 
@@ -157,9 +156,7 @@ export class GenChart {
 		const remDiv = viz.append("div").attr("line-height", "1rem").attr("display", "none");
 		const rem = parseFloat(remDiv.style("line-height"), 10);
 
-		// these 4 params keeps everything sized/positioned correctly regardless of screen resolution
-		const { fullSvgWidth, overallScale, svgHeightRatio, svgScale } = getGenSvgScale(p.vizId);
-
+		let fullSvgWidth = parseInt(d3.select("#chart-container").style("width"), 10);
 		const symbolSize = fullSvgWidth / 6;
 		const symbols = [
 			d3.symbol().type(d3.symbolCircle).size(symbolSize),
@@ -171,14 +168,14 @@ export class GenChart {
 			d3.symbol().type(d3.symbolWye).size(symbolSize),
 		];
 
-		const chartTitleFontSize = overallScale * p.chartTitleFontScale * rem;
-		let axisTitleFontSize = overallScale * p.axisTitleFontScale * rem;
+		const chartTitleFontSize = p.chartTitleFontScale * rem;
+		let axisTitleFontSize = p.axisTitleFontScale * rem;
 		// this scaling often makes the title sizes too big on Mobile
 
 		if (axisTitleFontSize > 18) axisTitleFontSize = 18;
 		if (appState.currentDeviceType === "mobile" && axisTitleFontSize > 14) axisTitleFontSize = 14;
 
-		let axisLabelFontSize = overallScale * p.axisLabelFontScale * rem;
+		let axisLabelFontSize = p.axisLabelFontScale * rem;
 		// this scaling makes the label sizes too big
 		if (axisLabelFontSize > 16) {
 			// knock it back down
@@ -198,11 +195,7 @@ export class GenChart {
 		let leftTitleScale = 1;
 		if (p.usesLeftAxisTitle) {
 			// with bigger font size - always split the left axis title
-			splitText = splitTitle(
-				$("#estimateTypeDropdown-select > a").text(),
-				fullSvgWidth * svgHeightRatio,
-				axisLabelFontSize
-			);
+			splitText = splitTitle($("#estimateTypeDropdown-select > a").text(), fullSvgWidth, axisLabelFontSize);
 			if (splitText[1]) leftTitleScale = 2;
 		}
 
@@ -219,13 +212,12 @@ export class GenChart {
 		const rightAxisSize = p.usesRightAxis * axisSize * p.yRightLabelScale;
 		const leftTitleSize = p.usesLeftAxisTitle * axisTitleSize * leftTitleScale;
 		const xAxisTitleSize = p.usesXAxisTitle * axisTitleSize;
-		const bottomAxisScale = p.usesTwoLineXAxisLabels && svgHeightRatio !== 0.5 ? 2 : 1;
 
 		// setup margins, widths, and heights
 		let marginTB = 20;
 		const margin = {
 			top: p.usesTopAxis ? marginTB + (axisSize + xAxisTitleSize * 2) * p.labelPaddingScale : marginTB,
-			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin * overallScale]),
+			right: d3.max([rightTitleSize + rightAxisSize, p.marginRightMin]),
 			bottom: p.usesBottomAxis ? marginTB + (axisSize + xAxisTitleSize) * p.labelPaddingScale : marginTB,
 			left: d3.max([leftTitleSize + leftAxisSize, p.marginLeftMin]),
 		}; // top margin * 2 is to fit the split title onto 2 lines at top for bar charts
@@ -233,9 +225,9 @@ export class GenChart {
 		const xMargin = margin.left + margin.right;
 		const yMargin = margin.top + margin.bottom;
 
-		const svgWidth = fullSvgWidth * svgScale;
+		const svgWidth = fullSvgWidth;
 		const chartWidth = svgWidth - xMargin;
-		let svgHeight = svgWidth * svgHeightRatio;
+		let svgHeight = svgWidth / 2;
 		let chartHeight = svgHeight - yMargin;
 
 		if (p.barLayout?.horizontal) {
@@ -946,6 +938,7 @@ export class GenChart {
 					// need to set to number of bars + 1 to get each tick mark a label drawn (TT)
 					p.numberOfEquallySpacedDates = p.data.length + 1;
 				}
+
 				const allDateTicksButLast = xScale
 					.domain()
 					.filter((d, i) => !(i % Math.ceil(xScale.domain().length / (p.numberOfEquallySpacedDates - 1))))
@@ -1294,11 +1287,14 @@ export class GenChart {
 					if (p.needsScaleTime) {
 						// uses single years
 						if (appState.currentDeviceType === "desktop") {
+							const allDatesCount = [
+								...new Set(p.data.map((d) => d[p.chartProperties.xAxis].getFullYear())),
+							].length;
 							xAxis
 								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 5 !== 0 ? " " : genFormat(d, "year");
+									return i % 5 !== 0 && allDatesCount > 5 ? " " : genFormat(d, "year");
 								});
 						} else if (appState.currentDeviceType === "tablet") {
 							xAxis
@@ -1344,9 +1340,9 @@ export class GenChart {
 						.attr("text-anchor", "end")
 						.attr(
 							"transform",
-							`translate(${p.xLabelRotatedXAdjust * overallScale + 6}, ${
-								p.xLabelRotatedYAdjust * overallScale
-							}) rotate(${p.bottomAxisRotation})`
+							`translate(${p.xLabelRotatedXAdjust * 6}, ${p.xLabelRotatedYAdjust}) rotate(${
+								p.bottomAxisRotation
+							})`
 						);
 
 				d3.selectAll(`#${svgId} .axis text`).attr("font-size", axisLabelFontSize);
@@ -1485,8 +1481,12 @@ export class GenChart {
 		}
 		let legendHeight = 0;
 		if (p.usesReliabilityCallout && needReliabilityCallout) {
+			const windowWidth = $(window).width();
 			const chartContainerWidth = $("#chartContainer").width();
-			const callOutWidth = chartContainerWidth / 3;
+			let callOutWidth = chartContainerWidth / 3;
+			if (windowWidth < 1500) callOutWidth = chartContainerWidth / 2;
+			if (windowWidth < 1200) callOutWidth = chartContainerWidth - 2;
+
 			const callOutHeight = 4 * axisTitleFontSize;
 			const labelSize = 0.89 * axisTitleFontSize;
 
@@ -1500,7 +1500,9 @@ export class GenChart {
 				.attr("width", callOutWidth)
 				.attr("height", callOutHeight)
 				.attr("fill", "none")
-				.attr("stroke", "#333");
+				.attr("stroke", "#e0e0e0")
+				.attr("stroke-width", 1)
+				.attr("rx", 5);
 
 			legendHeight += callOutHeight + 20;
 
@@ -1549,14 +1551,13 @@ export class GenChart {
 				.attr("font-size", labelSize)
 				.text("Not Reliable");
 		}
-		svg.attr("viewBox", [((svgScale - 1) * fullSvgWidth) / 2, 0, fullSvgWidth, svgHeight + legendHeight]);
+		svg.attr("viewBox", [0, 0, fullSvgWidth, svgHeight + legendHeight]);
 
 		return {
 			data: p.data,
 			vizId: p.vizId,
 			svg,
 			svgId,
-			svgHeightRatio,
 			margin,
 			xScale,
 			svgWidth,

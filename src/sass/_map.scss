@@ -67,17 +67,169 @@ fieldset {
 	}
 }
 
-@media screen and (min-width: $large-screen-min-width) {
+#us-map-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	background-color: white;
+	padding-top: 25px;
+}
+
+#us-map {
+	display: flex !important;
+	justify-content: center !important;
+	svg {
+		flex-basis: 100%;
+		overflow-clip-margin: content-box;
+	}
+}
+
+.usMapLegendContainer {
+	margin-top: 25px;
+	margin-right: 20px;
+	color: #333;
+	text-align: center;
+
+	> div {
+		width: 80%;
+		margin: auto;
+		border: 1px solid #e0e0e0;
+		border-radius: 5px;
+		padding: 0 6px;
+	}
+
+	#us-map-legend-title {
+		font-size: 20px;
+		font-weight: bold;
+	}
+
+	#mapLegendPeriod {
+		white-space: nowrap;
+		font-weight: bold;
+	}
+
+	#us-map-legend {
+		> div {
+			align-items: center;
+			margin: 10px 0;
+			flex-wrap: nowrap;
+		}
+
+		.squareCheckbox {
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			border: 1px solid #e0e0e0;
+			border-radius: 4px;
+			padding: 3px;
+			background-clip: content-box;
+		}
+	}
+}
+
+@media screen and (min-width: 1780px) {
 	#us-map-time-slider {
 		width: 12%;
 	}
 	#us-map {
 		width: 76%;
-		display: flex !important;
-		justify-content: center !important;
-		svg {
-			flex-basis: 100%;
-			overflow-clip-margin: content-box;
+	}
+	.usMapLegendContainer {
+		width: 12%;
+	}
+}
+
+@media screen and (max-width: 1799px) and (min-width: 1500px) {
+	#us-map-time-slider {
+		width: 15%;
+	}
+	#us-map {
+		width: 70%;
+	}
+	.usMapLegendContainer {
+		width: 15%;
+	}
+}
+
+@media screen and (max-width: 1499px) and (min-width: 1200px) {
+	#us-map-time-slider {
+		width: 15%;
+	}
+	#us-map {
+		width: 65%;
+	}
+	.usMapLegendContainer {
+		width: 20%;
+	}
+}
+
+@media screen and (max-width: 1199px) {
+	#us-map-container {
+		flex-wrap: wrap;
+		padding: 0;
+	}
+	#us-map-time-slider {
+		width: 100%;
+		height: 40px !important;
+		position: relative;
+		z-index: 2;
+
+		@media screen and (max-width: 900px) {
+			margin-bottom: 15px;
+		}
+
+		@media screen and (max-width: 700px) {
+			margin-bottom: 20px;
+		}
+
+		@media screen and (max-width: 600px) {
+			margin-bottom: 30px;
+		}
+	}
+	#us-map {
+		width: 100%;
+		margin-top: -50px;
+	}
+	.usMapLegendContainer {
+		width: 100%;
+		margin: 0 10px 10px 10px;
+		> div {
+			width: 100%;
+		}
+	}
+	#us-map-legend {
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		width: 100%;
+
+		@media screen and (max-width: 767px) {
+			flex-wrap: wrap;
+			justify-content: normal;
+		}
+
+		> div {
+			display: inline-flex;
+
+			@media screen and (max-width: 767px) {
+				width: 33%;
+				label {
+					white-space: nowrap;
+
+					@media screen and (max-width: 550px) {
+						white-space: normal;
+					}
+				}
+			}
+
+			.squareCheckbox {
+				margin: 0 6px;
+				width: 44px !important;
+				height: 44px !important;
+				border-radius: 6px !important;
+				padding: 4px !important;
+				display: inline-block;
+			}
 		}
 	}
 }

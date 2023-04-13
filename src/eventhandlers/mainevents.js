@@ -17,6 +17,26 @@ export class MainEvents {
 
 	registerEvents = () => {
 		$(document)
+			.off("click", "#mapBackward")
+			.on("click", "#mapBackward", () => {
+				this.stopAnimation();
+				const { currentTimePeriodIndex, allYearsOptions } = appState.ACTIVE_TAB;
+				const nextIndex =
+					currentTimePeriodIndex === 0 ? allYearsOptions.length - 1 : currentTimePeriodIndex - 1;
+				const { value } = allYearsOptions[nextIndex];
+				appState.ACTIVE_TAB.updateStartPeriod(value);
+				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
+			})
+			.off("click", "#mapForward")
+			.on("click", "#mapForward", () => {
+				this.stopAnimation();
+				const { currentTimePeriodIndex, allYearsOptions } = appState.ACTIVE_TAB;
+				const nextIndex =
+					currentTimePeriodIndex === allYearsOptions.length - 1 ? 0 : currentTimePeriodIndex + 1;
+				const { value } = allYearsOptions[nextIndex];
+				appState.ACTIVE_TAB.updateStartPeriod(value);
+				appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
+			})
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
 				if (appState.ACTIVE_TAB.animating) {
@@ -80,9 +100,9 @@ export class MainEvents {
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 			})
 			.off("click", "#showAllSubgroupsSlider")
-			.on("click", "#showAllSubgroupsSlider", (e) =>
-				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget)
-			)
+			.on("click", "#showAllSubgroupsSlider", (e) => {
+				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget);
+			})
 			.off("click", "#mapBinningSlider")
 			.on("click", "#mapBinningSlider", (e) => {
 				const { checked } = e.currentTarget;
@@ -171,6 +191,21 @@ export class MainEvents {
 					document.getElementById("pageFooterTable").scrollIntoView();
 					if ($("#pageFooterTable .table-toggle").hasClass("closed"))
 						$("#pageFooterTable .table-toggle").trigger("click");
+				}
+			})
+			.off("click keyup tap", ".viewSelectorsToggle")
+			.on("click keyup tap", ".viewSelectorsToggle", (e) => {
+				if (!e.key || (e.type === "keyup" && e.key === "Enter")) {
+					const { classList } = e.currentTarget;
+					if (classList.contains("viewSelectorsClosed")) {
+						$(".hideShowViewSelectors").css("display", "flex");
+						$(".viewSelectorsToggle > div").html("Hide Options");
+						classList.remove("viewSelectorsClosed");
+					} else {
+						$(".hideShowViewSelectors").css("display", "none");
+						$(".viewSelectorsToggle > div").html("View Options");
+						classList.add("viewSelectorsClosed");
+					}
 				}
 			});
 

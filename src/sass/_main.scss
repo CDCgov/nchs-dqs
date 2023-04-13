@@ -21,40 +21,7 @@ a {
 		font-size: 26px;
 	}
 }
-.usMapLegendContainer {
-	margin-top: 25px;
-	margin-right: 20px;
-	width: 12%;
-	color: #333;
-	text-align: center;
 
-	#us-map-legend-title {
-		font-size: 20px;
-		font-weight: bold;
-	}
-
-	#mapLegendPeriod {
-		white-space: nowrap;
-		font-weight: bold;
-	}
-
-	#us-map-legend {
-		> div {
-			align-items: center;
-			margin: 10px 0;
-		}
-
-		.squareCheckbox {
-			cursor: pointer;
-			width: 20px;
-			height: 20px;
-			border: 1px solid #e0e0e0;
-			border-radius: 4px;
-			padding: 3px;
-			background-clip: content-box;
-		}
-	}
-}
 .homeSmallGroup {
 	border: 1px solid lightgray;
 	padding-top: 2px;
@@ -84,12 +51,60 @@ a {
 	}
 }
 
+.viewSelectorsToggle {
+	display: none;
+	width: 100%;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 11l6-6 6 6'/%3e%3c/svg%3e");
+	background-repeat: no-repeat;
+	background-position: right 6px center;
+	background-size: 16px 12px;
+
+	&.viewSelectorsClosed {
+		background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+	}
+
+	@media screen and (max-width: 767px) {
+		display: flex;
+		justify-content: right;
+		align-items: center;
+		margin-top: 8px;
+		margin-bottom: 8px;
+		padding-top: 12px;
+		padding-bottom: 12px;
+	}
+
+	div {
+		width: 100px;
+		margin-right: 25px;
+		pointer-events: none;
+	}
+}
+
 #chart-table-selectors {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
 	align-items: center;
 	padding: 28px 0 6px 0;
+	margin-bottom: 10px;
+
+	@media screen and (max-width: 767px) {
+		padding-top: 0px;
+	}
+}
+
+.hideShowViewSelectors {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+
+	@media screen and (max-width: 767px) {
+		padding-top: 0px;
+		display: none;
+		flex-direction: column;
+	}
 }
 
 .homeSelectorText {
@@ -141,7 +156,7 @@ a {
 	background-color: #ceece7;
 }
 
-#us-map-container {
+#usMapContent {
 	display: flex;
 	flex-direction: row;
 	background-color: white;
@@ -156,11 +171,52 @@ a {
 
 	#chartLegend {
 		margin-top: 25px;
+		margin-bottom: 10px;
+
+		@media screen and (max-width: 1199px) {
+			margin-top: 0;
+		}
+
+		#chartLegendContent {
+			@media screen and (max-width: 1199px) {
+				display: flex;
+				flex-wrap: wrap;
+			}
+
+			.legendItems {
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				padding: 5px;
+
+				@media screen and (max-width: 1199px) {
+					width: 33%;
+				}
+
+				@media screen and (max-width: 767px) {
+					width: 100%;
+				}
+
+				.legendItem {
+					width: 15%;
+				}
+
+				.legendText {
+					width: 85%;
+					text-align: left;
+				}
+			}
+		}
 	}
 
 	#chartLegendTitle {
 		font-size: 20px;
 		font-weight: bold;
+		padding: 0 5px;
+	}
+
+	.legendItems > div {
+		margin-right: 5px;
 	}
 }
 
@@ -326,7 +382,10 @@ button.disabled {
 	margin-top: -5px !important;
 }
 
-.da-maplegend-box,
+.mapLegendBox {
+	line-height: 16px;
+}
+
 .mapAnimateAxisPoint {
 	font-size: 1em;
 	@media screen and (max-width: $tablet-min-width) and (min-width: $mobile-max-width-2) {
