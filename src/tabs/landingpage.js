@@ -146,7 +146,7 @@ export class LandingPage {
 				switch (this.activeTabNumber) {
 					case 0:
 						this.allMapData = null;
-						this.updateGroup(1, false);
+						this.updateGroup(1);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
 						this.subgroupDropdown.disable(true);
@@ -178,24 +178,35 @@ export class LandingPage {
 	}
 
 	generateLegend = () => {
-		if (!this.allMapData) return null;
+		if (!this.allMapData) {
+			return null;
+		}
 
 		const min = d3.min(this.allMapData, (d) => d.estimate);
 		const max = d3.max(this.allMapData, (d) => d.estimate);
 
-		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt == this.endYear));
+		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt === this.endYear));
 		const { legend } = endYearDataBinned;
+
+		// account for when dataset does NOT have 'no data' and therefore add that to legend object
+		if (legend?.length < 5) {
+			legend.unshift({ c: 0, min: null, max: null, active: 1 });
+		}
 		let currentMax;
-		legend.forEach((l, i) => {
-			if (i === 0) return;
-			if (i === 1) {
+		legend.forEach((l, idx) => {
+			if (idx === 0) {
+				return;
+			}
+			if (idx === 1) {
 				l.min = min;
 				currentMax = l.max;
 			} else {
 				l.min = Number((currentMax + this.config.binGranularity).toFixed(2));
 				currentMax = l.max;
 			}
-			if (i === 4) l.max = max;
+			if (idx === 4) {
+				l.max = max;
+			}
 		});
 
 		return legend;
@@ -274,9 +285,9 @@ export class LandingPage {
 
 		subgroupValues.forEach((g, i) => {
 			$("#chartLegendContent").append(`
-				<div class="legendItems" style="display: flex; flex-direction: row; align-items: center; padding: 5px;">
-					<div id="legendItem-${i}" style="width: 15%"></div>
-					<div id="legendText-${i}" class="legendText" style="width: 85%; text-align: left;">${g}</div>
+				<div class="legendItems">
+					<div id="legendItem-${i}" class="legendItem"></div>
+					<div id="legendText-${i}" class="legendText">${g}</div>
 				</div>
 				`);
 		});
@@ -284,7 +295,8 @@ export class LandingPage {
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
-		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
+		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label) && d.flag !== "- - -"); // remove undefined data
+
 		this.updateFootnotes(chartData);
 
 		this.chartConfig = functions.getAllChartProps(
@@ -580,12 +592,6 @@ export class LandingPage {
 					// assignedLegendColor: "#FFFFFF",
 				}));
 
-				// for line chart and bar chart, REMOVE the undefined data entirely
-				if (!this.config.hasMap) {
-					// remove flag = "- - -" data
-					this.socrataData = this.socrataData.filter((d) => d.flag !== "- - -"); // remove undefined data
-				}
-
 				// set the Adjust vertical axis via unit_num in data
 				this.setVerticalUnitAxisSelect();
 
@@ -789,7 +795,7 @@ export class LandingPage {
 		this.initGroupDropdown();
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateGroup(1, false);
+			this.updateGroup(1);
 			this.groupDropdown.value("1");
 			this.groupDropdown.disableDropdown();
 			return;
@@ -798,13 +804,19 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	// updateGroup(groupId, updateTimePeriods = true) {
 	updateGroup(groupId) {
 		this.events.stopAnimation();
 
 		this.groupId = groupId;
 		this.setVerticalUnitAxisSelect();
-		// if (updateTimePeriods) this.resetTimePeriods();
+
+		// some topics have different number of years for different groups. If all years changes then reset the time periods
+		const allYears = [...new Set(this.getFilteredYearData().map((d) => d.year))]
+			.sort((a, b) => a.localeCompare(b))
+			.toString();
+		const storedAllYears = [...this.allYearsOptions.map((d) => d.value)].toString();
+
+		if (allYears !== storedAllYears) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) {
 			$("#showAllSubgroupsSlider").prop("disabled", true);
@@ -847,12 +859,13 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
-
-		const startPeriodOptions = this.selections?.viewSinglePeriod
-			? this.allYearsOptions
-			: this.allYearsOptions.slice(0, -1);
+		const onlyOneTimePeriod = this.allYearsOptions.length === 1;
+		const startPeriodOptions =
+			this.selections?.viewSinglePeriod || onlyOneTimePeriod
+				? this.allYearsOptions
+				: this.allYearsOptions.slice(0, -1);
 		this.initStartPeriodDropdown(startPeriodOptions);
-		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
+		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
 		this.currentTimePeriodIndex = 0;
 	}
 
@@ -934,6 +947,7 @@ export class LandingPage {
 		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect();
+		this.updateEnableCI(0);
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
@@ -942,7 +956,7 @@ export class LandingPage {
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
-	renderDataTable(data, search) {
+	renderDataTable(data) {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#subGroupsSelectorsSection").show();
@@ -979,13 +993,14 @@ export class LandingPage {
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
-		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
+		const groupText = this.groupDropdown.text().toLowerCase();
+		const topic = this.topicDropdown.text().toLowerCase();
+		const groupNotAge = !groupText.includes("age") && !groupText.includes("years") && !topic.includes("age");
 
-		if (tableData.some((d) => d.flag === "*" || d.flag === "---")) {
+		if (tableData.some((d) => d.flag)) {
 			$(".unreliableNote").show();
 			$(".unreliableFootnote").show();
 		}
-
 		tableData = tableData.map((d) => ({
 			year: d.year,
 			column: `${d.stub_label}${

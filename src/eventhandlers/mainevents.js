@@ -100,9 +100,9 @@ export class MainEvents {
 				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
 			})
 			.off("click", "#showAllSubgroupsSlider")
-			.on("click", "#showAllSubgroupsSlider", (e) =>
-				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget)
-			)
+			.on("click", "#showAllSubgroupsSlider", (e) => {
+				appState.ACTIVE_TAB.renderDataVisualizations(e.currentTarget);
+			})
 			.off("click", "#mapBinningSlider")
 			.on("click", "#mapBinningSlider", (e) => {
 				const { checked } = e.currentTarget;
@@ -191,6 +191,21 @@ export class MainEvents {
 					document.getElementById("pageFooterTable").scrollIntoView();
 					if ($("#pageFooterTable .table-toggle").hasClass("closed"))
 						$("#pageFooterTable .table-toggle").trigger("click");
+				}
+			})
+			.off("click keyup tap", ".viewSelectorsToggle")
+			.on("click keyup tap", ".viewSelectorsToggle", (e) => {
+				if (!e.key || (e.type === "keyup" && e.key === "Enter")) {
+					const { classList } = e.currentTarget;
+					if (classList.contains("viewSelectorsClosed")) {
+						$(".hideShowViewSelectors").css("display", "flex");
+						$(".viewSelectorsToggle > div").html("Hide Options");
+						classList.remove("viewSelectorsClosed");
+					} else {
+						$(".hideShowViewSelectors").css("display", "none");
+						$(".viewSelectorsToggle > div").html("View Options");
+						classList.add("viewSelectorsClosed");
+					}
 				}
 			});
 
