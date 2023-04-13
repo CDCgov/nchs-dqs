@@ -513,7 +513,7 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Medicaid coverage among persons under age 65 (HUS)",
 		filters:
-			"Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+			"HUS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
 		dataSystem: "HUS",
 		classificationId: "NA",
 		yAxisUnitId: 2,
@@ -553,7 +553,7 @@ export const topicLookup = {
 		private: "1",
 		chartTitle: "Access to Care (HUS)",
 		filters:
-			"Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+			"HUS,Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
