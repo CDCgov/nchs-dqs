@@ -287,9 +287,9 @@ export class LandingPage {
 
 		subgroupValues.forEach((g, i) => {
 			$("#chartLegendContent").append(`
-				<div class="legendItems" style="display: flex; flex-direction: row; align-items: center; padding: 5px;">
-					<div id="legendItem-${i}" style="width: 15%"></div>
-					<div id="legendText-${i}" class="legendText" style="width: 85%; text-align: left;">${g}</div>
+				<div class="legendItems">
+					<div id="legendItem-${i}" class="legendItem"></div>
+					<div id="legendText-${i}" class="legendText">${g}</div>
 				</div>
 				`);
 		});

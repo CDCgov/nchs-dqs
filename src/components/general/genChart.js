@@ -1489,8 +1489,12 @@ export class GenChart {
 		}
 		let legendHeight = 0;
 		if (p.usesReliabilityCallout && needReliabilityCallout) {
+			const windowWidth = $(window).width();
 			const chartContainerWidth = $("#chartContainer").width();
-			const callOutWidth = chartContainerWidth / 3;
+			let callOutWidth = chartContainerWidth / 3;
+			if (windowWidth < 1500) callOutWidth = chartContainerWidth / 2;
+			if (windowWidth < 1200) callOutWidth = chartContainerWidth - 2;
+
 			const callOutHeight = 4 * axisTitleFontSize;
 			const labelSize = 0.89 * axisTitleFontSize;
 
@@ -1504,7 +1508,9 @@ export class GenChart {
 				.attr("width", callOutWidth)
 				.attr("height", callOutHeight)
 				.attr("fill", "none")
-				.attr("stroke", "#333");
+				.attr("stroke", "#e0e0e0")
+				.attr("stroke-width", 1)
+				.attr("rx", 5);
 
 			legendHeight += callOutHeight + 20;
 
