@@ -178,24 +178,35 @@ export class LandingPage {
 	}
 
 	generateLegend = () => {
-		if (!this.allMapData) return null;
+		if (!this.allMapData) {
+			return null;
+		}
 
 		const min = d3.min(this.allMapData, (d) => d.estimate);
 		const max = d3.max(this.allMapData, (d) => d.estimate);
 
-		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt == this.endYear));
+		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt === this.endYear));
 		const { legend } = endYearDataBinned;
+
+		// account for when dataset does NOT have 'no data' and therefore add that to legend object
+		if (legend?.length < 5) {
+			legend.unshift({ c: 0, min: null, max: null, active: 1 });
+		}
 		let currentMax;
-		legend.forEach((l, i) => {
-			if (i === 0) return;
-			if (i === 1) {
+		legend.forEach((l, idx) => {
+			if (idx === 0) {
+				return;
+			}
+			if (idx === 1) {
 				l.min = min;
 				currentMax = l.max;
 			} else {
 				l.min = Number((currentMax + this.config.binGranularity).toFixed(2));
 				currentMax = l.max;
 			}
-			if (i === 4) l.max = max;
+			if (idx === 4) {
+				l.max = max;
+			}
 		});
 
 		return legend;
@@ -219,7 +230,7 @@ export class LandingPage {
 		}
 
 		const allDates = this.allYearsOptions.map((d) => d.value);
-		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+		stateData = stateData.filter((d) => d.year_pt === this.startYear);
 
 		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
 		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
@@ -229,10 +240,12 @@ export class LandingPage {
 		let classified;
 		let staticBin;
 		if (this.staticBinning) {
-			stateData = stateData.map((d) => ({
-				...d,
-				class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
-			}));
+			stateData = stateData.map((d) => {
+				return {
+					...d,
+					class: d.estimate ? this.legend.find((l) => l.min <= d.estimate && l.max >= d.estimate).c : 0,
+				};
+			});
 			staticBin = JSON.parse(JSON.stringify(this.legend));
 			staticBin[1].min = "min";
 			staticBin[4].max = "max";
@@ -545,13 +558,20 @@ export class LandingPage {
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] = data;
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
 				let allFootNotes = DataCache.Footnotes;
 				if (!allFootNotes) {
-					allFootNotes = [...footNotes, ...NHISFootnotes, ...cshsFootnotes, ...NHAMCSFootnotes, ...NHANESFootnotes];
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
 					DataCache.Footnotes = allFootNotes;
 				}
 
