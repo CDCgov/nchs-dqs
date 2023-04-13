@@ -962,7 +962,7 @@ export class LandingPage {
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
 	}
 
-	renderDataTable(data, search) {
+	renderDataTable(data) {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#subGroupsSelectorsSection").show();
@@ -999,13 +999,14 @@ export class LandingPage {
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
-		const groupNotAge = !this.groupDropdown.text().toLowerCase().includes("age");
+		const groupText = this.groupDropdown.text().toLowerCase();
+		const topic = this.topicDropdown.text().toLowerCase();
+		const groupNotAge = !groupText.includes("age") && !groupText.includes("years") && !topic.includes("age");
 
 		if (tableData.some((d) => d.flag === "*" || d.flag === "---")) {
 			$(".unreliableNote").show();
 			$(".unreliableFootnote").show();
 		}
-
 		tableData = tableData.map((d) => ({
 			year: d.year,
 			column: `${d.stub_label}${
