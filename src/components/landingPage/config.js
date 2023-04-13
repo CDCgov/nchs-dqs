@@ -327,7 +327,9 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
-		excludedFilters: ["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"],
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
@@ -569,9 +571,8 @@ export const topicLookup = {
 NHISTopics.forEach((t) => {
 	// check if the topic group has custom filters
 	let filters = NHISFilters;
-	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.excludedFilters) {
-		const excluded = topicLookup[t.topicLookupKey].excludedFilters;
-		filters = allFilters.filter((t) => !excluded.includes(t)).join(",");
+	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters) {
+		filters = topicLookup[t.topicLookupKey].filters;
 	}
 	topicLookup[t.id] = {
 		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
