@@ -954,6 +954,7 @@ export class LandingPage {
 		$(".timePeriodContainer").css("display", "flex");
 
 		this.setVerticalUnitAxisSelect();
+		this.updateEnableCI(0);
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
