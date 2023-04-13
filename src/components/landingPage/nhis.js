@@ -426,17 +426,22 @@ const NHANESInfectious = [
 ];
 
 export const NHISTopics = [
-	...NHISAdult.map((d) => ({ ...d, topicLookupKey: "NHIS", cdcDataId: "4u68-shzr", dataSystem: "NHIS" })),
+	...NHISAdult.map((d) => ({
+		...d,
+		topicLookupKey: "NHIS",
+		dataUrl: "https://data.cdc.gov/NCHS/DEV-DQS-NHIS-Adult-Summary-Statistics/4u68-shzr",
+		dataSystem: "NHIS",
+	})),
 	...NHISChild.map((d) => ({
 		...d,
 		topicLookupKey: "children-summary-statistics",
-		cdcDataId: "rkv8-xf9z",
+		dataUrl: "https://data.cdc.gov/dataset/DQS-NHIS-Child-Summary-Health-Statistics/rkv8-xf9z",
 		dataSystem: "NHIS",
 	})),
 	...NHAMCSChild.map((d) => ({
 		...d,
 		topicLookupKey: "NHAMCS",
-		cdcDataId: "pcav-mejc",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Estimates-of-Emergency-Department-Visits-in-th/pcav-mejc",
 		dataSystem: "NHAMCS",
 		topicGroup: 1,
 	})),
@@ -445,27 +450,30 @@ export const NHISTopics = [
 		dataSystem: "NHANES",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-chronic-conditions",
-		cdcDataId: "i2dc-ja7d",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Chronic-Conditions-Prevalence-Es/i2dc-ja7d",
 	})),
 	...NHANESDietary.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
-		cdcDataId: "j4m9-2puq",
+		dataUrl: "https://data.cdc.gov/dataset/DQS-NHANES-Select-Mean-Dietary-Intake-Estimates/j4m9-2puq",
 	})),
 	...NHANESOralHealth.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicGroup: 5,
 		topicLookupKey: "nhanes-oral-health",
-		cdcDataId: "i3dq-buv5",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Oral-Health-Prevalence-Estimates/i3dq-buv5",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-infectious-disease",
-		cdcDataId: "fuy5-tcrb",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
 	})),
 ];
+
+// Dentists - "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf"
+// Heart Disease mortality - "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336"
