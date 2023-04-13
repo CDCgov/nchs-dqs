@@ -633,7 +633,7 @@ export const topicLookup = {
 		topicGroup: 3,
 	},
 	"community-hospital-beds": {
-		dataUrl: " https://data.cdc.gov/resource/udap-6a7e.json",
+		dataUrl: "https://data.cdc.gov/dataset/DQS-Community-hospital-beds-by-state/udap-6a7e",
 		socrataId: "udap-6a7e",
 		private: "1",
 		chartTitle: "Community Hospital Beds",

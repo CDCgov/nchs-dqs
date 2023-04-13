@@ -464,19 +464,16 @@ export const NHISTopics = [
 		dataSystem: "NHANES",
 		topicGroup: 5,
 		topicLookupKey: "nhanes-oral-health",
-		cdcDataId: "i3dq-buv5",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Oral-Health-Prevalence-Estimates/i3dq-buv5",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicGroup: 0,
 		topicLookupKey: "nhanes-infectious-disease",
-		cdcDataId: "fuy5-tcrb",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
 	})),
 ];
 
-// NHANESInfectious dataUrl: https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb
-// NHANESDental dataUrl: https://data.cdc.gov/NCHS/DQS-NHANES-Select-Oral-Health-Prevalence-Estimates/i3dq-buv5
-// Community Hospital Beds - https://data.cdc.gov/dataset/DQS-Community-hospital-beds-by-state/udap-6a7e
-// Dentists - https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf
-// Heart Disease mortality - https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336
+// Dentists - "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf"
+// Heart Disease mortality - "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336"
