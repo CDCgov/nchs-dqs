@@ -327,19 +327,23 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
 					estimate: f.estimate,
 					estimate_lci: f.lower_95_ci,
 					estimate_uci: f.upper_95_ci,
-					flag: null,
+					flag: f.flag,
 					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.measure_type,
-					panel_num: f.measuretype_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.groupby,
@@ -580,12 +584,17 @@ export const topicLookup = {
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
+	// check if the topic group has custom filters
+	let filters = NHISFilters;
+	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters) {
+		filters = topicLookup[t.topicLookupKey].filters;
+	}
 	topicLookup[t.id] = {
 		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
-		filters: NHISFilters,
+		filters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,

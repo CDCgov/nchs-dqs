@@ -360,92 +360,14 @@ const NHISChild = [
 
 const NHAMCSChild = [
 	{
-		id: "emergency-department-visits-for-all-diagnoses",
-		text: "Emergency department visits for all diagnoses",
+		id: "by-reason-for-visit",
+		text: "Emergency department visits by reason for visit",
+		indicator: "By reason for visit",
 	},
 	{
-		id: "emergency-department-visits-for-all-reasons-patient-reported",
-		text: "Emergency department visits for all reasons (patient reported)",
-	},
-	{
-		id: "emergency-department-visits-for-accident-not-otherwise-specified",
-		text: "Emergency department visits for accident, not otherwise specified",
-	},
-	{
-		id: "emergency-department-visits-for-back-symptoms",
-		text: "Emergency department visits for back symptoms",
-	},
-	{
-		id: "emergency-department-visits-for-certain-infectious-and-parasitic-diseases",
-		text: "Emergency department visits for certain infectious and parasitic diseases",
-	},
-	{
-		id: "emergency-department-visits-for-chest-pain-and-related-symptoms-not-referable-to-body-systems",
-		text: "Emergency department visits for chest pain and related symptoms (not referable to body systems)",
-	},
-	{
-		id: "emergency-department-visits-for-cough",
-		text: "Emergency department visits for cough",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-circulatory-system",
-		text: "Emergency department visits for diseases of the circulatory system",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-digestive-system",
-		text: "Emergency department visits for diseases of the digestive system",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-genitourinary-system",
-		text: "Emergency department visits for diseases of the genitourinary system",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-musculoskeletal-system-and-connective-tissue",
-		text: "Emergency department visits for diseases of the musculoskeletal system and connective tissue",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-respiratory-system",
-		text: "Emergency department visits for diseases of the respiratory system",
-	},
-	{
-		id: "emergency-department-visits-for-diseases-of-the-skin-and-subcutaneous-tissue",
-		text: "Emergency department visits for diseases of the skin and subcutaneous tissue",
-	},
-	{
-		id: "emergency-department-visits-for-fever",
-		text: "Emergency department visits for fever",
-	},
-	{
-		id: "emergency-department-visits-for-headache-pain-in-head",
-		text: "Emergency department visits for headache, pain in head",
-	},
-	{
-		id: "emergency-department-visits-for-injury-and-poisoning",
-		text: "Emergency department visits for injury and poisoning",
-	},
-	{
-		id: "emergency-department-visits-for-mental-behavioral-and-neurodevelopmental-disorders",
-		text: "Emergency department visits for mental, behavioral, and neurodevelopmental disorders",
-	},
-	{
-		id: "emergency-department-visits-for-other-symptomsproblems-related-to-psychological-and-mental-disorders",
-		text: "Emergency department visits for other symptoms/problems related to psychological and mental disorders",
-	},
-	{
-		id: "emergency-department-visits-for-pain-site-not-referable-to-a-specific-body-system",
-		text: "Emergency department visits for pain, site not referable to a specific body system",
-	},
-	{
-		id: "emergency-department-visits-for-shortness-of-breath",
-		text: "Emergency department visits for shortness of breath",
-	},
-	{
-		id: "emergency-department-visits-for-stomach-and-abdominal-pain-cramps-and-spasms",
-		text: "Emergency department visits for stomach and abdominal pain, cramps and spasms",
-	},
-	{
-		id: "emergency-department-visits-for-symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
-		text: "Emergency department visits for symptoms, signs, and abnormal clinical and laboratory findings",
+		id: "by-primary-diagnosis",
+		text: "Emergency department visits by primary diagnosis",
+		indicator: "By primary diagnosis",
 	},
 ];
 
