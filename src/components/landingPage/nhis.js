@@ -389,6 +389,30 @@ const NHANESDietary = [
 	{ id: "vitamin-d-intake", text: "Vitamin D Intake" },
 ];
 
+// NHANES oral health
+const NHANESOralHealth = [
+	{
+		id: "total-dental-caries-in-primary-teeth",
+		text: "Total Dental Caries in Primary Teeth",
+	},
+	{
+		id: "total-dental-caries-in-permanent-teeth",
+		text: "Total Dental Caries in Permanent Teeth",
+	},
+	{
+		id: "complete-tooth-loss",
+		text: "Complete Tooth Loss",
+	},
+	{
+		id: "untreated-dental-caries-in-primary-teeth",
+		text: "Untreated Dental Caries in Primary Teeth",
+	},
+	{
+		id: "untreated-dental-caries-in-permanent-teeth",
+		text: "Untreated Dental Caries in Permanent Teeth",
+	},
+];
+
 // NHANES Infectious disease
 const NHANESInfectious = [
 	{
@@ -429,6 +453,13 @@ export const NHISTopics = [
 		topicGroup: 2,
 		topicLookupKey: "nhanes-dietary-behaviors",
 		cdcDataId: "j4m9-2puq",
+	})),
+	...NHANESOralHealth.map((d) => ({
+		...d,
+		dataSystem: "NHANES",
+		topicGroup: 5,
+		topicLookupKey: "nhanes-oral-health",
+		cdcDataId: "i3dq-buv5",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
