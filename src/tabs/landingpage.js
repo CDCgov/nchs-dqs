@@ -146,7 +146,7 @@ export class LandingPage {
 				switch (this.activeTabNumber) {
 					case 0:
 						this.allMapData = null;
-						this.updateGroup(1, false);
+						this.updateGroup(1);
 						this.groupDropdown.value("1");
 						this.groupDropdown.disableDropdown();
 						this.subgroupDropdown.disable(true);
@@ -802,7 +802,7 @@ export class LandingPage {
 		this.initGroupDropdown();
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateGroup(1, false);
+			this.updateGroup(1);
 			this.groupDropdown.value("1");
 			this.groupDropdown.disableDropdown();
 			return;
@@ -811,13 +811,19 @@ export class LandingPage {
 		this.renderDataVisualizations();
 	}
 
-	// updateGroup(groupId, updateTimePeriods = true) {
 	updateGroup(groupId) {
 		this.events.stopAnimation();
 
 		this.groupId = groupId;
 		this.setVerticalUnitAxisSelect();
-		// if (updateTimePeriods) this.resetTimePeriods();
+
+		// some topics have different number of years for different groups. If all years changes then reset the time periods
+		const allYears = [...new Set(this.getFilteredYearData().map((d) => d.year))]
+			.sort((a, b) => a.localeCompare(b))
+			.toString();
+		const storedAllYears = [...this.allYearsOptions.map((d) => d.value)].toString();
+
+		if (allYears !== storedAllYears) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) {
 			$("#showAllSubgroupsSlider").prop("disabled", true);
@@ -860,12 +866,13 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
-
-		const startPeriodOptions = this.selections?.viewSinglePeriod
-			? this.allYearsOptions
-			: this.allYearsOptions.slice(0, -1);
+		const onlyOneTimePeriod = this.allYearsOptions.length === 1;
+		const startPeriodOptions =
+			this.selections?.viewSinglePeriod || onlyOneTimePeriod
+				? this.allYearsOptions
+				: this.allYearsOptions.slice(0, -1);
 		this.initStartPeriodDropdown(startPeriodOptions);
-		this.initEndPeriodDropdown(this.allYearsOptions.slice(1));
+		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
 		this.currentTimePeriodIndex = 0;
 	}
 
