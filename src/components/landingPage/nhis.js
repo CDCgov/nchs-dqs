@@ -460,6 +460,7 @@ export const NHISTopics = [
 		topicGroup: 5,
 		topicLookupKey: "nhanes-oral-health",
 		cdcDataId: "i3dq-buv5",
+	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
