@@ -2,6 +2,12 @@ import { modal, allFilters } from "./modal";
 import { NHISHash, NHISTopics } from "./nhis";
 
 const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
+const NHAMCSFilters = allFilters
+	.filter((a) => {
+		const excludedFilters = ["FuncLimitStatus", "Marital", "Education", "Poverty"];
+		return !excludedFilters.includes(a);
+	})
+	.join(",");
 
 export const chartAndTableSelectors = `
 	<div id="chart-table-selectors">
@@ -327,6 +333,7 @@ export const topicLookup = {
 	NHAMCS: {
 		socrataId: "pcav-mejc",
 		private: "1",
+		filters: NHAMCSFilters,
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
@@ -566,12 +573,17 @@ export const topicLookup = {
 
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
+	// check if the topic group has custom filters
+	const filters =
+		t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters
+			? topicLookup[t.topicLookupKey]?.filters
+			: NHISFilters;
 	topicLookup[t.id] = {
 		dataUrl: `https://data.cdc.gov/resource/${t.cdcDataId}.json`,
 		socrataId: t.text,
 		isNhisData: true,
 		chartTitle: t.text,
-		filters: NHISFilters,
+		filters,
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
