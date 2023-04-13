@@ -109,12 +109,18 @@ export class SubgroupMultiSelectDropdown {
 		this.tabAddRemove = tabEventHandlerLookup.get(providedProps.tabName);
 		this.updateSliderDomain = () =>
 			appState.ACTIVE_TAB.setCurrentSliderDomain(getCurrentSliderDomain(`#${providedProps.chartContainerId}`));
+		this.firstRender = true;
 	}
 
 	disable(disabled) {
+		const wasDisabled = this.props.disabled;
 		this.props.disabled = disabled;
-		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : "Select Subgroups");
+		const countOfCurrentSelections = this.props.options.filter((o) => o.selected).length;
+		const title =
+			this.firstRender || wasDisabled ? "Select Subgroups" : `Selected Subgroups: ${countOfCurrentSelections}`;
+		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : title);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
+		this.firstRender = false;
 	}
 
 	setMaxSelections(maxSelections) {
@@ -123,6 +129,7 @@ export class SubgroupMultiSelectDropdown {
 	}
 
 	setOptions(options) {
+		this.firstRender = true;
 		this.props.options = options;
 	}
 
