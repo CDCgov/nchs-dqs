@@ -113,12 +113,8 @@ export class SubgroupMultiSelectDropdown {
 	}
 
 	disable(disabled) {
-		const wasDisabled = this.props.disabled;
-		this.props.disabled = disabled;
 		const countOfCurrentSelections = this.props.options.filter((o) => o.selected).length;
-		const title =
-			this.firstRender || wasDisabled ? "Select Subgroups" : `Selected Subgroups: ${countOfCurrentSelections}`;
-		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : title);
+		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : `Selected Subgroups: ${countOfCurrentSelections}`);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
 		this.firstRender = false;
 	}
