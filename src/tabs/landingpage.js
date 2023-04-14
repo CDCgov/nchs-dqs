@@ -948,6 +948,9 @@ export class LandingPage {
 
 		this.setVerticalUnitAxisSelect();
 		this.updateEnableCI(0);
+		this.staticBinning = true;
+		$("#mapBinningSlider").prop("checked", true);
+		$("#showAllSubgroupsSlider").prop("checked", false);
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
@@ -987,8 +990,12 @@ export class LandingPage {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
 		}
+
 		this.updateFootnotes(tableData);
 
+		const topicTitle = this.topicDropdown.text();
+		const group = this.groupDropdown.text();
+		this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
