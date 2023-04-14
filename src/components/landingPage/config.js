@@ -496,6 +496,39 @@ export const topicLookup = {
 			return returnData;
 		},
 	},
+	"hus-dentstate": {
+		socrataId: "83hb-kwqf",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.indicator,
+					panel: f.panel,
+					panel_num: f.panel_num,
+					se: null,
+					stub_label: f.stub_label,
+					stub_name: f.stub_name,
+					stub_name_num: f.stub_name_num,
+					unit: f.unit,
+					unit_num: f.unit_num,
+					year: f.year,
+					year_num: f.year_num,
+					age: f.stub_name.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			console.log("data", returnData[0]);
+
+			return returnData;
+		},
+	},
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",

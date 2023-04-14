@@ -425,6 +425,13 @@ const NHANESInfectious = [
 	},
 ];
 
+const HUSDentState = [
+	{
+		id: "active-dentists",
+		text: "Active dentists",
+	},
+];
+
 export const NHISTopics = [
 	...NHISAdult.map((d) => ({
 		...d,
@@ -472,6 +479,13 @@ export const NHISTopics = [
 		topicGroup: 0,
 		topicLookupKey: "nhanes-infectious-disease",
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
+	})),
+	...HUSDentState.map((d) => ({
+		...d,
+		dataSystem: "HUS",
+		topicGroup: 3,
+		topicLookupKey: "hus-dentstate",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/83hb-kwqf",
 	})),
 ];
 
