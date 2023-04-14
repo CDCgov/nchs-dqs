@@ -341,9 +341,11 @@ const slugify = (str) => {
 		.replace(/^-+|-+$/g, "");
 };
 
-const hashLookup2 = [];
+const hashLookup2 = {};
+let propCount = 0;
 export const buildNewHashLookupTable = (data, topicId, count) => {
-	if (!hashLookup2.find((d) => d.hash === topicId)) {
+	if (!hashLookup2[topicId]) {
+		propCount++;
 		const classifications = [...new Set(data.map((d) => d.panel))];
 		const uc = [];
 
@@ -365,14 +367,12 @@ export const buildNewHashLookupTable = (data, topicId, count) => {
 			});
 		});
 
-		hashLookup2.push({
-			hash: topicId,
-			value: topicId,
+		hashLookup2[topicId] = {
 			classificationOptions: uc,
 			groupOptions: gc,
-		});
+		};
 
-		if (hashLookup2.length === count) {
+		if (propCount === count) {
 			debugger; // normally we don't want PR's with debugger statements, but this is a one time thing as this function
 			// is only called when we need to regenerate the hashLookup table :)
 		}
