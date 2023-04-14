@@ -245,7 +245,7 @@ export const tabContent = `
 	</div>	
 `;
 
-export const topicLookup = {
+const footnoteDatasets = {
 	footnotes: {
 		socrataId: "m6mz-p2ij",
 		private: "1",
@@ -254,115 +254,9 @@ export const topicLookup = {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	NHIS: {
-		socrataId: "4u68-shzr",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
-			if (filteredToIndicator.length === 0) {
-				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
-			}
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopicid,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_byid,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"children-summary-statistics": {
-		socrataId: "rkv8-xf9z",
-		private: "1",
-		filters: `Interview, ${allFilters
-			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
-			.join(",")}`,
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
 	cshsFootnotes: {
 		socrataId: "7kgb-btmk",
 		private: "1",
-	},
-	NHAMCS: {
-		socrataId: "pcav-mejc",
-		private: "1",
-		filters: `Interview, ${allFilters
-			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
-			.join(",")}`,
-		dataMapper: (data, dataId) => {
-			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
-			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.estimate,
-					estimate_lci: f.lower_95_ci,
-					estimate_uci: f.upper_95_ci,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure_type,
-					panel: f.measure,
-					panel_num: f.measure_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.groupby,
-					stub_name_num: f.groupby_id,
-					unit: f.estimate_type,
-					unit_num: f.estimatetype_id,
-					year: f.year,
-					year_num: "",
-					age: f.groupby.includes("By age") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
 	},
 	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
@@ -372,130 +266,9 @@ export const topicLookup = {
 		socrataId: "vv6f-2hmj",
 		private: "1",
 	},
-	"nhanes-chronic-conditions": {
-		socrataId: "i2dc-ja7d",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
+};
 
-			return returnData;
-		},
-	},
-	"nhanes-dietary-behaviors": {
-		socrataId: "j4m9-2puq",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.mean,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"nhanes-oral-health": {
-		socrataId: "i3dq-buv5",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"nhanes-infectious-disease": {
-		socrataId: "fuy5-tcrb",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
+const singleTopicDatasets = {
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -649,6 +422,245 @@ export const topicLookup = {
 	},
 };
 
+const multipleTopicDatasets = {
+	NHIS: {
+		socrataId: "4u68-shzr",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			if (filteredToIndicator.length === 0) {
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
+			}
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopicid,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_byid,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"children-summary-statistics": {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
+			.join(",")}`,
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	NHAMCS: {
+		socrataId: "pcav-mejc",
+		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
+		dataMapper: (data, dataId) => {
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: f.groupby_id,
+					unit: f.estimate_type,
+					unit_num: f.estimatetype_id,
+					year: f.year,
+					year_num: "",
+					age: f.groupby.includes("By age") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-chronic-conditions": {
+		socrataId: "i2dc-ja7d",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-dietary-behaviors": {
+		socrataId: "j4m9-2puq",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.mean,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-oral-health": {
+		socrataId: "i3dq-buv5",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-infectious-disease": {
+		socrataId: "fuy5-tcrb",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+};
+
+export const topicLookup = {
+	...footnoteDatasets,
+	...singleTopicDatasets,
+	...multipleTopicDatasets,
+};
+
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
 	// check if the topic group has custom filters
@@ -697,56 +709,2674 @@ export const topicGroups = [
 // Once your new dataset successfully loads you can inspect the Classification and Group dropdowns.
 export const hashLookup = [
 	{
-		hash: "obesity-children",
-		value: "obesity-child",
+		hash: "angina-pectoris",
+		value: "angina-pectoris",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
-				value: "0",
+				value: "1",
 			},
 			{
 				hash: "sex",
-				value: "1",
-			},
-			{
-				hash: "age",
 				value: "2",
 			},
 			{
-				hash: "race-and-hispanic-origin",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
+				hash: "age-groups-with-65",
 				value: "4",
 			},
 			{
-				hash: "percent-of-poverty-level",
+				hash: "age-groups-with-75",
 				value: "5",
 			},
-		],
-		classificationOptions: [
 			{
-				hash: "2-19",
-				value: "1",
+				hash: "race",
+				value: "6",
 			},
 			{
-				hash: "2-5",
-				value: "2",
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
 			},
 			{
-				hash: "6-11",
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
 				value: "3",
 			},
 			{
-				hash: "12-19",
-				value: "4",
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
 			},
 		],
 	},
 	{
-		hash: "obesity-adults",
+		hash: "any-difficulty-communicating",
+		value: "any-difficulty-communicating",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-difficulty-hearing",
+		value: "any-difficulty-hearing",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-difficulty-remembering-or-concentrating",
+		value: "any-difficulty-remembering-or-concentrating",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-difficulty-seeing",
+		value: "any-difficulty-seeing",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-difficulty-walking-or-climbing-steps",
+		value: "any-difficulty-walking-or-climbing-steps",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-difficulty-with-self-care",
+		value: "any-difficulty-with-self-care",
+		classificationOptions: [
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-skin-cancer",
+		value: "any-skin-cancer",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "any-type-of-cancer",
+		value: "any-type-of-cancer",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "arthritis-diagnosis",
+		value: "arthritis-diagnosis",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "asthma-episode-attack",
+		value: "asthma-episode-attack",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "breast-cancer",
+		value: "breast-cancer",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "cervical-cancer",
+		value: "cervical-cancer",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "COPD-emphysema-chronic-bronchitis",
+		value: "COPD-emphysema-chronic-bronchitis",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "coronary-heart-disease",
+		value: "coronary-heart-disease",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "current-asthma",
+		value: "current-asthma",
+		classificationOptions: [
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "current-asthma-among-children",
+		value: "current-asthma-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "diagnosed-diabetes",
+		value: "diagnosed-diabetes",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "diagnosed-hypertension",
+		value: "diagnosed-hypertension",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "disability-status-(composite)",
+		value: "disability-status-(composite)",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "ever-having-a-learning-disability",
+		value: "ever-having-a-learning-disability",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "ever-having-asthma",
+		value: "ever-having-asthma",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "ever-having-attention-deficit/hyperactivity-disorder",
+		value: "ever-having-attention-deficit/hyperactivity-disorder",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "heart-attack-myocardial-infarction",
+		value: "heart-attack-myocardial-infarction",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "herpes-simplex-virus-type-1-hsv-1",
+		value: "herpes-simplex-virus-type-1-hsv-1",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "herpes-simplex-virus-type-2-hsv-2",
+		value: "herpes-simplex-virus-type-2-hsv-2",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "high-cholesterol",
+		value: "high-cholesterol",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "high-total-cholesterol",
+		value: "high-total-cholesterol",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "hypertension",
+		value: "hypertension",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "obesity-nhanes",
+		value: "obesity-nhanes",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "obesity",
+		value: "obesity",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "obesity-adult",
 		value: "obesity-adult",
+		classificationOptions: [
+			{
+				hash: "normal-weight-bmi-from-185-to-249",
+				value: "1",
+			},
+			{
+				hash: "overweight-or-obese-bmi-greater-than-or-equal-to-250",
+				value: "2",
+			},
+			{
+				hash: "obesity-bmi-greater-than-or-equal-to-300",
+				value: "3",
+			},
+			{
+				hash: "grade-1-obesity-bmi-from-300-to-349",
+				value: "4",
+			},
+			{
+				hash: "grade-2-obesity-bmi-from-350-to-399",
+				value: "5",
+			},
+			{
+				hash: "grade-3-obesity-bmi-greater-than-or-equal-to-400",
+				value: "6",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
@@ -773,36 +3403,468 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
+	},
+	{
+		hash: "obesity-child",
+		value: "obesity-child",
 		classificationOptions: [
 			{
-				hash: "BMI-from-18.5-to-24.9",
+				hash: "2-19-years",
 				value: "1",
 			},
 			{
-				hash: "BMI-greater-than-or-equal-to-25.0",
+				hash: "2-5-years",
 				value: "2",
 			},
 			{
-				hash: "BMI-greater-than-or-equal-to-30.0",
+				hash: "6-11-years",
 				value: "3",
 			},
 			{
-				hash: "BMI-from-30.0-to-34.9",
+				hash: "12-19-years",
+				value: "4",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "sex",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin",
+				value: "3",
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
 				value: "4",
 			},
 			{
-				hash: "BMI-from-35.0-to-39.9",
+				hash: "percent-of-poverty-level",
 				value: "5",
 			},
 			{
-				hash: "BMI-greater-than-or-equal-to-40.0",
-				value: "6",
+				hash: "age",
+				value: "2",
 			},
 		],
 	},
 	{
-		hash: "suicide-mortality",
-		value: "suicide",
+		hash: "prostate-cancer",
+		value: "prostate-cancer",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "regularly-experienced-chronic-pain",
+		value: "regularly-experienced-chronic-pain",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "16",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "regularly-had-feelings-of-depression",
+		value: "regularly-had-feelings-of-depression",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "regularly-had-feelings-of-worry-nervousness-or-anxiety",
+		value: "regularly-had-feelings-of-worry-nervousness-or-anxiety",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "ambulatory-care",
+		value: "ambulatory-care",
+		classificationOptions: [
+			{
+				hash: "physician-offices",
+				value: "1",
+			},
+			{
+				hash: "hospital-emergency-departments",
+				value: "2",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
@@ -817,68 +3879,824 @@ export const hashLookup = [
 				value: "2",
 			},
 			{
+				hash: "race",
+				value: "4",
+			},
+			{
 				hash: "sex-and-age",
 				value: "3",
 			},
 			{
-				hash: "sex-and-race",
-				value: "4",
-			},
-			{
-				hash: "sex-age-and-race",
+				hash: "race-and-age",
 				value: "5",
 			},
+		],
+	},
+	{
+		hash: "suicide",
+		value: "suicide",
+		classificationOptions: [
 			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "6",
+				hash: "na",
+				value: "0",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "1",
+			},
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "sex-and-age",
+				value: "3",
+			},
+			{
+				hash: "sex",
+				value: "2",
 			},
 			{
 				hash: "sex-age-and-race-and-hispanic-origin",
 				value: "7",
 			},
 			{
-				hash: "sex-and-single-race",
-				value: "8",
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "6",
 			},
 			{
-				hash: "sex-age-and-single-race",
-				value: "9",
+				hash: "sex-age-and-race",
+				value: "5",
 			},
 			{
-				hash: "sex-and-single-race-hispanic-origin",
+				hash: "sex-and-race",
+				value: "4",
+			},
+			{
+				hash: "sex-age-and-race-and-hispanic-origin-single-race",
+				value: "11",
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin-single-race",
 				value: "10",
 			},
 			{
-				hash: "sex-age-and-single-race-hispanic-origin",
-				value: "11",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "NA",
-				value: "NA",
+				hash: "sex-age-and-race-single-race",
+				value: "9",
 			},
 			{
-				hash: "NA",
-				value: "0",
+				hash: "sex-and-race-single-race",
+				value: "8",
 			},
 		],
 	},
 	{
-		hash: "injury-ed-visits",
-		value: "injury",
+		hash: "drug-overdose",
+		value: "drug-overdose",
+		classificationOptions: [
+			{
+				hash: "all-drug-overdose-deaths",
+				value: "1",
+			},
+			{
+				hash: "drug-overdose-deaths-involving-heroin",
+				value: "6",
+			},
+			{
+				hash: "drug-overdose-deaths-involving-methadone",
+				value: "4",
+			},
+			{
+				hash: "drug-overdose-deaths-involving-any-opioid",
+				value: "2",
+			},
+			{
+				hash: "drug-overdose-deaths-involving-natural-and-semisynthetic-opioids",
+				value: "3",
+			},
+			{
+				hash: "drug-overdose-deaths-involving-other-synthetic-opioids-other-than-methadone",
+				value: "5",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "1",
+			},
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "sex-and-age",
+				value: "3",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin-single-race",
+				value: "7",
+			},
+			{
+				hash: "sex-and-race-single-race",
+				value: "6",
+			},
+			{
+				hash: "sex-and-race-and-hispanic-origin",
+				value: "5",
+			},
+			{
+				hash: "sex-and-race",
+				value: "4",
+			},
+		],
+	},
+	{
+		hash: "doctor-visit",
+		value: "doctor-visit",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "doctor-visit-among-children",
+		value: "doctor-visit-among-children",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "by-primary-diagnosis",
+		value: "by-primary-diagnosis",
+		classificationOptions: [
+			{
+				hash: "certain-infectious-and-parasitic-diseases",
+				value: "5",
+			},
+			{
+				hash: "diseases-of-the-circulatory-system",
+				value: "8",
+			},
+			{
+				hash: "diseases-of-the-digestive-system",
+				value: "9",
+			},
+			{
+				hash: "diseases-of-the-genitourinary-system",
+				value: "10",
+			},
+			{
+				hash: "diseases-of-the-respiratory-system",
+				value: "12",
+			},
+			{
+				hash: "diseases-of-the-musculoskeletal-system-and-connective-tissue",
+				value: "11",
+			},
+			{
+				hash: "diseases-of-the-skin-and-subcutaneous-tissue",
+				value: "13",
+			},
+			{
+				hash: "injury-and-poisoning",
+				value: "16",
+			},
+			{
+				hash: "mental-behavioral-and-neurodevelopmental-disorders",
+				value: "17",
+			},
+			{
+				hash: "all-diagnoses",
+				value: "1",
+			},
+			{
+				hash: "symptoms-signs-and-abnormal-clinical-and-laboratory-findings",
+				value: "22",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
 				value: "1",
 			},
 			{
-				hash: "intent-and-mechanism-of-injury",
+				hash: "by-sex",
+				value: "3",
+			},
+			{
+				hash: "by-age",
 				value: "2",
+			},
+			{
+				hash: "by-raceethnicity",
+				value: "4",
+			},
+			{
+				hash: "by-region",
+				value: "6",
+			},
+			{
+				hash: "by-metropolitan-statistical-area-msa",
+				value: "5",
+			},
+			{
+				hash: "by-primary-payment-source",
+				value: "7",
+			},
+		],
+	},
+	{
+		hash: "by-reason-for-visit",
+		value: "by-reason-for-visit",
+		classificationOptions: [
+			{
+				hash: "accident-not-otherwise-specified",
+				value: "3",
+			},
+			{
+				hash: "chest-pain-and-related-symptoms-not-referable-to-body-systems",
+				value: "6",
+			},
+			{
+				hash: "cough",
+				value: "7",
+			},
+			{
+				hash: "fever",
+				value: "14",
+			},
+			{
+				hash: "headache-pain-in-head",
+				value: "15",
+			},
+			{
+				hash: "shortness-of-breath",
+				value: "20",
+			},
+			{
+				hash: "other-symptomsproblems-related-to-psychological-and-mental-disorders",
+				value: "18",
+			},
+			{
+				hash: "pain-site-not-referable-to-a-specific-body-system",
+				value: "19",
+			},
+			{
+				hash: "stomach-and-abdominal-pain-cramps-and-spasms",
+				value: "21",
+			},
+			{
+				hash: "all-reasons-patient-reported",
+				value: "2",
+			},
+			{
+				hash: "back-symptoms",
+				value: "4",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "by-sex",
+				value: "3",
+			},
+			{
+				hash: "by-age",
+				value: "2",
+			},
+			{
+				hash: "by-raceethnicity",
+				value: "4",
+			},
+			{
+				hash: "by-region",
+				value: "6",
+			},
+			{
+				hash: "by-metropolitan-statistical-area-msa",
+				value: "5",
+			},
+			{
+				hash: "by-primary-payment-source",
+				value: "7",
+			},
+		],
+	},
+	{
+		hash: "fair-or-poor-health-status",
+		value: "fair-or-poor-health-status",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "fair-or-poor-health-status-among-children",
+		value: "fair-or-poor-health-status-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "hospital-emergency-department-visit",
+		value: "hospital-emergency-department-visit",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "infant-mortality",
+		value: "infant-mortality",
+		classificationOptions: [
+			{
+				hash: "all-races",
+				value: "1",
+			},
+			{
+				hash: "not-hispanic-or-latina-white",
+				value: "2",
+			},
+			{
+				hash: "not-hispanic-or-latina-black-or-african-american",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latina-all-races",
+				value: "4",
+			},
+			{
+				hash: "american-indian-or-alaska-native",
+				value: "5",
+			},
+			{
+				hash: "asian-or-pacific-islander",
+				value: "6",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "state-or-territory",
+				value: "1",
+			},
+		],
+	},
+	{
+		hash: "injury",
+		value: "injury",
+		classificationOptions: [
+			{
+				hash: "na",
+				value: "0",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
 			},
 			{
 				hash: "sex",
 				value: "3",
+			},
+			{
+				hash: "intent-and-mechanism-of-injury",
+				value: "2",
 			},
 			{
 				hash: "sex-intent-and-mechanism-of-injury",
@@ -893,56 +4711,36 @@ export const hashLookup = [
 				value: "6",
 			},
 		],
-		classificationOptions: [
-			{
-				hash: "NA",
-				value: "0",
-			},
-		],
 	},
 	{
-		hash: "infant-mortality",
-		value: "infant-mortality",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "state-or-territory",
-				value: "1",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "All-races",
-				value: "1",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&White",
-				value: "2",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
-				value: "3",
-			},
-			{
-				hash: "Hispanic-or-Latina&All-races",
-				value: "4",
-			},
-			{
-				hash: "American-Indian-or-Alaska-Native",
-				value: "5",
-			},
-			{
-				hash: "Asian-or-Pacific-Islander",
-				value: "6",
-			},
-		],
-	},
-	{
-		hash: "low-birthweight",
+		hash: "birthweight",
 		value: "birthweight",
+		classificationOptions: [
+			{
+				hash: "all-races",
+				value: "1",
+			},
+			{
+				hash: "not-hispanic-or-latina-white",
+				value: "2",
+			},
+			{
+				hash: "not-hispanic-or-latina-black-or-african-american",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latina-all-races",
+				value: "4",
+			},
+			{
+				hash: "american-indian-or-alaska-native",
+				value: "5",
+			},
+			{
+				hash: "asian-or-pacific-islander",
+				value: "6",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
@@ -953,36 +4751,1512 @@ export const hashLookup = [
 				value: "1",
 			},
 		],
+	},
+	{
+		hash: "missing-11-or-more-school-days-due-to-illness-or-injury",
+		value: "missing-11-or-more-school-days-due-to-illness-or-injury",
 		classificationOptions: [
 			{
-				hash: "All-races",
+				hash: "demographic-characteristics",
 				value: "1",
 			},
 			{
-				hash: "Not-Hispanic-or-Latina&White",
-				value: "2",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
+				hash: "socio-economic-status",
 				value: "3",
 			},
 			{
-				hash: "Hispanic-or-Latina&All-races",
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "race",
 				value: "4",
 			},
 			{
-				hash: "American-Indian-or-Alaska-Native",
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
 				value: "5",
 			},
 			{
-				hash: "Asian-or-Pacific-Islander",
+				hash: "family-structure",
 				value: "6",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
 			},
 		],
 	},
 	{
-		hash: "medicaid-coverage-under-65",
+		hash: "six-or-more-workdays-missed-due-to-illness-injury-or-disability",
+		value: "six-or-more-workdays-missed-due-to-illness-injury-or-disability",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "blood-pressure-check",
+		value: "blood-pressure-check",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "calcium-intake",
+		value: "calcium-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "current-cigarette-smoking",
+		value: "current-cigarette-smoking",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "current-electronic-cigarette-use",
+		value: "current-electronic-cigarette-use",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "dietary-fiber-intake",
+		value: "dietary-fiber-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "iron-intake",
+		value: "iron-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "potassium-intake",
+		value: "potassium-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "saturated-fat-intake",
+		value: "saturated-fat-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "sodium-intake",
+		value: "sodium-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "vitamin-d-intake",
+		value: "vitamin-d-intake",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "race-and-hispanic-origin-and-age-group",
+				value: "2",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+		],
+	},
+	{
+		hash: "access-care",
+		value: "access-care",
+		classificationOptions: [
+			{
+				hash: "delay-or-nonreceipt-of-needed-medical-care-due-to-cost",
+				value: "1",
+			},
+			{
+				hash: "nonreceipt-of-needed-prescription-drugs-due-to-cost",
+				value: "2",
+			},
+			{
+				hash: "nonreceipt-of-needed-dental-care-due-to-cost",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "age",
+				value: "1",
+			},
+			{
+				hash: "sex-18-64-years",
+				value: "2",
+			},
+			{
+				hash: "race-18-64-years",
+				value: "3",
+			},
+			{
+				hash: "hispanic-origin-and-race-18-64-years",
+				value: "4",
+			},
+			{
+				hash: "education-25-64-years",
+				value: "5",
+			},
+			{
+				hash: "percent-of-poverty-level-18-64-years",
+				value: "6",
+			},
+			{
+				hash: "hispanic-origin-and-race-and-percent-of-poverty-level-18-64-years",
+				value: "7",
+			},
+			{
+				hash: "health-insurance-status-at-the-time-of-interview-18-64-years",
+				value: "8",
+			},
+			{
+				hash: "level-of-difficulty-18-64-years",
+				value: "11",
+			},
+			{
+				hash: "geographic-region-18-64-years",
+				value: "12",
+			},
+			{
+				hash: "location-of-residence-18-64-years",
+				value: "13",
+			},
+		],
+	},
+	{
+		hash: "community-hospital-beds",
+		value: "community-hospital-beds",
+		classificationOptions: [
+			{
+				hash: "community-hospital-beds",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "state",
+				value: "1",
+			},
+		],
+	},
+	{
+		hash: "delayed-getting-medical-care-due-to-cost",
+		value: "delayed-getting-medical-care-due-to-cost",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "delayed-getting-medical-care-due-to-cost-among-children",
+		value: "delayed-getting-medical-care-due-to-cost-among-children",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "did-not-get-needed-medical-care-due-to-cost",
+		value: "did-not-get-needed-medical-care-due-to-cost",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "did-not-get-needed-mental-health-care-due-to-cost",
+		value: "did-not-get-needed-mental-health-care-due-to-cost",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "did-not-take-medication-as-prescribed-to-save-money",
+		value: "did-not-take-medication-as-prescribed-to-save-money",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "exchange-based-coverage-coverage-at-time-of-interview",
+		value: "exchange-based-coverage-coverage-at-time-of-interview",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: null,
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "has-a-usual-place-of-care",
+		value: "has-a-usual-place-of-care",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "16",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "has-a-usual-place-of-care-among-children",
+		value: "has-a-usual-place-of-care-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "medicaidU65",
 		value: "medicaidU65",
+		classificationOptions: [
+			{
+				hash: "na",
+				value: "0",
+			},
+		],
 		groupOptions: [
 			{
 				hash: "total",
@@ -997,7 +6271,7 @@ export const hashLookup = [
 				value: "2",
 			},
 			{
-				hash: "sex-and-marital-status",
+				hash: "sex-and-marital-status-14-64-years",
 				value: "3",
 			},
 			{
@@ -1013,7 +6287,7 @@ export const hashLookup = [
 				value: "6",
 			},
 			{
-				hash: "level-of-difficulty",
+				hash: "level-of-difficulty-18-64-years",
 				value: "7",
 			},
 			{
@@ -1024,205 +6298,2250 @@ export const hashLookup = [
 				hash: "location-of-residence",
 				value: "9",
 			},
-		],
-		classificationOptions: [
 			{
-				hash: "NA",
-				value: "NA",
-			},
-			{
-				hash: "NA",
-				value: "0",
+				hash: "sex-and-marital-status-18-64-years",
+				value: "10",
 			},
 		],
 	},
 	{
-		hash: "drug-overdose",
-		value: "drug-overdose",
-		groupOptions: [
+		hash: "private-health-insurance-coverage-at-time-of-interview",
+		value: "private-health-insurance-coverage-at-time-of-interview",
+		classificationOptions: [
 			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
+				hash: "demographic-characteristics",
 				value: "1",
 			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
 			{
 				hash: "sex",
 				value: "2",
 			},
 			{
-				hash: "sex-and-age",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race",
-				value: "4",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "5",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "all-drug-overdose-deaths",
+				hash: "total",
 				value: "1",
 			},
 			{
-				hash: "drug-overdose-deaths-any-opioid",
-				value: "2",
-			},
-			{
-				hash: "drug-overdose-deaths-natural-and-semisynthetic-opioids",
-				value: "3",
-			},
-			{
-				hash: "drug-overdose-deaths-methadone",
+				hash: "age-groups-with-65",
 				value: "4",
 			},
 			{
-				hash: "drug-overdose-deaths-synthetic-opioids",
+				hash: "age-groups-with-75",
 				value: "5",
 			},
 			{
-				hash: "drug-overdose-deaths-heroin",
+				hash: "race",
 				value: "6",
-			},
-		],
-	},
-	{
-		hash: "ambulatory-care",
-		value: "ambulatory-care",
-		classificationOptions: [
-			{
-				hash: "all-places",
-				value: "1",
-			},
-			{
-				hash: "physician-offices",
-				value: "2",
-			},
-			{
-				hash: "hospital-outpatient",
-				value: "3",
-			},
-			{
-				hash: "hospital-emergency",
-				value: "4",
-			},
-		],
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "sex-and-age",
-				value: "3",
-			},
-			{
-				hash: "race",
-				value: "4",
-			},
-			{
-				hash: "race-and-age",
-				value: "5",
-			},
-		],
-	},
-	{
-		hash: "access-care",
-		value: "access-care",
-		classificationOptions: [
-			{
-				hash: "nonreceipt-medical-care",
-				value: "1",
-			},
-			{
-				hash: "nonreceipt-drugs",
-				value: "2",
-			},
-			{
-				hash: "nonreceipt-dental-care",
-				value: "3",
-			},
-		],
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "race",
-				value: "3",
-			},
-			{
-				hash: "hispanic-origin-and-race",
-				value: "4",
 			},
 			{
 				hash: "education",
-				value: "5",
+				value: "17",
 			},
 			{
-				hash: "percent-of-poverty-level",
-				value: "6",
-			},
-			{
-				hash: "hispanic-origin-race-and-percent-of-poverty-level",
+				hash: "hispanic-or-latino-origin-and-race",
 				value: "7",
 			},
 			{
-				hash: "health-insurance-status-at-interview",
+				hash: "marital-status",
 				value: "8",
 			},
 			{
-				hash: "health-insurance-status-prior-to-interview",
-				value: "9",
+				hash: "urbanicity",
+				value: "13",
 			},
 			{
-				hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
-				value: "10",
+				hash: "employment-status",
+				value: "16",
 			},
 			{
-				hash: "level-of-difficulty",
-				value: "11",
+				hash: "region",
+				value: "14",
 			},
 			{
-				hash: "geographic-region",
+				hash: "metropolitan-statistical-area-status",
 				value: "12",
 			},
 			{
-				hash: "location-of-residence",
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "public-health-plan-coverage-at-time-of-interview",
+		value: "public-health-plan-coverage-at-time-of-interview",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: null,
+			},
+			{
+				hash: "urbanicity",
 				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "two-or-more-hospital-emergency-department-visits-among-children",
+		value: "two-or-more-hospital-emergency-department-visits-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
+		value: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "uninsured-at-time-of-interview",
+		value: "uninsured-at-time-of-interview",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "uninsured-at-time-of-interview-among-children",
+		value: "uninsured-at-time-of-interview-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "uninsured-for-at-least-part-of-the-past-year",
+		value: "uninsured-for-at-least-part-of-the-past-year",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "uninsured-for-more-than-one-year",
+		value: "uninsured-for-more-than-one-year",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "urgent-care-center-or-retail-health-clinic-visit",
+		value: "urgent-care-center-or-retail-health-clinic-visit",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "daily-feelings-of-worry-nervousness-or-anxiety",
+		value: "daily-feelings-of-worry-nervousness-or-anxiety",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "receive-services-for-mental-health-problems",
+		value: "receive-services-for-mental-health-problems",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "complete-tooth-loss",
+		value: "complete-tooth-loss",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "dental-exam-or-cleaning",
+		value: "dental-exam-or-cleaning",
+		classificationOptions: [
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "total-dental-caries-in-permanent-teeth",
+		value: "total-dental-caries-in-permanent-teeth",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "total-dental-caries-in-primary-teeth",
+		value: "total-dental-caries-in-primary-teeth",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "untreated-dental-caries-in-permanent-teeth",
+		value: "untreated-dental-caries-in-permanent-teeth",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "untreated-dental-caries-in-primary-teeth",
+		value: "untreated-dental-caries-in-primary-teeth",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-group",
+				value: "1",
+			},
+			{
+				hash: "sex-and-age-group",
+				value: "3",
+			},
+			{
+				hash: "race-and-hispanic-and-age-group",
+				value: "2",
+			},
+		],
+	},
+	{
+		hash: "counseled-by-a-mental-health-professional",
+		value: "counseled-by-a-mental-health-professional",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "ever-received-a-pneumococcal-vaccination",
+		value: "ever-received-a-pneumococcal-vaccination",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "prescription-medication-use",
+		value: "prescription-medication-use",
+		classificationOptions: [
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "prescription-medication-use-among-children",
+		value: "prescription-medication-use-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "receipt-of-influenza-vaccination",
+		value: "receipt-of-influenza-vaccination",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "receipt-of-influenza-vaccination-among-children",
+		value: "receipt-of-influenza-vaccination-among-children",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "receiving-special-education-or-early-intervention-services",
+		value: "receiving-special-education-or-early-intervention-services",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "taking-prescription-medication-for-feelings-of-depression",
+		value: "taking-prescription-medication-for-feelings-of-depression",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "taking-prescription-medication-for-feelings-of-worry-nervousness-or-anxiety",
+		value: "taking-prescription-medication-for-feelings-of-worry-nervousness-or-anxiety",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
+			},
+		],
+	},
+	{
+		hash: "well-child-check-up",
+		value: "well-child-check-up",
+		classificationOptions: [
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "parental-employment",
+				value: "7",
+			},
+			{
+				hash: "parental-education",
+				value: "8",
+			},
+			{
+				hash: "age",
+				value: "3",
+			},
+			{
+				hash: "race",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "5",
+			},
+			{
+				hash: "family-structure",
+				value: "6",
+			},
+			{
+				hash: "family-income",
+				value: "9",
+			},
+			{
+				hash: "health-insurance-coverage",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "11",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "urbanicity",
+				value: "14",
+			},
+			{
+				hash: "region",
+				value: "13",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+		],
+	},
+	{
+		hash: "wellness-visit",
+		value: "wellness-visit",
+		classificationOptions: [
+			{
+				hash: "demographic-characteristics",
+				value: "1",
+			},
+			{
+				hash: "socio-economic-status",
+				value: "3",
+			},
+			{
+				hash: "geographic-characteristics",
+				value: "2",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "age-groups-with-65",
+				value: "4",
+			},
+			{
+				hash: "total",
+				value: "1",
+			},
+			{
+				hash: "sex",
+				value: "2",
+			},
+			{
+				hash: "age-groups-with-75",
+				value: "5",
+			},
+			{
+				hash: "race",
+				value: "6",
+			},
+			{
+				hash: "hispanic-or-latino-origin-and-race",
+				value: "7",
+			},
+			{
+				hash: "education",
+				value: "17",
+			},
+			{
+				hash: "marital-status",
+				value: "8",
+			},
+			{
+				hash: "employment-status",
+				value: "16",
+			},
+			{
+				hash: "urbanicity",
+				value: "13",
+			},
+			{
+				hash: "region",
+				value: "14",
+			},
+			{
+				hash: "metropolitan-statistical-area-status",
+				value: "12",
+			},
+			{
+				hash: "health-insurance-coverage-under-65",
+				value: "19",
+			},
+			{
+				hash: "health-insurance-coverage-65",
+				value: "20",
+			},
+			{
+				hash: "family-income",
+				value: "18",
+			},
+			{
+				hash: "nativity",
+				value: "10",
+			},
+			{
+				hash: "disability-status",
+				value: "9",
+			},
+			{
+				hash: "sexual-orientation",
+				value: "3",
+			},
+			{
+				hash: "cdc-social-vulnerability-index",
+				value: "15",
+			},
+			{
+				hash: "veteran-status",
+				value: "11",
 			},
 		],
 	},
 ];
-// add all NHIS topic to hashLookup
-NHISTopics.map((t) => t.id).forEach((id) => {
-	hashLookup.push({
-		hash: id,
-		value: id,
-		groupOptions: NHISHash.groupOptions,
-		classificationOptions: NHISHash.classificationOptions,
-	});
-});

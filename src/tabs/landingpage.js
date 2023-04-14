@@ -355,6 +355,18 @@ export class LandingPage {
 	};
 
 	getFlattenedFilteredData() {
+		////////////////    Use this to create a new hashLookup table    ////////////////
+		// Simply uncomment and down arrow through all of tht topics, waiting for each
+		// to load before going to next. Have devTools open so the debugger statement will.
+		// break when you get to the bottom. When it completes, copy the hashLookup2 object
+		// from devTools and then paste it into the hashLookup object in the config.js file.
+		// functions.buildNewHashLookupTable(
+		// 	this.socrataData,
+		// 	this.topicDropdown.value(),
+		// 	this.topicDropdown.props.options.length
+		// );
+		//////////////////////////////////////////////////////////////////////////////////
+
 		let data = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);

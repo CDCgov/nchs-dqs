@@ -330,3 +330,51 @@ export const adjustTableDimensions = () => {
 	// set table's max-width to fit inside of tableContentWrapper and set width to fit-content
 	$("#tableYearHeader").width($("#nchs-table > tbody th").first().width());
 };
+
+// Build new hashLookup table with the next three JS objects
+const slugify = (str) => {
+	return str
+		.toLowerCase()
+		.trim()
+		.replace(/[^\w\s-]/g, "")
+		.replace(/[\s_-]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+};
+
+const hashLookup2 = [];
+export const buildNewHashLookupTable = (data, topicId, count) => {
+	if (!hashLookup2.find((d) => d.hash === topicId)) {
+		const classifications = [...new Set(data.map((d) => d.panel))];
+		const uc = [];
+
+		classifications.forEach((c) => {
+			const cl = data.find((d) => d.panel === c);
+			uc.push({
+				hash: slugify(c),
+				value: cl.panel_num,
+			});
+		});
+
+		const gc = [];
+		const groups = [...new Set(data.map((d) => d.stub_name))];
+		groups.forEach((g) => {
+			const gr = data.find((d) => d.stub_name === g);
+			gc.push({
+				hash: slugify(g),
+				value: gr.stub_name_num,
+			});
+		});
+
+		hashLookup2.push({
+			hash: topicId,
+			value: topicId,
+			classificationOptions: uc,
+			groupOptions: gc,
+		});
+
+		if (hashLookup2.length === count) {
+			debugger; // normally we don't want PR's with debugger statements, but this is a one time thing as this function
+			// is only called when we need to regenerate the hashLookup table :)
+		}
+	}
+};
