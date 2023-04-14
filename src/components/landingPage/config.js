@@ -1,5 +1,5 @@
 import { modal, allFilters } from "./modal";
-import { NHISHash, NHISTopics } from "./nhis";
+import { NHISTopics } from "./nhis";
 
 const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
