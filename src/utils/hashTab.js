@@ -7612,7 +7612,7 @@ const hashLookup = {
 	},
 };
 
-export const writeHashToUrl = (topicId, classificationId, groupId) => {
+export const writeHashToUrl = (topicId, classificationId, groupId, tab) => {
 	const singlePeriod = $("#show-one-period-checkbox")[0].checked ? "single-time-period" : "all-time-periods";
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
@@ -7625,7 +7625,7 @@ export const writeHashToUrl = (topicId, classificationId, groupId) => {
 		window.location.hash = `${hashPrefix.replace(
 			"#",
 			""
-		)}_${topicId}/${classificationHash}/${groupHash}/${singlePeriod}`;
+		)}_${topicId}/${classificationHash}/${groupHash}/${singlePeriod}/${tab}`;
 	} catch {
 		/* do nothing */
 	}
@@ -7654,6 +7654,7 @@ export const getSelections = () => {
 			classification,
 			group,
 			viewSinglePeriod,
+			tab: selections[4],
 		};
 	}
 	return null;

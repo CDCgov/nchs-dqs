@@ -118,7 +118,6 @@ export class LandingPage {
 		if (screenWidth < 768) {
 			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
 		}
-
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
 			activate: (e) => {
@@ -143,6 +142,7 @@ export class LandingPage {
 
 				this.activeTabNumber = id - 1;
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
+				this.selections.tab = this.activeTabNumber;
 				switch (this.activeTabNumber) {
 					case 0:
 						this.allMapData = null;
@@ -350,7 +350,19 @@ export class LandingPage {
 			$("#btnTableExport").show();
 			$("#dwn-chart-img").hide();
 		}
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+
+		// for reading in Map, Chart, or Table from hash url
+		if (this.selections.tab != this.activeTabNumber) {
+			let { tab } = this.selections;
+			let activeTab;
+			if (tab == 0) activeTab = "map-tab";
+			else if (tab == 1) activeTab = "chart-tab";
+			else activeTab = "table-tab";
+			$(`a[href='#${activeTab}']`).trigger("click");
+			return;
+		}
+
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 		$(".genLoader").removeClass("active");
 	};
 
@@ -660,7 +672,9 @@ export class LandingPage {
 				filters.forEach((filter) => {
 					$(`#filter${filter}`).prop("checked", true);
 				});
-			} else this.dataTopic = this.selections.topic;
+			} else {
+				this.dataTopic = this.selections.topic;
+			}
 		}
 
 		const options = [];
@@ -927,7 +941,7 @@ export class LandingPage {
 			$("#startYearContainer-label").html("Period");
 		}
 		this.renderDataVisualizations();
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	updateEnableCI(value) {
@@ -968,7 +982,7 @@ export class LandingPage {
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
 		else this.renderDataVisualizations();
 
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	renderDataTable(data) {
