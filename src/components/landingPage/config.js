@@ -1,5 +1,5 @@
 import { modal, allFilters } from "./modal";
-import { NHISHash, NHISTopics } from "./nhis";
+import { NHISTopics } from "./nhis";
 
 const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
 
@@ -245,7 +245,7 @@ export const tabContent = `
 	</div>	
 `;
 
-export const topicLookup = {
+const footnoteDatasets = {
 	footnotes: {
 		socrataId: "m6mz-p2ij",
 		private: "1",
@@ -254,115 +254,9 @@ export const topicLookup = {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
-	NHIS: {
-		socrataId: "4u68-shzr",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
-			if (filteredToIndicator.length === 0) {
-				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
-			}
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopicid,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_byid,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"children-summary-statistics": {
-		socrataId: "rkv8-xf9z",
-		private: "1",
-		filters: `Interview, ${allFilters
-			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
-			.join(",")}`,
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
-				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
 	cshsFootnotes: {
 		socrataId: "7kgb-btmk",
 		private: "1",
-	},
-	NHAMCS: {
-		socrataId: "pcav-mejc",
-		private: "1",
-		filters: `Interview, ${allFilters
-			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
-			.join(",")}`,
-		dataMapper: (data, dataId) => {
-			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
-			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.estimate,
-					estimate_lci: f.lower_95_ci,
-					estimate_uci: f.upper_95_ci,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure_type,
-					panel: f.measure,
-					panel_num: f.measure_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.groupby,
-					stub_name_num: f.groupby_id,
-					unit: f.estimate_type,
-					unit_num: f.estimatetype_id,
-					year: f.year,
-					year_num: "",
-					age: f.groupby.includes("By age") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
 	},
 	NHAMCSFootnotes: {
 		socrataId: "42t3-uyny",
@@ -372,130 +266,9 @@ export const topicLookup = {
 		socrataId: "vv6f-2hmj",
 		private: "1",
 	},
-	"nhanes-chronic-conditions": {
-		socrataId: "i2dc-ja7d",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
+};
 
-			return returnData;
-		},
-	},
-	"nhanes-dietary-behaviors": {
-		socrataId: "j4m9-2puq",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.mean,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"nhanes-oral-health": {
-		socrataId: "i3dq-buv5",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"nhanes-infectious-disease": {
-		socrataId: "fuy5-tcrb",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
+const singleTopicDatasets = {
 	"obesity-child": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
@@ -649,6 +422,245 @@ export const topicLookup = {
 	},
 };
 
+const multipleTopicDatasets = {
+	NHIS: {
+		socrataId: "4u68-shzr",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			if (filteredToIndicator.length === 0) {
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
+			}
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopicid,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_byid,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"children-summary-statistics": {
+		socrataId: "rkv8-xf9z",
+		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
+			.join(",")}`,
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+				returnData.push({
+					estimate: f.percentage,
+					estimate_lci: ci[0].trim(),
+					estimate_uci: ci[1].trim(),
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.outcome_or_indicator,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.unit,
+					unit_num: f.unit_id,
+					year: f.year,
+					year_num: "",
+					age: f.group_by.includes("By age") ? f.group_by : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	NHAMCS: {
+		socrataId: "pcav-mejc",
+		private: "1",
+		filters: `Interview, ${allFilters
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.join(",")}`,
+		dataMapper: (data, dataId) => {
+			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95_ci,
+					estimate_uci: f.upper_95_ci,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure_type,
+					panel: f.measure,
+					panel_num: f.measure_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.groupby,
+					stub_name_num: f.groupby_id,
+					unit: f.estimate_type,
+					unit_num: f.estimatetype_id,
+					year: f.year,
+					year_num: "",
+					age: f.groupby.includes("By age") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-chronic-conditions": {
+		socrataId: "i2dc-ja7d",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-dietary-behaviors": {
+		socrataId: "j4m9-2puq",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.mean,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-oral-health": {
+		socrataId: "i3dq-buv5",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-infectious-disease": {
+		socrataId: "fuy5-tcrb",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.percent,
+					estimate_lci: f.lower_95_ci_limit,
+					estimate_uci: f.upper_95_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group_by,
+					stub_name_num: f.group_by_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+};
+
+export const topicLookup = {
+	...footnoteDatasets,
+	...singleTopicDatasets,
+	...multipleTopicDatasets,
+};
+
 // load all the topics with the associated groupings (i.e. topicGroup) into 'topicLookup' object
 NHISTopics.forEach((t) => {
 	// check if the topic group has custom filters
@@ -681,548 +693,3 @@ export const topicGroups = [
 	"Oral Health", // 5
 	"Prevention, control, and treatment", // 6
 ];
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rules for creating a new hashLookup object
-// 1. top-level value must match the ID in the Topic dropdown's Options list
-// 2. hash can be any string closely related to the TEXT in Topic dropdown, with "-" replacing any spaces. Do not use "_" as this is reserved
-//    to split a tab-hash and the hash-values that follow. I hear you thinking 'hash, value, hash-value ... I'm confused'. Bottom line is,
-//    in the object: "hash" is what is read/written to the browser url; "value" is the corresponding "id" from the dropdowns.
-//    Use text and "-" characters only for worry-free acceptance. For long text values you might choose to abbreviate a/some words
-//    The end-goal is for the hash url to be meaningful to someone it may be shared with before they navigate to it
-// 3. "classificationOptions" uses rules #1 and #2 like above, but for the Classification dropdown
-// 4. "groupOptions" uses rules #1 and #2 like above, but for the Group dropdown
-//
-// For ease of getting the values, after creating the required topicLookup object (above in this code), load the page.
-// Once your new dataset successfully loads you can inspect the Classification and Group dropdowns.
-export const hashLookup = [
-	{
-		hash: "obesity-children",
-		value: "obesity-child",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "sex",
-				value: "1",
-			},
-			{
-				hash: "age",
-				value: "2",
-			},
-			{
-				hash: "race-and-hispanic-origin",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "4",
-			},
-			{
-				hash: "percent-of-poverty-level",
-				value: "5",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "2-19",
-				value: "1",
-			},
-			{
-				hash: "2-5",
-				value: "2",
-			},
-			{
-				hash: "6-11",
-				value: "3",
-			},
-			{
-				hash: "12-19",
-				value: "4",
-			},
-		],
-	},
-	{
-		hash: "obesity-adults",
-		value: "obesity-adult",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "race-and-hispanic-origin",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "4",
-			},
-			{
-				hash: "percent-of-poverty-level",
-				value: "5",
-			},
-			{
-				hash: "sex-and-age",
-				value: "6",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "BMI-from-18.5-to-24.9",
-				value: "1",
-			},
-			{
-				hash: "BMI-greater-than-or-equal-to-25.0",
-				value: "2",
-			},
-			{
-				hash: "BMI-greater-than-or-equal-to-30.0",
-				value: "3",
-			},
-			{
-				hash: "BMI-from-30.0-to-34.9",
-				value: "4",
-			},
-			{
-				hash: "BMI-from-35.0-to-39.9",
-				value: "5",
-			},
-			{
-				hash: "BMI-greater-than-or-equal-to-40.0",
-				value: "6",
-			},
-		],
-	},
-	{
-		hash: "suicide-mortality",
-		value: "suicide",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "sex-and-age",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race",
-				value: "4",
-			},
-			{
-				hash: "sex-age-and-race",
-				value: "5",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "6",
-			},
-			{
-				hash: "sex-age-and-race-and-hispanic-origin",
-				value: "7",
-			},
-			{
-				hash: "sex-and-single-race",
-				value: "8",
-			},
-			{
-				hash: "sex-age-and-single-race",
-				value: "9",
-			},
-			{
-				hash: "sex-and-single-race-hispanic-origin",
-				value: "10",
-			},
-			{
-				hash: "sex-age-and-single-race-hispanic-origin",
-				value: "11",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "NA",
-				value: "NA",
-			},
-			{
-				hash: "NA",
-				value: "0",
-			},
-		],
-	},
-	{
-		hash: "injury-ed-visits",
-		value: "injury",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "1",
-			},
-			{
-				hash: "intent-and-mechanism-of-injury",
-				value: "2",
-			},
-			{
-				hash: "sex",
-				value: "3",
-			},
-			{
-				hash: "sex-intent-and-mechanism-of-injury",
-				value: "4",
-			},
-			{
-				hash: "sex-and-age",
-				value: "5",
-			},
-			{
-				hash: "sex-age-intent-and-mechanism-of-injury",
-				value: "6",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "NA",
-				value: "0",
-			},
-		],
-	},
-	{
-		hash: "infant-mortality",
-		value: "infant-mortality",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "state-or-territory",
-				value: "1",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "All-races",
-				value: "1",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&White",
-				value: "2",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
-				value: "3",
-			},
-			{
-				hash: "Hispanic-or-Latina&All-races",
-				value: "4",
-			},
-			{
-				hash: "American-Indian-or-Alaska-Native",
-				value: "5",
-			},
-			{
-				hash: "Asian-or-Pacific-Islander",
-				value: "6",
-			},
-		],
-	},
-	{
-		hash: "low-birthweight",
-		value: "birthweight",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "state-or-territory",
-				value: "1",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "All-races",
-				value: "1",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&White",
-				value: "2",
-			},
-			{
-				hash: "Not-Hispanic-or-Latina&Black-or-African-American",
-				value: "3",
-			},
-			{
-				hash: "Hispanic-or-Latina&All-races",
-				value: "4",
-			},
-			{
-				hash: "American-Indian-or-Alaska-Native",
-				value: "5",
-			},
-			{
-				hash: "Asian-or-Pacific-Islander",
-				value: "6",
-			},
-		],
-	},
-	{
-		hash: "medicaid-coverage-under-65",
-		value: "medicaidU65",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "sex-and-marital-status",
-				value: "3",
-			},
-			{
-				hash: "race",
-				value: "4",
-			},
-			{
-				hash: "hispanic-origin-and-race",
-				value: "5",
-			},
-			{
-				hash: "age-and-percent-of-poverty-level",
-				value: "6",
-			},
-			{
-				hash: "level-of-difficulty",
-				value: "7",
-			},
-			{
-				hash: "geographic-region",
-				value: "8",
-			},
-			{
-				hash: "location-of-residence",
-				value: "9",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "NA",
-				value: "NA",
-			},
-			{
-				hash: "NA",
-				value: "0",
-			},
-		],
-	},
-	{
-		hash: "drug-overdose",
-		value: "drug-overdose",
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "sex-and-age",
-				value: "3",
-			},
-			{
-				hash: "sex-and-race",
-				value: "4",
-			},
-			{
-				hash: "sex-and-race-and-hispanic-origin",
-				value: "5",
-			},
-		],
-		classificationOptions: [
-			{
-				hash: "all-drug-overdose-deaths",
-				value: "1",
-			},
-			{
-				hash: "drug-overdose-deaths-any-opioid",
-				value: "2",
-			},
-			{
-				hash: "drug-overdose-deaths-natural-and-semisynthetic-opioids",
-				value: "3",
-			},
-			{
-				hash: "drug-overdose-deaths-methadone",
-				value: "4",
-			},
-			{
-				hash: "drug-overdose-deaths-synthetic-opioids",
-				value: "5",
-			},
-			{
-				hash: "drug-overdose-deaths-heroin",
-				value: "6",
-			},
-		],
-	},
-	{
-		hash: "ambulatory-care",
-		value: "ambulatory-care",
-		classificationOptions: [
-			{
-				hash: "all-places",
-				value: "1",
-			},
-			{
-				hash: "physician-offices",
-				value: "2",
-			},
-			{
-				hash: "hospital-outpatient",
-				value: "3",
-			},
-			{
-				hash: "hospital-emergency",
-				value: "4",
-			},
-		],
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "sex-and-age",
-				value: "3",
-			},
-			{
-				hash: "race",
-				value: "4",
-			},
-			{
-				hash: "race-and-age",
-				value: "5",
-			},
-		],
-	},
-	{
-		hash: "access-care",
-		value: "access-care",
-		classificationOptions: [
-			{
-				hash: "nonreceipt-medical-care",
-				value: "1",
-			},
-			{
-				hash: "nonreceipt-drugs",
-				value: "2",
-			},
-			{
-				hash: "nonreceipt-dental-care",
-				value: "3",
-			},
-		],
-		groupOptions: [
-			{
-				hash: "total",
-				value: "0",
-			},
-			{
-				hash: "age",
-				value: "1",
-			},
-			{
-				hash: "sex",
-				value: "2",
-			},
-			{
-				hash: "race",
-				value: "3",
-			},
-			{
-				hash: "hispanic-origin-and-race",
-				value: "4",
-			},
-			{
-				hash: "education",
-				value: "5",
-			},
-			{
-				hash: "percent-of-poverty-level",
-				value: "6",
-			},
-			{
-				hash: "hispanic-origin-race-and-percent-of-poverty-level",
-				value: "7",
-			},
-			{
-				hash: "health-insurance-status-at-interview",
-				value: "8",
-			},
-			{
-				hash: "health-insurance-status-prior-to-interview",
-				value: "9",
-			},
-			{
-				hash: "percent-poverty-level-and-health-insurance-status-prior-to-interview",
-				value: "10",
-			},
-			{
-				hash: "level-of-difficulty",
-				value: "11",
-			},
-			{
-				hash: "geographic-region",
-				value: "12",
-			},
-			{
-				hash: "location-of-residence",
-				value: "13",
-			},
-		],
-	},
-];
-// add all NHIS topic to hashLookup
-NHISTopics.map((t) => t.id).forEach((id) => {
-	hashLookup.push({
-		hash: id,
-		value: id,
-		groupOptions: NHISHash.groupOptions,
-		classificationOptions: NHISHash.classificationOptions,
-	});
-});

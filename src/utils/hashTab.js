@@ -1,33 +1,23 @@
-import { hashLookup } from "../components/landingPage/config";
-
-const classificationOptions = "classificationOptions";
-const groupOptions = "groupOptions";
-const showOnePeriodCheckboxId = "show-one-period-checkbox";
-
-export const writeHashToUrl = (topicId, classificationId, groupId) => {
-	const singlePeriod = $(`#${showOnePeriodCheckboxId}`)[0].checked ? "single-time-period" : "all-time-periods";
+export const writeHashToUrl = (topicId, classificationId, groupId, tab) => {
+	const singlePeriod = $("#show-one-period-checkbox")[0].checked ? "single-time-period" : "all-time-periods";
 	const currentHash = window.location.hash;
 	const hashPrefix = currentHash ? currentHash.split("_")[0] : "";
 
 	try {
-		const topicHash = hashLookup.find((l) => l.value == topicId).hash;
-
-		const classificationHash = hashLookup
-			.find((l) => l.value === topicId)
-			[classificationOptions].find((s) => s.value == classificationId).hash;
-
-		const groupHash = hashLookup
-			.find((l) => l.value === topicId)
-			[groupOptions].find((c) => c.value == groupId).hash;
+		const lookup = hashLookup[topicId];
+		const classificationHash = lookup.classificationOptions.find((s) => s.value == classificationId).hash;
+		const groupHash = lookup.groupOptions.find((c) => c.value == groupId).hash;
 
 		window.location.hash = `${hashPrefix.replace(
 			"#",
 			""
-		)}_${topicHash}/${classificationHash}/${groupHash}/${singlePeriod}`;
+		)}_${topicId}/${classificationHash}/${groupHash}/${singlePeriod}/${tab}`;
 	} catch {
 		/* do nothing */
 	}
 };
+
+export const hashLookup = {};
 
 export const getSelections = () => {
 	const { hash } = window.location;
@@ -41,22 +31,61 @@ export const getSelections = () => {
 		if (selections.length <= 1) return null;
 
 		selections = selections[1].split("/");
-		const topic = hashLookup.find((l) => l.hash === selections[0]).value;
-		const classification = hashLookup
-			.find((l) => l.hash === selections[0])
-			[classificationOptions].find((s) => s.hash === selections[1]).value;
-		const group = hashLookup
-			.find((l) => l.hash === selections[0])
-			[groupOptions].find((c) => c.hash === selections[2]).value;
+		const topic = selections[0];
+
+		if (!hashLookup[topic]) return { topic };
+
+		const classification = hashLookup[topic].classificationOptions.find((s) => s.hash === selections[1]).value;
+		const group = hashLookup[topic].groupOptions.find((c) => c.hash === selections[2]).value;
 		const viewSinglePeriod = selections[3] === "single-time-period";
-		$(`#${showOnePeriodCheckboxId}`).prop("checked", viewSinglePeriod);
+		$("#show-one-period-checkbox").prop("checked", viewSinglePeriod);
 
 		return {
 			topic,
 			classification,
 			group,
 			viewSinglePeriod,
+			tab: selections[4],
 		};
 	}
 	return null;
+};
+
+const slugify = (str) => {
+	return str
+		.toLowerCase()
+		.trim()
+		.replace(/[^\w\s-]/g, "")
+		.replace(/[\s_-]+/g, "-")
+		.replace(/^-+|-+$/g, "");
+};
+
+export const addToHashLookup = (data, topicId, initialPageLoad = false) => {
+	const classifications = [...new Set(data.map((d) => d.panel))];
+	const classificationsArray = [];
+
+	classifications.forEach((classification) => {
+		const datum = data.find((d) => d.panel === classification);
+		classificationsArray.push({
+			hash: slugify(classification),
+			value: datum.panel_num,
+		});
+	});
+
+	const groupsArray = [];
+	const groups = [...new Set(data.map((d) => d.stub_name))];
+	groups.forEach((group) => {
+		const datum = data.find((d) => d.stub_name === group);
+		groupsArray.push({
+			hash: slugify(group),
+			value: datum.stub_name_num,
+		});
+	});
+
+	hashLookup[topicId] = {
+		classificationOptions: classificationsArray,
+		groupOptions: groupsArray,
+	};
+
+	return initialPageLoad ? getSelections() : null;
 };
