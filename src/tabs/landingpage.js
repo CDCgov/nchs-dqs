@@ -451,7 +451,7 @@ export class LandingPage {
 
 		// "date" property is necessary for correctly positioning data point for these charts
 		if (this.dataTopic === "suicide" || this.dataTopic === "medicaidU65")
-			return [...data].map((d) => ({
+			data = [...data].map((d) => ({
 				...d,
 				date: new Date(`${d.year}-01-01T00:00:00`),
 			}));

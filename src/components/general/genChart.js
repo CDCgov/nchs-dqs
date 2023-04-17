@@ -692,12 +692,13 @@ export class GenChart {
 
 			const updateTheChart = (data, nestedData) => {
 				let sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
-
 				if (p.needsScaleTime) {
 					let minReported = sortedXValues[0];
 					let maxReported = [...sortedXValues.slice(-1)][0];
-					minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
-					maxReported.setDate(maxReported.getDate() + 1);
+					if (minReported.getTime() !== maxReported.getTime()) {
+						minReported.setDate(minReported.getDate() - 1); // these tweaks move the points off of the edges, to not end up on the axis
+						maxReported.setDate(maxReported.getDate() + 1);
+					}
 					xScale.domain([minReported, maxReported]).nice();
 				} else if (p.barLayout.horizontal) {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
