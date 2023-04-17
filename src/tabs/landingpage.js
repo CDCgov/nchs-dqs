@@ -225,7 +225,7 @@ export class LandingPage {
 
 		let stateData = [...data];
 
-		this.legend = this.legend ?? this.generateLegend();
+		this.legend = this.generateLegend();
 		if (!this.legend?.length) {
 			return;
 		}
@@ -393,7 +393,7 @@ export class LandingPage {
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
 
-		if (!this.allMapData && this.activeTabNumber === 0 && this.groupId === 1) this.allMapData = [...data];
+		this.allMapData = [...data];
 
 		data = data.filter(
 			(d) =>
