@@ -524,8 +524,6 @@ export const topicLookup = {
 				});
 			});
 
-			console.log("data", returnData[0]);
-
 			return returnData;
 		},
 	},
@@ -1246,6 +1244,26 @@ export const hashLookup = [
 			{
 				hash: "location-of-residence",
 				value: "13",
+			},
+		],
+	},
+	{
+		hash: "active-dentists",
+		value: "active-dentists",
+		classificationOptions: [
+			{
+				hash: "dentists",
+				value: "1",
+			},
+		],
+		groupOptions: [
+			{
+				hash: "total",
+				value: "0",
+			},
+			{
+				hash: "state",
+				value: "1",
 			},
 		],
 	},
