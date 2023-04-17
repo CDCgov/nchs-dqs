@@ -393,6 +393,8 @@ export class LandingPage {
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
 
+		// there was a conditional here, but removed it so that toggling the population
+		// dropdoown triggers rerender, and we need to refresh/update the mapdata as such
 		this.allMapData = [...data];
 
 		data = data.filter(
