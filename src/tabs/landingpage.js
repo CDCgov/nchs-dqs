@@ -29,6 +29,7 @@ export class LandingPage {
 		this.showBarChart = 0;
 		this.topoJson = null;
 		this.selections = null;
+		this.initialPageLoad = true;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
 		this.config = null;
@@ -118,7 +119,6 @@ export class LandingPage {
 		if (screenWidth < 768) {
 			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
 		}
-
 		$("#tabs").tabs({
 			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
 			activate: (e) => {
@@ -143,6 +143,7 @@ export class LandingPage {
 
 				this.activeTabNumber = id - 1;
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
+				this.selections.tab = this.activeTabNumber;
 				switch (this.activeTabNumber) {
 					case 0:
 						this.allMapData = null;
@@ -350,11 +351,44 @@ export class LandingPage {
 			$("#btnTableExport").show();
 			$("#dwn-chart-img").hide();
 		}
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+
+		// for reading in Map, Chart, or Table from hash url
+		if (this.selections?.tab && this.selections?.tab != this.activeTabNumber) {
+			let { tab } = this.selections;
+			let activeTab;
+			if (tab == 0) activeTab = "map-tab";
+			else if (tab == 1) activeTab = "chart-tab";
+			else activeTab = "table-tab";
+			$(`a[href='#${activeTab}']`).trigger("click");
+			return;
+		}
+
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 		$(".genLoader").removeClass("active");
 	};
 
 	getFlattenedFilteredData() {
+		// check if the hashLookup has been constructed for this topic. If not, construct it, update this.selections, and return to this.updateTopic
+		// to get the rest of the possible hashUrl parameters.
+		const topic = this.topicDropdown.value();
+		if (!hashTab.hashLookup[topic]) {
+			if (this.initialPageLoad) {
+				this.selections = hashTab.addToHashLookup(
+					this.socrataData,
+					this.topicDropdown.value(),
+					this.initialPageLoad
+				);
+				this.initialPageLoad = false;
+			} else {
+				// This is when switching topics but hashlookup has not been constructed.
+				// This makes sure we reset to the initial classifiction and group for a new topic.
+				hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
+				this.selections = null;
+			}
+			this.updateTopic(topic);
+			return;
+		}
+
 		let data = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
@@ -648,7 +682,9 @@ export class LandingPage {
 				filters.forEach((filter) => {
 					$(`#filter${filter}`).prop("checked", true);
 				});
-			} else this.dataTopic = this.selections.topic;
+			} else {
+				this.dataTopic = this.selections.topic;
+			}
 		}
 
 		const options = [];
@@ -915,7 +951,7 @@ export class LandingPage {
 			$("#startYearContainer-label").html("Period");
 		}
 		this.renderDataVisualizations();
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	updateEnableCI(value) {
@@ -948,12 +984,15 @@ export class LandingPage {
 
 		this.setVerticalUnitAxisSelect();
 		this.updateEnableCI(0);
+		this.staticBinning = true;
+		$("#mapBinningSlider").prop("checked", true);
+		$("#showAllSubgroupsSlider").prop("checked", false);
 
 		// default back to "Chart" tab
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
 		else this.renderDataVisualizations();
 
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
+		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	renderDataTable(data) {
@@ -987,8 +1026,12 @@ export class LandingPage {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
 		}
+
 		this.updateFootnotes(tableData);
 
+		const topicTitle = this.topicDropdown.text();
+		const group = this.groupDropdown.text();
+		this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
