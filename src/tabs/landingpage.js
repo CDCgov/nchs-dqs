@@ -143,6 +143,8 @@ export class LandingPage {
 
 				this.activeTabNumber = id - 1;
 				$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
+
+				if (!this.selections) this.selections = {};
 				this.selections.tab = this.activeTabNumber;
 				switch (this.activeTabNumber) {
 					case 0:
@@ -372,7 +374,7 @@ export class LandingPage {
 		// to get the rest of the possible hashUrl parameters.
 		const topic = this.topicDropdown.value();
 		if (!hashTab.hashLookup[topic]) {
-			if (this.initialPageLoad) {
+			if (this.initialPageLoad && this.selections && !this.selections.includes("filters")) {
 				this.selections = hashTab.addToHashLookup(
 					this.socrataData,
 					this.topicDropdown.value(),
@@ -380,14 +382,9 @@ export class LandingPage {
 				);
 				this.initialPageLoad = false;
 				this.updateTopic(topic, false);
-			} else {
-				// This is when switching topics but hashlookup has not been constructed.
-				// This makes sure we reset to the initial classifiction and group for a new topic.
-				hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
-				this.selections = null;
-				this.updateTopic(topic);
+				return;
 			}
-			return;
+			hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
 		}
 
 		let data = this.socrataData.filter(
@@ -404,15 +401,17 @@ export class LandingPage {
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
 
-		if (data[0]?.estimate_uci) {
-			// enable the CI checkbox
-			$("#confidenceIntervalSlider").prop("disabled", false);
-			$("#ciTableSlider-tooltip").hide();
-		} else {
-			// disable it
-			$("#confidenceIntervalSlider").prop("disabled", true);
-			$("#confidenceIntervalSlider").prop("checked", false);
-			$("#ciTableSlider-tooltip").show();
+		if (data[0]) {
+			if (data[0].estimate_uci) {
+				// enable the CI checkbox
+				$("#confidenceIntervalSlider").prop("disabled", false);
+				$("#chart-table-selectors-tooltip").hide();
+			} else {
+				// disable it
+				$("#confidenceIntervalSlider").prop("disabled", true);
+				$("#confidenceIntervalSlider").prop("checked", false);
+				$("#chart-table-selectors-tooltip").show();
+			}
 		}
 
 		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
@@ -644,12 +643,12 @@ export class LandingPage {
 					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
 						// enable the CI checkbox
 						$("#confidenceIntervalSlider").prop("disabled", false);
-						$("#ciTableSlider-tooltip").hide();
+						$("#chart-table-selectors-tooltip").hide();
 					} else {
 						// disable it
 						$("#confidenceIntervalSlider").prop("disabled", true);
 						document.getElementById("confidenceIntervalSlider").checked = false;
-						$("#ciTableSlider-tooltip").show();
+						$("#chart-table-selectors-tooltip").show();
 					}
 				}
 
@@ -678,6 +677,7 @@ export class LandingPage {
 		this.selections = hashTab.getSelections();
 		let filters = [];
 		if (this.selections) {
+			debugger;
 			if (typeof this.selections === "string" && this.selections.includes("filters")) {
 				filters = this.selections.split("=")[1].split("&");
 				filters.forEach((filter) => {
@@ -932,11 +932,11 @@ export class LandingPage {
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
 		if (this.flattenedFilteredData[0]?.hasOwnProperty("estimate_uci")) {
 			$("#confidenceIntervalSlider").prop("disabled", false);
-			$("#ciTableSlider-tooltip").hide();
+			$("#chart-table-selectors-tooltip").hide();
 		} else {
 			$("#confidenceIntervalSlider").prop("disabled", true);
 			document.getElementById("confidenceIntervalSlider").checked = false;
-			$("#ciTableSlider-tooltip").show();
+			$("#chart-table-selectors-tooltip").show();
 		}
 
 		this.renderDataVisualizations();
