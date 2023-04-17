@@ -404,15 +404,17 @@ export class LandingPage {
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
 
-		if (data[0]?.estimate_uci) {
-			// enable the CI checkbox
-			$("#confidenceIntervalSlider").prop("disabled", false);
-			$("#ciTableSlider-tooltip").hide();
-		} else {
-			// disable it
-			$("#confidenceIntervalSlider").prop("disabled", true);
-			$("#confidenceIntervalSlider").prop("checked", false);
-			$("#ciTableSlider-tooltip").show();
+		if (data[0]) {
+			if (data[0]?.estimate_uci) {
+				// enable the CI checkbox
+				$("#confidenceIntervalSlider").prop("disabled", false);
+				$("#ciTableSlider-tooltip").hide();
+			} else {
+				// disable it
+				$("#confidenceIntervalSlider").prop("disabled", true);
+				$("#confidenceIntervalSlider").prop("checked", false);
+				$("#ciTableSlider-tooltip").show();
+			}
 		}
 
 		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
