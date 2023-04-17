@@ -29,6 +29,7 @@ export class LandingPage {
 		this.showBarChart = 0;
 		this.topoJson = null;
 		this.selections = null;
+		this.initialPageLoad = true;
 		this.currentTimePeriodIndex = 0;
 		this.animating = false;
 		this.config = null;
@@ -352,7 +353,7 @@ export class LandingPage {
 		}
 
 		// for reading in Map, Chart, or Table from hash url
-		if (this.selections.tab != this.activeTabNumber) {
+		if (this.selections?.tab && this.selections?.tab != this.activeTabNumber) {
 			let { tab } = this.selections;
 			let activeTab;
 			if (tab == 0) activeTab = "map-tab";
@@ -367,17 +368,26 @@ export class LandingPage {
 	};
 
 	getFlattenedFilteredData() {
-		////////////////    Use this to create a new hashLookup table    ////////////////
-		// Simply uncomment and down arrow through all of tht topics, waiting for each
-		// to load before going to next. Have devTools open so the debugger statement will.
-		// break when you get to the bottom. When it completes, copy the hashLookup2 object
-		// from devTools and then paste it into the hashLookup object in the config.js file.
-		// functions.buildNewHashLookupTable(
-		// 	this.socrataData,
-		// 	this.topicDropdown.value(),
-		// 	this.topicDropdown.props.options.length
-		// );
-		//////////////////////////////////////////////////////////////////////////////////
+		// check if the hashLookup has been constructed for this topic. If not, construct it, update this.selections, and return to this.updateTopic
+		// to get the rest of the possible hashUrl parameters.
+		const topic = this.topicDropdown.value();
+		if (!hashTab.hashLookup[topic]) {
+			if (this.initialPageLoad) {
+				this.selections = hashTab.addToHashLookup(
+					this.socrataData,
+					this.topicDropdown.value(),
+					this.initialPageLoad
+				);
+				this.initialPageLoad = false;
+			} else {
+				// This is when switching topics but hashlookup has not been constructed.
+				// This makes sure we reset to the initial classifiction and group for a new topic.
+				hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
+				this.selections = null;
+			}
+			this.updateTopic(topic);
+			return;
+		}
 
 		let data = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
