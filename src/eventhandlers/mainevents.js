@@ -78,7 +78,7 @@ export class MainEvents {
 			this.stopAnimation();
 			if (e.target.checked) {
 				// hide the ending period select dropdown and reposition start year container
-				$("#startYearContainer").addClass("offset-3");
+				// $("#startYearContainer").addClass("offset-3");
 				$("#endYearContainer").hide();
 				// set to enable bar chart
 				appState.ACTIVE_TAB.resetTimePeriods();
@@ -89,6 +89,15 @@ export class MainEvents {
 				$("#endYearContainer").show();
 				// set to enable line chart
 				appState.ACTIVE_TAB.updateShowBarChart(0);
+			}
+		});
+
+		$(document).ready(() => {
+			const checkbox = $("#show-one-period-checkbox");
+			console.log(checkbox);
+			if (checkbox?.length && checkbox[0].checked) {
+				$("#startYearContainer-label").html("");
+				$("#startYearContainer").removeClass("offset-3");
 			}
 		});
 

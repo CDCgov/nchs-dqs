@@ -909,10 +909,10 @@ export class LandingPage {
 		this.showBarChart = value;
 		if (value === 0) {
 			this.resetTimePeriods();
-			$("#startYearContainer-label").html("Start Period");
+			$("#startYearContainer-label").html("From");
 		} else {
 			this.initStartPeriodDropdown(this.allYearsOptions);
-			$("#startYearContainer-label").html("Period");
+			$("#startYearContainer-label").html("");
 		}
 		this.renderDataVisualizations();
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId);
