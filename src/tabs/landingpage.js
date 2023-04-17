@@ -374,7 +374,7 @@ export class LandingPage {
 		// to get the rest of the possible hashUrl parameters.
 		const topic = this.topicDropdown.value();
 		if (!hashTab.hashLookup[topic]) {
-			if (this.initialPageLoad && this.selections && !this.selections.includes("filters")) {
+			if (this.initialPageLoad && this.selections) {
 				this.selections = hashTab.addToHashLookup(
 					this.socrataData,
 					this.topicDropdown.value(),
@@ -677,7 +677,6 @@ export class LandingPage {
 		this.selections = hashTab.getSelections();
 		let filters = [];
 		if (this.selections) {
-			debugger;
 			if (typeof this.selections === "string" && this.selections.includes("filters")) {
 				filters = this.selections.split("=")[1].split("&");
 				filters.forEach((filter) => {
