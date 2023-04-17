@@ -379,13 +379,14 @@ export class LandingPage {
 					this.initialPageLoad
 				);
 				this.initialPageLoad = false;
+				this.updateTopic(topic, false);
 			} else {
 				// This is when switching topics but hashlookup has not been constructed.
 				// This makes sure we reset to the initial classifiction and group for a new topic.
 				hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
 				this.selections = null;
+				this.updateTopic(topic);
 			}
-			this.updateTopic(topic);
 			return;
 		}
 
