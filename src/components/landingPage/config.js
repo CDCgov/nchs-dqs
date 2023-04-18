@@ -420,6 +420,21 @@ const singleTopicDatasets = {
 		binGranularity: 0.1,
 		topicGroup: 3,
 	},
+	"active-dentists": {
+		dataUrl: "https://data.cdc.gov/resource/83hb-kwqf.json?$limit=5000000",
+		socrataId: "83hb-kwqf",
+		private: "1",
+		chartTitle: "Active Dentists",
+		filters: "HUS",
+		dataSystem: "HUS",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: true,
+		hasClassification: false,
+		binGranularity: 0.1,
+		topicGroup: 3,
+	},
 };
 
 const multipleTopicDatasets = {
