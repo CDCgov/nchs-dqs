@@ -163,6 +163,7 @@ export class LandingPage {
 					case 2: // table
 						this.subgroupDropdown.disable(false);
 						this.renderDataVisualizations();
+						this.groupDropdown.enableDropdown();
 						$("#showAllSubgroupsSlider").trigger("focus");
 						break;
 
