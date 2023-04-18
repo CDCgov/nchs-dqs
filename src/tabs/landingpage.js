@@ -405,12 +405,12 @@ export class LandingPage {
 			if (data[0].estimate_uci) {
 				// enable the CI checkbox
 				$("#confidenceIntervalSlider").prop("disabled", false);
-				$("#tabs-tooltip").hide();
+				$("#chart-table-selectors-tooltip").hide();
 			} else {
 				// disable it
 				$("#confidenceIntervalSlider").prop("disabled", true);
 				$("#confidenceIntervalSlider").prop("checked", false);
-				$("#tabs-tooltip").show();
+				$("#chart-table-selectors-tooltip").show();
 			}
 		}
 
@@ -643,12 +643,12 @@ export class LandingPage {
 					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
 						// enable the CI checkbox
 						$("#confidenceIntervalSlider").prop("disabled", false);
-						$("#tabs-tooltip").hide();
+						$("#chart-table-selectors-tooltip").hide();
 					} else {
 						// disable it
 						$("#confidenceIntervalSlider").prop("disabled", true);
 						document.getElementById("confidenceIntervalSlider").checked = false;
-						$("#tabs-tooltip").show();
+						$("#chart-table-selectors-tooltip").show();
 					}
 				}
 
@@ -931,11 +931,11 @@ export class LandingPage {
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
 		if (this.flattenedFilteredData[0]?.hasOwnProperty("estimate_uci")) {
 			$("#confidenceIntervalSlider").prop("disabled", false);
-			$("#tabs-tooltip").hide();
+			$("#chart-table-selectors-tooltip").hide();
 		} else {
 			$("#confidenceIntervalSlider").prop("disabled", true);
 			document.getElementById("confidenceIntervalSlider").checked = false;
-			$("#tabs-tooltip").show();
+			$("#chart-table-selectors-tooltip").show();
 		}
 
 		this.renderDataVisualizations();

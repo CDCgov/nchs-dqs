@@ -10,6 +10,10 @@
 	border: 1px solid #a0a0a0;
 	opacity: 1;
 	visibility: hidden;
+
+	&#chart-table-selectors-tooltip {
+		min-width: 330px;
+	}
 }
 
 .generalTooltip.tooltip > .tip-header {
