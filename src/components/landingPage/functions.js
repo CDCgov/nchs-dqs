@@ -33,7 +33,7 @@ export const addHtmlTooltips = () => {
 
 	const ciToggleTooltip = new HtmlTooltip({
 		body: "Confidence interval not available for this set of data",
-		containerId: "chart-table-selectors",
+		containerId: "tabs",
 	});
 
 	const refineTopicInfoTooltip = new HtmlTooltip({
