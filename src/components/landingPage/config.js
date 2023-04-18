@@ -421,7 +421,7 @@ const singleTopicDatasets = {
 		topicGroup: 3,
 	},
 	"active-dentists": {
-		dataUrl: "https://data.cdc.gov/resource/83hb-kwqf.json?$limit=5000000",
+		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
 		socrataId: "83hb-kwqf",
 		private: "1",
 		chartTitle: "Active Dentists",
