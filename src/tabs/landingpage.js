@@ -919,8 +919,8 @@ export class LandingPage {
 	}
 
 	updateEndPeriod(end) {
-		this.endYear = end;
-		this.endPeriod = functions.getYear(end);
+		this.endYear = functions.getYear(end);
+		this.endPeriod = end;
 		this.renderDataVisualizations();
 	}
 
