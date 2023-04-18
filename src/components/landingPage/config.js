@@ -114,7 +114,7 @@ export const tabContent = `
 					<i class="fas fa-arrow-circle-right"></i>
 				</div>
 				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
-					<div class="body2" aria-label="Choose from available time periods">Choose from available</div>
+					<div class="body2" aria-label="Select time periods">Select</div>
 					<div class="mainSelText heading4">Time Periods</div>
 				</div>
 				<div class="col-xl-12 col-md-6 col-sm-12">
@@ -125,11 +125,11 @@ export const tabContent = `
 				</div>
 			</div>
 			<div class="row timePeriodContainer">
-				<div id="startYearContainer" class="genDropdown col-6" style="text-align: center;">
-					<label for="startYearContainer-select" id="startYearContainer-label">Start Period</label>
+				<div id="startYearContainer" class="genDropdown col-6" style="display: flex; text-align: center; width: 100%">
+					<label for="startYearContainer-select" id="startYearContainer-label" style="margin-right: 5px">From</label>
 				</div>
-				<div id="endYearContainer" class="genDropdown col-6" style="text-align: center;">
-					<label for="endYearContainer-select" id="endYearContainer-label">End Period</label>
+				<div id="endYearContainer" class="genDropdown col-6" style="display: flex; text-align: center; width: 100%">
+					<label for="endYearContainer-select" id="endYearContainer-label" style="margin-right: 25px">To</label>
 				</div>
 			</div>
 		</div>
