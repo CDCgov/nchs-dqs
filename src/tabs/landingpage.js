@@ -549,6 +549,7 @@ export class LandingPage {
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 			this.currentTimePeriodIndex = 0;
+			$("#confidenceIntervalSlider").prop("checked", false);
 		}
 
 		this.dataTopic = dataTopic; // string

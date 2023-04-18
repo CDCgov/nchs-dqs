@@ -376,5 +376,4 @@ export const NHISTopics = [
 	})),
 ];
 
-// Dentists - "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf"
 // Heart Disease mortality - "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336"
