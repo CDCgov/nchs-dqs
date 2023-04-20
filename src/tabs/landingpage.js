@@ -383,6 +383,10 @@ export class LandingPage {
 				);
 				this.initialPageLoad = false;
 				this.updateTopic(topic, false);
+				if (this.selections.viewSinglePeriod) {
+					$("#startYearContainer-label").html("");
+					$("#startYearContainer").removeClass("offset-3");
+				}
 				return;
 			}
 			hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
@@ -1035,7 +1039,9 @@ export class LandingPage {
 
 		const topicTitle = this.topicDropdown.text();
 		const group = this.groupDropdown.text();
-		this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+		if (this.showBarChart) this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}`;
+		else this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
 
