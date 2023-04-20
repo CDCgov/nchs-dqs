@@ -388,7 +388,7 @@ export const NHISTopics = [
 		dataSystem: "HUS",
 		topicGroup: 1,
 		topicLookupKey: "wonder-hus-heart-disease",
-		cdcDataId: "w86r-2336",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336",
 	})),
 ];
 
