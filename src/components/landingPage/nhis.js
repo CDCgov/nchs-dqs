@@ -326,6 +326,15 @@ const NHANESInfectious = [
 	},
 ];
 
+// Wonder/HUS heart disease
+const WONDERHUSHeartDisease = [
+	{
+		id: "death-rates-for-diseases-of-heart",
+		indicator: "Death rates for diseases of heart",
+		text: "Deaths from Heart Disease",
+	},
+];
+
 export const NHISTopics = [
 	...NHISAdult.map((d) => ({
 		...d,
@@ -374,6 +383,11 @@ export const NHISTopics = [
 		topicLookupKey: "nhanes-infectious-disease",
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
 	})),
+	...WONDERHUSHeartDisease.map((d) => ({
+		...d,
+		dataSystem: "HUS",
+		topicGroup: 1,
+		topicLookupKey: "wonder-hus-heart-disease",
+		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336",
+	})),
 ];
-
-// Heart Disease mortality - "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336"
