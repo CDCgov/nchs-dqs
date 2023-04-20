@@ -391,5 +391,3 @@ export const NHISTopics = [
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336",
 	})),
 ];
-
-// Heart Disease mortality - "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336"
