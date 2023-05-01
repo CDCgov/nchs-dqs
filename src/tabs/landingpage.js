@@ -964,6 +964,10 @@ export class LandingPage {
 
 	updateEnableCI(value) {
 		this.config.enableCI = value;
+		const sliderState = $("#confidenceIntervalSlider").prop("checked");
+		if (value === 0 && sliderState) {
+			$("#confidenceIntervalSlider").prop("checked", false);
+		}
 		this.renderDataVisualizations();
 	}
 
