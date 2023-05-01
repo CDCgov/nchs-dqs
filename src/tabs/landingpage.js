@@ -299,7 +299,7 @@ export class LandingPage {
 		const flattenedData = [...data];
 		this.flattenedFilteredData = flattenedData;
 		const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
-		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label) && d.flag !== "- - -"); // remove undefined data
+		const chartData = flattenedData.filter((d) => checkedSubgroups.includes(d.stub_label));
 
 		this.updateFootnotes(chartData);
 
