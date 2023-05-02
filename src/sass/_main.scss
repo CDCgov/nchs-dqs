@@ -154,6 +154,10 @@ a {
 .content-wrapper {
 	padding: 0 4vw;
 	background-color: #ceece7;
+
+	&.noDataFound {
+		padding: 20px;
+	}
 }
 
 #usMapContent {

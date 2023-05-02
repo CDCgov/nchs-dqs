@@ -82,6 +82,22 @@ export const Utils = {
 			(navigator.userAgent.includes("Mac") && "ontouchend" in document)
 		);
 	},
+	getErrorMessage() {
+		const errorHtml = `
+			<div class="dataLoadError">
+		        <div class="header">We're sorry, but the National Center for Health Statistics Data Query System application is experiencing technical difficulties. The team is working to resolve the issue, please click 'Try Again'. If that does not solve the issue, please check back later.</div>
+		        <p>Required data resources were not retrieved</p>
+		        <div class="buttons" style="width: 100%;">
+		        <button class="button" type="button" onClick="window.location.reload()"><span>Try Again</span></button>
+		        <div class="or"></div>
+		        <button class="button" type="button" onClick="!history.length ? window.location.hash='datatracker-home' : history.back()">Previous Page</button>
+		        </div>
+		    </div>`;
+
+		$(".content-wrapper").html(errorHtml);
+		$(".genLoader").removeClass("active");
+		$(".content-wrapper").addClass("noDataFound");
+	},
 
 	// this function takes a color (hex with optional hash out front, html color name, or rgb) value
 	// and returns a hex color increased or decreased by percentage of luminosity

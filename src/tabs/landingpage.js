@@ -87,7 +87,9 @@ export class LandingPage {
 			[metaData, jsonData] = await Promise.all([
 				fetch(metaUrl).then((res) => res.text()),
 				fetch(dataUrl).then((res) => res.text()),
-			]);
+			]).catch(() => {
+				Utils.getErrorMessage();
+			});
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
