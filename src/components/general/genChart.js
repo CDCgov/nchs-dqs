@@ -1068,14 +1068,13 @@ export class GenChart {
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
-											const hasValue = d[p.chartProperties.yLeft1];
-											return !hasValue
-												? "white"
-												: unreliable
-												? `url(#diagonalHatch-${i})`
-												: multiLineColors(i);
+											return unreliable ? `url(#diagonalHatch-${i})` : multiLineColors(i);
 										})
-										.style("opacity", 0.85);
+										.style("opacity", 0.85)
+										.style("display", (d) => {
+											const hasValue = d[p.chartProperties.yLeft1];
+											return hasValue ? "block" : "none";
+										});
 								},
 								(update) => {
 									update
