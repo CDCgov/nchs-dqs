@@ -1293,7 +1293,14 @@ export class GenChart {
 				if (p.usesDateAsXAxis) {
 					const hasYearProp = p.data[0]?.year;
 					if (hasYearProp) {
-						const yearDisplay = (d) => (isDateRange ? d : genFormat(d, "year"));
+						const yearDisplay = (d) => {
+							// if it's a 4 digit year, don't bother passing into the formatter.
+							// @todo fix genFormat to handle 4 digit year. "genFormat('1999', 'year')"
+							if (d.toString().length === 4) {
+								return d;
+							}
+							return isDateRange ? d : genFormat(d, "year");
+						};
 
 						// uses single years
 						if (appState.currentDeviceType === "desktop") {
