@@ -562,6 +562,15 @@ export class LandingPage {
 		this.dataTopic = dataTopic; // string
 		this.config = config.topicLookup[dataTopic];
 
+		// fix to prevent invalid hash
+		if (!this.config) {
+			console.warn("couldn't find topic in topic lookup", dataTopic);
+			const firstValue = $("#topicDropdown-select .genDropdownOption:first").attr("data-val");
+			// grab the first one in the dropdown
+			console.log("reverting to", firstValue);
+			return this.topicDropdown.value(firstValue, true);
+		}
+
 		if (this.selections) this.config.classificationId = parseInt(this.selections.classification, 10);
 		const hasMap = !!this.config.hasMap; // undefined does not work with the .toggle() on the next line. Set to true or false;
 		$("#mapTab-li").toggle(hasMap); // hide/show the map tabs selector
