@@ -314,6 +314,9 @@ export class LandingPage {
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 		this.chartConfig.subGroups = subgroupValues;
 
+		// rotate labels 45 degrees
+		this.chartConfig.bottomAxisRotation = this.chartConfig.usesTopAxis ? 45 : -45;
+
 		$(`#${this.chartConfig.vizId}`).empty();
 		this.genChart = new GenChart(this.chartConfig);
 		this.genChart.render();

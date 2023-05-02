@@ -227,12 +227,18 @@ export class GenChart {
 
 		const svgWidth = fullSvgWidth;
 		const chartWidth = svgWidth - xMargin;
+		const isDateRange = p.data[0]?.year?.includes("-");
 		let svgHeight = svgWidth / 2;
 		let chartHeight = svgHeight - yMargin;
 
 		if (p.barLayout?.horizontal) {
 			chartHeight = p.data.length * p.barLayout.size + 0.3 * p.barLayout.size;
 			svgHeight = yMargin + chartHeight;
+		}
+
+		// for date ranges, we need more space incase there is a legend below x-axis
+		if (isDateRange) {
+			svgHeight += 45;
 		}
 
 		// get chart x and y centers
@@ -316,7 +322,8 @@ export class GenChart {
 						) * p.leftDomainOverageScale,
 					]
 				)
-				.range([chartHeight, 0]);
+				.range([chartHeight, 0])
+				.nice();
 		}
 
 		const yScaleRight = d3
@@ -1284,24 +1291,25 @@ export class GenChart {
 				}
 
 				if (p.usesDateAsXAxis) {
-					if (p.needsScaleTime) {
+					const hasYearProp = p.data[0]?.year;
+					if (hasYearProp) {
+						const yearDisplay = (d) => (isDateRange ? d : genFormat(d, "year"));
+
 						// uses single years
 						if (appState.currentDeviceType === "desktop") {
-							const allDatesCount = [
-								...new Set(p.data.map((d) => d[p.chartProperties.xAxis].getFullYear())),
-							].length;
+							const allDatesCount = [...new Set(p.data.map((d) => d[p.chartProperties.xAxis]))].length;
 							xAxis
 								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 5 !== 0 && allDatesCount > 5 ? " " : genFormat(d, "year");
+									return i % 2 !== 0 && allDatesCount > 30 ? " " : yearDisplay(d);
 								});
 						} else if (appState.currentDeviceType === "tablet") {
 							xAxis
 								.ticks(d3.timeYear.every(2))
 								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 2 !== 0 ? " " : genFormat(d, "year");
+									return i % 2 !== 0 ? " " : yearDisplay(d);
 								});
 						} else {
 							// mobile
@@ -1309,7 +1317,7 @@ export class GenChart {
 								.ticks(d3.timeYear.every(2))
 								// Show all tick marks but labels every other tick
 								.tickFormat((d, i) => {
-									return i % 5 !== 0 ? " " : genFormat(d, "year");
+									return i % 5 !== 0 ? " " : yearDisplay(d);
 								});
 						}
 					} else {
@@ -1551,6 +1559,7 @@ export class GenChart {
 				.attr("font-size", labelSize)
 				.text("Not Reliable");
 		}
+
 		svg.attr("viewBox", [0, 0, fullSvgWidth, svgHeight + legendHeight]);
 
 		return {
