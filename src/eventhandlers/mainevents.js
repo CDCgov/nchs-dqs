@@ -92,6 +92,7 @@ export class MainEvents {
 			}
 		});
 
+		// on load check if 'view single period' is checked or not to adjust <label> display
 		$(document).ready(() => {
 			const checkbox = $("#show-one-period-checkbox");
 			if (checkbox?.length && checkbox[0].checked) {
@@ -136,7 +137,9 @@ export class MainEvents {
 
 		// click Map then show Map
 		$(document).on("click", "a[href='#map-tab']", () => {
-			if (!$("#show-one-period-checkbox").prop("checked")) $("#show-one-period-checkbox").click();
+			if (!$("#show-one-period-checkbox").prop("checked")) {
+				$("#show-one-period-checkbox").click();
+			}
 			$(".timePeriodContainer").css("display", "none");
 			$("#show-one-period-checkbox").prop("disabled", true);
 		});
@@ -145,6 +148,9 @@ export class MainEvents {
 			this.stopAnimation();
 			$(".timePeriodContainer").css("display", "flex");
 			$("#show-one-period-checkbox").prop("disabled", false);
+			if (!$("#show-one-period-checkbox").prop("checked") && $("#startYearContainer-label").text() === "") {
+				$("#startYearContainer-label").html("From");
+			}
 		});
 
 		$(document)

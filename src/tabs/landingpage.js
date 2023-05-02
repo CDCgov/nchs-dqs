@@ -394,6 +394,9 @@ export class LandingPage {
 				}
 				return;
 			}
+			// show 'From' label by default
+			$("#startYearContainer-label").html("From");
+
 			hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
 		}
 
@@ -556,6 +559,7 @@ export class LandingPage {
 		if (topicChange) {
 			$("#show-one-period-checkbox").prop("checked", false);
 			$("#startYearContainer").removeClass("offset-3");
+			$("#startYearContainer-label").html("From");
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 			this.currentTimePeriodIndex = 0;
@@ -1001,6 +1005,7 @@ export class LandingPage {
 		// remove "View Single Period" if it is set
 		$("#show-one-period-checkbox").prop("checked", false);
 		$("#startYearContainer").removeClass("offset-3");
+		$("#startYearContainer-label").html("From");
 		$("#endYearContainer").show();
 		this.showBarChart = false;
 
