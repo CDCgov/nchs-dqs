@@ -94,7 +94,6 @@ export class MainEvents {
 
 		$(document).ready(() => {
 			const checkbox = $("#show-one-period-checkbox");
-			console.log(checkbox);
 			if (checkbox?.length && checkbox[0].checked) {
 				$("#startYearContainer-label").html("");
 				$("#startYearContainer").removeClass("offset-3");

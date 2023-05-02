@@ -21,7 +21,7 @@ export const chartAndTableSelectors = `
 					<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
 					<label class="switch">
 						<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
-						<span id="ciTableHover" class="slider round"></span>
+						<span id="ciTableHover" class="slider round" role="img" aria-labelledby="chart-table-selectors"></span>
 					</label>
 				</div>			
 				<div id="mapBinningTypeSelector" class="viewSliders">
@@ -59,8 +59,10 @@ export const tabContent = `
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
-				<label for="topicDropdown-select" id="topicDropdown-label"><div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div></label>
-				<i id="refineTopicIcon" class="fas fa-info-circle" style="color: #555">&nbsp;</i>
+				<label for="topicDropdown-select" id="topicDropdown-label">
+					<div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div>
+				</label>
+				<i id="refineTopicIcon" tabindex="0" role="img" class="fas fa-info-circle" style="color: #555" aria-label="Use this filter to narrow your search by populations or data systems">&nbsp;</i>
 			</div>			
 		</div>
 			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
@@ -138,7 +140,7 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<i id="resetInfo" class="fas fa-info-circle">&nbsp;</i>
+			<i id="resetInfo" tabindex="0" role="img" class="fas fa-info-circle" aria-label="Reset all selections except for Topic selection.">&nbsp;</i>
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>
