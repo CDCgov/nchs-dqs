@@ -1023,6 +1023,10 @@ export class LandingPage {
 		if (this.activeTabNumber === 0) $("a[href='#chart-tab']").trigger("click");
 		else this.renderDataVisualizations();
 
+		// select first item in dropdown
+		const firstValue = $("#topicDropdown-select .genDropdownOption:first").attr("data-val");
+		this.topicDropdown.value(firstValue, true);
+
 		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
 	}
 

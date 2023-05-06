@@ -140,7 +140,6 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<i id="resetInfo" tabindex="0" role="img" class="fas fa-info-circle" aria-label="Reset all selections except for Topic selection.">&nbsp;</i>
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
 		</div>
 	</div>

@@ -21,11 +21,6 @@ export const addMissingProps = (cols, rows) => {
 };
 
 export const addHtmlTooltips = () => {
-	const resetInfoTooltip = new HtmlTooltip({
-		body: "Reset all selections except for Topic selection.",
-		containerId: "resetInfoContainer",
-	});
-
 	const editFiltersTooltip = new HtmlTooltip({
 		body: "Use this filter to narrow your search by populations or data systems.",
 		containerId: "topicDropdownGroup",
@@ -47,16 +42,11 @@ export const addHtmlTooltips = () => {
 	});
 	staticBinningTooltip.render();
 
-	resetInfoTooltip.render();
 	editFiltersTooltip.render();
 	ciToggleTooltip.render();
 	refineTopicInfoTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
-
-	$("#resetInfo").mouseover((e) => resetInfoTooltip.mouseover(e));
-	$("#resetInfo").mousemove((e) => resetInfoTooltip.mousemove(e));
-	$("#resetInfo").mouseleave((e) => resetInfoTooltip.mouseout(e));
 
 	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
 	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
