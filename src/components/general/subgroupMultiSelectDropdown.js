@@ -119,7 +119,7 @@ export class SubgroupMultiSelectDropdown {
 			disabled ? disabledText : `Selected Subgroups: ${countOfCurrentSelections}`
 		);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
-		this.props.disabled = true;
+		this.props.disabled = disabled;
 	}
 
 	setMaxSelections(maxSelections) {
