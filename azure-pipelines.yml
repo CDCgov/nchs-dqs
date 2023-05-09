@@ -1,0 +1,37 @@
+# Node.js with webpack
+# Build a Node.js project using the webpack CLI.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- develop
+
+stages:
+  - stage: build
+    pool:
+        vmImage: 'ubuntu-latest'
+    jobs:
+    - job: A
+      steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '12.x'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm ci
+        displayName: 'npm ci'
+
+      - script: |
+          npm run build
+        displayName: 'npm build'
+  - stage: test
+    dependsOn: build
+    pool:
+      vmImage: 'ubuntu-latest'
+    jobs:
+    - job: run_test
+      steps:
+      - script: |
+          echo "run tests now!"
+        displayName: 'run tests'
