@@ -71,7 +71,7 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 					class="genMsdSearch ${leaveOpen ? "genDropdownOpened" : ""}"
 					placeholder="Search Subgroup List"
 					aria-label="search input for items in multiselect dropdown"
-					value="${searchText}" />
+					value="${searchText}" ${disabled ? "disabled" : ""} />
 			<div class="genMsdUnselected ${leaveOpen ? "genDropdownOpened" : ""}">
 				<div id="filteredGroup" style="display: flex; flex-direction: row; justify-content: space-between">
 					<div id="filteredText" style="padding: 0 5px;">Filtered by:</div>
@@ -112,9 +112,14 @@ export class SubgroupMultiSelectDropdown {
 	}
 
 	disable(disabled) {
-		const countOfCurrentSelections = this.props.options.filter((o) => o.selected).length;
-		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : `Selected Subgroups: ${countOfCurrentSelections}`);
+		const currentSelections = this.props.options.filter((o) => o.selected);
+		const countOfCurrentSelections = currentSelections.length;
+		const disabledText = countOfCurrentSelections === 1 && disabled ? currentSelections[0].value : "N/A";
+		$("#subgroupDropdown #genMsdTitle").html(
+			disabled ? disabledText : `Selected Subgroups: ${countOfCurrentSelections}`
+		);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
+		this.props.disabled = true;
 	}
 
 	setMaxSelections(maxSelections) {
