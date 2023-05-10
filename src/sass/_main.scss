@@ -20,6 +20,10 @@ a {
 	i {
 		font-size: 26px;
 	}
+
+	&.disabled {
+		color: #bdbdbd;
+	}
 }
 
 .homeSmallGroup {
@@ -122,6 +126,11 @@ a {
 			font-size: 24px;
 			line-height: 13px;
 		}
+	}
+
+	&.disabled .mainSelText,
+	&.disabled .body2 {
+		color: #bdbdbd !important;
 	}
 }
 

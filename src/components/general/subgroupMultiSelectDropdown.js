@@ -120,6 +120,10 @@ export class SubgroupMultiSelectDropdown {
 		);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
 		this.props.disabled = disabled;
+
+		// make text in section ("select a ...") also disabled
+		$("#subgroupDropdown").parents(".mainDropdown").find(".homeSelectorText").toggleClass("disabled", disabled);
+		$("#subgroupDropdown").parents(".mainDropdown").find(".homeIcon").toggleClass("disabled", disabled);
 	}
 
 	setMaxSelections(maxSelections) {
