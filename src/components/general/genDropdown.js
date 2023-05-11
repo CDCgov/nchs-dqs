@@ -300,6 +300,9 @@ export class GenDropdown {
 				e.preventDefault();
 				this.#resetOptions();
 			});
+
+		// trigger this to enable/disable dropdown based on # of items
+		this.toggleContainerState();
 	};
 
 	disableDropdown = () => {
