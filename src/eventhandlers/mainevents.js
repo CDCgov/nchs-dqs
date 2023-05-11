@@ -131,6 +131,12 @@ export class MainEvents {
 				e.stopPropagation();
 				resetTopics();
 				$(".timePeriodContainer").css("display", "flex");
+				// check if notes footer has been closed and expand if it is
+				if ($(".table-toggle-icon").children("i").hasClass("fa-plus")) {
+					$(".table-toggle-icon").children("i").toggleClass("fa-minus fa-plus");
+					$(".footer-table-toggle").toggleClass("closed");
+					$("#pageFooter").toggleClass("closed");
+				}
 				appState.ACTIVE_TAB.resetSelections();
 				e.preventDefault();
 			});

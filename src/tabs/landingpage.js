@@ -803,8 +803,15 @@ export class LandingPage {
 		this.groupDropdown.render();
 		this.groupId = this.groupDropdown.value();
 		const groupText = this.groupDropdown.text();
-		if (groupText.toLowerCase().includes("total")) $("#showAllSubgroupsSlider").prop("disabled", true);
-		else $("#showAllSubgroupsSlider").prop("disabled", false);
+		if (groupText.toLowerCase().includes("total")) {
+			$("#subGroupsSelectorsSection").hide();
+		} else {
+			// check if on table tab AND sub group toggle is visible
+			if (this.activeTabNumber === 2 && !$("#subGroupsSelectorsSection").is(":visible")) {
+				$("#subGroupsSelectorsSection").show();
+			}
+			$("#showAllSubgroupsSlider").prop("disabled", false);
+		}
 		this.initSubgroupDropdown();
 	}
 
@@ -881,8 +888,12 @@ export class LandingPage {
 		if (allYears !== storedAllYears) this.resetTimePeriods();
 		const groupText = this.groupDropdown.text();
 		if (groupText.toLowerCase().includes("total")) {
-			$("#showAllSubgroupsSlider").prop("disabled", true);
+			// $("#showAllSubgroupsSlider").prop("disabled", true);
+			$("#subGroupsSelectorsSection").hide();
 		} else {
+			if (this.activeTabNumber === 2 && !$("#subGroupsSelectorsSection").is(":visible")) {
+				$("#subGroupsSelectorsSection").show();
+			}
 			$("#showAllSubgroupsSlider").prop("disabled", false);
 		}
 
@@ -1033,7 +1044,6 @@ export class LandingPage {
 	renderDataTable(data) {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
-			$("#subGroupsSelectorsSection").show();
 			$("#ciTableSlider").show();
 			$("#mapBinningTypeSelector").hide();
 		}

@@ -35,11 +35,8 @@ export const downloadCSV = (csvObj) => {
 		return datapoint;
 	};
 
-	const dateGenerated = new Date();
 	let csvContents = "";
-	const buildCSV = ({ data, title, headers, dataKeys, disclaimer, extraLine }) => {
-		csvContents += `${title.replace(/,/g, "")}\r\n`;
-		csvContents += `Date generated: ${dateGenerated}\r\n`;
+	const buildCSV = ({ data, headers, dataKeys, disclaimer, extraLine }) => {
 		if (extraLine !== undefined && extraLine.length > 0) {
 			csvContents += `${extraLine.replace(/,/g, "")}\r\n\r\n`;
 		}
