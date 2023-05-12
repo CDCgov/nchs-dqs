@@ -300,16 +300,32 @@ export class GenDropdown {
 				e.preventDefault();
 				this.#resetOptions();
 			});
+
+		// trigger this to enable/disable dropdown based on # of items
+		this.toggleContainerState();
 	};
 
 	disableDropdown = () => {
 		this.disabled = true;
 		$(`#${this.props.containerId} .genDropdownSelected`).addClass("disabled");
+		this.toggleContainerState();
 	};
 
 	enableDropdown = () => {
 		this.disabled = false;
 		$(`#${this.props.containerId} .genDropdownSelected`).removeClass("disabled");
+		this.toggleContainerState();
+	};
+
+	toggleContainerState = () => {
+		$(`#${this.props.containerId} .genDropdownSelected`)
+			.parents(".mainDropdown")
+			.find(".homeSelectorText")
+			.toggleClass("disabled", this.disabled);
+		$(`#${this.props.containerId} .genDropdownSelected`)
+			.parents(".mainDropdown")
+			.find(".homeIcon")
+			.toggleClass("disabled", this.disabled);
 	};
 
 	// Takes an array of string containing dropdown values to add the class "disabled" to

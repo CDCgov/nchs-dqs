@@ -112,9 +112,18 @@ export class SubgroupMultiSelectDropdown {
 	}
 
 	disable(disabled) {
-		const countOfCurrentSelections = this.props.options.filter((o) => o.selected).length;
-		$("#subgroupDropdown #genMsdTitle").html(disabled ? "N/A" : `Selected Subgroups: ${countOfCurrentSelections}`);
+		const currentSelections = this.props.options.filter((o) => o.selected);
+		const countOfCurrentSelections = currentSelections.length;
+		const disabledText = countOfCurrentSelections === 1 && disabled ? currentSelections[0].value : "N/A";
+		$("#subgroupDropdown #genMsdTitle").html(
+			disabled ? disabledText : `Selected Subgroups: ${countOfCurrentSelections}`
+		);
 		$("#subgroupDropdown .genMsdSelected, #subgroupDropdown #genMsdTitle").toggleClass("disabled", disabled);
+		this.props.disabled = disabled;
+
+		// make text in section ("select a ...") also disabled
+		$("#subgroupDropdown").parents(".mainDropdown").find(".homeSelectorText").toggleClass("disabled", disabled);
+		$("#subgroupDropdown").parents(".mainDropdown").find(".homeIcon").toggleClass("disabled", disabled);
 	}
 
 	setMaxSelections(maxSelections) {
