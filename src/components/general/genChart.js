@@ -38,8 +38,6 @@ export class GenChart {
 		}
 		let fullNestedData;
 
-		let needReliabilityCallout = false;
-
 		function mouseover(data) {
 			if (Object.prototype.hasOwnProperty.call(data, "data")) {
 				genTooltip.mouseover(d3.select(this), ["data"]);
@@ -815,7 +813,6 @@ export class GenChart {
 											d.assignedLegendColor = p.barColors[i];
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												needReliabilityCallout = true;
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
@@ -1071,7 +1068,6 @@ export class GenChart {
 										.style("fill", (d) => {
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												needReliabilityCallout = true;
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
@@ -1495,7 +1491,15 @@ export class GenChart {
 			}
 		}
 		let legendHeight = 0;
-		if (p.usesReliabilityCallout && needReliabilityCallout) {
+
+		const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints")).some(
+			(d) => d.style.fill.includes("diagonalHatch") && d.style.display !== "none"
+		);
+		const hasVisibleCrossHatchBars = $.makeArray($(".bar")).some(
+			(d) => d.getAttribute("fill").includes("diagonalHatch") && d.style.display !== "none"
+		);
+
+		if (p.usesReliabilityCallout && (hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)) {
 			const windowWidth = $(window).width();
 			const chartContainerWidth = $("#chartContainer").width();
 			let callOutWidth = chartContainerWidth / 3;
