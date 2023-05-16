@@ -122,7 +122,7 @@ export class LandingPage {
 			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
 		}
 		$("#tabs").tabs({
-			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
+			active: this.activeTabNumber,
 			activate: (e) => {
 				let target = e.currentTarget;
 				let id;
@@ -153,8 +153,6 @@ export class LandingPage {
 						this.allMapData = null;
 						this.updateGroup(1);
 						this.groupDropdown.value("1");
-						this.groupDropdown.disableDropdown();
-						this.subgroupDropdown.disable(true);
 						break;
 					case 1:
 						this.subgroupDropdown.disable(false);
@@ -342,6 +340,8 @@ export class LandingPage {
 			this.renderMap(data);
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
+			this.groupDropdown.disableDropdown();
+			this.subgroupDropdown.disable(true);
 		} else if (this.activeTabNumber === 1) {
 			const disabled = this.groupDropdown.text().toLowerCase().includes("total");
 			this.subgroupDropdown.disable(disabled);
@@ -904,8 +904,6 @@ export class LandingPage {
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.updateGroup(1);
-			this.groupDropdown.value("1");
-			this.groupDropdown.disableDropdown();
 			return;
 		}
 
