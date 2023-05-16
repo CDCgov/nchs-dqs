@@ -504,7 +504,12 @@ export class LandingPage {
 		let footerNotes = "";
 		let footerNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) !== "NA");
 		let unreliableNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) === "NA");
-		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
+		if (footerNotesArray.length > 1) {
+			const order = ["SC", "NA", "NT", "FN", "NH", "DH"];
+			footerNotesArray = footerNotesArray
+				.filter((d) => d !== "")
+				.sort((a, b) => order.indexOf(a.substring(0, 2)) - order.indexOf(b.substring(0, 2)));
+		}
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		const replaceLabel = {
@@ -515,14 +520,18 @@ export class LandingPage {
 			NH: "Footnotes",
 			DH: "Footnotes",
 		};
+
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
 				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
-						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
-							this.footnoteMap[f]
-						)}</p>`
+						`<p class="${replaceLabel[f.substring(0, 2)].replace(
+							" ",
+							""
+						)}Footnote footnoteHeader"><strong>${
+							replaceLabel[f.substring(0, 2)]
+						}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
 				)
 				.join("");
 
@@ -533,9 +542,9 @@ export class LandingPage {
 							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
-									`<p class="unreliableFootnote"><strong>${
+									`<p class="unreliableFootnote footnoteHeader"><strong>${
 										replaceLabel[f.substring(0, 2)]
-									}</strong>: ${functions.link_i_fy(this.footnoteMap[f])}</p>`
+									}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
 							)
 							.join("");
 
@@ -546,6 +555,22 @@ export class LandingPage {
 		}
 		$("#pageFooter").html(footerNotes);
 		$(".unreliableFootnote").hide();
+
+		const footnoteClasses = [
+			"DataSourceFootnote",
+			"FootnotesFootnote",
+			"MethodologyFootnote",
+			"unreliableFootnote",
+		];
+
+		let found = false;
+		footnoteClasses.forEach((f) => {
+			found = false;
+			$(`.${f}`).each((i, el) => {
+				if (found) $(el).remove();
+				found = true;
+			});
+		});
 	}
 
 	topicDropdownChange = (value) => {
