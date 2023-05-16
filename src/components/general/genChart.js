@@ -1041,8 +1041,7 @@ export class GenChart {
 					nestedData.forEach((nd, i) => {
 						lines[i]
 							.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-							.curve(d3.curveCatmullRom);
+							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
 						// #### Show confidence interval #####
 						// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
@@ -1061,7 +1060,6 @@ export class GenChart {
 										.y0((d) => yScaleLeft(d.estimate_lci))
 										.y1((d) => yScaleLeft(d.estimate_uci))
 										.defined((d) => d.estimate)
-										.curve(d3.curveCatmullRom)
 								);
 						}
 
@@ -1124,8 +1122,7 @@ export class GenChart {
 
 				leftLine1
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
 				if (p.usesLeftLine1 && !p.usesMultiLineLeftAxis) {
 					let leftLine1Data;
@@ -1168,8 +1165,7 @@ export class GenChart {
 
 				leftLine2
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]));
 
 				if (p.usesLeftLine2) {
 					let leftLine2Data;
@@ -1213,8 +1209,7 @@ export class GenChart {
 				if (p.usesLeftLine3) {
 					leftLine3
 						.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]))
-						.curve(d3.curveCatmullRom);
+						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]));
 
 					if (p.usesLeftLine3) {
 						let leftLine3Data;
@@ -1258,8 +1253,7 @@ export class GenChart {
 
 				rightLine
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleRight(d[p.chartProperties.yRight]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleRight(d[p.chartProperties.yRight]));
 
 				if (p.usesRightLine) {
 					let rightLineData;
