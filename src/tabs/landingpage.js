@@ -583,7 +583,7 @@ export class LandingPage {
 		this.updateTopic(value);
 	};
 
-	updateTopic(dataTopic, topicChange = true) {
+	updateTopic = (dataTopic, topicChange = true) => {
 		$(".genLoader").addClass("active");
 
 		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
@@ -594,6 +594,7 @@ export class LandingPage {
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 			this.currentTimePeriodIndex = 0;
+			$("#showAllSubgroupsSlider").prop("checked", false);
 			// check if confidence interval is hidden and show on topic change
 			// if (!$("ciTableSlider").is(":visible")) {
 			// 	$("#ciTableSlider").show();
@@ -639,7 +640,9 @@ export class LandingPage {
 		} else {
 			this.getData(topicChange);
 		}
-	}
+
+		return null;
+	};
 
 	getData = (topicChange) => {
 		Promise.all([
