@@ -38,11 +38,38 @@ export class GenChart {
 		}
 		let fullNestedData;
 
-		let needReliabilityCallout = false;
+		function mouseover() {
+			const thisSymbol = d3.select(this);
+			// get bounds of thisSymbol
+			let data;
+			if (this.classList.contains("symbolPoints")) {
+				const thisSymbolBounds = thisSymbol.node().getBoundingClientRect();
+				const thisSymbolHeight = thisSymbolBounds.height;
+				// get translateX and translateY values of thisSymbol
+				const thisSymbolTransform = thisSymbol.attr("transform").replace("translate(", "").replace(")", "");
+				const thisSymbolTranslateX = thisSymbolTransform.split(",")[0].trim();
+				const thisSymbolTranslateY = Number(thisSymbolTransform.split(",")[1].trim());
 
-		function mouseover(data) {
-			if (Object.prototype.hasOwnProperty.call(data, "data")) {
-				genTooltip.mouseover(d3.select(this), ["data"]);
+				// find out if any other symbols are in the same position
+				const otherSymbols = d3.selectAll(".symbolPoints").filter((d, i, nodes) => {
+					// filter out symbols that do not have the same translateX value and are not within 25px of thisSymbolHeight
+					const nodesTranslate = nodes[i]
+						.getAttribute("transform")
+						.replace("translate(", "")
+						.replace(")", "");
+					const tX = nodesTranslate.split(",")[0].trim();
+					const tY = Number(nodesTranslate.split(",")[1].trim());
+
+					return tX === thisSymbolTranslateX && Math.abs(tY - thisSymbolTranslateY) < thisSymbolHeight;
+				});
+
+				if (otherSymbols._groups[0].length > 1) {
+					data = otherSymbols._groups[0].map((d) => d.__data__);
+				}
+			}
+
+			if (data) {
+				genTooltip.mouseover(d3.select(this), data);
 			} else {
 				genTooltip.mouseover(d3.select(this));
 			}
@@ -815,7 +842,6 @@ export class GenChart {
 											d.assignedLegendColor = p.barColors[i];
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												needReliabilityCallout = true;
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
@@ -1015,8 +1041,7 @@ export class GenChart {
 					nestedData.forEach((nd, i) => {
 						lines[i]
 							.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-							.curve(d3.curveCatmullRom);
+							.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
 						// #### Show confidence interval #####
 						// BROKEN OUT SEPARATELY TO ENABLE AND DISABLE
@@ -1035,7 +1060,6 @@ export class GenChart {
 										.y0((d) => yScaleLeft(d.estimate_lci))
 										.y1((d) => yScaleLeft(d.estimate_uci))
 										.defined((d) => d.estimate)
-										.curve(d3.curveCatmullRom)
 								);
 						}
 
@@ -1071,7 +1095,6 @@ export class GenChart {
 										.style("fill", (d) => {
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												needReliabilityCallout = true;
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
 											}
@@ -1099,8 +1122,7 @@ export class GenChart {
 
 				leftLine1
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 
 				if (p.usesLeftLine1 && !p.usesMultiLineLeftAxis) {
 					let leftLine1Data;
@@ -1143,8 +1165,7 @@ export class GenChart {
 
 				leftLine2
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleLeft(d[p.chartProperties.yLeft2]));
 
 				if (p.usesLeftLine2) {
 					let leftLine2Data;
@@ -1188,8 +1209,7 @@ export class GenChart {
 				if (p.usesLeftLine3) {
 					leftLine3
 						.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]))
-						.curve(d3.curveCatmullRom);
+						.y((d) => yScaleLeft(d[p.chartProperties.yLeft3]));
 
 					if (p.usesLeftLine3) {
 						let leftLine3Data;
@@ -1233,8 +1253,7 @@ export class GenChart {
 
 				rightLine
 					.x((d) => xScale(d[p.chartProperties.xAxis]) + offset)
-					.y((d) => yScaleRight(d[p.chartProperties.yRight]))
-					.curve(d3.curveCatmullRom);
+					.y((d) => yScaleRight(d[p.chartProperties.yRight]));
 
 				if (p.usesRightLine) {
 					let rightLineData;
@@ -1495,7 +1514,15 @@ export class GenChart {
 			}
 		}
 		let legendHeight = 0;
-		if (p.usesReliabilityCallout && needReliabilityCallout) {
+
+		const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints")).some(
+			(d) => d.style.fill.includes("diagonalHatch") && d.style.display !== "none"
+		);
+		const hasVisibleCrossHatchBars = $.makeArray($(".bar")).some(
+			(d) => d.getAttribute("fill").includes("diagonalHatch") && d.style.display !== "none"
+		);
+
+		if (p.usesReliabilityCallout && (hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)) {
 			const windowWidth = $(window).width();
 			const chartContainerWidth = $("#chartContainer").width();
 			let callOutWidth = chartContainerWidth / 3;

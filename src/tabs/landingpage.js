@@ -122,7 +122,7 @@ export class LandingPage {
 			$(".fa-arrow-circle-right").addClass("fa-rotate-90");
 		}
 		$("#tabs").tabs({
-			active: this.activeTabNumber, // this is the chart tab, always set to start here on page load
+			active: this.activeTabNumber,
 			activate: (e) => {
 				let target = e.currentTarget;
 				let id;
@@ -153,8 +153,6 @@ export class LandingPage {
 						this.allMapData = null;
 						this.updateGroup(1);
 						this.groupDropdown.value("1");
-						this.groupDropdown.disableDropdown();
-						this.subgroupDropdown.disable(true);
 						break;
 					case 1:
 						this.subgroupDropdown.disable(false);
@@ -342,6 +340,8 @@ export class LandingPage {
 			this.renderMap(data);
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
+			this.groupDropdown.disableDropdown();
+			this.subgroupDropdown.disable(true);
 		} else if (this.activeTabNumber === 1) {
 			const disabled = this.groupDropdown.text().toLowerCase().includes("total");
 			this.subgroupDropdown.disable(disabled);
@@ -504,7 +504,12 @@ export class LandingPage {
 		let footerNotes = "";
 		let footerNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) !== "NA");
 		let unreliableNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) === "NA");
-		if (footerNotesArray.length > 1) footerNotesArray = footerNotesArray.filter((d) => d !== "");
+		if (footerNotesArray.length > 1) {
+			const order = ["SC", "NA", "NT", "FN", "NH", "DH"];
+			footerNotesArray = footerNotesArray
+				.filter((d) => d !== "")
+				.sort((a, b) => order.indexOf(a.substring(0, 2)) - order.indexOf(b.substring(0, 2)));
+		}
 
 		// check if there are any footnotes to display and there is not just an empty string for a single footnote
 		const replaceLabel = {
@@ -515,14 +520,18 @@ export class LandingPage {
 			NH: "Footnotes",
 			DH: "Footnotes",
 		};
+
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
 				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
-						`<p><strong>${replaceLabel[f.substring(0, 2)]}</strong>: ${functions.link_i_fy(
-							this.footnoteMap[f]
-						)}</p>`
+						`<p class="${replaceLabel[f.substring(0, 2)].replace(
+							" ",
+							""
+						)}Footnote footnoteHeader"><strong>${
+							replaceLabel[f.substring(0, 2)]
+						}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
 				)
 				.join("");
 
@@ -533,9 +542,9 @@ export class LandingPage {
 							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
-									`<p class="unreliableFootnote"><strong>${
+									`<p class="unreliableFootnote footnoteHeader"><strong>${
 										replaceLabel[f.substring(0, 2)]
-									}</strong>: ${functions.link_i_fy(this.footnoteMap[f])}</p>`
+									}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
 							)
 							.join("");
 
@@ -546,6 +555,22 @@ export class LandingPage {
 		}
 		$("#pageFooter").html(footerNotes);
 		$(".unreliableFootnote").hide();
+
+		const footnoteClasses = [
+			"DataSourceFootnote",
+			"FootnotesFootnote",
+			"MethodologyFootnote",
+			"unreliableFootnote",
+		];
+
+		let found = false;
+		footnoteClasses.forEach((f) => {
+			found = false;
+			$(`.${f}`).each((i, el) => {
+				if (found) $(el).remove();
+				found = true;
+			});
+		});
 	}
 
 	topicDropdownChange = (value) => {
@@ -558,7 +583,7 @@ export class LandingPage {
 		this.updateTopic(value);
 	};
 
-	updateTopic(dataTopic, topicChange = true) {
+	updateTopic = (dataTopic, topicChange = true) => {
 		$(".genLoader").addClass("active");
 
 		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
@@ -569,6 +594,7 @@ export class LandingPage {
 			$("#endYearContainer").show();
 			this.showBarChart = false;
 			this.currentTimePeriodIndex = 0;
+			$("#showAllSubgroupsSlider").prop("checked", false);
 			// check if confidence interval is hidden and show on topic change
 			// if (!$("ciTableSlider").is(":visible")) {
 			// 	$("#ciTableSlider").show();
@@ -614,7 +640,9 @@ export class LandingPage {
 		} else {
 			this.getData(topicChange);
 		}
-	}
+
+		return null;
+	};
 
 	getData = (topicChange) => {
 		Promise.all([
@@ -876,8 +904,6 @@ export class LandingPage {
 
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.updateGroup(1);
-			this.groupDropdown.value("1");
-			this.groupDropdown.disableDropdown();
 			return;
 		}
 
