@@ -38,9 +38,38 @@ export class GenChart {
 		}
 		let fullNestedData;
 
-		function mouseover(data) {
-			if (Object.prototype.hasOwnProperty.call(data, "data")) {
-				genTooltip.mouseover(d3.select(this), ["data"]);
+		function mouseover() {
+			const thisSymbol = d3.select(this);
+			// get bounds of thisSymbol
+			let data;
+			if (this.classList.contains("symbolPoints")) {
+				const thisSymbolBounds = thisSymbol.node().getBoundingClientRect();
+				const thisSymbolHeight = thisSymbolBounds.height;
+				// get translateX and translateY values of thisSymbol
+				const thisSymbolTransform = thisSymbol.attr("transform").replace("translate(", "").replace(")", "");
+				const thisSymbolTranslateX = thisSymbolTransform.split(",")[0].trim();
+				const thisSymbolTranslateY = Number(thisSymbolTransform.split(",")[1].trim());
+
+				// find out if any other symbols are in the same position
+				const otherSymbols = d3.selectAll(".symbolPoints").filter((d, i, nodes) => {
+					// filter out symbols that do not have the same translateX value and are not within 25px of thisSymbolHeight
+					const nodesTranslate = nodes[i]
+						.getAttribute("transform")
+						.replace("translate(", "")
+						.replace(")", "");
+					const tX = nodesTranslate.split(",")[0].trim();
+					const tY = Number(nodesTranslate.split(",")[1].trim());
+
+					return tX === thisSymbolTranslateX && Math.abs(tY - thisSymbolTranslateY) < thisSymbolHeight;
+				});
+
+				if (otherSymbols._groups[0].length > 1) {
+					data = otherSymbols._groups[0].map((d) => d.__data__);
+				}
+			}
+
+			if (data) {
+				genTooltip.mouseover(d3.select(this), data);
 			} else {
 				genTooltip.mouseover(d3.select(this));
 			}

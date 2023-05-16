@@ -109,15 +109,7 @@ const getWhichSvgSides = (svgId) => {
 	return { sides, leftBounds: boundingBox.left };
 };
 
-const template = `
-            <div class="generalTooltip tooltip">
-                <div class="tip-header">
-                    <h3></h3>
-                    <h4></h4>
-                </div>
-                <div class="tip-body"></div>
-            </div>
-            `;
+const template = (vizId) => `<div id="${vizId}-tooltip" class="generalTooltip tooltip"></div>`;
 
 export class GenTooltip {
 	constructor({ propertyLookup, headerProps, bodyProps, svgId, vizId }) {
@@ -132,36 +124,65 @@ export class GenTooltip {
 	}
 
 	render() {
-		$(`#${this.vizId}`).append(template);
+		$(`#${this.vizId}`).append(template(this.vizId));
 	}
 
-	mouseover(element, additionalProperties) {
+	mouseover(element, multiData) {
 		this.incomingElement = element;
 		const { sides, leftBounds } = getWhichSvgSides(this.svgId);
-		// States need .properties but Territories dont
+
 		let data = element.data()[0].properties ? element.data()[0].properties : element.data()[0];
-		if (additionalProperties) data = data[additionalProperties[0]];
+		if (multiData) data = multiData;
+		else data = [data];
 
-		const bodyData = [];
-		let prop;
-		this.bodyProps.forEach((bp) => {
-			if (Array.isArray(bp)) {
-				const values = bp.map((p) => genFormat(data[p], this.propertyLookup[p].datumType));
-				const { title } = this.propertyLookup[bp[0]];
-				bodyData.push([title, values.join(" ")]);
-			} else {
-				prop = this.propertyLookup[bp];
-				if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined) data[bp] = "N/A";
-				bodyData.push([prop.title, genFormat(data[bp], prop.datumType)]);
+		$(`#${this.vizId}-tooltip`).html("");
+		let tip;
+
+		data.forEach((data, i) => {
+			$(`#${this.vizId}-tooltip`).append(`
+			    <div id="tipHeader-${i}" class="tip-header">
+					<h3 id="h3-${i}"></h3>
+					<h4 id="h4-${i}"></h4>
+				</div>
+				<div id="tipBody-${i}" class="tip-body"></div>
+			`);
+
+			tip = d3.select(`#${this.vizId}-tooltip`);
+
+			const bodyData = [];
+			let prop;
+			this.bodyProps.forEach((bp) => {
+				if (Array.isArray(bp)) {
+					const values = bp.map((p) => genFormat(data[p], this.propertyLookup[p].datumType));
+					const { title } = this.propertyLookup[bp[0]];
+					bodyData.push([title, values.join(" ")]);
+				} else {
+					prop = this.propertyLookup[bp];
+					if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined) data[bp] = "N/A";
+					bodyData.push([prop.title, genFormat(data[bp], prop.datumType)]);
+				}
+			});
+
+			const h3Prop = this.headerProps[0];
+			const h3Lookup = this.propertyLookup[h3Prop];
+			tip.select(`#h3-${i}`).html(h3Lookup.title + genFormat(data[h3Prop], h3Lookup.datumType));
+
+			const h4Prop = this.headerProps[1];
+			const h4Lookup = this.propertyLookup[h4Prop];
+			if (h4Prop !== "") {
+				tip.select(`#h4-${i}`).html(h3Lookup.title + genFormat(data[h4Prop], h4Lookup.datumType));
 			}
+
+			d3.select(`#${this.vizId} #tipBody-${i}`)
+				.selectAll("p")
+				.data(bodyData)
+				.join("p")
+				.attr("class", "generalTooltip tip-info")
+				.style("display", (d) => (d[0] === "" && d[1] === "" ? "none" : "block"))
+				.html((d) => `<strong>${d[0]}</strong>${Number.isNaN(d[1]) ? "N/A" : d[1]}`);
+
+			if (h3Prop === "" && h4Prop === "") tip.select(`#${this.vizId} #tipHeader-${i}`).style("display", "none");
 		});
-
-		if (additionalProperties) {
-			additionalProperties.shift();
-			for (let i = 0; i < additionalProperties.length; i++) {
-				bodyData.push(additionalProperties[i]);
-			}
-		}
 
 		this.incomingOpacity = element.style("opacity");
 		this.incomingStrokeWidth = element.style("stroke-width");
@@ -172,25 +193,8 @@ export class GenTooltip {
 			element.style("stroke-width", 3);
 		}
 
-		const tip = d3.select(`#${this.vizId} .tooltip`);
-		const h3Prop = this.headerProps[0];
-		const h3Lookup = this.propertyLookup[h3Prop];
-		tip.select("h3").html(h3Lookup.title + genFormat(data[h3Prop], h3Lookup.datumType));
-
-		const h4Prop = this.headerProps[1];
-		const h4Lookup = this.propertyLookup[h4Prop];
-		if (h4Prop !== "") tip.select("h4").html(h3Lookup.title + genFormat(data[h4Prop], h4Lookup.datumType));
-
-		d3.select(`#${this.vizId} .tip-body`)
-			.selectAll("p")
-			.data(bodyData)
-			.join("p")
-			.attr("class", "generalTooltip tip-info")
-			.style("display", (d) => (d[0] === "" && d[1] === "" ? "none" : "block"))
-			.html((d) => `<strong>${d[0]}</strong>${Number.isNaN(d[1]) ? "N/A" : d[1]}`);
-
-		const tipHeight = d3.select(`#${this.vizId} .generalTooltip`)._groups[0][0].offsetHeight;
-		const tipWidth = d3.select(`#${this.vizId} .generalTooltip`)._groups[0][0].offsetWidth;
+		const tipHeight = d3.select(`#${this.vizId}-tooltip .generalTooltip`)._groups[0][0].offsetHeight;
+		const tipWidth = d3.select(`#${this.vizId}-tooltip .generalTooltip`)._groups[0][0].offsetWidth;
 
 		const { clientX, clientY } = d3.event;
 		const widthToLeftBounds = clientX - leftBounds;
@@ -205,16 +209,14 @@ export class GenTooltip {
 			.duration(400)
 			.style("visibility", "visible")
 			.style("opacity", 1);
-
-		if (h3Prop === "" && h4Prop === "") tip.select(`#${this.vizId} .tip-header`).style("display", "none");
 	}
 
 	mousemove() {
 		const { sides } = getWhichSvgSides(this.svgId);
-		const tipHeight = d3.select(`#${this.vizId} .generalTooltip.tooltip`)._groups[0][0].offsetHeight;
-		const tipWidth = d3.select(`#${this.vizId} .generalTooltip.tooltip`)._groups[0][0].offsetWidth;
+		const tipHeight = d3.select(`#${this.vizId}-tooltip`)._groups[0][0].offsetHeight;
+		const tipWidth = d3.select(`#${this.vizId}-tooltip`)._groups[0][0].offsetWidth;
 
-		d3.select(`#${this.vizId} .tooltip`)
+		d3.select(`#${this.vizId}-tooltip`)
 			.style("left", sides.x === "left" ? `${d3.event.clientX + 5}px` : `${d3.event.clientX - tipWidth - 5}px`)
 			.style("top", sides.y === "top" ? `${d3.event.clientY + 5}px` : `${d3.event.clientY - tipHeight - 5}px`);
 	}
@@ -224,7 +226,7 @@ export class GenTooltip {
 			this.incomingElement.style("opacity", this.incomingOpacity);
 			this.incomingElement.style("stroke-width", this.incomingStrokeWidth);
 
-			d3.select(`#${this.vizId} .tooltip`)
+			d3.select(`#${this.vizId}-tooltip`)
 				.transition()
 				.duration(150)
 				.style("visibility", "hidden")

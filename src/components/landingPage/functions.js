@@ -138,7 +138,7 @@ export const getMapTooltipConstructor = (chartConstructor) => {
 	const constructor = chartConstructor;
 	constructor.vizId = "us-map-container";
 	constructor.svgId = "us-map-svg";
-	constructor.headerProps = ["", "STATE_NAME"];
+	constructor.headerProps = ["STATE_NAME", ""];
 	return constructor;
 };
 
