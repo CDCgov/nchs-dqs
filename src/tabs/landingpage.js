@@ -1084,6 +1084,10 @@ export class LandingPage {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#mapBinningTypeSelector").hide();
+			const groupText = this.groupDropdown.text();
+			if (!groupText.toLowerCase().includes("total")) {
+				$("#subGroupsSelectorsSection").show();
+			}
 		}
 
 		let tableData = [...data];
