@@ -280,7 +280,6 @@ export class LandingPage {
 		if (!$("#chartSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#chartSelectors");
 			$("#subGroupsSelectorsSection").hide();
-			$("#ciTableSlider").show();
 			$("#mapBinningTypeSelector").hide();
 		}
 
