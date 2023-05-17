@@ -1090,16 +1090,13 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
-		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
-		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
+		let cols = ["Classification", "Group", "Subgroup", "Year", "Flag", "Estimate"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "flag", "estimate"];
 
-		if (this.config.hasCI) {
+		if (this.config.enableCI) {
 			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
 			keys.push("estimate_lci", "estimate_uci");
 		}
-
-		cols.push("Flag");
-		keys.push("flag");
 
 		this.csv = {
 			data: tableData,
