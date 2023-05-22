@@ -280,7 +280,6 @@ export class LandingPage {
 		if (!$("#chartSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#chartSelectors");
 			$("#subGroupsSelectorsSection").hide();
-			$("#ciTableSlider").show();
 			$("#mapBinningTypeSelector").hide();
 		}
 
@@ -1084,19 +1083,20 @@ export class LandingPage {
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#mapBinningTypeSelector").hide();
+			const groupText = this.groupDropdown.text();
+			if (!groupText.toLowerCase().includes("total")) {
+				$("#subGroupsSelectorsSection").show();
+			}
 		}
 
 		let tableData = [...data];
-		let cols = ["Classification", "Group", "Subgroup", "Year", "Age", "Estimate", "Standard Error"];
-		let keys = ["panel", "stub_name", "stub_label", "year", "age", "estimate", "se"];
+		let cols = ["Classification", "Group", "Subgroup", "Year", "Flag", "Estimate"];
+		let keys = ["panel", "stub_name", "stub_label", "year", "flag", "estimate"];
 
-		if (this.config.hasCI) {
+		if (this.config.enableCI) {
 			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
 			keys.push("estimate_lci", "estimate_uci");
 		}
-
-		cols.push("Flag");
-		keys.push("flag");
 
 		this.csv = {
 			data: tableData,
