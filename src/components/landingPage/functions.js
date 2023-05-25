@@ -1,4 +1,5 @@
 import { ClassifyData } from "../../utils/ClassifyDataNT";
+import { genFormat } from "../../utils/genFormat";
 import { HtmlTooltip } from "../general/htmlTooltip";
 import { topicGroups } from "./config";
 
@@ -67,7 +68,7 @@ export const addHtmlTooltips = () => {
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);
 
-const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
+const getTooltipConstructor = (vizId, chartValueProperty, hasCI, sigFigs) => {
 	const propertyLookup = {
 		// list properties needed in tooltip body and give their line titles and datum types
 		year: {
@@ -76,7 +77,7 @@ const getTooltipConstructor = (vizId, chartValueProperty, hasCI) => {
 		},
 		estimate: {
 			title: "Estimate: ",
-			datumType: "string",
+			datumType: `fixed${sigFigs}`,
 		},
 		indicator: {
 			title: "Indicator: ",
@@ -142,7 +143,7 @@ export const getMapTooltipConstructor = (chartConstructor) => {
 	return constructor;
 };
 
-export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
+export const getAllChartProps = (data, showBarChart, config, xAxisTitle, sigFigs) => {
 	const chartValueProperty = "estimate";
 	const vizId = "chart-container";
 	const scaleTimeIndicators = ["suicide", "Medicaid"];
@@ -179,7 +180,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle) => {
 		multiLineColors: colors,
 		multiLineLeftAxisKey: "subLine",
 		vizId,
-		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty, config.hasCI),
+		genTooltipConstructor: getTooltipConstructor(vizId, chartValueProperty, config.hasCI, sigFigs),
 	};
 };
 
@@ -319,4 +320,19 @@ export const adjustTableDimensions = () => {
 	// ---- Adjust width ---------
 	// set table's max-width to fit inside of tableContentWrapper and set width to fit-content
 	$("#tableYearHeader").width($("#nchs-table > tbody th").first().width());
+};
+
+export const formatTableValues = (value, sigFigs) => {
+	let rv;
+	if (Number.isNaN(value)) return "";
+	if (value >= 1000) {
+		rv = genFormat(value, "number");
+		if (sigFigs > 0) {
+			const decimal = value.toString().split(".")[1];
+			rv += `.${decimal === undefined ? "".padEnd(sigFigs, "0") * sigFigs : decimal}`;
+		}
+	} else {
+		rv = Number(value).toFixed(sigFigs);
+	}
+	return rv;
 };

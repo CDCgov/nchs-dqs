@@ -79,6 +79,14 @@ const magnitudeThreeSF = (d) => (d >= 1 ? format(".3s")(d) : d);
 
 export const genFormat = (datum, datumType) => {
 	switch (datumType) {
+		case "fixed0":
+			return datum >= 1000 ? longInt(datum) : Number(datum).toFixed(0);
+		case "fixed1":
+			return Number(datum).toFixed(1);
+		case "fixed2":
+			return Number(datum).toFixed(2);
+		case "fixed3":
+			return Number(datum).toFixed(3);
 		case "numberNoDecimal":
 			return decimal0(datum);
 		case "number":

@@ -11,6 +11,7 @@ import * as functions from "../components/landingPage/functions";
 import { GenDropdown } from "../components/general/genDropdown";
 import { TopicDropdown } from "../components/general/topicDropdown";
 import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
+import { genFormat } from "../utils/genFormat";
 
 export class LandingPage {
 	constructor() {
@@ -51,6 +52,7 @@ export class LandingPage {
 		this.dataTable = null;
 		this.staticBinning = true;
 		this.legend = null;
+		this.sigFigs = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -306,7 +308,8 @@ export class LandingPage {
 			chartData,
 			this.showBarChart,
 			this.config,
-			this.groupDropdown.text()
+			this.groupDropdown.text(),
+			this.sigFigs
 		);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 		this.chartConfig.subGroups = subgroupValues;
@@ -406,6 +409,16 @@ export class LandingPage {
 		let data = this.socrataData.filter(
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
+
+		// get the number of significant figures in the data by finding the first estimate with a decimal and counting the places
+		const estimateWithADecimal = data.find((d) => d.estimate && d.estimate.toString().includes("."));
+		if (!estimateWithADecimal) {
+			this.sigFigs = 0;
+		} else {
+			const estimate = estimateWithADecimal.estimate.toString();
+			const splitEstimate = estimate.split(".");
+			this.sigFigs = splitEstimate[1].length;
+		}
 
 		// there was a conditional here, but removed it so that toggling the population
 		// dropdoown triggers rerender, and we need to refresh/update the mapdata as such
@@ -1129,17 +1142,34 @@ export class LandingPage {
 			$(".unreliableNote").show();
 			$(".unreliableFootnote").show();
 		}
-		tableData = tableData.map((d) => ({
-			year: d.year,
-			column: `${d.stub_label}${
-				d.age && groupNotAge && d.age !== "N/A" && d.age !== d.stub_label ? ": " + d.age : ""
-			}`,
-			data: `${d.estimate}${showCI && d.estimate ? " (" + d.estimate_lci + ", " + d.estimate_uci + ")" : ""}${
-				d.flag ? " " + d.flag : ""
-			}`,
-		}));
 
-		if (tableData.every((d) => !d.data || d.data === "NaN")) {
+		tableData = tableData.map((d) => {
+			let { flag, estimate, estimate_lci, estimate_uci } = d;
+
+			if (!estimate && estimate !== 0) {
+				flag = "---";
+				estimate = "";
+			} else {
+				estimate = functions.formatTableValues(Number(estimate), this.sigFigs);
+			}
+
+			if (showCI && estimate) {
+				estimate_lci = functions.formatTableValues(Number(estimate_lci), this.sigFigs);
+				estimate_uci = functions.formatTableValues(Number(estimate_uci), this.sigFigs);
+			}
+
+			return {
+				year: d.year,
+				column: `${d.stub_label}${
+					d.age && groupNotAge && d.age !== "N/A" && d.age !== d.stub_label ? ": " + d.age : ""
+				}`,
+				estimate,
+				ci: showCI && estimate ? ` (${estimate_lci}, ${estimate_uci})` : "",
+				flag: flag === "---" ? flag : flag ? ` ${flag}` : "",
+			};
+		});
+
+		if (tableData.every((d) => !d.estimate || d.estimate === "NaN")) {
 			$("#tableResultsCount").hide();
 			$(".expanded-data-table")
 				.empty()
@@ -1173,8 +1203,11 @@ export class LandingPage {
 			<tr>
 				<th tabindex="0">${d}</th>
 				${columns.map((c) => {
-					const value = tableData.find((f) => f.column === c && f.year === d)?.data ?? "---";
-					return `<td tabindex="0">${value.includes("NaN") ? value.replaceAll("NaN", "") : value}</td>`;
+					const row = tableData.find((f) => f.column === c && f.year === d);
+					const value = row?.estimate ?? "";
+					const flag = row?.flag ?? "";
+					const ci = row?.ci ?? "";
+					return `<td tabindex="0">${value + ci + flag}</td>`;
 				})}</tr>`;
 			$(body).append(row);
 		});
