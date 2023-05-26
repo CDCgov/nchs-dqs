@@ -517,7 +517,7 @@ export class LandingPage {
 		let footerNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) !== "NA");
 		let unreliableNotesArray = [...allFootnoteIdsArray].filter((d) => d.substring(0, 2) === "NA");
 		if (footerNotesArray.length > 1) {
-			const order = ["SC", "NA", "NT", "FN", "NH", "DH"];
+			const order = ["NA", "FN", "NH", "DH", "NT", "SC"];
 			footerNotesArray = footerNotesArray
 				.filter((d) => d !== "")
 				.sort((a, b) => order.indexOf(a.substring(0, 2)) - order.indexOf(b.substring(0, 2)));
