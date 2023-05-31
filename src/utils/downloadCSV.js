@@ -16,7 +16,6 @@ export const downloadCSV = (csvObj) => {
 	const separateFileName = (fileName) => {
 		// file title, remove spaces, commas, forward slashs and hyphens, replace with underscore
 		let tempFileName = fileName.toLowerCase();
-		tempFileName = tempFileName.replace("-", "");
 		tempFileName = tempFileName.replace(/,/g, "");
 		tempFileName = tempFileName.replace("/", " ");
 		let fileNameParts = tempFileName.split(" ");

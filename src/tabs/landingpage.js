@@ -325,8 +325,11 @@ export class LandingPage {
 		const topic = this.topicDropdown.text();
 		const group = this.groupDropdown.text();
 
-		if (this.showBarChart) this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
-		else this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+		if (this.showBarChart) {
+			this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
+		} else {
+			this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+		}
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
@@ -1111,13 +1114,6 @@ export class LandingPage {
 			keys.push("estimate_lci", "estimate_uci");
 		}
 
-		this.csv = {
-			data: tableData,
-			dataKeys: keys,
-			title: this.config.chartTitle,
-			headers: cols,
-		};
-
 		if (!$("#showAllSubgroupsSlider").is(":checked")) {
 			const checkedSubgroups = [...$("#genMsdSelections input:checked").map((i, el) => $(el).data("val"))];
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
@@ -1127,8 +1123,18 @@ export class LandingPage {
 
 		const topicTitle = this.topicDropdown.text();
 		const group = this.groupDropdown.text();
-		if (this.showBarChart) this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}`;
-		else this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+		if (this.showBarChart) {
+			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}`;
+		} else {
+			this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+		}
+
+		this.csv = {
+			data: tableData,
+			dataKeys: keys,
+			title: this.config.chartTitle,
+			headers: cols,
+		};
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
