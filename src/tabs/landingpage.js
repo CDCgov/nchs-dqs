@@ -231,7 +231,7 @@ export class LandingPage {
 		let stateData = [...data];
 
 		this.legend = this.generateLegend();
-		if (!this.legend?.length) {
+		if (!this.legend?.length || this.legend.length !== 5) {
 			return;
 		}
 
