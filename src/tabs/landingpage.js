@@ -568,8 +568,8 @@ export class LandingPage {
 		} else {
 			$("#pageFooterTable").hide();
 		}
+
 		$("#pageFooter").html(footerNotes);
-		$(".unreliableFootnote").hide();
 
 		const footnoteClasses = [
 			"DataSourceFootnote",
