@@ -8,6 +8,6 @@ dist/*
 !dist/embeds
 .jsbeautifyrc
 .vscode
-dist/css/index.css
+#dist/css/index.css
 dist/css/index.css.map
 !dist/favicon.ico

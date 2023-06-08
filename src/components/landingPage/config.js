@@ -48,8 +48,9 @@ export const tabContent = `
 		<div id="topicDropdownGroup" class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="fas fa-arrow-circle-right"></i>
+					<i class="bi-1-circle-fill"></i>
 				</div>
+				
 				<div class="col-10 homeSelectorText">
 					<label id="topicDropdown-label" for="topicDropdown-select" class="body2">Select a</label>
 					<div class="mainSelText heading4">
@@ -68,10 +69,10 @@ export const tabContent = `
 			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="fas fa-arrow-circle-right"></i>
+					<i class="bi-2-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="classificationDropdown-label" for="classificationDropdown-select" class="body2">Refine by</label>
+					<label id="classificationDropdown-label" for="classificationDropdown-select" class="body2">Select a</label>
 					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
@@ -83,10 +84,10 @@ export const tabContent = `
 		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="fas fa-arrow-circle-right"></i>
+					<i class="bi-3-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">View Data by</label>
+					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">Select a</label>
 					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
@@ -99,10 +100,10 @@ export const tabContent = `
 		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="fas fa-arrow-circle-right"></i>
+					<i class="bi-4-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">Filter by</label>
+					<label id="groupDropdown-label" for="groupDropdown-select" class="body2">Select</label>
 					<div class="mainSelText heading4">Subgroup</div>
 				</div>
 			</div>
@@ -113,7 +114,7 @@ export const tabContent = `
 		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="fas fa-arrow-circle-right"></i>
+					<i class="bi-5-circle-fill"></i>
 				</div>
 				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body2" aria-label="Select time periods">Select</div>
@@ -140,7 +141,7 @@ export const tabContent = `
 	<div id="resetInfoContainer" class="row homeSmallGroup">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
-			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Reset</button>
+			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Clear Selections</button>
 		</div>
 	</div>
 	<br />

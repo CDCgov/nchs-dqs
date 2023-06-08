@@ -64,7 +64,7 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 		<div class="genMsdSelected ${leaveOpen ? "genDropdownOpened " : ""} ${disabled ? "disabled" : ""}">
 			<div id="genMsdTitle" class="${
 				disabled ? "disabled" : ""
-			}" style="width: 100%" tabindex="0" aria-label="filter by subgroup dropdown">${
+			}" style="width: 100%" tabindex="0" aria-label="select subgroup dropdown">${
 		disabled ? "N/A" : "Select Subgroups"
 	}</div>
 			<input 	type="text"

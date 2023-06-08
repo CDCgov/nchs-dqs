@@ -811,7 +811,7 @@ export class LandingPage {
 
 		this.classificationDropdown = new GenDropdown({
 			containerId: "classificationDropdown",
-			ariaLabel: "refine by classification",
+			ariaLabel: "select a classification",
 			options,
 			selectedValue: this.selections?.classification,
 		});
@@ -850,7 +850,7 @@ export class LandingPage {
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
-			ariaLabel: "view data by group",
+			ariaLabel: "select a group",
 			options,
 			selectedValue: this.selections?.group,
 		});
