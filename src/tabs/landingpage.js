@@ -1153,7 +1153,7 @@ export class LandingPage {
 			let { flag, estimate, estimate_lci, estimate_uci } = d;
 
 			if (!estimate && estimate !== 0) {
-				flag = "---";
+				flag = "*";
 				estimate = "";
 			} else {
 				estimate = functions.formatTableValues(Number(estimate), this.sigFigs);
@@ -1171,7 +1171,7 @@ export class LandingPage {
 				}`,
 				estimate,
 				ci: showCI && estimate ? ` (${estimate_lci}, ${estimate_uci})` : "",
-				flag: flag === "---" ? flag : flag ? ` ${flag}` : "",
+				flag: flag === "*" ? flag : flag ? ` ${flag}` : "",
 			};
 		});
 
