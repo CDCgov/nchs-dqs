@@ -87,6 +87,8 @@ const populate = (props) => {
 				data-val="${o[props.value]}"
 				role="option"				
 				aria-label="${o[props.text].trim()}"
+				aria-role="option"
+				aria-selected="${o[props.value] === selected[props.value] ? "true" : "false"}"
 				tabindex="0"
 			>
 				<i class="fas fa-level-up-alt fa-rotate-90"></i><a>${o[props.text].trim()}</a>
@@ -103,6 +105,7 @@ const populate = (props) => {
 		tabindex="0"
 		role="listbox"		
 		aria-labelledby="${props.containerId}-label"
+		aria-busy="true"
 	>
 		<a>${selectedHtml}</a>
 		<div class="genDropdownOptions genDropDownWithGroups">

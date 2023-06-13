@@ -83,7 +83,8 @@ const populate = (props, mobile) => {
 		optionList.push(`
 			<div class="genDropdownOption ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
 				data-val="${o[props.value]}"
-				role="option"				
+				role="option"
+				aria-role="option"
 				aria-label="${o[props.text].trim()}"
 				tabindex="0"
 			>
@@ -99,6 +100,7 @@ const populate = (props, mobile) => {
 		tabindex="0"
 		role="listbox"		
 		aria-labelledby="${props.containerId}-label"
+		aria-busy="true"
 		contenteditable=${mobile ? "false" : "true"}
 	>
 		<a>${selectedHtml}</a>
