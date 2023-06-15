@@ -536,6 +536,8 @@ export class LandingPage {
 			DH: "Footnotes",
 		};
 
+		let reliabilityFootnotesSymbol = "*";
+
 		if (footerNotesArray.length && !(footerNotesArray.length === 1 && footerNotesArray[0] === "")) {
 			footerNotes = footerNotesArray
 				.filter((f) => this.footnoteMap[f])
@@ -563,6 +565,20 @@ export class LandingPage {
 							)
 							.join("");
 
+			if (unreliableNotes) {
+				if (unreliableNotes.includes("(**)")) {
+					reliabilityFootnotesSymbol = "**";
+				}
+				if (unreliableNotes.includes("(***)")) {
+					reliabilityFootnotesSymbol = "***";
+				}
+				if (unreliableNotes.includes("(****)")) {
+					reliabilityFootnotesSymbol = "****";
+				}
+				if (unreliableNotes.includes("(^)")) {
+					reliabilityFootnotesSymbol = "^";
+				}
+			}
 			footerNotes = unreliableNotes + footerNotes;
 			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
 		} else {
@@ -586,6 +602,8 @@ export class LandingPage {
 				found = true;
 			});
 		});
+
+		return reliabilityFootnotesSymbol;
 	}
 
 	topicDropdownChange = (value) => {
@@ -1119,7 +1137,8 @@ export class LandingPage {
 			tableData = tableData.filter((d) => checkedSubgroups.includes(d.stub_label));
 		}
 
-		this.updateFootnotes(tableData);
+		const reliabilityNotesSymbol = this.updateFootnotes(tableData);
+		console.log(`renderTable --- reliabilityNotesSymbol ${reliabilityNotesSymbol}`);
 
 		const topicTitle = this.topicDropdown.text();
 		const group = this.groupDropdown.text();
@@ -1153,7 +1172,7 @@ export class LandingPage {
 			let { flag, estimate, estimate_lci, estimate_uci } = d;
 
 			if (!estimate && estimate !== 0) {
-				flag = "*";
+				flag = reliabilityNotesSymbol || "**";
 				estimate = "";
 			} else {
 				estimate = functions.formatTableValues(Number(estimate), this.sigFigs);
@@ -1171,7 +1190,7 @@ export class LandingPage {
 				}`,
 				estimate,
 				ci: showCI && estimate ? ` (${estimate_lci}, ${estimate_uci})` : "",
-				flag: flag === "*" ? flag : flag ? ` ${flag}` : "",
+				flag: flag === "---" ? flag : flag ? ` ${flag}` : "",
 			};
 		});
 

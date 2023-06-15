@@ -72,7 +72,7 @@ export const tabContent = `
 					<i class="bi-2-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="classificationDropdown-select">Refine by</label>
+					<label class="body2" for="classificationDropdown-select">Select a</label>
 					<div class="mainSelText heading4">Classification</div>
 				</div>
 			</div>
@@ -87,7 +87,7 @@ export const tabContent = `
 					<i class="bi-3-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="groupDropdown-select">View Data by</label>
+					<label class="body2" for="groupDropdown-select">Select a</label>
 					<div class="mainSelText heading4">Group</div>
 				</div>
 			</div>
@@ -103,7 +103,7 @@ export const tabContent = `
 					<i class="bi-4-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="groupDropdown-select">Filter by</label>
+					<label class="body2" for="groupDropdown-select">Select a</label>
 					<div class="mainSelText heading4">Subgroup</div>
 				</div>
 			</div>
