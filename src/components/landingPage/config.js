@@ -61,9 +61,8 @@ export const tabContent = `
 			<div class="row spacerContainer">&nbsp;</div>
 			<div id="topicDropdown" class="genDropdown">
 				<label for="topicDropdown-select" id="topicDropdown-label">
-					<div role="button" tabindex="0" id="refineTopicList" aria-label="refine topic list">Refine Topic List</div>
+					<div role="button" tabindex="0" id="refineTopicList" aria-label="Advanced Topic Selection">Advanced Topic Selection: <span id="refine-topic-list-switch">OFF</span></div>
 				</label>
-				<i id="refineTopicIcon" tabindex="0" role="img" class="fas fa-info-circle" style="color: #555" aria-label="Use this filter to narrow your search by populations or data systems">&nbsp;</i>
 			</div>			
 		</div>
 			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">

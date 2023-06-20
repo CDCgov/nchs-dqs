@@ -1,6 +1,12 @@
 import { ExportEvents } from "./exportevents";
 import { downLoadGenChart, downLoadMap2 } from "../utils/downloadimg";
-import { resetTopicDropdownList, updateTopicDropdownList } from "../components/landingPage/functions";
+import {
+	resetTopicDropdownList,
+	updateTopicDropdownList,
+	getSelectedTopicCount,
+} from "../components/landingPage/functions";
+
+import { filterHtml } from "../components/landingPage/modal";
 
 export class MainEvents {
 	constructor(animationInterval) {
@@ -178,31 +184,39 @@ export class MainEvents {
 			.on("click keypress", "#refineTopicList", (e) => {
 				if (e.type === "keypress" && e.key !== "Enter") return;
 				$("#filtersModal").modal("show");
+
+				const selectedFilters = $(".filterCheckbox:checked")
+					.map((i, el) => el.id.replace("filter", ""))
+					.toArray();
+
+				appState.PREVIOUS_FILTERS = selectedFilters;
+				const topicCount =
+					selectedFilters.length === 0
+						? $("#topicDropdown-select .genDropdownOption").length
+						: getSelectedTopicCount();
+
+				$("#filter-summary-content").html(filterHtml({ topicCount }));
 			})
-			.off("click", "#submitFilters, #closeAdvancedFilters")
-			.on("click", "#submitFilters, #closeAdvancedFilters", () => {
+			.off("click", "#submitFilters")
+			.on("click", "#submitFilters", () => {
 				$("#refineTopicList").attr("style", "color: #800080 !important");
 				$("#filtersModal").modal("hide");
 				updateTopicDropdownList();
 			})
+			.off("click", "#closeAdvancedFilters")
+			.on("click", "#closeAdvancedFilters", () => {
+				$("#refineTopicList").attr("style", "color: #800080 !important");
+				$("#filtersModal").modal("hide");
+				$(".filterCheckbox").prop("checked", false);
+
+				// since I closed without applying filters, restore the previous state (if any)
+				if (appState.PREVIOUS_FILTERS && appState.PREVIOUS_FILTERS.length > 0) {
+					appState.PREVIOUS_FILTERS.forEach((filterId) => $(`#filter${filterId}`).prop("checked", true));
+				}
+			})
 			.off("click", ".filterCheckbox")
 			.on("click", ".filterCheckbox", () => {
-				const windowWidth = $(window).width();
-				const selected = $(".filterCheckbox:checkbox:checked").length;
-				if (selected) {
-					let message = "";
-					if (windowWidth < 1200) {
-						message = `${selected} selected`;
-					} else {
-						$(".filterCheckbox:checkbox:checked").each((i, el) => {
-							message += $(el).parent().siblings("label").text() + " <b>OR</b> ";
-						});
-						message = message.slice(0, -11);
-					}
-					$("#filterResults").html(message);
-				} else {
-					$("#filterResults").html("All");
-				}
+				$("#filter-summary-content").html(filterHtml({ topicCount: getSelectedTopicCount() }));
 			})
 			.off("click keyup", ".viewFootnotes")
 			.on("click keyup", ".viewFootnotes", (e) => {
@@ -227,12 +241,19 @@ export class MainEvents {
 						classList.add("viewSelectorsClosed");
 					}
 				}
+			})
+			.on("click", ".remove-filter-pill", (e) => {
+				$(`#${$(e.currentTarget).attr("data-id")}`).click();
 			});
 
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {
 			$("#filterResults").html("All");
 			resetTopics();
 			$(".callFiltersModal").show();
+			$("#filter-summary-content").html(
+				filterHtml({ topicCount: $("#topicDropdown-select .genDropdownOption").length })
+			);
+			appState.PREVIOUS_FILTERS = null;
 		});
 
 		ExportEvents.registerEvents();

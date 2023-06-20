@@ -3,6 +3,9 @@ import { genFormat } from "../../utils/genFormat";
 import { HtmlTooltip } from "../general/htmlTooltip";
 import { topicGroups } from "./config";
 
+const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS"];
+// const dataSystems = ["HUS", "NCHS", "NHANES", "NHIS", "NHAMCS"];
+
 // this is the function that cleans up Socrata data
 export const addMissingProps = (cols, rows) => {
 	let newArray = [];
@@ -203,6 +206,7 @@ export const resetTopicDropdownList = () => {
 	$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 		$(el).removeClass("genOptionFilteredOut");
 		$(el).attr("style", "");
+		$("#refine-topic-list-switch").text("OFF");
 	});
 
 	topicGroups.forEach((group, i) => {
@@ -215,9 +219,6 @@ export const resetTopicDropdownList = () => {
 };
 
 export const updateTopicDropdownList = () => {
-	const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS"];
-	// const dataSystems = ["HUS", "NCHS", "NHANES", "NHIS", "NHAMCS"];
-
 	const selectedFilters = $(".filterCheckbox:checked")
 		.map((i, el) => el.id.replace("filter", ""))
 		.toArray();
@@ -290,9 +291,47 @@ export const updateTopicDropdownList = () => {
 					.attr("hidden", true)
 					.addClass("genOptionFilteredOut");
 		});
+
+		// togggle switch on
+		$("#refine-topic-list-switch").text("ON");
 	} else {
 		resetTopicDropdownList();
 	}
+};
+
+export const getSelectedTopicCount = () => {
+	const selectedFilters = $(".filterCheckbox:checked")
+		.map((i, el) => el.id.replace("filter", ""))
+		.toArray();
+
+	const filtersWithoutDataSystems = selectedFilters.filter((f) => !dataSystems.includes(f));
+	const selectedDataSystems = selectedFilters.filter((f) => dataSystems.includes(f));
+	let total = 0;
+
+	if (selectedFilters.length) {
+		let firstFiltered;
+		const currentSelected = $("#topicDropdown-select .genOptionSelected").data("val");
+		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
+			const availableFilters = $(el).data("filter").split(",");
+			const dataSystem = $(el).data("dataSystem");
+			const value = $(el).data("val");
+
+			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
+				if (!firstFiltered) firstFiltered = value;
+				if (
+					selectedDataSystems.includes(dataSystem) &&
+					(!filtersWithoutDataSystems.length ||
+						filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF)))
+				) {
+					total++;
+				}
+			} else if (value === currentSelected) {
+				total++;
+			}
+		});
+	}
+
+	return total;
 };
 
 export const binData = (data) => {

@@ -114,7 +114,7 @@ const modalTopics = [
 		text: "Health, United States (HUS)",
 		group: "dataSystems",
 	},
-	// { // this may be added in later ... currently the requirement of how it will be applied is being discussed
+	// {
 	// 	id: "filterNCHS",
 	// 	text: "National Center for Health Statistics (NCHS)",
 	// 	group: "dataSystems",
@@ -148,6 +148,17 @@ const buildSelections = (group) => {
 	return html.join("");
 };
 
+const filterByTypeHtml = () => {
+	return `
+		<div class="col-md-4 col-xs-12 heading5">1. Select a filter category:</div>
+		<div class="col-md-8 col-xs-12 filter-buttons-wrap">
+			<button class="btn selection-button selected"
+				data-id="population-characteristics">Population Characterisics</button><button class="btn selection-button"
+				data-id="data-systems">Sources</button>
+		</div>
+	`;
+};
+
 const topicsHtml = () => {
 	return `
 	<!-- Demographics -->
@@ -173,7 +184,11 @@ const topicsHtml = () => {
 				</div>
 				${buildSelections(modalTopics.filter((mt) => mt.group === "socioeconomic"))}
 			</div>
-			<!-- Geographic -->
+		</div>
+	</div>
+	<!-- Geographic -->
+	<div class="col-md-12 col-xl-3">
+		<div class="row">
 			<div class="col-xs-12 col-md-6 col-xl-12">
 				<div class="col-12 heading6">
 					<div>Geographic</div>
@@ -182,15 +197,53 @@ const topicsHtml = () => {
 			</div>
 		</div>
 	</div>
-	<!-- Data Systems -->
-	<div class="col-xs-12 col-xl-4">
-		<div class="row">
-			<div class="col-12 heading6">
-				<div>Data Systems</div>
+	`;
+};
+
+const dataSystemsHtml = () => {
+	return `
+		<!-- Data Systems -->
+		<div class="col-xs-12 col-xl-6" style="margin: 0 auto">
+			<div class="row">
+				<div class="col-12 heading6">
+					<div>Sources</div>
+				</div>
+				${buildSelections(modalTopics.filter((mt) => mt.group === "dataSystems"))}
 			</div>
-			${buildSelections(modalTopics.filter((mt) => mt.group === "dataSystems"))}
-		</div>
-	</div>`;
+		</div>`;
+};
+
+export const filterHtml = ({ topicCount = 0 }) => {
+	const selected = $(".filterCheckbox:checkbox:checked").length;
+
+	if (selected) {
+		let filterResults = "";
+		$(".filterCheckbox:checkbox:checked").each((i, el) => {
+			filterResults += `<span class="badge rounded-pill">
+				${$(el).parent().siblings("label").text()}
+				<button type="button" class="btn-close remove-filter-pill" aria-label="Close" data-id="${$(el).attr("id")}"></button>
+			</span>`;
+		});
+
+		return `
+			<div class="filter-text">There are <strong>
+				<span id="filter-summary-count">${topicCount}</span> topics available</strong> 
+			relating to <strong>any</strong> of these filters:</div>
+			<div id="filter-results">${filterResults}</div>
+		`;
+	}
+
+	return `
+		<div class="filter-text">There are <strong><span id="filter-summary-count">
+				${topicCount}
+		</span> topics available</strong> with <strong>0</strong> filters applied.</div>
+		<div class="text-center" style="font-size: 14px">Please select filters to proceed with advanced topic selection.</div>
+	`;
+};
+
+const clearFilters = () => {
+	$(".filterCheckbox").prop("checked", false);
+	$("#filter-summary-content").html(filterHtml({ topicCount: $("#topicDropdown-select .genDropdownOption").length }));
 };
 
 export const modal = `
@@ -198,26 +251,55 @@ export const modal = `
 	    <div class="modal-dialog" role="document">
 	        <div class="modal-content" aria-describedby="modalLabel">
 	            <div class="modal-header text-center d-block">
-	                <h4 aria-hidden="false" tabindex="0" id="modalLabel" class="heading5">Refine Topic List</h4>
-					<h5 class="body2" style="margin-top: -4px !important;" tabindex="0">Select one or more:</h5>
-	                <button id="closeAdvancedFilters" type="button" class="close" data-bs-dismiss="modal" aria-label="close refine topic list modal"  aria-hidden="false"><span aria-hidden="true">&times;</span></button>
+	                <h4 aria-hidden="false" tabindex="0" id="modalLabel" class="heading5"><strong>Advanced Topic Selection</strong></h4>
+	                <button id="closeAdvancedFilters" type="button" class="close" data-bs-dismiss="modal" aria-label="close Advanced Topic Selection modal"  aria-hidden="false"><span aria-hidden="true">&times;</span></button>
 	            </div>
-	            <div class="modal-body" aria-hidden="false">
+	            <div class="modal-body refine-topics" aria-hidden="false">
 					<div class="row">
-						${topicsHtml()}
-					</div>					
-	            </div>
-				<div id="filterModalFooter" class="modal-footer text-center d-block">
-					<div id="refineInfoRow" class="flexRow">
-						<i id="refineInfoIcon" class="fas fa-info-circle" style="font-size: 24px; margin-right: 6px"></i>
-						<div>Show results for: <span id="filterResults">All</span></div>
+						${filterByTypeHtml()}
 					</div>
-					<button id="clearCurrentFilters" aria-hidden="false">Clear Selections</button>
-					<button id="submitFilters" aria-hidden="false">Submit Filters</button>
+					<hr />
+					<div class="col-xs-12">
+						<span class="heading5">2. Select filter(s) to help refine your topic selection:</span>
+						<div class="float-right"><a href="#" class="clear-all-filters">Clear All Filters</a></div>
+					</div>
+					<div class="row toggle-display" data-id="population-characteristics" aria-hidden="false">
+						${topicsHtml()}
+					</div>
+					<div class="row toggle-display" data-id="data-systems" style="display: none" aria-hidden="true">
+						${dataSystemsHtml()}
+					</div>
+
+					<hr />
+
+					<div class="row filter-summary">
+						<div class="text-center filter-header">Your Filter Summary</div>
+						<div id="filter-summary-content">${filterHtml({})}</div>
+					</div>
+	            </div>
+				<div id="filterModalFooter" class="modal-footer">
+					<span class="heading5">3. Apply changes to the topic dropdown:</span>
+					<button id="submitFilters" aria-hidden="false">Apply</button>
 				</div>
 	        </div>
 	    </div>
 	</div>
 `;
+
+$(() => {
+	$(".modal .selection-button").on("click", (elem) => {
+		const displayItem = elem.currentTarget.getAttribute("data-id");
+		$(".toggle-display").hide();
+		$(".selection-button").removeClass("selected");
+		$(`.toggle-display[data-id="${displayItem}"]`).show();
+		$(`.selection-button[data-id="${displayItem}"]`).addClass("selected");
+
+		clearFilters();
+	});
+
+	$(".modal .clear-all-filters").on("click", () => {
+		clearFilters();
+	});
+});
 
 export const allFilters = modalTopics.map((t) => t.id.replace("filter", ""));
