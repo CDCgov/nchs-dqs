@@ -65,7 +65,7 @@ export const tabContent = `
 				</label>
 			</div>			
 		</div>
-			<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView" style="display: none">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="bi-2-circle-fill"></i>
@@ -83,7 +83,7 @@ export const tabContent = `
 		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="bi-3-circle-fill"></i>
+					<i class="bi-2-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label class="body2" for="groupDropdown-select">Select a</label>
@@ -99,7 +99,7 @@ export const tabContent = `
 		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="bi-4-circle-fill"></i>
+					<i class="bi-3-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label class="body2" for="groupDropdown-select">Select a</label>
@@ -113,7 +113,7 @@ export const tabContent = `
 		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
-					<i class="bi-5-circle-fill"></i>
+					<i class="bi-4-circle-fill"></i>
 				</div>
 				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body2" aria-label="Select time periods">Select</div>
@@ -274,27 +274,41 @@ const singleTopicDatasets = {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
 		socrataId: "64sz-mcbq",
 		private: "1",
-		chartTitle: "Obesity among Children (HUS)",
+		chartTitle: "Obesity among Children, measured (HUS)",
 		filters: "HUS,AsianPacific,Black,Children,Hispanic,Poverty,White",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 0,
+		topicGroup: 18,
+		subtopics: [
+			{ id: "1", text: "2-19 years" },
+			{ id: "2", text: "2-5 years" },
+			{ id: "3", text: "6-11 years" },
+			{ id: "4", text: "12-19 years" },
+		],
 	},
 	"obesity-adult": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
 		socrataId: "23va-ejrn",
 		private: "1",
-		chartTitle: "Obesity among Adults (HUS)",
+		chartTitle: "Obesity among Adults, measured (HUS)",
 		filters: "HUS,Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 0,
+		topicGroup: 18,
+		subtopics: [
+			{ id: "1", text: "Normal weight (BMI from 18.5 to 24.9)" },
+			{ id: "2", text: "Overweight or obese (BMI greater than or equal to 25.0)" },
+			{ id: "3", text: "Obesity (BMI greater than or equal to 30.0)" },
+			{ id: "4", text: "Grade 1 obesity (BMI from 30.0 to 34.9)" },
+			{ id: "5", text: "Grade 2 obesity (BMI from 35.0 to 39.9)" },
+			{ id: "6", text: "Grade 3 obesity (BMI greater than or equal to 40.0)" },
+		],
 	},
 	suicide: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/e8w2-ekn5",
@@ -307,20 +321,20 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasClassification: false,
-		topicGroup: 1,
+		topicGroup: 6,
 	},
 	injury: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Initial-injury-related-visits-to-hospital-emer/k99r-jkp7",
 		socrataId: "k99r-jkp7",
 		private: "1",
-		chartTitle: "Initial injury-related visits to hospital emergency departments (HUS)",
+		chartTitle: "Hospital emergency department visits related to injury (HUS)",
 		filters: "HUS,Adults,Older,Children,Male,Female",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
-		topicGroup: 1,
+		topicGroup: 13,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
@@ -335,7 +349,33 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: true,
 		binGranularity: 0.1,
-		topicGroup: 1,
+		topicGroup: 6,
+		subtopics: [
+			{
+				text: "All races",
+				id: "1",
+			},
+			{
+				text: "Not Hispanic or Latina: White",
+				id: "2",
+			},
+			{
+				text: "Not Hispanic or Latina: Black or African American",
+				id: "3",
+			},
+			{
+				text: "Hispanic or Latina: All races",
+				id: "4",
+			},
+			{
+				text: "American Indian or Alaska Native",
+				id: "5",
+			},
+			{
+				text: "Asian or Pacific Islander",
+				id: "6",
+			},
+		],
 	},
 	birthweight: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
@@ -350,7 +390,15 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: true,
 		binGranularity: 0.01,
-		topicGroup: 1,
+		topicGroup: 21,
+		subtopics: [
+			{ id: "1", text: "All races" },
+			{ id: "2", text: "Not Hispanic or Latina: White" },
+			{ id: "3", text: "Not Hispanic or Latina: Black or African American" },
+			{ id: "4", text: "Hispanic or Latina: All races" },
+			{ id: "5", text: "American Indian or Alaska Native" },
+			{ id: "6", text: "Asian or Pacific Islander" },
+		],
 	},
 	medicaidU65: {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
@@ -364,7 +412,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasClassification: false,
-		topicGroup: 3,
+		topicGroup: 14,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/gp4d-kizt",
@@ -377,26 +425,38 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 1,
+		topicGroup: 6,
+		subtopics: [
+			{ id: "1", text: "All drug overdose deaths" },
+			{ id: "2", text: "Drug overdose deaths involving any opioid" },
+			{ id: "3", text: "Drug overdose deaths involving natural and semisynthetic opioids" },
+			{ id: "4", text: "Drug overdose deaths involving methadone" },
+			{ id: "5", text: "Drug overdose deaths involving other synthetic opioids (other than methadone)" },
+			{ id: "6", text: "Drug overdose deaths involving heroin" },
+		],
 	},
 	"ambulatory-care": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Visits-to-physician-offices-hospital-outpatien/tz8d-jy2e",
 		socrataId: "tz8d-jy2e",
 		private: "1",
-		chartTitle: "Ambulatory Care Visits (HUS)",
+		chartTitle: "Physician office and hospital emergency department visits (HUS)",
 		filters: "HUS,Adults,Black,Children,Female,Male,Older,Region,White",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
-		topicGroup: 1,
+		topicGroup: 13,
+		subtopics: [
+			{ id: "1", text: "Physician offices" },
+			{ id: "2", text: "Hospital emergency departments" },
+		],
 	},
 	"access-care": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Delay-or-nonreceipt-of-needed-medical-care-pre/nt5r-ak33",
 		socrataId: "nt5r-ak33",
 		private: "1",
-		chartTitle: "Access to Care (HUS)",
+		chartTitle: "Unmet need for health care due to cost (HUS)",
 		filters:
 			"HUS,Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
 		dataSystem: "HUS",
@@ -404,7 +464,12 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 3,
+		topicGroup: 11,
+		subtopics: [
+			{ id: "1", text: "Delay or nonreceipt of needed medical care due to cost" },
+			{ id: "2", text: "Nonreceipt of needed prescription drugs due to cost" },
+			{ id: "3", text: "Nonreceipt of needed dental care due to cost" },
+		],
 	},
 	"community-hospital-beds": {
 		dataUrl: "https://data.cdc.gov/dataset/DQS-Community-hospital-beds-by-state/udap-6a7e",
@@ -419,7 +484,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: true,
 		binGranularity: 0.1,
-		topicGroup: 3,
+		topicGroup: 12,
 	},
 	"active-dentists": {
 		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
@@ -434,7 +499,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: false,
 		binGranularity: 0.1,
-		topicGroup: 3,
+		topicGroup: 11,
 	},
 };
 
@@ -474,6 +539,8 @@ const multipleTopicDatasets = {
 
 			return returnData;
 		},
+
+		hasGroupMapper: true,
 	},
 	"children-summary-statistics": {
 		socrataId: "rkv8-xf9z",
@@ -517,7 +584,7 @@ const multipleTopicDatasets = {
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
@@ -673,7 +740,7 @@ const multipleTopicDatasets = {
 		socrataId: "w86r-2336",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const dataIndicator = NHISTopics.find((t) => t.text === dataId)?.indicator;
+			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.indicator === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
@@ -717,7 +784,7 @@ NHISTopics.forEach((t) => {
 	}
 	topicLookup[t.id] = {
 		dataUrl: t.dataUrl,
-		socrataId: t.text,
+		socrataId: t.indicator || t.text,
 		isNhisData: true,
 		chartTitle: t.text,
 		filters,
@@ -728,15 +795,61 @@ NHISTopics.forEach((t) => {
 		topicGroup: t.topicGroup,
 		topicLookupId: t.topicLookupKey,
 		dataSystem: t.dataSystem,
+		...(t.subtopics && { subtopics: t.subtopics }),
 	};
 });
 
 export const topicGroups = [
-	"Diseases and conditions", // 0
-	"Epidemiology and health metrics", // 1
-	"Health behavior and risks", // 2
-	"Health systems", // 3
-	"Mental Health	", // 4
-	"Oral Health", // 5
-	"Prevention, control, and treatment", // 6
+	"Arthritis", // 0
+	"Asthma", // 1
+	"Attention deficit/hyperactivity disorder", // 2
+	"Cancer", // 3
+	"Cardiovascular diseases", // 4
+	"Chronic obstructive pulmonary disease", // 5
+	"Death and fatality rates", // 6
+	"Diabetes", // 7
+	"Disabilities", // 8
+	"Employment status", // 9
+	"Healthy eating and nutrition", // 10
+	"Health care access and quality", // 11
+	"Health care capacity", // 12
+	"Health care system use", // 13
+	"Health insurance", // 14
+	"Infectious diseases", // 15
+	"Mass screening", // 16
+	"Mental wellness", // 17
+	"Overweight and obesity", // 18
+	"Oral health", // 19
+	"Pain", // 20
+	"Pregnancy", // 21
+	"Public health indicators", // 22
+	"School attendance", // 23
+	"Substance use and abuse", // 24
+	"Treatment", // 25
+	"Vaccines and vaccination", // 26
 ];
+// "Diseases and conditions", // 0
+// "Epidemiology and health metrics", // 1
+// "Health behavior and risks", // 2
+// "Health systems", // 3
+// "Mental Health  ", // 4
+// "Oral Health", // 5
+// "Prevention, control, and treatment", // 6
+
+export const classificationGroups = [
+	{
+		id: 1,
+		text: "Demographic Characteristics",
+	},
+	{
+		id: 2,
+		text: "Geographic Characteristics",
+	},
+	{
+		id: 3,
+		text: "Socioeconomic Status",
+	},
+];
+
+window.topicLookup = topicLookup;
+window.NHISTopics = NHISTopics;

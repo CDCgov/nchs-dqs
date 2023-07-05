@@ -216,7 +216,16 @@ export class MainEvents {
 			})
 			.off("click", ".filterCheckbox")
 			.on("click", ".filterCheckbox", () => {
-				$("#filter-summary-content").html(filterHtml({ topicCount: getSelectedTopicCount() }));
+				const selectedFilters = $(".filterCheckbox:checked")
+					.map((i, el) => el.id.replace("filter", ""))
+					.toArray();
+
+				const topicCount =
+					selectedFilters.length === 0
+						? $("#topicDropdown-select .genDropdownOption").length
+						: getSelectedTopicCount();
+
+				$("#filter-summary-content").html(filterHtml({ topicCount }));
 			})
 			.off("click keyup", ".viewFootnotes")
 			.on("click keyup", ".viewFootnotes", (e) => {

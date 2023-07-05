@@ -65,6 +65,7 @@
  *************************************************************************************************************************************************************************** */
 import { getCurrentSliderDomain } from "./genTrendsSlider";
 import { Utils } from "../../utils/utils";
+import { classificationGroups } from "../landingPage/config";
 
 const populate = (props, mobile) => {
 	const optionList = [];
@@ -78,9 +79,33 @@ const populate = (props, mobile) => {
 		}
 	}
 
+	const buildDropDownItem = (item, props, group) => {
+		return `
+		<div class="genDropdownOption topicGroup${group.id} ${
+			item[props.value] === selected[props.value] ? "genOptionSelected" : ""
+		}"
+			data-val="${item[props.value]}"
+			data-classification="${item.classificationGroup}"
+			role="option"				
+			aria-label="${item[props.text].trim()}"
+			aria-role="option"
+			aria-selected="${item[props.value] === selected[props.value] ? "true" : "false"}"
+			tabindex="0"
+		>
+			<!-- i class="fas fa-level-up-alt fa-rotate-90"></i --><a>${item[props.text].trim()}</a>
+		</div>
+		`;
+	};
+
+	// remove this once we're done testing
+	if (props.options.length === 0) {
+		console.warn("NO OPTIONS! Possibly invalid name/indicator in config", props);
+	}
+
 	const selectedHtml = selected[props.text];
-	props.options.forEach((o) =>
-		optionList.push(`
+	if (!props.isNestedGroup) {
+		props.options.forEach((o) =>
+			optionList.push(`
 			<div class="genDropdownOption ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
 				data-val="${o[props.value]}"
 				role="option"
@@ -91,7 +116,31 @@ const populate = (props, mobile) => {
 				<a>${o[props.text].trim()}</a>
 			</div>
 		`)
-	);
+		);
+	} else {
+		let totalItem = null;
+		classificationGroups.forEach((g) => {
+			const groupOptions = props.options
+				.filter((o) => parseInt(o.classificationGroup, 10) === parseInt(g.id, 10))
+				.sort((a, b) => a.text.localeCompare(b.text));
+
+			if (groupOptions.length > 0) {
+				optionList.push(`<div id="topicGroup${g.id}" class="genDropdownTopicGroup">${g.text}</div>`);
+				groupOptions.forEach((o) => {
+					if (o[props.text].toLowerCase() === "total") {
+						totalItem = o;
+					} else {
+						optionList.push(buildDropDownItem(o, props, g));
+					}
+				});
+			}
+		});
+
+		if (totalItem) {
+			optionList.unshift(buildDropDownItem(totalItem, props, { id: 0 }));
+			optionList.unshift(`<div id="topicGroupTotal" class="genDropdownTopicGroup">Total</div>`);
+		}
+	}
 
 	return `
 	<div
@@ -111,7 +160,8 @@ const populate = (props, mobile) => {
 
 const clickHandlerLookup = {
 	topicDropdown: (value) => appState.ACTIVE_TAB.topicDropdownChange(value),
-	classificationDropdown: (value) => appState.ACTIVE_TAB.updateClassification(value),
+	classificationDropdown: (value, preventUpdating = false) =>
+		appState.ACTIVE_TAB.updateClassification(value, preventUpdating),
 	groupDropdown: (value) => appState.ACTIVE_TAB.updateGroup(value),
 	startYearContainer: (value) => appState.ACTIVE_TAB.updateStartPeriod(value),
 	endYearContainer: (value) => appState.ACTIVE_TAB.updateEndPeriod(value),
@@ -124,7 +174,12 @@ export class GenDropdown {
 		this.props = providedProps;
 		this.props.text = providedProps.text ?? "text";
 		this.props.value = providedProps.value ?? "value";
-		this.selectionMadeAction = clickHandlerLookup[providedProps.containerId];
+		this.selectionMadeAction = (val, classification) => {
+			if (this.isNestedGroup) {
+				clickHandlerLookup.classificationDropdown(classification, true);
+			}
+			clickHandlerLookup[providedProps.containerId](val, false);
+		};
 		this.updateSliderDomain = () =>
 			appState.ACTIVE_TAB.setCurrentSliderDomain(getCurrentSliderDomain(`#${providedProps.chartContainerId}`));
 		this.searchText = "";
@@ -134,6 +189,7 @@ export class GenDropdown {
 		this.selectedOption = `#${providedProps.containerId} .genOptionSelected`;
 		this.disabled = false;
 		this.isMobile = Utils.isMobile();
+		this.isNestedGroup = providedProps.isNestedGroup || false;
 	}
 
 	// ///////////////////////////////////////////// //
@@ -432,6 +488,7 @@ export class GenDropdown {
 		$(`#${this.props.containerId}-select > a`).html(text);
 		$(".genDropdownOption").attr("hidden", false);
 		const firstOption = this.props.firstOptObj;
+		const classification = $(this.selectedOption).data("classification");
 
 		if (firstOption) {
 			if (firstOption.returnValue === value) {
@@ -450,7 +507,7 @@ export class GenDropdown {
 		}
 
 		this.#updateAriaLabel(text);
-		this.selectionMadeAction(value);
+		this.selectionMadeAction(value, classification);
 		$(`#${this.props.containerId}-select`).focus();
 	};
 

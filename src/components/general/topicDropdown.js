@@ -61,7 +61,10 @@
  *************************************************************************************************************************************************************************** */
 import { Utils } from "../../utils/utils";
 import { getCurrentSliderDomain } from "./genTrendsSlider";
-import { topicGroups } from "../landingPage/config";
+import { topicGroups, topicLookup } from "../landingPage/config";
+import { slugify } from "../../utils/hashTab";
+
+const TOPIC_SEPARATOR = ": ";
 
 const populate = (props) => {
 	const optionList = [];
@@ -73,6 +76,15 @@ const populate = (props) => {
 		} else {
 			selected = props.options[0];
 		}
+	} else if (selected && topicLookup[selected[props.value]] && topicLookup[selected[props.value]].subtopics) {
+		const subtopic = topicLookup[selected[props.value]].subtopics.find(
+			(s) => slugify(s.text) === props.classification
+		);
+
+		if (subtopic) {
+			selected.text = `${selected.text}${TOPIC_SEPARATOR}${subtopic.text}`;
+			selected.classification = subtopic.id;
+		}
 	}
 
 	const selectedHtml = selected[props.text];
@@ -80,21 +92,51 @@ const populate = (props) => {
 		const groupOptions = props.options
 			.filter((o) => o.topicGroup === i)
 			.sort((a, b) => a.text.localeCompare(b.text));
-		optionList.push(`<div id="topicGroup${i}" class="genDropdownTopicGroup">${g}</div>`);
-		groupOptions.forEach((o) =>
-			optionList.push(`
-			<div class="genDropdownOption topicGroup${i} ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
-				data-val="${o[props.value]}"
-				role="option"				
-				aria-label="${o[props.text].trim()}"
-				aria-role="option"
-				aria-selected="${o[props.value] === selected[props.value] ? "true" : "false"}"
-				tabindex="0"
-			>
-				<i class="fas fa-level-up-alt fa-rotate-90"></i><a>${o[props.text].trim()}</a>
-			</div>
-		`)
-		);
+		optionList.push(`<div id="topicGroup${i}" data-topic-id="${i}" class="genDropdownTopicGroup">${g}</div>`);
+
+		groupOptions.forEach((o) => {
+			if (topicLookup[o.value] && topicLookup[o.value].subtopics) {
+				const parentTopic = o[props.text].split(TOPIC_SEPARATOR).shift().trim();
+				optionList.push(
+					`<div id="topicGroup" data-topic-id="${
+						o[props.value]
+					}" class="genDropdownTopicGroup subTopicDowndropGroup">${parentTopic}:</div>`
+				);
+				topicLookup[o.value].subtopics.forEach((s) => {
+					optionList.push(`
+						<div class="genDropdownOption genDropdownSubtopicOption topicGroup${i} ${
+						s.id === selected.classification ? "genOptionSelected" : ""
+					}"
+							data-val="${o[props.value]}"
+							data-classification="${s.id}"
+							data-parent-topic="${parentTopic}"
+							data-parent-topic-id="${s.id}"
+							role="option"				
+							aria-label="${s.text.trim()}"
+							aria-role="option"
+							aria-selected="${s.id === selected.classification ? "true" : "false"}"
+							tabindex="0"
+						>
+							<i class="fas fa-level-up-alt fa-rotate-90"></i><a>${s.text.trim()}</a>
+						</div>
+					`);
+				});
+			} else {
+				optionList.push(`
+				<div class="genDropdownOption topicGroup${i} ${o[props.value] === selected[props.value] ? "genOptionSelected" : ""}"
+					data-val="${o[props.value]}"
+					data-parent-topic-id="${i}"
+					role="option"
+					aria-label="${o[props.text].trim()}"
+					aria-role="option"
+					aria-selected="${o[props.value] === selected[props.value] ? "true" : "false"}"
+					tabindex="0"
+				>
+					<a>${o[props.text].trim()}</a>
+				</div>
+			`);
+			}
+		});
 	});
 
 	return `
@@ -116,7 +158,9 @@ const populate = (props) => {
 };
 
 const clickHandlerLookup = {
-	topicDropdown: (value) => appState.ACTIVE_TAB.topicDropdownChange(value),
+	topicDropdown: (value, classification = null) => {
+		appState.ACTIVE_TAB.topicDropdownChange(value, classification);
+	},
 };
 
 export class TopicDropdown {
@@ -124,7 +168,9 @@ export class TopicDropdown {
 		this.props = providedProps;
 		this.props.text = providedProps.text ?? "text";
 		this.props.value = providedProps.value ?? "value";
-		this.selectionMadeAction = clickHandlerLookup[providedProps.containerId];
+		this.selectionMadeAction = (val, classification) => {
+			clickHandlerLookup[providedProps.containerId](val, classification);
+		};
 		this.updateSliderDomain = () =>
 			appState.ACTIVE_TAB.setCurrentSliderDomain(getCurrentSliderDomain(`#${providedProps.chartContainerId}`));
 		this.searchText = "";
@@ -161,7 +207,16 @@ export class TopicDropdown {
 	};
 
 	// get the text for the dropdown option currently selected
-	text = () => $(`${this.selectedOption} > a`).html();
+	text = () => {
+		const text = $(`${this.selectedOption} > a`).html();
+		const classification = $(this.selectedOption).data("classification");
+		// if I have classification, that meants its a subtopic, so display topic name with it
+		if (classification) {
+			return `${$(this.selectedOptionEl).data("parent-topic")}${TOPIC_SEPARATOR}${text}`;
+		}
+
+		return text;
+	};
 
 	update = () =>
 		$(`#${this.props.containerId}-select .genDropdownOption`).each((i, el) => {
@@ -464,7 +519,7 @@ export class TopicDropdown {
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
 			this.#scrollIntoView(); // scroll both the dropdown itself and the currently selected option into view
 		} else {
-			this.#resetOptions();
+			// this.#resetOptions();
 			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
 		}
 	};
@@ -479,8 +534,13 @@ export class TopicDropdown {
 	#handleSelectionMade = (toggle = true) => {
 		this.searchText = "";
 		this.selectedOptionEl = $(this.selectedOption);
-		const text = $(`${this.selectedOption} > a`).html().trim();
+		let text = $(`${this.selectedOption} > a`).html().trim();
 		const value = $(this.selectedOptionEl).data("val").toString();
+		const classification = $(this.selectedOption).data("classification");
+		// if I have classification, that meants its a subtopic, so display topic name with it
+		if (classification) {
+			text = `${$(this.selectedOptionEl).data("parent-topic")}${TOPIC_SEPARATOR}${text}`;
+		}
 		$(`#${this.props.containerId}-select > a`).html(text);
 		$(".genDropdownOption").attr("hidden", false);
 		const firstOption = this.props.firstOptObj;
@@ -501,7 +561,7 @@ export class TopicDropdown {
 		}
 
 		this.#updateAriaLabel(text);
-		this.selectionMadeAction(value);
+		this.selectionMadeAction(value, classification);
 		$(`#${this.props.containerId}-select`).focus();
 	};
 
@@ -525,11 +585,12 @@ export class TopicDropdown {
 			$(`#${this.props.containerId} #genDropdownSearch`).css("caret-color", "transparent");
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
-				if (
-					html.toLowerCase().includes(lowercaseSearch) &&
-					!$(item).hasClass("disabled") &&
-					!$(item).hasClass("genOptionFilteredOut")
-				) {
+				const parentTopicText = $(item).data("parent-topic") || "";
+				const hasTextMatch =
+					html.toLowerCase().includes(lowercaseSearch) ||
+					parentTopicText.toLowerCase().includes(lowercaseSearch);
+
+				if (hasTextMatch && !$(item).hasClass("disabled") && !$(item).hasClass("genOptionFilteredOut")) {
 					$(item).attr("hidden", false);
 					matchIndex = html.toLowerCase().indexOf(lowercaseSearch);
 					const matchingText = html.slice(matchIndex, matchIndex + this.searchText.length);
@@ -549,6 +610,7 @@ export class TopicDropdown {
 						.addClass("genOptionSelected");
 				}
 			});
+
 			topicGroups.forEach((group, i) => {
 				const filteredOut = $(`#topicGroup${i}`).hasClass("genOptionFilteredOut");
 				if (filteredOut) {
@@ -591,6 +653,16 @@ export class TopicDropdown {
 		const totalHeight = topicHeight + searchHeight;
 		$(".genDropDownWithGroups").css({
 			top: `${totalHeight - 17}px`,
+		});
+
+		// we loop over all topics/subtopics, and find out if there any any matching items.
+		// if no matches, we hide the subtopic/topic
+		// eslint-disable-next-line array-callback-return
+		$(".genDropdownTopicGroup").map((i, group) => {
+			const topicId = $(group).data("topic-id");
+			if (topicId && $(`.genDropdownOption[data-val="${topicId}"]:visible`).length === 0) {
+				$(group).attr("hidden", true);
+			}
 		});
 	};
 

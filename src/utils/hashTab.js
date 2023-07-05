@@ -33,10 +33,10 @@ export const getSelections = () => {
 		selections = selections[1].split("/");
 		const topic = selections[0];
 
-		if (!hashLookup[topic]) return { topic };
+		if (!hashLookup[topic]) return { topic, classification: selections[1] };
 
 		const classification = hashLookup[topic].classificationOptions.find((s) => s.hash === selections[1]).value;
-		const group = hashLookup[topic].groupOptions.find((c) => c.hash === selections[2]).value;
+		const group = hashLookup[topic].groupOptions.find((c) => c.hash === selections[2])?.value;
 		const viewSinglePeriod = selections[3] === "single-time-period";
 		$("#show-one-period-checkbox").prop("checked", viewSinglePeriod);
 
@@ -51,7 +51,7 @@ export const getSelections = () => {
 	return null;
 };
 
-const slugify = (str) => {
+export const slugify = (str) => {
 	return str
 		.toLowerCase()
 		.trim()

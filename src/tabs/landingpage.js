@@ -20,7 +20,7 @@ export class LandingPage {
 		this.csv = null;
 		this.chartConfig = null;
 		this.flattenedFilteredData = null;
-		this.dataTopic = "angina-pectoris"; // default
+		this.dataTopic = "arthritis-diagnosis"; // default
 		this.groupId = 0;
 		this.startPeriod = null;
 		this.startYear = null; // first year of the first period
@@ -226,7 +226,9 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").show();
 		}
 
-		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
+		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
+			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+		}
 
 		let stateData = [...data];
 
@@ -332,7 +334,11 @@ export class LandingPage {
 		}
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
-		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
+
+		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
+			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+		}
+
 		$("#chartLegendTitle").html(group);
 	}
 
@@ -500,7 +506,7 @@ export class LandingPage {
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
 
-		return this.config.hasClassification
+		return this.config.hasClassification && this.config.classificationId
 			? filteredData.filter((d) => d.panel_num == this.config.classificationId)
 			: filteredData;
 	}
@@ -606,17 +612,20 @@ export class LandingPage {
 		return reliabilityFootnotesSymbol;
 	}
 
-	topicDropdownChange = (value) => {
+	topicDropdownChange = async (value, classification = null) => {
 		this.startYear = null;
 		this.endYear = null;
 		this.events.stopAnimation();
 		this.selections = null;
 		this.legend = null;
 		this.allMapData = null;
-		this.updateTopic(value);
+		await this.updateTopic(value);
+		if (classification) {
+			this.updateClassification(classification);
+		}
 	};
 
-	updateTopic = (dataTopic, topicChange = true) => {
+	updateTopic = async (dataTopic, topicChange = true) => {
 		$(".genLoader").addClass("active");
 
 		// reset to full range of time periods on topic change event but not from page load, which may have a hash url stating 'single-time-period' (bar chart)
@@ -666,12 +675,12 @@ export class LandingPage {
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (this.config.isNhisData) {
-			this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then((data) => {
+			await this.getSelectedSocrataData(config.topicLookup[this.config.topicLookupId]).then(async (data) => {
 				this.nhisData = data;
-				this.getData(topicChange);
+				await this.getData(topicChange);
 			});
 		} else {
-			this.getData(topicChange);
+			await this.getData(topicChange);
 		}
 
 		return null;
@@ -801,6 +810,7 @@ export class LandingPage {
 			ariaLabel: "select a topic",
 			options: options.sort((a, b) => a.text.localeCompare(b.text)),
 			selectedValue: this.dataTopic,
+			classification: this.selections?.classification,
 		});
 		this.topicDropdown.render();
 
@@ -835,6 +845,7 @@ export class LandingPage {
 		});
 
 		this.classificationDropdown.render();
+		// commented out to prevent a rerender/reselect on topic change
 		this.config.classificationId = this.classificationDropdown.value();
 
 		if (options.length === 1) {
@@ -843,9 +854,50 @@ export class LandingPage {
 	}
 
 	initGroupDropdown() {
-		if (this.config.hasClassification || !this.flattenedFilteredData)
-			this.flattenedFilteredData = this.getFlattenedFilteredData();
+		// if (this.config.hasClassification || !this.flattenedFilteredData)
+		// 	this.flattenedFilteredData = this.getFlattenedFilteredData();
 
+		const classificationGroupDict = config.classificationGroups.reduce((prev, curr) => {
+			// eslint-disable-next-line no-param-reassign
+			prev[curr.text] = curr.id;
+			return prev;
+		}, {});
+
+		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict[c.panel]);
+		let dataToFilter = filteredTopics;
+		if (filteredTopics.length === 0) {
+			// this filters to exact classification so we only get options specific to it vs others
+			// in the topic (ie 2-5 years vs 2-19 years, etc)
+			if (this.config.classificationId) {
+				dataToFilter = this.socrataData.filter(
+					(d) => parseInt(d.panel_num, 10) === parseInt(this.config.classificationId, 10)
+				);
+			} else {
+				dataToFilter = this.socrataData;
+			}
+		}
+
+		const options = dataToFilter.reduce((prev, curr) => {
+			if (!prev.find((t) => t.text === curr.stub_name && t.value === curr.stub_name_num)) {
+				prev.push({
+					value: curr.stub_name_num,
+					text: curr.stub_name,
+					classificationGroup: filteredTopics.length > 0 ? classificationGroupDict[curr.panel] : 0,
+				});
+			}
+			return prev;
+		}, []);
+
+		// make total first item in list if it exists
+		if (options.findIndex((o) => o.text.toLowerCase() === "total") !== -1) {
+			const totalItem = options[options.findIndex((o) => o.text.toLowerCase() === "total")];
+			options.splice(totalItem, 1);
+			options.unshift(totalItem);
+		}
+
+		// PREVIOUS LOGIC TO DETERMINE groups/classification
+		// kept in tact because of logic specific to topics below... do we need this?
+		/*
 		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
 			NHISTopics.map((t) => t.id)
 		);
@@ -861,16 +913,20 @@ export class LandingPage {
 			(a, b) => a.stub_name_num - b.stub_name_num
 		);
 
-		const options = allGroupIds.map((d) => ({
+		options = allGroupIds.map((d) => ({
 			text: d.stub_name,
 			value: d.stub_name_num,
 		}));
+		*/
+		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
+		console.log("options", uniqueOptions);
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
 			ariaLabel: "select a group",
-			options,
+			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
+			isNestedGroup: filteredTopics.length > 0,
 		});
 		this.groupDropdown.render();
 		this.groupId = this.groupDropdown.value();
@@ -926,19 +982,24 @@ export class LandingPage {
 		}
 	}
 
-	updateClassification(classificationId) {
+	updateClassification(classificationId, preventGroupUpdating = false) {
 		this.legend = null;
 		this.allMapData = null;
 		this.currentTimePeriodIndex = 0;
 
 		this.events.stopAnimation();
 		this.config.classificationId = parseInt(classificationId, 10);
-		this.initGroupDropdown();
+		if (!preventGroupUpdating) {
+			this.initGroupDropdown();
 
-		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.updateGroup(1);
-			return;
+			if (this.config.hasMap && this.activeTabNumber === 0) {
+				this.updateGroup(1);
+				return;
+			}
 		}
+
+		// forces regeneration of classification options for hash
+		hashTab.addToHashLookup(this.socrataData, this.topicDropdown.value());
 
 		this.renderDataVisualizations();
 	}
@@ -1156,7 +1217,10 @@ export class LandingPage {
 		};
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
-		$("#chart-subtitle").html(`Classification: ${this.classificationDropdown.text()}`);
+
+		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
+			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+		}
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
 		const groupText = this.groupDropdown.text().toLowerCase();

@@ -292,6 +292,18 @@ export const updateTopicDropdownList = () => {
 					.addClass("genOptionFilteredOut");
 		});
 
+		// code to hide subtopics if not matched
+		$(".subTopicDowndropGroup").map((i, group) => {
+			const topicId = $(group).data("topic-id");
+
+			if (
+				$(`.genDropdownOption[data-val="${topicId}"]`).not(".genOptionFilteredOut").length === 0 &&
+				$(`.genDropdownOption[data-parent-topic-id="${topicId}"]`).not(".genOptionFilteredOut").length === 0
+			) {
+				$(group).attr("hidden", true).addClass("genOptionFilteredOut");
+			}
+		});
+
 		// togggle switch on
 		$("#refine-topic-list-switch").text("ON");
 	} else {
@@ -319,9 +331,9 @@ export const getSelectedTopicCount = () => {
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
 				if (
-					selectedDataSystems.includes(dataSystem) &&
-					(!filtersWithoutDataSystems.length ||
-						filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF)))
+					selectedDataSystems.includes(dataSystem) ||
+					!filtersWithoutDataSystems.length ||
+					filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))
 				) {
 					total++;
 				}
