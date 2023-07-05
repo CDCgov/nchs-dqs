@@ -103,10 +103,10 @@ const populate = (props) => {
 					}" class="genDropdownTopicGroup subTopicDowndropGroup">${parentTopic}:</div>`
 				);
 				topicLookup[o.value].subtopics.forEach((s) => {
+					const isSelected = o[props.value] === selected[props.value] && s.id === selected.classification;
+
 					optionList.push(`
-						<div class="genDropdownOption genDropdownSubtopicOption topicGroup${i} ${
-						s.id === selected.classification ? "genOptionSelected" : ""
-					}"
+						<div class="genDropdownOption genDropdownSubtopicOption topicGroup${i} ${isSelected ? "genOptionSelected" : ""}"
 							data-val="${o[props.value]}"
 							data-classification="${s.id}"
 							data-parent-topic="${parentTopic}"
@@ -114,7 +114,7 @@ const populate = (props) => {
 							role="option"				
 							aria-label="${s.text.trim()}"
 							aria-role="option"
-							aria-selected="${s.id === selected.classification ? "true" : "false"}"
+							aria-selected="${isSelected ? "true" : "false"}"
 							tabindex="0"
 						>
 							<i class="fas fa-level-up-alt fa-rotate-90"></i><a>${s.text.trim()}</a>
