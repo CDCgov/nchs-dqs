@@ -1244,7 +1244,7 @@ export class LandingPage {
 		tableData = tableData.map((d) => {
 			let { flag, estimate, estimate_lci, estimate_uci } = d;
 
-			if (!estimate && estimate !== 0) {
+			if (!estimate && estimate !== 0 && !flag) {
 				flag = reliabilityNotesSymbol || "**";
 				estimate = "";
 			} else {
