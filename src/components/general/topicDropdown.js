@@ -583,6 +583,7 @@ export class TopicDropdown {
 		let matchIndex;
 		if (this.searchText.length) {
 			$(`#${this.props.containerId} #genDropdownSearch`).css("caret-color", "transparent");
+
 			$($(this.listItems).get().reverse()).each((i, item) => {
 				const html = $(item).find("a").html();
 				const parentTopicText = $(item).data("parent-topic") || "";
@@ -592,12 +593,22 @@ export class TopicDropdown {
 
 				if (hasTextMatch && !$(item).hasClass("disabled") && !$(item).hasClass("genOptionFilteredOut")) {
 					$(item).attr("hidden", false);
-					matchIndex = html.toLowerCase().indexOf(lowercaseSearch);
-					const matchingText = html.slice(matchIndex, matchIndex + this.searchText.length);
-					const remaining = html.split(matchingText);
+					// if matchIndex is -1 then match found is against parentTopicText
+					const isTopicTextMatch = html.toLowerCase().indexOf(lowercaseSearch) !== -1;
+
+					matchIndex = isTopicTextMatch
+						? html.toLowerCase().indexOf(lowercaseSearch)
+						: parentTopicText.toLowerCase().indexOf(lowercaseSearch);
+
+					const matchingText = isTopicTextMatch
+						? html.slice(matchIndex, matchIndex + this.searchText.length)
+						: parentTopicText.slice(matchIndex, matchIndex + this.searchText.length);
+
+					const remaining = isTopicTextMatch ? html.split(matchingText) : parentTopicText.split(matchingText);
+
 					$(`#${this.props.containerId} #genDropdownSearch > a`).html(`
-							<span>${remaining[0]}</span><span style="font-weight: bold;">${this.searchText}</span><span>${remaining[1]}</span>
-						`);
+								<span>${remaining[0]}</span><span style="font-weight: bold;">${this.searchText}</span><span>${remaining[1]}</span>
+							`);
 				} else {
 					$(item).attr("hidden", true);
 				}
