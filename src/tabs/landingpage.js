@@ -584,6 +584,15 @@ export class LandingPage {
 				if (unreliableNotes.includes("(^)")) {
 					reliabilityFootnotesSymbol = "^";
 				}
+				if (unreliableNotes.includes("(~)")) {
+					reliabilityFootnotesSymbol = "~";
+				}
+				if (unreliableNotes.includes("(- - -)")) {
+					reliabilityFootnotesSymbol = "---";
+				}
+				if (unreliableNotes.includes("(-)")) {
+					reliabilityFootnotesSymbol = "-";
+				}
 			}
 			footerNotes = unreliableNotes + footerNotes;
 			$("#pageFooterTable").show(); // this is the Footnotes line section with the (+) toggle on right
