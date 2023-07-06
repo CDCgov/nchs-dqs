@@ -658,12 +658,14 @@ export class TopicDropdown {
 		// we loop over all topics/subtopics, and find out if there any any matching items.
 		// if no matches, we hide the subtopic/topic
 		// eslint-disable-next-line array-callback-return
-		$(".genDropdownTopicGroup").map((i, group) => {
-			const topicId = $(group).data("topic-id");
-			if (topicId && $(`.genDropdownOption[data-val="${topicId}"]:visible`).length === 0) {
-				$(group).attr("hidden", true);
-			}
-		});
+		if (this.searchText.length) {
+			$(".genDropdownTopicGroup").map((i, group) => {
+				const topicId = $(group).data("topic-id");
+				if (topicId && $(`.genDropdownOption[data-val="${topicId}"]:visible`).length === 0) {
+					$(group).attr("hidden", true);
+				}
+			});
+		}
 	};
 
 	#hideFirst = () => {
