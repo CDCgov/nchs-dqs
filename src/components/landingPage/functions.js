@@ -332,7 +332,7 @@ export const getSelectedTopicCount = () => {
 				if (!firstFiltered) firstFiltered = value;
 				if (
 					selectedDataSystems.includes(dataSystem) ||
-					!filtersWithoutDataSystems.length ||
+					// !filtersWithoutDataSystems.length ||
 					filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))
 				) {
 					total++;
