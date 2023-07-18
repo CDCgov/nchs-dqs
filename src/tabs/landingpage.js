@@ -1267,7 +1267,8 @@ export class LandingPage {
 			};
 		});
 
-		if (tableData.every((d) => !d.estimate || d.estimate === "NaN")) {
+		// forces table to show if there is a flag attribute but no estimate
+		if (tableData.every((d) => (!d.estimate || d.estimate === "NaN") && !d.flag)) {
 			$("#tableResultsCount").hide();
 			$(".expanded-data-table")
 				.empty()
