@@ -119,13 +119,15 @@ const populate = (props, mobile) => {
 		);
 	} else {
 		let totalItem = null;
-		classificationGroups.forEach((g) => {
+		classificationGroups.forEach((g, index) => {
 			const groupOptions = props.options
 				.filter((o) => parseInt(o.classificationGroup, 10) === parseInt(g.id, 10))
 				.sort((a, b) => a.text.localeCompare(b.text));
 
 			if (groupOptions.length > 0) {
-				optionList.push(`<div id="topicGroup${g.id}" class="genDropdownTopicGroup">${g.text}</div>`);
+				optionList.push(
+					`<div id="topicGroup${g.id}-${index}" class="genDropdownTopicGroup asldfkj">${g.text}</div>`
+				);
 				groupOptions.forEach((o) => {
 					if (o[props.text].toLowerCase() === "total") {
 						totalItem = o;

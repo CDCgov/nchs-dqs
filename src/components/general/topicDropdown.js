@@ -94,11 +94,11 @@ const populate = (props) => {
 			.sort((a, b) => a.text.localeCompare(b.text));
 		optionList.push(`<div id="topicGroup${i}" data-topic-id="${i}" class="genDropdownTopicGroup">${g}</div>`);
 
-		groupOptions.forEach((o) => {
+		groupOptions.forEach((o, index) => {
 			if (topicLookup[o.value] && topicLookup[o.value].subtopics) {
 				const parentTopic = o[props.text].split(TOPIC_SEPARATOR).shift().trim();
 				optionList.push(
-					`<div id="topicGroup" data-topic-id="${
+					`<div id="topicGroup-${o[props.value]}-${index}" data-topic-id="${
 						o[props.value]
 					}" class="genDropdownTopicGroup subTopicDowndropGroup">${parentTopic}:</div>`
 				);
