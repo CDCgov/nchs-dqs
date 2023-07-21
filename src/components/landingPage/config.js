@@ -180,7 +180,7 @@ export const tabContent = `
 					</div>
 				</div>
 				<br />
-				<div tabindex="0" class="source-text unreliableNote">Some estimates are considered not reliable. <a class="viewFootnotes">See Notes</a> for more details.</div>
+				<div tabindex="0" class="source-text unreliableNote">Symbols such as *, **, ---, or vertical lines are used to indicate differences in reliability, data availability, or survey design. Please see <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 		</div>
 		<!-- end map wrapper -->
@@ -198,7 +198,7 @@ export const tabContent = `
 					</div>
 				</div>
 				<br />
-				<div tabindex="0" class="source-text unreliableNote">Some estimates are considered not reliable. <a class="viewFootnotes">See Notes</a> for more details.</div>
+				<div tabindex="0" class="source-text unreliableNote">Symbols such as *, **, ---, or vertical lines are used to indicate differences in reliability, data availability, or survey design. Please see <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>

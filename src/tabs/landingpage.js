@@ -13,6 +13,8 @@ import { TopicDropdown } from "../components/general/topicDropdown";
 import { SubgroupMultiSelectDropdown } from "../components/general/subgroupMultiSelectDropdown";
 import { genFormat } from "../utils/genFormat";
 
+const SHOW_VERTICAL_LINE_TOPICS = ["access-care", "medicaidU65"];
+
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
@@ -315,6 +317,10 @@ export class LandingPage {
 		);
 		this.chartConfig.chartTitle = ""; // don't use the built in chart title
 		this.chartConfig.subGroups = subgroupValues;
+		this.chartConfig.topicId = this.topicDropdown.value();
+		this.chartConfig.showVerticalLine =
+			SHOW_VERTICAL_LINE_TOPICS.includes(this.chartConfig.topicId) &&
+			chartData.find((c) => c.year.includes("2019"));
 
 		// rotate labels 45 degrees
 		this.chartConfig.bottomAxisRotation = this.chartConfig.usesTopAxis ? 45 : -45;

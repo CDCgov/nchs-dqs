@@ -107,6 +107,7 @@ export const getProps = (props) => {
 			"There are no data for your selections. Please change your options. Select at least one Subgroup.", // message to be displayed in place of chart when no data array is passed into genChart (CVI-4549 Tech Debt: Display message to user when no data is passed into genChart component)
 		chartRotationPercent: props.chartRotationPercent, // (TT) this is used to rotate bar chart
 		enableCI: props.enableCI || 0, // (TT) enable confidence intervals
+		hasVerticalLine: props.showVerticalLine || false, // draws vertical line for certain topics missing data
 	};
 };
 

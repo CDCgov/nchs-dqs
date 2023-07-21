@@ -1327,7 +1327,8 @@ export class GenChart {
 							xAxis
 								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
-								.tickFormat((d, i) => {
+								.tickFormat(function (d, i) {
+									this.setAttribute("data-value", yearDisplay(d));
 									return i % 2 !== 0 && allDatesCount > 30 ? " " : yearDisplay(d);
 								});
 						} else if (appState.currentDeviceType === "tablet") {
@@ -1595,6 +1596,42 @@ export class GenChart {
 		}
 
 		svg.attr("viewBox", [0, 0, fullSvgWidth, svgHeight + legendHeight]);
+
+		// const matchedXItem = d3.selectAll(`#${svgId} .axis text`).filter(function () {
+		// 	return d3.select(this).text() === "2018";
+		// });
+
+		// draws vertical line for missing data
+		if (this.props.hasVerticalLine) {
+			const matchedx = document
+				.querySelector(`.tick text[data-value="2019"]`)
+				.parentElement?.getAttribute("transform")
+				?.replace("translate(", "")
+				.split(",")
+				.shift();
+
+			if (matchedx) {
+				console.log("got x axis", matchedx);
+				const linex = parseFloat(matchedx, 10) + 60;
+				let liney = "calc(100% - 45px)";
+				if (document.querySelector(".y.axis.left")?.getBoundingClientRect()?.height) {
+					liney = `calc(${
+						document.querySelector(".y.axis.left").getBoundingClientRect().height - 30
+					}px + 40px)`;
+				}
+
+				svg.append("line")
+					.style("stroke", "#333333")
+					.style("stroke-width", 2)
+					.attr("stroke-dasharray", "5, 5")
+					.attr("x1", linex)
+					.attr("y1", 0)
+					.attr("x2", linex)
+					.attr("y2", liney);
+
+				$(".unreliableNote").show();
+			}
+		}
 
 		return {
 			data: p.data,
