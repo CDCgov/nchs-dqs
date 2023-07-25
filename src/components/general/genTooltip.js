@@ -200,9 +200,14 @@ export class GenTooltip {
 		const widthToLeftBounds = clientX - leftBounds;
 
 		// prevent tooltipWidth from going out of bounds for low resolution display
-		if (tipWidth > widthToLeftBounds && sides.x === "right") tip.style("width", widthToLeftBounds + "px");
-		else tip.style("width", "inherit");
+		if (tipWidth > widthToLeftBounds && sides.x === "right") {
+			tip.style("width", widthToLeftBounds + "px");
+		} else {
+			tip.style("width", "inherit");
+		}
 
+		console.log(`left: ${clientX + 5}`);
+		console.log(`left: ${clientX - tipWidth - 5}`);
 		tip.style("left", sides.x === "left" ? `${clientX + 5}px` : `${clientX - tipWidth - 5}px`)
 			.style("top", sides.y === "top" ? `${clientY + 5}px` : `${clientY - tipHeight - 5}px`)
 			.transition()
@@ -217,7 +222,12 @@ export class GenTooltip {
 		const tipWidth = d3.select(`#${this.vizId}-tooltip`)._groups[0][0].offsetWidth;
 
 		d3.select(`#${this.vizId}-tooltip`)
-			.style("left", sides.x === "left" ? `${d3.event.clientX + 5}px` : `${d3.event.clientX - tipWidth - 5}px`)
+			.style(
+				"left",
+				sides.x === "left"
+					? `${d3.event.clientX + 5}px`
+					: `${d3.event.clientX - tipWidth - 5 > 0 ? d3.event.clientX - tipWidth - 5 : 0}px`
+			)
 			.style("top", sides.y === "top" ? `${d3.event.clientY + 5}px` : `${d3.event.clientY - tipHeight - 5}px`);
 	}
 
