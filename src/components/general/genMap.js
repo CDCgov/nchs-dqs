@@ -125,7 +125,8 @@ export class GenMap {
 				.attr("stroke", "#333")
 				.attr("cx", -0.9 * axisLabelFontSize)
 				.attr("cy", -0.9 * axisLabelFontSize)
-				.style("cursor", "pointer");
+				.style("cursor", "pointer")
+				.attr("tabindex", "0");
 
 			// play icon (triangle)
 			animate

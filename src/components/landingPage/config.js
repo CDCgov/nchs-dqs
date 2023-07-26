@@ -238,12 +238,12 @@ export const tabContent = `
 	</div>
 
 	<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px; margin-bottom: 15px">
-		<div role="button" aria-label="footnotes" class="table-toggle" id="footer-table-toggle" tabindex="0">
+		<div role="button" aria-controls="pageFooter" aria-expanded="true" aria-label="footnotes" class="table-toggle" id="footer-table-toggle" tabindex="0">
 			<h4 class="table-title">Notes</h4>
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-minus"></i></div>
 		</div>
-		<div id="pageFooter" class="data-table"></div>
-	</div>	
+		<div id="pageFooter" class="data-table" aria-hidden="false" tabindex="0"></div>
+	</div>
 `;
 
 const footnoteDatasets = {

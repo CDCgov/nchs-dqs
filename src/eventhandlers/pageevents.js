@@ -7,7 +7,10 @@ export const PageEvents = {
 				$(e.currentTarget).children(".table-toggle-icon").children("i").toggleClass("fa-minus fa-plus");
 				$(e.currentTarget).toggleClass("closed");
 				$(e.currentTarget).next(".data-table").toggleClass("closed");
-				// const action = $(e.currentTarget).hasClass("closed") ? "closed." : "opened.";
+				const isClosed = $(e.currentTarget).hasClass("closed");
+				$("#pageFooter").attr("aria-hidden", isClosed);
+				$(e.currentTarget).attr("aria-expanded", !isClosed);
+
 				// const tableTitle = $(e.currentTarget).children(".table-title").text();
 				// let interaction = `${appState.NAV_ITEM}: ${tableTitle} ${action}`;
 				//Analytics.triggerOmnitureInteractions(interaction);

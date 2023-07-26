@@ -21,6 +21,32 @@ export class MainEvents {
 		$("#mapPlayButtonContainer").hide();
 	};
 
+	playAnimation = () => {
+		if (appState.ACTIVE_TAB.animating) {
+			this.stopAnimation();
+			return;
+		}
+
+		const allYears = appState.ACTIVE_TAB.allYearsOptions;
+		let next = appState.ACTIVE_TAB.currentTimePeriodIndex;
+		const { length } = allYears;
+
+		const moveNext = (restart) => {
+			if (!restart && next === 0) {
+				this.stopAnimation();
+				return;
+			}
+			next++;
+			if (next === length) next = 0;
+			const { value } = allYears[next];
+			appState.ACTIVE_TAB.updateStartPeriod(value);
+			appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
+		};
+		appState.ACTIVE_TAB.animating = true;
+		moveNext(next === 0);
+		this.animationInterval = setInterval(() => moveNext(), 1000);
+	};
+
 	registerEvents = () => {
 		$(document)
 			.off("click", "#mapBackward")
@@ -45,29 +71,10 @@ export class MainEvents {
 			})
 			.off("click", ".mapPlayButton, .animatePauseIcon")
 			.on("click", ".mapPlayButton, .animatePauseIcon", () => {
-				if (appState.ACTIVE_TAB.animating) {
-					this.stopAnimation();
-					return;
-				}
-
-				const allYears = appState.ACTIVE_TAB.allYearsOptions;
-				let next = appState.ACTIVE_TAB.currentTimePeriodIndex;
-				const { length } = allYears;
-
-				const moveNext = (restart) => {
-					if (!restart && next === 0) {
-						this.stopAnimation();
-						return;
-					}
-					next++;
-					if (next === length) next = 0;
-					const { value } = allYears[next];
-					appState.ACTIVE_TAB.updateStartPeriod(value);
-					appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
-				};
-				appState.ACTIVE_TAB.animating = true;
-				moveNext(next === 0);
-				this.animationInterval = setInterval(() => moveNext(), 1000);
+				this.playAnimation();
+			})
+			.on("keypress enter", ".mapPlayButton, .animatePauseIcon", () => {
+				this.playAnimation();
 			});
 
 		$(document)
