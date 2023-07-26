@@ -77,7 +77,7 @@ a {
 }
 
 .site-title {
-	padding: 29px 38px;
+	padding: 10px 26px;
 	font-weight: 500;
 	font-family: "Open Sans", "Segoe UI", "Helvetica Neue", arial, sans-serif;
 
@@ -89,7 +89,7 @@ a {
 .site-title a,
 .site-title a:link,
 .site-title a:visited {
-	font-size: 40px;
+	font-size: 24px;
 
 	@include mobile-max {
 		font-size: 28px;
@@ -102,6 +102,20 @@ a {
 
 .site-title a:hover * {
 	text-decoration: underline;
+}
+
+.site-breadcrumb {
+	background-color: #ebf7f5;
+	color: #bdbdbd;
+	font-size: 16px;
+	padding: 12px 0 12px 20px;
+
+	a:link,
+	a:visited {
+		color: #555 !important;
+		text-decoration: none;
+		margin: 0 4px;
+	}
 }
 
 .d-none {
