@@ -416,7 +416,7 @@ const singleTopicDatasets = {
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/gp4d-kizt",
-		socrataId: "52ij-h8yw",
+		socrataId: "gp4d-kizt",
 		private: "1",
 		chartTitle: "Deaths from drug overdose",
 		filters: "HUS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
