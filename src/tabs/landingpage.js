@@ -454,11 +454,11 @@ export class LandingPage {
 				}
 				// enable the CI checkbox
 				$("#confidenceIntervalSlider").prop("disabled", false);
-				$("#chart-table-selectors-tooltip").hide();
+				$("#chart-table-selectors-tooltip").show();
 			} else {
 				// hide confidence interval slider
 				$("#ciTableSlider").hide();
-				$("#chart-table-selectors-tooltip").show();
+				$("#chart-table-selectors-tooltip").hide();
 			}
 		}
 
@@ -767,7 +767,7 @@ export class LandingPage {
 						}
 						// enable the CI checkbox
 						$("#confidenceIntervalSlider").prop("disabled", false);
-						$("#chart-table-selectors-tooltip").hide();
+						$("#chart-table-selectors-tooltip").show();
 					} else {
 						// hide confidence interval slider
 						$("#ciTableSlider").hide();

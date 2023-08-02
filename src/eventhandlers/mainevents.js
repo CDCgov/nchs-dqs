@@ -118,8 +118,11 @@ export class MainEvents {
 			.off("click", "#confidenceIntervalSlider")
 			.on("click", "#confidenceIntervalSlider", (e) => {
 				const { checked } = e.currentTarget;
-				if (checked) appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
-				else appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
+				if (checked) {
+					appState.ACTIVE_TAB.updateEnableCI(1); // set to enable bar chart
+				} else {
+					appState.ACTIVE_TAB.updateEnableCI(0); // set to enable line chart
+				}
 			})
 			.off("click", "#showAllSubgroupsSlider")
 			.on("click", "#showAllSubgroupsSlider", (e) => {

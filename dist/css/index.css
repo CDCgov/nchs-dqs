@@ -15104,7 +15104,7 @@ a {
     color: #fff !important; }
 
 .site-title {
-  padding: 29px 38px;
+  padding: 10px 26px;
   font-weight: 500;
   font-family: "Open Sans", "Segoe UI", "Helvetica Neue", arial, sans-serif; }
   @media (max-width: 991px) {
@@ -15114,7 +15114,7 @@ a {
 .site-title a,
 .site-title a:link,
 .site-title a:visited {
-  font-size: 40px;
+  font-size: 24px;
   text-decoration: none;
   color: #fff;
   vertical-align: middle; }
@@ -15126,6 +15126,17 @@ a {
 
 .site-title a:hover * {
   text-decoration: underline; }
+
+.site-breadcrumb {
+  background-color: #ebf7f5;
+  color: #bdbdbd;
+  font-size: 16px;
+  padding: 12px 0 12px 20px; }
+  .site-breadcrumb a:link,
+  .site-breadcrumb a:visited {
+    color: #555 !important;
+    text-decoration: none;
+    margin: 0 4px; }
 
 .d-none {
   display: none; }
@@ -15822,6 +15833,15 @@ path.sliderHandles:active {
   font-size: 1em;
   margin-bottom: 7px; }
 
+.banner-text {
+  font-size: 16px;
+  color: #333;
+  padding: 16px 0 32px 0;
+  margin-left: -20px; }
+  .banner-text a:link,
+  .banner-text a:visited {
+    color: #075290; }
+
 .genericDataContainer,
 #pageFooterTable {
   display: none;
@@ -15996,7 +16016,7 @@ div.genDropdownSelected {
       background: transparent;
       border: none;
       font-weight: 500;
-      padding-left: 15px; }
+      padding-left: 10px; }
     div.genDropdownSelected div.genDropdownOptions div.genDropdownOption {
       margin-left: -10px;
       margin-right: -10px;
@@ -16024,7 +16044,9 @@ div.genDropdownSelected {
         color: #bdbdbd !important;
         pointer-events: none; }
     div.genDropdownSelected div.genDropdownOptions.genDropDownWithGroups div.genDropdownOption {
-      padding-left: 30px; }
+      padding-left: 15px; }
+    div.genDropdownSelected div.genDropdownOptions.genDropDownWithGroups div.genDropdownOption.genDropdownSubtopicOption {
+      padding-left: 25px; }
 
 .genMsdSelected {
   display: flex;

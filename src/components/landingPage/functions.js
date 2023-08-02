@@ -30,10 +30,10 @@ export const addHtmlTooltips = () => {
 		containerId: "topicDropdownGroup",
 	});
 
-	const ciToggleTooltip = new HtmlTooltip({
-		body: "Confidence interval not available for this set of data",
-		containerId: "chart-table-selectors",
-	});
+	// const ciToggleTooltip = new HtmlTooltip({
+	// 	body: "Confidence interval not available for this set of data",
+	// 	containerId: "chart-table-selectors",
+	// });
 
 	const refineTopicInfoTooltip = new HtmlTooltip({
 		body: "E.g. Select <b>Female, Asian, Infant</b> to show all results for Female <b>OR</b> Asian <b>OR</b> Infant.",
@@ -44,17 +44,26 @@ export const addHtmlTooltips = () => {
 		body: "Freeze data bin ranges for all time periods for ease of comparison",
 		containerId: "staticBinningContainer",
 	});
-	staticBinningTooltip.render();
 
+	const ciTooltip = new HtmlTooltip({
+		body: "A confidence interval is a range of values that describes the uncertainty around an estimate.",
+		containerId: "chart-table-selectors",
+	});
+
+	staticBinningTooltip.render();
 	editFiltersTooltip.render();
-	ciToggleTooltip.render();
+	ciTooltip.render();
 	refineTopicInfoTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
-	$("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
-	$("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
-	$("#ciTableHover").mouseleave((e) => ciToggleTooltip.mouseout(e));
+	$("#ciLabelTooltip").mouseover((e) => ciTooltip.mouseover(e));
+	$("#ciLabelTooltip").mousemove((e) => ciTooltip.mousemove(e));
+	$("#ciLabelTooltip").mouseleave((e) => ciTooltip.mouseout(e));
+
+	// $("#ciTableHover").mouseover((e) => ciToggleTooltip.mouseover(e));
+	// $("#ciTableHover").mousemove((e) => ciToggleTooltip.mousemove(e));
+	// $("#ciTableHover").mouseleave((e) => ciToggleTooltip.mouseout(e));
 
 	$("#refineInfoIcon").mouseover((e) => refineTopicInfoTooltip.mouseover(e));
 	$("#refineInfoIcon").mousemove((e) => refineTopicInfoTooltip.mousemove(e));

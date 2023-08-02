@@ -18,9 +18,14 @@ export const chartAndTableSelectors = `
 					</label>
 				</div>
 				<div id="ciTableSlider" class="viewSliders">
-					<label for="confidenceIntervalSlider" class="tableSliderLabel">Show Confidence Interval</label>
+					<label for="ciToggle" class="tableSliderLabel">Show 
+						<span id="ciLabelTooltip" 
+							style="border-bottom: 1px dotted #000; cursor: pointer; display: inline-block;">
+							Confidence Interval
+						</span>
+					</label>
 					<label class="switch">
-						<input id="confidenceIntervalSlider" tabindex="0"  type="checkbox" aria-label="show all subgroups">
+						<input id="confidenceIntervalSlider" name="ciToggle" tabindex="0"  type="checkbox">
 						<span id="ciTableHover" class="slider round" role="img" aria-labelledby="chart-table-selectors"></span>
 					</label>
 				</div>			
