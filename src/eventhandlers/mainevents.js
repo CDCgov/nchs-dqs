@@ -263,6 +263,17 @@ export class MainEvents {
 			})
 			.on("click", ".remove-filter-pill", (e) => {
 				$(`#${$(e.currentTarget).attr("data-id")}`).click();
+			})
+			.on("click keyup tap", "#citation .copy-btn", async (e) => {
+				if (!e.key || (e.type === "keyup" && e.key === "Enter")) {
+					const text = document.querySelector("#citation .text").innerText;
+					try {
+						await navigator.clipboard.writeText(text);
+						console.log("Content copied to clipboard");
+					} catch (err) {
+						console.error("Failed to copy: ", err);
+					}
+				}
 			});
 
 		$("#clearCurrentFilters, .clearAllFilters").click(() => {

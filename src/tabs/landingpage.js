@@ -409,7 +409,7 @@ export class LandingPage {
 				);
 				this.initialPageLoad = false;
 				this.updateTopic(topic, false);
-				if (this.selections.viewSinglePeriod) {
+				if (this.selections?.viewSinglePeriod) {
 					$("#startYearContainer-label").html("");
 					$("#startYearContainer").removeClass("offset-3");
 				}
@@ -698,7 +698,24 @@ export class LandingPage {
 			await this.getData(topicChange);
 		}
 
+		this.updateCitation();
+
 		return null;
+	};
+
+	updateCitation = () => {
+		try {
+			const topic = this.topicDropdown.text();
+			$("#citation .text").html(
+				`National Center for Health Statistics Data Query System. ${topic}. National Center 
+				for Health Statistics. ${new Date().toLocaleDateString()}. <a href="https://nchsdata.cdc.gov">https://nchsdata.cdc.gov</a>`
+			);
+
+			$("#citation").attr("aria-hidden", false).show();
+		} catch (e) {
+			console.log("error generating citation", e);
+			$("#citation").attr("aria-hidden", true).hide();
+		}
 	};
 
 	getData = (topicChange) => {
