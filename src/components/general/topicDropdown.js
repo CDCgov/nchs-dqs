@@ -470,29 +470,33 @@ export class TopicDropdown {
 	};
 
 	#scrollIntoView = () => {
-		const selectHeight = $(`#${this.props.containerId}-select`)[0].getBoundingClientRect().height;
-		const dropdownDims = $(this.dropdownSection)[0].getBoundingClientRect();
-		const dropdownHeight = dropdownDims.height;
-		let dropdownBottom = dropdownDims.bottom;
-		const windowHeight = $(window).height();
-		const requiredHeight = dropdownHeight + selectHeight + 50; // 50 is for a label above, which may not exist or follow intended label class
-		if (requiredHeight > windowHeight) {
-			const newHeight = windowHeight - selectHeight - 50;
-			$(this.dropdownSection).css("height", newHeight);
-			dropdownBottom = $(this.dropdownSection)[0].getBoundingClientRect().bottom;
-		}
-		const scrollTop = $(window).scrollTop();
-		const scrollDifference = windowHeight - scrollTop;
-		if (dropdownBottom > windowHeight) {
-			$(window).scrollTop(dropdownBottom - scrollDifference + 20);
-		}
+		try {
+			const selectHeight = $(`#${this.props.containerId}-select`)[0].getBoundingClientRect().height;
+			const dropdownDims = $(this.dropdownSection)[0].getBoundingClientRect();
+			const dropdownHeight = dropdownDims.height;
+			let dropdownBottom = dropdownDims.bottom;
+			const windowHeight = $(window).height();
+			const requiredHeight = dropdownHeight + selectHeight + 50; // 50 is for a label above, which may not exist or follow intended label class
+			if (requiredHeight > windowHeight) {
+				const newHeight = windowHeight - selectHeight - 50;
+				$(this.dropdownSection).css("height", newHeight);
+				dropdownBottom = $(this.dropdownSection)[0].getBoundingClientRect().bottom;
+			}
+			const scrollTop = $(window).scrollTop();
+			const scrollDifference = windowHeight - scrollTop;
+			if (dropdownBottom > windowHeight) {
+				$(window).scrollTop(dropdownBottom - scrollDifference + 20);
+			}
 
-		// scroll to selected option if it is not in view
-		const selectedOption = $(this.dropdownSection).find(".genOptionSelected");
-		const selectedOptionTop = selectedOption[0].getBoundingClientRect().top;
-		const dropdownTop = dropdownDims.top;
-		const dropdownScrollTop = $(this.dropdownSection).scrollTop();
-		$(this.dropdownSection).scrollTop(selectedOptionTop - dropdownTop + dropdownScrollTop - dropdownHeight / 2);
+			// scroll to selected option if it is not in view
+			const selectedOption = $(this.dropdownSection).find(".genOptionSelected");
+			const selectedOptionTop = selectedOption[0].getBoundingClientRect().top;
+			const dropdownTop = dropdownDims.top;
+			const dropdownScrollTop = $(this.dropdownSection).scrollTop();
+			$(this.dropdownSection).scrollTop(selectedOptionTop - dropdownTop + dropdownScrollTop - dropdownHeight / 2);
+		} catch (e) {
+			console.log("error scrolling into view", e);
+		}
 	};
 
 	#toggleOpenClose = () => {
@@ -517,6 +521,25 @@ export class TopicDropdown {
 			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #333");
 			$(`#${this.props.containerId} #genDropdownSearch`).html("<a id='genDdSearchAnchor'>Search topic list</a>");
 			$(".genDropdownTopicGroup").not(".genOptionFilteredOut").attr("hidden", false);
+
+			// if I have a search and there is no matching items, show the appropriate text
+			if (this.searchText.length) {
+				$(".genDropdownTopicGroup").map((i, group) => {
+					const topicId = $(group).data("topic-id");
+					if ($(`.genDropdownOption[data-val="${topicId}"]:visible`).length === 0) {
+						$(group).attr("hidden", true);
+					}
+				});
+
+				if ($(".genDropdownOption:visible").length === 0) {
+					$(`#${this.props.containerId} #genDropdownSearch > a`)
+						.html(
+							`No matching results found <i class="clearSearch fas fa-times" aria-label="reset search" tabindex="0"></i>`
+						)
+						.attr("aria-label", "No matching results found");
+				}
+			}
+
 			this.#scrollIntoView(); // scroll both the dropdown itself and the currently selected option into view
 		} else {
 			// this.#resetOptions();
