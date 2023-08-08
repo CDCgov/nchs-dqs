@@ -495,7 +495,7 @@ const singleTopicDatasets = {
 		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
 		socrataId: "83hb-kwqf",
 		private: "1",
-		chartTitle: "Active Dentists",
+		chartTitle: "Dentists",
 		filters: "HUS",
 		dataSystem: "HUS",
 		classificationId: 1,
