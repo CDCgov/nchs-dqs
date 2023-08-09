@@ -3,8 +3,9 @@ import { genFormat } from "../../utils/genFormat";
 import { HtmlTooltip } from "../general/htmlTooltip";
 import { topicGroups } from "./config";
 
-const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS"];
-// const dataSystems = ["HUS", "NCHS", "NHANES", "NHIS", "NHAMCS"];
+const dataSystems = ["HUS", "NHANES", "NHIS", "NHAMCS", "NVSS", "NAMCS"];
+
+const arrayIntersect = (arrA, arrB) => arrA.filter((x) => arrB.includes(x));
 
 // this is the function that cleans up Socrata data
 export const addMissingProps = (cols, rows) => {
@@ -244,11 +245,13 @@ export const updateTopicDropdownList = () => {
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const availableFilters = $(el).data("filter").split(",");
 			const dataSystem = $(el).data("dataSystem");
+			const hasMatchingDataSystem = arrayIntersect(selectedDataSystems || [], dataSystem.split(",")).length > 0;
+
 			const value = $(el).data("val");
 			// the selectedFilters may include a data system, if selected, which gets into the if statement below
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
-				if (selectedDataSystems.length && !selectedDataSystems.includes(dataSystem)) {
+				if (!hasMatchingDataSystem) {
 					$(el).hide();
 					$(el).addClass("genOptionFilteredOut");
 					if (value === currentSelected) {
@@ -336,11 +339,11 @@ export const getSelectedTopicCount = () => {
 			const availableFilters = $(el).data("filter").split(",");
 			const dataSystem = $(el).data("dataSystem");
 			const value = $(el).data("val");
-
+			const hasMatchingDataSystem = arrayIntersect(selectedDataSystems, dataSystem.split(",")).length > 0;
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
 				if (
-					selectedDataSystems.includes(dataSystem) ||
+					hasMatchingDataSystem ||
 					// !filtersWithoutDataSystems.length ||
 					filtersWithoutDataSystems.some((sF) => availableFilters.includes(sF))
 				) {

@@ -134,6 +134,16 @@ const modalTopics = [
 		text: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
 		group: "dataSystems",
 	},
+	{
+		id: "filterNVSS",
+		text: "National Vital Statistics System (NVSS)",
+		group: "dataSystems",
+	},
+	{
+		id: "filterNAMCS",
+		text: "National Ambulatory Medical Care Survey (NAMCS)",
+		group: "dataSystems",
+	},
 ];
 
 const buildSelections = (group) => {

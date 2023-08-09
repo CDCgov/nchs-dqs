@@ -440,7 +440,8 @@ export const NHISTopics = [
 	})),
 	...WONDERHUSHeartDisease.map((d) => ({
 		...d,
-		dataSystem: "HUS",
+		dataSystem: "HUS,NVSS",
+		filters: ["HUS", "NVSS"],
 		topicLookupKey: "wonder-hus-heart-disease",
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336",
 	})),
