@@ -160,10 +160,10 @@ const buildSelections = (group) => {
 
 const filterByTypeHtml = () => {
 	return `
-		<div class="col-md-4 col-xs-12 heading5">1. Select a filter category:</div>
-		<div class="col-md-8 col-xs-12 filter-buttons-wrap">
+		<div class="col-lg-4 col-md-12 col-xs-12 heading5">1. Select a filter category:</div>
+		<div class="col-lg-8 col-md-12 col-xs-12 filter-buttons-wrap">
 			<button class="btn selection-button selected"
-				data-id="population-characteristics">Population Characterisics</button><button class="btn selection-button"
+				data-id="population-characteristics">Population Characteristics</button><button class="btn selection-button"
 				data-id="data-systems">Sources</button>
 		</div>
 	`;
@@ -186,9 +186,9 @@ const topicsHtml = () => {
 		</div>
 	</div>
 	<!-- Socioeconomic -->
-	<div class="col-md-12 col-xl-3">
+	<div class="col-md-6 col-xl-3">
 		<div class="row">
-			<div class="col-xs-12 col-md-6 col-xl-12">
+			<div class="col-xs-12 col-md-12 col-xl-12">
 				<div class="col-12 heading6">
 					<div>Socio-economic</div>
 				</div>
@@ -197,9 +197,9 @@ const topicsHtml = () => {
 		</div>
 	</div>
 	<!-- Geographic -->
-	<div class="col-md-12 col-xl-3">
+	<div class="col-md-6 col-xl-3">
 		<div class="row">
-			<div class="col-xs-12 col-md-6 col-xl-12">
+			<div class="col-xs-12 col-md-12 col-xl-12">
 				<div class="col-12 heading6">
 					<div>Geographic</div>
 				</div>
@@ -229,7 +229,7 @@ export const filterHtml = ({ topicCount = 0 }) => {
 	if (selected) {
 		let filterResults = "";
 		$(".filterCheckbox:checkbox:checked").each((i, el) => {
-			filterResults += `<span class="badge rounded-pill">
+			filterResults += `<span class="badge rounded-pill" style="display: flex; justify-content: center; align-items: center; height: 44px;">
 				${$(el).parent().siblings("label").text()}
 				<button type="button" class="btn-close remove-filter-pill" aria-label="Close" data-id="${$(el).attr("id")}"></button>
 			</span>`;
@@ -239,7 +239,7 @@ export const filterHtml = ({ topicCount = 0 }) => {
 			<div class="filter-text">There are <strong>
 				<span id="filter-summary-count">${topicCount}</span> topics available</strong> 
 			relating to <strong>any</strong> of these filters:</div>
-			<div id="filter-results">${filterResults}</div>
+			<div id="filter-results" style="display: flex; justify-content: center;">${filterResults}</div>
 		`;
 	}
 
@@ -271,7 +271,7 @@ export const modal = `
 					<hr />
 					<div class="col-xs-12">
 						<span class="heading5">2. Select filter(s) to help refine your topic selection:</span>
-						<div class="float-right"><a href="#" class="clear-all-filters">Clear All Filters</a></div>
+						<div class="float-right d-none d-lg-block"><a href="#" class="clear-all-filters">Clear All Filters</a></div>
 					</div>
 					<div class="row toggle-display" data-id="population-characteristics" aria-hidden="false">
 						${topicsHtml()}
@@ -280,6 +280,7 @@ export const modal = `
 						${dataSystemsHtml()}
 					</div>
 
+					<div class="text-center offset- d-lg-none d-md-block"><a href="#" class="clear-all-filters">Clear All Filters</a></div>
 					<hr />
 
 					<div class="row filter-summary">

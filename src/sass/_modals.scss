@@ -40,6 +40,13 @@
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 
+	@media (max-width: 768px) {
+		.filter-buttons-wrap {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+
 	.btn.selection-button {
 		background-color: #fff !important;
 		border: 1px solid #bdbdbd !important;
@@ -91,7 +98,7 @@
 			color: #333;
 			font-size: 18px;
 			font-weight: normal;
-			margin: 0 6px 6px 0;
+			margin: 0 16px 6px 0;
 		}
 
 		.btn-close {
@@ -126,7 +133,7 @@
 	}
 
 	#filterModalFooter {
-		text-align: right;
+		// text-align: right;
 		margin: 20px;
 		display: flex;
 		justify-content: space-between;
@@ -146,6 +153,12 @@
 				color: white;
 				background-color: #00695c;
 			}
+		}
+	}
+
+	@media (max-width: 768px) {
+		#filterModalFooter {
+		  flex-direction: column;
 		}
 	}
 }

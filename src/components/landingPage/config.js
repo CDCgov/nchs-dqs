@@ -19,7 +19,9 @@ export const chartAndTableSelectors = `
 				</div>
 				<div id="ciTableSlider" class="viewSliders">
 					<label for="ciToggle" class="tableSliderLabel">Show 
-						<span id="ciLabelTooltip" 
+						<span 
+							id="ciLabelTooltip"
+							tabindex="0" 
 							style="border-bottom: 1px dotted #000; cursor: pointer; display: inline-block;">
 							Confidence Interval
 						</span>
