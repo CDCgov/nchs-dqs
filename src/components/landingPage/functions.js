@@ -197,7 +197,7 @@ export const getAllChartProps = (data, showBarChart, config, xAxisTitle, sigFigs
 	};
 };
 
-export const link_i_fy = (t) => {
+export const link_i_fy = (t, shortenUrl = true) => {
 	const m = t.match(/(\b(https?|http|ftp):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi);
 	if (!m) return t;
 	const a = [];
@@ -206,7 +206,8 @@ export const link_i_fy = (t) => {
 		a.push(t1);
 		t = t2.join(x);
 		const y = (!x.match(/(http(s?)|ftp):\/\//) ? "https://" : "") + x;
-		a.push('<a href="' + y + '" target="_blank" rel="noreferrer" noopener>' + y.split("/")[2] + "</a>");
+		const url = shortenUrl ? y.split("/")[2] : y;
+		a.push('<a href="' + y + '" target="_blank" rel="noreferrer" noopener>' + url + "</a>");
 	});
 	a.push(t);
 	return a.join("");
