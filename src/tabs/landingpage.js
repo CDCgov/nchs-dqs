@@ -560,7 +560,7 @@ export class LandingPage {
 							""
 						)}Footnote footnoteHeader"><strong>${
 							replaceLabel[f.substring(0, 2)]
-						}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
+						}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f], false)}</p>`
 				)
 				.join("");
 

@@ -1335,7 +1335,8 @@ export class GenChart {
 							xAxis
 								.ticks(d3.timeYear.every(2))
 								// Show all tick marks but labels every other tick
-								.tickFormat((d, i) => {
+								.tickFormat(function (d, i) {
+									this.setAttribute("data-value", yearDisplay(d));
 									return i % 2 !== 0 ? " " : yearDisplay(d);
 								});
 						} else {
@@ -1343,7 +1344,8 @@ export class GenChart {
 							xAxis
 								.ticks(d3.timeYear.every(2))
 								// Show all tick marks but labels every other tick
-								.tickFormat((d, i) => {
+								.tickFormat(function (d, i) {
+									this.setAttribute("data-value", yearDisplay(d));
 									return i % 5 !== 0 ? " " : yearDisplay(d);
 								});
 						}
@@ -1605,7 +1607,7 @@ export class GenChart {
 		if (this.props.hasVerticalLine) {
 			const matchedx = document
 				.querySelector(`.tick text[data-value="2019"]`)
-				.parentElement?.getAttribute("transform")
+				?.parentElement?.getAttribute("transform")
 				?.replace("translate(", "")
 				.split(",")
 				.shift();
