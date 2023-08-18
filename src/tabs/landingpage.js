@@ -660,8 +660,9 @@ export class LandingPage {
 		}
 
 		this.dataTopic = dataTopic; // string
+		console.log("config: ", config.topicLookup);
 		this.config = config.topicLookup[dataTopic];
-
+		console.log("dataTopic: ", dataTopic);
 		// fix to prevent invalid hash
 		if (!this.config) {
 			console.warn("couldn't find topic in topic lookup", dataTopic);
@@ -839,7 +840,7 @@ export class LandingPage {
 
 		this.topicDropdown = new TopicDropdown({
 			containerId: "topicDropdown",
-			ariaLabel: "select a topic",
+			ariaLabel: "select topic",
 			options: options.sort((a, b) => a.text.localeCompare(b.text)),
 			selectedValue: this.dataTopic,
 			classification: this.selections?.classification,
@@ -871,7 +872,7 @@ export class LandingPage {
 
 		this.classificationDropdown = new GenDropdown({
 			containerId: "classificationDropdown",
-			ariaLabel: "select a classification",
+			ariaLabel: "select classification",
 			options,
 			selectedValue: this.selections?.classification,
 		});
@@ -955,7 +956,7 @@ export class LandingPage {
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
-			ariaLabel: "select a group",
+			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
 			isNestedGroup: filteredTopics.length > 0,
