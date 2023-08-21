@@ -15,6 +15,14 @@ import { genFormat } from "../utils/genFormat";
 
 const SHOW_VERTICAL_LINE_TOPICS = ["access-care", "medicaidU65"];
 
+const DATA_SYSTEMS = {
+	HUS: "Health, United States (HUS)",
+	NHANES: "National Health and Nutrition Examination Survey (NHAMES)",
+	NHIS: "National Health Interview Survey (NHIS)",
+	NHAMCS: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
+	NVSS: "National Vital Statistics System (NVSS)",
+};
+
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
@@ -229,7 +237,9 @@ export class LandingPage {
 		}
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		let stateData = [...data];
@@ -342,7 +352,9 @@ export class LandingPage {
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		$("#chartLegendTitle").html(group);
@@ -660,8 +672,9 @@ export class LandingPage {
 		}
 
 		this.dataTopic = dataTopic; // string
+		console.log("config: ", config.topicLookup);
 		this.config = config.topicLookup[dataTopic];
-
+		console.log("dataTopic: ", dataTopic);
 		// fix to prevent invalid hash
 		if (!this.config) {
 			console.warn("couldn't find topic in topic lookup", dataTopic);
@@ -839,7 +852,7 @@ export class LandingPage {
 
 		this.topicDropdown = new TopicDropdown({
 			containerId: "topicDropdown",
-			ariaLabel: "select a topic",
+			ariaLabel: "select topic",
 			options: options.sort((a, b) => a.text.localeCompare(b.text)),
 			selectedValue: this.dataTopic,
 			classification: this.selections?.classification,
@@ -871,7 +884,7 @@ export class LandingPage {
 
 		this.classificationDropdown = new GenDropdown({
 			containerId: "classificationDropdown",
-			ariaLabel: "select a classification",
+			ariaLabel: "select classification",
 			options,
 			selectedValue: this.selections?.classification,
 		});
@@ -955,7 +968,7 @@ export class LandingPage {
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
-			ariaLabel: "select a group",
+			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
 			isNestedGroup: filteredTopics.length > 0,
@@ -1251,7 +1264,9 @@ export class LandingPage {
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
@@ -1336,6 +1351,19 @@ export class LandingPage {
 
 		functions.adjustTableDimensions();
 	}
+
+	getDataSourceNames = (dataSystems) => {
+		const sources = dataSystems.split(",");
+		// show extra subtitle if HUS is an additional source
+		if (sources.includes("HUS") && sources.length > 1) {
+			return `${sources
+				.filter((s) => s !== "HUS")
+				.map((s) => DATA_SYSTEMS[s])
+				.join(", ")}<br/>Published by: ${DATA_SYSTEMS.HUS}`;
+		}
+
+		return sources.map((s) => DATA_SYSTEMS[s]).join(", ");
+	};
 
 	exportCSV() {
 		downloadCSV(this.csv);

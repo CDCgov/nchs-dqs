@@ -51,7 +51,7 @@ export const chartAndTableSelectors = `
 export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
-	<div id="dropdownSelectorGroup" class="row">
+	<div id="dropdownSelectorGroup" class="row dropdown-wrapper">
 		<div id="topicDropdownGroup" class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
@@ -59,8 +59,8 @@ export const tabContent = `
 				</div>
 				
 				<div class="col-10 homeSelectorText">
-					<label class="body2">Select a</label>
-					<div class="mainSelText heading4">
+					<label class="body1">Select a</label>
+					<div class="heading4">
 						Topic
 					</div>
 				</div>
@@ -78,8 +78,8 @@ export const tabContent = `
 					<i class="bi-2-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="classificationDropdown-select">Select a</label>
-					<div class="mainSelText heading4">Classification</div>
+					<label class="body1" for="classificationDropdown-select">Select a</label>
+					<div class="heading4">Classification</div>
 				</div>
 			</div>
 			<div class="row spacerContainer2">&nbsp;</div>
@@ -93,8 +93,8 @@ export const tabContent = `
 					<i class="bi-2-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="groupDropdown-select">Select a</label>
-					<div class="mainSelText heading4">Group</div>
+					<label class="body1" for="groupDropdown-select">Select a</label>
+					<div class="heading4">Group</div>
 				</div>
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
@@ -109,8 +109,8 @@ export const tabContent = `
 					<i class="bi-3-circle-fill"></i>
 				</div>
 				<div class="col-10 homeSelectorText">
-					<label class="body2" for="groupDropdown-select">Select a</label>
-					<div class="mainSelText heading4">Subgroup</div>
+					<label class="body1" for="groupDropdown-select">Select</label>
+					<div class="heading4">Subgroup</div>
 				</div>
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
@@ -123,8 +123,8 @@ export const tabContent = `
 					<i class="bi-4-circle-fill"></i>
 				</div>
 				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
-					<div class="body2" aria-label="Select time periods">Select</div>
-					<div class="mainSelText heading4">Time Periods</div>
+					<div class="body1" aria-label="Select time periods">Select</div>
+					<div class="heading4">Time Periods</div>
 				</div>
 				<div class="col-xl-12 col-md-6 col-sm-12">
 					<div class="flexRow singlePeriod">
@@ -144,7 +144,7 @@ export const tabContent = `
 		</div>
 	</div>
 
-	<div id="resetInfoContainer" class="row homeSmallGroup">
+	<div id="resetInfoContainer" class="row homeSmallGroup dropdown-wrapper">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Clear Selections</button>
