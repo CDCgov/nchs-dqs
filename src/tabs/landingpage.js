@@ -412,7 +412,7 @@ export class LandingPage {
 		// check if the hashLookup has been constructed for this topic. If not, construct it, update this.selections, and return to this.updateTopic
 		// to get the rest of the possible hashUrl parameters.
 		const topic = this.topicDropdown.value();
-		if (!hashTab.hashLookup[topic]) {
+		if (topic && !hashTab.hashLookup[topic]) {
 			if (this.initialPageLoad && this.selections) {
 				this.selections = hashTab.addToHashLookup(
 					this.socrataData,
