@@ -51,7 +51,7 @@ export const chartAndTableSelectors = `
 export const tabContent = `
 	${modal}
 	<!-- TOP SELECTORS -->
-	<div id="dropdownSelectorGroup" class="row">
+	<div id="dropdownSelectorGroup" class="row dropdown-wrapper">
 		<div id="topicDropdownGroup" class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup">
 			<div class="row">
 				<div class="col-2 homeIcon">
@@ -144,7 +144,7 @@ export const tabContent = `
 		</div>
 	</div>
 
-	<div id="resetInfoContainer" class="row homeSmallGroup">
+	<div id="resetInfoContainer" class="row homeSmallGroup dropdown-wrapper">
 		<!--<div class="col-lg-12 align-self-end d-inline-block" style="text-align: right">-->
 		<div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end">
 			<button id="home-btn-reset" class="btn-reset body2" type="button"><i class="fas fa-undo"></i> Clear Selections</button>

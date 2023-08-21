@@ -33,6 +33,10 @@ a {
 	padding-left: 0;
 }
 
+.dropdown-wrapper {
+	margin: 0;
+}
+
 .homeSelectorGroup {
 	border: 1px solid lightgray;
 	padding-top: 12px;
@@ -278,7 +282,7 @@ a {
 	display: flex;
 	flex-direction: row;
 	margin: 0 auto;
-	width: 95%;
+	width: 100%;
 	border-left: 0;
 
 	@include mobile-max {
@@ -344,6 +348,7 @@ button.disabled {
 
 #tabs {
 	border: none !important;
+	padding: 0;
 }
 
 .ui-tabs .ui-tabs-nav {
