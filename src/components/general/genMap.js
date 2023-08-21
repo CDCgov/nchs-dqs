@@ -629,9 +629,11 @@ export class GenMap {
 			const color = $(e.target).data("color");
 			const checked = $(e.target).hasClass("checked");
 
-			if (checked)
-				$(e.target).removeClass("checked").removeAttr("checked").attr("style", "background-color: transparent");
-			else $(e.target).addClass("checked").attr("checked", true).attr("style", `background-color: ${color}`);
+			if (checked) {
+				$(e.target).removeClass("checked").removeAttr("checked").attr("style", "background-color: #E0E0E0");
+			} else {
+				$(e.target).addClass("checked").attr("checked", true).attr("style", `background-color: ${color}`);
+			}
 
 			if (color === "#fff") {
 				if (checked) DataCache.noDataColorHexVal = "#e0e0e0";
