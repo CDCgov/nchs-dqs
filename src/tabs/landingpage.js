@@ -15,6 +15,14 @@ import { genFormat } from "../utils/genFormat";
 
 const SHOW_VERTICAL_LINE_TOPICS = ["access-care", "medicaidU65"];
 
+const DATA_SYSTEMS = {
+	HUS: "Health, United States (HUS)",
+	NHANES: "National Health and Nutrition Examination Survey (NHAMES)",
+	NHIS: "National Health Interview Survey (NHIS)",
+	NHAMCS: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
+	NVSS: "National Vital Statistics System (NVSS)",
+};
+
 export class LandingPage {
 	constructor() {
 		this.socrataData = null;
@@ -229,7 +237,9 @@ export class LandingPage {
 		}
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		let stateData = [...data];
@@ -342,7 +352,9 @@ export class LandingPage {
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		$("#chartLegendTitle").html(group);
@@ -1252,7 +1264,9 @@ export class LandingPage {
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
 		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			$("#chart-subtitle").html(`Data Source: ${config.topicLookup[this.topicDropdown.value()]?.dataSystem}`);
+			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+
+			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
@@ -1337,6 +1351,19 @@ export class LandingPage {
 
 		functions.adjustTableDimensions();
 	}
+
+	getDataSourceNames = (dataSystems) => {
+		const sources = dataSystems.split(",");
+		// show extra subtitle if HUS is an additional source
+		if (sources.includes("HUS") && sources.length > 1) {
+			return `${sources
+				.filter((s) => s !== "HUS")
+				.map((s) => DATA_SYSTEMS[s])
+				.join(", ")}<br/>Published by: ${DATA_SYSTEMS.HUS}`;
+		}
+
+		return sources.map((s) => DATA_SYSTEMS[s]).join(", ");
+	};
 
 	exportCSV() {
 		downloadCSV(this.csv);
