@@ -412,7 +412,7 @@ export class LandingPage {
 		// check if the hashLookup has been constructed for this topic. If not, construct it, update this.selections, and return to this.updateTopic
 		// to get the rest of the possible hashUrl parameters.
 		const topic = this.topicDropdown.value();
-		if (!hashTab.hashLookup[topic]) {
+		if (topic && !hashTab.hashLookup[topic]) {
 			if (this.initialPageLoad && this.selections) {
 				this.selections = hashTab.addToHashLookup(
 					this.socrataData,
@@ -1230,8 +1230,8 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
-		let cols = ["Classification", "Group", "Subgroup", "Year", "Flag", "Estimate"];
-		let keys = ["panel", "stub_name", "stub_label", "year", "flag", "estimate"];
+		let cols = ["Group", "Subgroup", "Year", "Flag", "Estimate"];
+		let keys = ["stub_name", "stub_label", "year", "flag", "estimate"];
 
 		if (this.config.enableCI) {
 			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
