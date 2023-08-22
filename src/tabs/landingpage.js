@@ -1230,8 +1230,8 @@ export class LandingPage {
 		}
 
 		let tableData = [...data];
-		let cols = ["Classification", "Group", "Subgroup", "Year", "Flag", "Estimate"];
-		let keys = ["panel", "stub_name", "stub_label", "year", "flag", "estimate"];
+		let cols = ["Group", "Subgroup", "Year", "Flag", "Estimate"];
+		let keys = ["stub_name", "stub_label", "year", "flag", "estimate"];
 
 		if (this.config.enableCI) {
 			cols.push("Lower Confidence Interval", "Upper Confidence Interval");
