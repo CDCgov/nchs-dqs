@@ -30,6 +30,10 @@ export class GenChart {
 	render() {
 		const p = this.props;
 
+		if (p.data && p.data[0]?.panel && p.data[0].panel.toLowerCase() === "community hospital beds") {
+			p.xAxisAllYears = true;
+		}
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -724,6 +728,17 @@ export class GenChart {
 					.style("stroke-dasharray", "5, 5");
 			}
 
+			const getDateRange = (startDate, endDate, type = "year") => {
+				const fromDate = moment(startDate);
+				const toDate = moment(endDate).add(1, type); // to include end period
+				const diff = toDate.diff(fromDate, type);
+				const range = [];
+				for (let i = 0; i <= diff; i++) {
+					range.push(moment(startDate).add(i, type));
+				}
+				return range;
+			};
+
 			const updateTheChart = (data, nestedData) => {
 				let sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a - b);
 				if (p.needsScaleTime) {
@@ -738,7 +753,14 @@ export class GenChart {
 					yScaleLeft.domain(data.map((d) => d[p.chartProperties.yLeft1]));
 				} else {
 					sortedXValues = data.map((d) => d[p.chartProperties.xAxis]).sort((a, b) => a.localeCompare(b));
-					xScale.domain(sortedXValues.map((d) => d));
+
+					if (p.xAxisAllYears) {
+						const allYears = getDateRange(sortedXValues[0], sortedXValues[sortedXValues.length - 1]);
+
+						xScale.domain(allYears.map((d) => d.format("YYYY")));
+					} else {
+						xScale.domain(sortedXValues.map((d) => d));
+					}
 				}
 
 				if (p.usesDomainCallout) {
