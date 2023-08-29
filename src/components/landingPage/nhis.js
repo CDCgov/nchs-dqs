@@ -324,7 +324,7 @@ const NHANESChronic = [
 	{ id: "obesity-nhanes", text: "Obesity, measured (NHANES)", indicator: "Obesity (NHANES)", topicGroup: 18 },
 	{
 		id: "high-total-cholesterol",
-		indicator: "Obesity (NHANES)",
+		indicator: "High Total Cholesterol",
 		text: "High cholesterol, total, measured (NHANES)",
 		topicGroup: 4,
 	},
