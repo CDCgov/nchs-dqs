@@ -17,7 +17,7 @@ const SHOW_VERTICAL_LINE_TOPICS = ["access-care", "medicaidU65"];
 
 const DATA_SYSTEMS = {
 	HUS: "Health, United States (HUS)",
-	NHANES: "National Health and Nutrition Examination Survey (NHAMES)",
+	NHANES: "National Health and Nutrition Examination Survey (NHANES)",
 	NHIS: "National Health Interview Survey (NHIS)",
 	NHAMCS: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
 	NVSS: "National Vital Statistics System (NVSS)",
