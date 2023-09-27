@@ -411,7 +411,7 @@ export const NHISTopics = [
 	...NHAMCSChild.map((d) => ({
 		...d,
 		topicLookupKey: "NHAMCS",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Estimates-of-Emergency-Department-Visits-in-th/pcav-mejc",
+		dataUrl: "https://data.cdc.gov/resource/5mtc-x8vy.json",
 		dataSystem: "NHAMCS",
 	})),
 	...NHANESChronic.map((d) => ({
