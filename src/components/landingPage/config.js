@@ -585,7 +585,7 @@ const multipleTopicDatasets = {
 		},
 	},
 	NHAMCS: {
-		socrataId: "pcav-mejc",
+		socrataId: "5mtc-x8vy",
 		private: "1",
 		filters: `Interview, ${allFilters
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
@@ -606,13 +606,13 @@ const multipleTopicDatasets = {
 					panel_num: f.measure_id,
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.groupby,
-					stub_name_num: f.groupby_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
 					unit: f.estimate_type,
 					unit_num: f.estimatetype_id,
 					year: f.year,
 					year_num: "",
-					age: f.groupby.includes("By age") ? f.group : "N/A",
+					age: f.group.includes("By age") ? f.group : "N/A",
 				});
 			});
 

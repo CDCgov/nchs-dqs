@@ -252,7 +252,7 @@ export const updateTopicDropdownList = () => {
 			// the selectedFilters may include a data system, if selected, which gets into the if statement below
 			if (selectedFilters.some((sF) => availableFilters.includes(sF))) {
 				if (!firstFiltered) firstFiltered = value;
-				if (!hasMatchingDataSystem) {
+				if (!hasMatchingDataSystem && filtersWithoutDataSystems.length === 0) {
 					$(el).hide();
 					$(el).addClass("genOptionFilteredOut");
 					if (value === currentSelected) {

@@ -324,7 +324,7 @@ const NHANESChronic = [
 	{ id: "obesity-nhanes", text: "Obesity, measured (NHANES)", indicator: "Obesity (NHANES)", topicGroup: 18 },
 	{
 		id: "high-total-cholesterol",
-		indicator: "Obesity (NHANES)",
+		indicator: "High Total Cholesterol",
 		text: "High cholesterol, total, measured (NHANES)",
 		topicGroup: 4,
 	},
@@ -411,7 +411,7 @@ export const NHISTopics = [
 	...NHAMCSChild.map((d) => ({
 		...d,
 		topicLookupKey: "NHAMCS",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Estimates-of-Emergency-Department-Visits-in-th/pcav-mejc",
+		dataUrl: "https://data.cdc.gov/resource/5mtc-x8vy.json",
 		dataSystem: "NHAMCS",
 	})),
 	...NHANESChronic.map((d) => ({
