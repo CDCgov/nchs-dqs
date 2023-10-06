@@ -341,16 +341,16 @@ export class GenChart {
 				.domain(
 					p.leftDomain || [
 						yScaleExtent[0],
-						d3.max(p.data, (d) =>
-							d3.max([
+						d3.max(p.data, (d) => {
+							return d3.max([
 								p.leftDomainMin,
 								d[p.chartProperties.yLeft1],
 								d[p.chartProperties.yLeft2],
 								d[p.chartProperties.yLeft3],
 								d[p.chartProperties.bars],
 								p.enableCI ? parseFloat(d.estimate_uci) : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
-							])
-						) * p.leftDomainOverageScale,
+							]);
+						}) * p.leftDomainOverageScale,
 					]
 				)
 				.range([chartHeight, 0])
@@ -1074,6 +1074,7 @@ export class GenChart {
 								.attr("fill", multiLineColors(i))
 								.attr("stroke", "none")
 								.style("opacity", 0.4)
+								.style("pointer-events", "none")
 								.attr(
 									"d",
 									d3
