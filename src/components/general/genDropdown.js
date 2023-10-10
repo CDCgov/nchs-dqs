@@ -469,6 +469,13 @@ export class GenDropdown {
 	#toggleOpenClose = () => {
 		$(this.dropdownSection).toggleClass("genDropdownOpened");
 		$(`#${this.props.containerId} .genDropdownSelected`).toggleClass("genDropdownOpened");
+
+		if ($(this.dropdownSection).hasClass("genDropdownOpened")) {
+			$(this.selectedOption).attr("style", "background-color: #e0e0e0 !important; color: #333");
+		} else {
+			$(`#${this.props.containerId} .genDropdownOption`).not(".genOptionFilteredOut").attr("style", "");
+		}
+
 		if (!this.isMobile) {
 			this.#setCaret();
 		}
