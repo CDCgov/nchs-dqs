@@ -33,45 +33,45 @@ const NHISAdult = [
 	{ id: "current-electronic-cigarette-use", text: "Current electronic cigarette use", topicGroup: 24 },
 	{
 		id: "delayed-getting-medical-care-due-to-cost",
-		text: "Delayed getting medical care due to cost among adults (NHIS)",
+		text: "Delayed getting medical care due to cost among adults",
 		indicator: "Delayed getting medical care due to cost among adults",
 		topicGroup: 11,
 	},
 	{ id: "dental-exam-or-cleaning", text: "Dental exam or cleaning", topicGroup: 19 },
 	{
 		id: "diagnosed-diabetes",
-		text: "Diagnosed diabetes, self-reported (NHIS)",
+		text: "Diagnosed diabetes, self-reported",
 		indicator: "Diagnosed diabetes",
 		topicGroup: 7,
 	},
 	{
 		id: "diagnosed-hypertension",
-		text: "Hypertension diagnosis, self-reported (NHIS)",
+		text: "Hypertension diagnosis, self-reported",
 		indicator: "Diagnosed hypertension",
 		topicGroup: 4,
 	},
 	{
 		id: "did-not-get-needed-medical-care-due-to-cost",
-		text: "Did not get needed medical care due to cost (NHIS)",
+		text: "Did not get needed medical care due to cost",
 		indicator: "Did not get needed medical care due to cost",
 		topicGroup: 11,
 	},
 	{
 		id: "did-not-get-needed-mental-health-care-due-to-cost",
-		text: "Did not get needed mental health care due to cost (NHIS)",
+		text: "Did not get needed mental health care due to cost",
 		indicator: "Did not get needed mental health care due to cost",
 		topicGroup: 11,
 	},
 	{
 		id: "did-not-take-medication-as-prescribed-to-save-money",
-		text: "Did not take medication as prescribed to save money (NHIS)",
+		text: "Did not take medication as prescribed to save money",
 		indicator: "Did not take medication as prescribed to save money",
 		topicGroup: 11,
 	},
 	{ id: "disability-status-(composite)", text: "Disability status (composite)", topicGroup: 8 },
 	{
 		id: "doctor-visit",
-		text: "Doctor visit among adults (NHIS)",
+		text: "Doctor visit among adults",
 		indicator: "Doctor visit among adults",
 		topicGroup: 13,
 	},
@@ -82,7 +82,7 @@ const NHISAdult = [
 	},
 	{
 		id: "exchange-based-coverage-coverage-at-time-of-interview",
-		text: "Exchange-based coverage at time of interview",
+		text: "Exchange-based coverage at time of interview among adults",
 		indicator: "Exchange-based coverage coverage at time of interview",
 		topicGroup: 14,
 	},
@@ -101,17 +101,17 @@ const NHISAdult = [
 	{ id: "heart-attack-myocardial-infarction", text: "Heart attack/myocardial infarction", topicGroup: 4 },
 	{
 		id: "high-cholesterol",
-		text: "High cholesterol diagnosis, self reported (NHIS)",
+		text: "High cholesterol diagnosis, self reported",
 		indicator: "High cholesterol",
 		topicGroup: 4,
 	},
 	{
 		id: "hospital-emergency-department-visit",
-		text: "Hospital emergency department visit (NHIS)",
+		text: "Hospital emergency department visit",
 		indicator: "Hospital emergency department visit",
 		topicGroup: 13,
 	},
-	{ id: "obesity", text: "Obesity, self-reported (NHIS)", indicator: "Obesity (NHIS)", topicGroup: 18 },
+	{ id: "obesity", text: "Obesity, self-reported", indicator: "Obesity (NHIS)", topicGroup: 18 },
 	{
 		id: "prescription-medication-use",
 		text: "Prescription medication use among adults",
@@ -120,14 +120,14 @@ const NHISAdult = [
 	},
 	{
 		id: "private-health-insurance-coverage-at-time-of-interview",
-		text: "Private health insurance coverage at time of interview (NHIS)",
+		text: "Private health insurance coverage at time of interview among adults",
 		indicator: "Private health insurance coverage at time of interview",
 		topicGroup: 14,
 	},
 	{ id: "prostate-cancer", text: "Prostate cancer", topicGroup: 3 },
 	{
 		id: "public-health-plan-coverage-at-time-of-interview",
-		text: "Public health plan coverage at time of interview (NHIS)",
+		text: "Public health insurance coverage at time of interview among adults",
 		indicator: "Public health plan coverage at time of interview",
 		topicGroup: 14,
 	},
@@ -173,7 +173,8 @@ const NHISAdult = [
 	{ id: "uninsured-for-more-than-one-year", text: "Uninsured for more than one year", topicGroup: 14 },
 	{
 		id: "urgent-care-center-or-retail-health-clinic-visit",
-		text: "Urgent care center or retail health clinic visit",
+		text: "Urgent care center or retail health clinic visit among adults",
+		indicator: "Urgent care center or retail health clinic visit",
 		topicGroup: 13,
 	},
 	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 13 },
@@ -194,13 +195,13 @@ const NHISChild = [
 	},
 	{
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
-		text: "Delayed getting medical care due to cost among children (NHIS)",
+		text: "Delayed getting medical care due to cost among children",
 		indicator: "Delayed getting medical care due to cost among children",
 		topicGroup: 11,
 	},
 	{
 		id: "doctor-visit-among-children",
-		text: "Doctor visit among children (NHIS)",
+		text: "Doctor visit among children",
 		indicator: "Doctor visit among children",
 		topicGroup: 13,
 	},
@@ -281,7 +282,7 @@ const NHISChild = [
 const NHAMCSChild = [
 	{
 		id: "by-reason-for-visit",
-		text: "Emergency department visits by reason for visit",
+		text: "Hospital emergency department visits by reason for visit",
 		indicator: "By reason for visit",
 		topicGroup: 13,
 		subtopics: [
@@ -300,7 +301,7 @@ const NHAMCSChild = [
 	},
 	{
 		id: "by-primary-diagnosis",
-		text: "Emergency department visits by primary diagnosis",
+		text: "Hospital emergency department visits by primary diagnosis",
 		indicator: "By primary diagnosis",
 		topicGroup: 13,
 		subtopics: [
@@ -321,14 +322,14 @@ const NHAMCSChild = [
 
 // start NHANES chronic conditions
 const NHANESChronic = [
-	{ id: "obesity-nhanes", text: "Obesity, measured (NHANES)", indicator: "Obesity (NHANES)", topicGroup: 18 },
+	{ id: "obesity-nhanes", text: "Obesity, measured", indicator: "Obesity (NHANES)", topicGroup: 18 },
 	{
 		id: "high-total-cholesterol",
 		indicator: "High Total Cholesterol",
-		text: "High cholesterol, total, measured (NHANES)",
+		text: "High cholesterol, total, measured",
 		topicGroup: 4,
 	},
-	{ id: "hypertension", indicator: "Hypertension", text: "Hypertension, measured (NHANES)", topicGroup: 4 },
+	{ id: "hypertension", indicator: "Hypertension", text: "Hypertension, measured", topicGroup: 4 },
 ];
 
 // start NHANES Dietary behaviors
