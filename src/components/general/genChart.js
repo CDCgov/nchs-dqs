@@ -34,6 +34,11 @@ export class GenChart {
 			p.xAxisAllYears = true;
 		}
 
+		// for percentage Y axis, we never want to go above 100%
+		if ($("#estimateTypeDropdown-select > a").text().toLowerCase().includes("percent")) {
+			p.leftDomainOverageScale = 1;
+		}
+
 		const genTooltip = new GenTooltip(p.genTooltipConstructor);
 		let legendData = [];
 		let multiLineColors;
@@ -395,6 +400,10 @@ export class GenChart {
 			.tickSize(3)
 			.tickSizeInner(-chartWidth)
 			.tickFormat((d, i) => {
+				if ($("#estimateTypeDropdown-select > a").text().toLowerCase().includes("percent") && d > 100) {
+					return;
+				}
+
 				if (appState.currentDeviceType === "mobile") {
 					if (yAxisNumTicks > 10) {
 						// draw only every other label if large number of ticks
