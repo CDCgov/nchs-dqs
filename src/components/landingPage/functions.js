@@ -214,9 +214,12 @@ export const link_i_fy = (t, shortenUrl = true) => {
 };
 
 export const resetTopicDropdownList = () => {
-	$("#topicDropdown-select .genDropdownOption").each((i, el) => {
+	$(
+		"#topicDropdown-select .genDropdownOption, #topicDropdown-select .genDropdownTopicGroup, #topicDropdown-select .subTopicDowndropGroup"
+	).each((i, el) => {
 		$(el).removeClass("genOptionFilteredOut");
 		$(el).attr("style", "");
+		$(el).attr("hidden", false);
 		$("#refine-topic-list-switch").text("OFF");
 	});
 
