@@ -287,10 +287,12 @@ const NHAMCSChild = [
 		topicGroup: 13,
 		subtopics: [
 			{ id: "2", text: "All reasons (patient reported)" },
-			{ id: "3", text: "Accident, not otherwise specified" },
+			// removed as part of 22320
+			// { id: "3", text: "Accident, not otherwise specified" },
 			{ id: "4", text: "Back symptoms" },
 			{ id: "6", text: "Chest pain and related symptoms (not referable to body systems)" },
 			{ id: "7", text: "Cough" },
+			{ id: "10", text: "Vomiting" },
 			{ id: "14", text: "Fever" },
 			{ id: "15", text: "Headache, pain in head" },
 			{ id: "18", text: "Other symptoms/problems related to psychological and mental disorders" },
