@@ -32,7 +32,7 @@ export class MainEvents {
 		const { length } = allYears;
 
 		const moveNext = (restart) => {
-			if (!restart && next === 0) {
+			if (!restart && next === length - 1) {
 				this.stopAnimation();
 				return;
 			}
@@ -43,7 +43,7 @@ export class MainEvents {
 			appState.ACTIVE_TAB.updateStartTimePeriodDropdown(value);
 		};
 		appState.ACTIVE_TAB.animating = true;
-		moveNext(next === 0);
+		moveNext(true);
 		this.animationInterval = setInterval(() => moveNext(), 1000);
 	};
 

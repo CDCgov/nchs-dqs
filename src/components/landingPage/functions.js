@@ -51,10 +51,16 @@ export const addHtmlTooltips = () => {
 		containerId: "chart-table-selectors",
 	});
 
+	const quartTooltip = new HtmlTooltip({
+		body: "The quartile classification method divides data into four classes with equal number of observations.",
+		containerId: "chart-table-selectors",
+	});
+
 	staticBinningTooltip.render();
 	editFiltersTooltip.render();
 	ciTooltip.render();
 	refineTopicInfoTooltip.render();
+	quartTooltip.render();
 
 	$(".generalTooltip.tooltip").css("visibility", "hidden");
 
@@ -77,6 +83,10 @@ export const addHtmlTooltips = () => {
 	$("#refineTopicIcon").mouseover((e) => editFiltersTooltip.mouseover(e));
 	$("#refineTopicIcon").mousemove((e) => editFiltersTooltip.mousemove(e));
 	$("#refineTopicIcon").mouseleave((e) => editFiltersTooltip.mouseout(e));
+
+	$("#qLabelTooltip").mouseover((e) => quartTooltip.mouseover(e));
+	$("#qLabelTooltip").mousemove((e) => quartTooltip.mousemove(e));
+	$("#qLabelTooltip").mouseleave((e) => quartTooltip.mouseout(e));
 };
 
 export const getYear = (period) => parseInt(period.split("-")[0], 10);

@@ -32,9 +32,16 @@ export const chartAndTableSelectors = `
 					</label>
 				</div>			
 				<div id="mapBinningTypeSelector" class="viewSliders">
-					<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">Show quartiles based on the most recent available period</label>
+					<label for="mapBinningSlider" class="tableSliderLabel" style="width: unset; margin-right: 10px;">
+						Show <span 
+							id="qLabelTooltip"
+							tabindex="0" 
+							style="border-bottom: 1px dotted #000; cursor: pointer; display: inline-block;">
+							quartiles
+						</span> based on the most recent available period
+					</label>
 					<label class="switch">
-						<input id="mapBinningSlider" tabindex="0"  type="checkbox" checked aria-label="show quartiles base on the most recent available period">
+						<input id="mapBinningSlider" tabindex="0" name="mapBinningSlider" type="checkbox" aria-label="show quartiles base on the most recent available period">
 						<span class="slider round"></span>
 					</label>
 				</div>
@@ -178,9 +185,9 @@ export const tabContent = `
 					<div id="us-map" class="general-chart"></div>
 					<div class="usMapLegendContainer">
 						<div> <!-- styling found in main.scss #usMapLegendContainer > div -->
-							<div id="us-map-legend-title" class="general-chart" tabindex="0">Legend</div>
+							<div id="us-map-legend-title" class="general-chart" tabindex="0">Quartiles</div>
 							<div style="display: inline-block; text-align: left;" tabindex="0">
-								Data classified using <a class="viewFootnotes" tabindex="0">quartiles</a> based on <span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
+								Data classified using quartiles based on <span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
 							</div>
 							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
 						</div>
