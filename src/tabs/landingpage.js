@@ -364,6 +364,12 @@ export class LandingPage {
 		$(".unreliableNote").hide();
 		$(".unreliableFootnote").hide();
 
+		// reset CI toggle if previously checked
+		if (this.config.enableCI === 1 && !$("#confidenceIntervalSlider").prop("checked")) {
+			$("#confidenceIntervalSlider").prop("checked", false);
+			this.config.enableCI = 0;
+		}
+
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
