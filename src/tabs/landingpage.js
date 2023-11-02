@@ -60,7 +60,7 @@ export class LandingPage {
 		this.estimateTypeTableDropdown = null;
 		this.allYearsOptions = null;
 		this.dataTable = null;
-		this.staticBinning = true;
+		this.staticBinning = false;
 		this.legend = null;
 		this.sigFigs = null;
 	}
@@ -364,6 +364,12 @@ export class LandingPage {
 		$(".unreliableNote").hide();
 		$(".unreliableFootnote").hide();
 
+		// reset CI toggle if previously checked
+		if (this.config.enableCI === 1 && !$("#confidenceIntervalSlider").prop("checked")) {
+			$("#confidenceIntervalSlider").prop("checked", false);
+			this.config.enableCI = 0;
+		}
+
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
@@ -470,7 +476,9 @@ export class LandingPage {
 			} else {
 				// hide confidence interval slider
 				$("#ciTableSlider").hide();
-				$("#chart-table-selectors-tooltip").hide();
+
+				// removed this because it was preventing tooltip from showing on map tab (`quartiles` text)
+				// $("#chart-table-selectors-tooltip").hide();
 			}
 		}
 
@@ -1116,6 +1124,12 @@ export class LandingPage {
 		this.initStartPeriodDropdown(startPeriodOptions);
 		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
 		this.currentTimePeriodIndex = 0;
+
+		if (this.config.hasMap && this.activeTabNumber === 0) {
+			this.currentTimePeriodIndex = this.allYearsOptions.length - 1;
+			this.startPeriod = this.allYearsOptions[this.allYearsOptions.length - 1].value;
+			[this.startYear] = this.startPeriod.split("-");
+		}
 	}
 
 	updateStartTimePeriodDropdown(value) {
@@ -1204,8 +1218,8 @@ export class LandingPage {
 
 		this.setVerticalUnitAxisSelect();
 		this.updateEnableCI(0);
-		this.staticBinning = true;
-		$("#mapBinningSlider").prop("checked", true);
+		this.staticBinning = false;
+		$("#mapBinningSlider").prop("checked", false);
 		$("#showAllSubgroupsSlider").prop("checked", false);
 
 		// default back to "Chart" tab

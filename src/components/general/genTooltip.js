@@ -206,8 +206,6 @@ export class GenTooltip {
 			tip.style("width", "inherit");
 		}
 
-		console.log(`left: ${clientX + 5}`);
-		console.log(`left: ${clientX - tipWidth - 5}`);
 		tip.style("left", sides.x === "left" ? `${clientX + 5}px` : `${clientX - tipWidth - 5}px`)
 			.style("top", sides.y === "top" ? `${clientY + 5}px` : `${clientY - tipHeight - 5}px`)
 			.transition()
