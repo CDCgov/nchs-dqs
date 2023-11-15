@@ -465,21 +465,21 @@ export class LandingPage {
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
 
-		if (data[0]) {
-			if (data[0].estimate_uci) {
-				if (!$("ciTableSlider").is(":visible")) {
-					$("#ciTableSlider").show();
-				}
-				// enable the CI checkbox
-				$("#confidenceIntervalSlider").prop("disabled", false);
-				$("#chart-table-selectors-tooltip").show();
-			} else {
-				// hide confidence interval slider
-				$("#ciTableSlider").hide();
+		const estimateUci = data.filter((d) => d.estimate_uci).map((d) => d.estimate_uci);
 
-				// removed this because it was preventing tooltip from showing on map tab (`quartiles` text)
-				// $("#chart-table-selectors-tooltip").hide();
+		if (estimateUci[0]) {
+			if (!$("ciTableSlider").is(":visible")) {
+				$("#ciTableSlider").show();
 			}
+			// enable the CI checkbox
+			$("#confidenceIntervalSlider").prop("disabled", false);
+			$("#chart-table-selectors-tooltip").show();
+		} else {
+			// hide confidence interval slider
+			$("#ciTableSlider").hide();
+
+			// removed this because it was preventing tooltip from showing on map tab (`quartiles` text)
+			// $("#chart-table-selectors-tooltip").hide();
 		}
 
 		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
