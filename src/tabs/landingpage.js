@@ -1007,7 +1007,7 @@ export class LandingPage {
 		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
 			text: d,
 			value: d,
-			selected: i < 5,
+			selected: i < 7,
 		}));
 		this.subgroupDropdown.setOptions(options);
 		this.subgroupDropdown.render();
