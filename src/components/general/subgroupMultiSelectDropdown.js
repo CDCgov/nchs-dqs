@@ -60,7 +60,7 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 	);
 
 	return `		
-		<div style="display: flex; justify-content: center"><label id="maxAllowedLabel" style="color: transparent" for="groupDropdown-select">The maximum allowed is 7.</label></div>
+		<div style="display: flex; justify-content: center"><label id="maxAllowedLabel" style="color: transparent" for="groupDropdown-select">Maximum amount has been selected.</label></div>
 		<div class="genMsdSelected ${leaveOpen ? "genDropdownOpened " : ""} ${disabled ? "disabled" : ""}">
 			<div id="genMsdTitle" class="${
 				disabled ? "disabled" : ""
@@ -74,13 +74,9 @@ const populate = (selected, unselected, searchText, disabled, leaveOpen = false)
 					value="${searchText}" />
 			<div class="genMsdUnselected ${leaveOpen ? "genDropdownOpened" : ""}">
 				<div id="filteredGroup" style="display: flex; flex-direction: row; justify-content: space-between">
-					<div id="filteredText" style="padding: 0 5px;">Filtered by:</div>
+					<div id="filteredText" style="padding: 0 5px;">Filter by:</div>
 					<div style="padding: 0 5px; cursor: pointer;"><a class="genMsdClearAll" tabindex="0">Clear all</a></div>
 				</div>
-				<div style="display: flex; flex-wrap: wrap; justify-content: center;" id="subgroupsSelected">${selectedHtmlList.join(
-					""
-				)}</div>
-				<hr style="margin: 2px;" />
 				<div id="subgroupsNotFound" style="text-align: center; padding: 10px; color: #bdbdbd; display: none;">No matching results found </div>
 				<div id="genMsdSelections">					
 					${unselectedHtmlList.join("")}
@@ -312,7 +308,7 @@ export class SubgroupMultiSelectDropdown {
 		const countOfCurrentSelections = this.props.options.filter((p) => p.selected).length;
 		const countOverMax = countOfCurrentSelections - this.props.maxSelections;
 		if (this.props.maxSelections && countOverMax >= 0) {
-			$("#maxAllowedLabel").css("color", "#b50909");
+			$("#maxAllowedLabel").css("color", "#555555");
 			$("#subgroupDropdown .genDropdownOpened").removeClass("genDropdownOpened");
 
 			// remove the first checked item, this will loop by causing landing page to re-render chart until max is reached
@@ -351,14 +347,14 @@ export class SubgroupMultiSelectDropdown {
 		); // target is treated as a boolean here for leaveOpen
 		this.#search();
 
-		const selectedMaxWidth = $("#subgroupsSelected").width();
-		$(".genMsdOption").each((i, el) => {
-			if ($(el).width() > selectedMaxWidth * 0.49)
-				$(el).attr(
-					"style",
-					"display: flex; flex-direction: row; min-width: calc(50% - 4px); justify-content: space-between; width: 100%"
-				);
-		});
+		// const selectedMaxWidth = $("#subgroupsSelected").width();
+		// $(".genMsdOption").each((i, el) => {
+		// 	if ($(el).width() > selectedMaxWidth * 0.49)
+		// 		$(el).attr(
+		// 			"style",
+		// 			"display: flex; flex-direction: row; min-width: calc(50% - 4px); justify-content: space-between; width: 100%"
+		// 		);
+		// });
 
 		this.updateDropdownPosition();
 		if (id) {
