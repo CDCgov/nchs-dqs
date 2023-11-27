@@ -250,10 +250,16 @@ export class LandingPage {
 		}
 
 		const allDates = this.allYearsOptions.map((d) => d.value);
-		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+		stateData = stateData.filter((d) => d.year_pt === this.startYear);
 
-		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
-		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
+		const chartTitleStart = this.config.chartTitle.split(" in ");
+		if (chartTitleStart?.length > 1) {
+			this.config.chartTitle = chartTitleStart[0] + " in " + this.startPeriod;
+		} else {
+			const topicTitle = this.topicDropdown.text();
+			const group = this.groupDropdown.text();
+			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}}`;
+		}
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
 
@@ -396,12 +402,12 @@ export class LandingPage {
 		}
 
 		// for reading in Map, Chart, or Table from hash url
-		if (this.selections?.tab && this.selections?.tab != this.activeTabNumber) {
+		if (this.selections?.tab && this.selections?.tab !== this.activeTabNumber) {
 			let { tab } = this.selections;
 			let activeTab;
-			if (tab == 0) {
+			if (tab === 0) {
 				activeTab = "map-tab";
-			} else if (tab == 1) {
+			} else if (tab === 1) {
 				activeTab = "chart-tab";
 			} else {
 				activeTab = "table-tab";
