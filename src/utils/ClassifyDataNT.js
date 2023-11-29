@@ -180,9 +180,8 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
 
 	function createReturnObject() {
 		let combinedDataArray = suppressedDataObjArray.concat(instanceData);
-		let legendArray = createLegendArray(combinedDataArray, "class", classifyField);
-
-		let rtnObj = {
+		const legendArray = createLegendArray(combinedDataArray, "class", classifyField);
+		const rtnObj = {
 			classifiedData: combinedDataArray,
 			legend: legendArray,
 		};

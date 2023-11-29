@@ -201,7 +201,11 @@ export class LandingPage {
 		const min = d3.min(this.allMapData, (d) => d.estimate);
 		const max = d3.max(this.allMapData, (d) => d.estimate);
 
-		const endYearDataBinned = functions.binData(this.allMapData.filter((d) => d.year_pt === this.endYear));
+		const yearData = this.allMapData
+			.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.endYear, 10))
+			.filter((d) => parseInt(this.config.classificationId, 10) === parseInt(d.panel_num, 10));
+
+		const endYearDataBinned = functions.binData(yearData);
 		const { legend } = endYearDataBinned;
 
 		// account for when dataset does NOT have 'no data' and therefore add that to legend object
@@ -250,10 +254,16 @@ export class LandingPage {
 		}
 
 		const allDates = this.allYearsOptions.map((d) => d.value);
-		stateData = stateData.filter((d) => d.year_pt == this.startYear);
+		stateData = stateData.filter((d) => d.year_pt === this.startYear);
 
-		const chartTitleStart = this.config.chartTitle.split(" in ")[0];
-		this.config.chartTitle = chartTitleStart + " in " + this.startPeriod;
+		const chartTitleStart = this.config.chartTitle.split(" in ");
+		if (chartTitleStart?.length > 1) {
+			this.config.chartTitle = chartTitleStart[0] + " in " + this.startPeriod;
+		} else {
+			const topicTitle = this.topicDropdown.text();
+			const group = this.groupDropdown.text();
+			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}}`;
+		}
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
 
@@ -396,12 +406,12 @@ export class LandingPage {
 		}
 
 		// for reading in Map, Chart, or Table from hash url
-		if (this.selections?.tab && this.selections?.tab != this.activeTabNumber) {
+		if (this.selections?.tab && this.selections?.tab !== this.activeTabNumber) {
 			let { tab } = this.selections;
 			let activeTab;
-			if (tab == 0) {
+			if (tab === 0) {
 				activeTab = "map-tab";
-			} else if (tab == 1) {
+			} else if (tab === 1) {
 				activeTab = "chart-tab";
 			} else {
 				activeTab = "table-tab";
@@ -465,21 +475,21 @@ export class LandingPage {
 
 		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
 
-		if (data[0]) {
-			if (data[0].estimate_uci) {
-				if (!$("ciTableSlider").is(":visible")) {
-					$("#ciTableSlider").show();
-				}
-				// enable the CI checkbox
-				$("#confidenceIntervalSlider").prop("disabled", false);
-				$("#chart-table-selectors-tooltip").show();
-			} else {
-				// hide confidence interval slider
-				$("#ciTableSlider").hide();
+		const estimateUci = data.filter((d) => d.estimate_uci).map((d) => d.estimate_uci);
 
-				// removed this because it was preventing tooltip from showing on map tab (`quartiles` text)
-				// $("#chart-table-selectors-tooltip").hide();
+		if (estimateUci[0]) {
+			if (!$("ciTableSlider").is(":visible")) {
+				$("#ciTableSlider").show();
 			}
+			// enable the CI checkbox
+			$("#confidenceIntervalSlider").prop("disabled", false);
+			$("#chart-table-selectors-tooltip").show();
+		} else {
+			// hide confidence interval slider
+			$("#ciTableSlider").hide();
+
+			// removed this because it was preventing tooltip from showing on map tab (`quartiles` text)
+			// $("#chart-table-selectors-tooltip").hide();
 		}
 
 		data.sort((a, b) => a.year_pt - b.year_pt).sort((a, b) => a.stub_label_num - b.stub_label_num);
@@ -1001,7 +1011,7 @@ export class LandingPage {
 		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
 			text: d,
 			value: d,
-			selected: i < 5,
+			selected: i < 7,
 		}));
 		this.subgroupDropdown.setOptions(options);
 		this.subgroupDropdown.render();
@@ -1089,6 +1099,16 @@ export class LandingPage {
 		this.startPeriod = options[0].value;
 		this.startYear = functions.getYear(this.startPeriod);
 
+		try {
+			if (this.config.hasMap && this.activeTabNumber === 0) {
+				this.currentTimePeriodIndex = this.allYearsOptions.length - 1;
+				this.startPeriod = this.allYearsOptions[this.allYearsOptions.length - 1].value;
+				[this.startYear] = this.startPeriod.split("-");
+			}
+		} catch (e) {
+			console.log("error defaulting last year for map", e);
+		}
+
 		this.startPeriodDropdown = new GenDropdown({
 			containerId: "startYearContainer",
 			ariaLabel: "select starting period",
@@ -1124,12 +1144,6 @@ export class LandingPage {
 		this.initStartPeriodDropdown(startPeriodOptions);
 		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
 		this.currentTimePeriodIndex = 0;
-
-		if (this.config.hasMap && this.activeTabNumber === 0) {
-			this.currentTimePeriodIndex = this.allYearsOptions.length - 1;
-			this.startPeriod = this.allYearsOptions[this.allYearsOptions.length - 1].value;
-			[this.startYear] = this.startPeriod.split("-");
-		}
 	}
 
 	updateStartTimePeriodDropdown(value) {

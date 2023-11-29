@@ -14726,6 +14726,9 @@ a {
   padding-bottom: 2px;
   padding-left: 0; }
 
+.dropdown-wrapper {
+  margin: 0; }
+
 .homeSelectorGroup {
   border: 1px solid lightgray;
   padding-top: 12px;
@@ -14914,7 +14917,7 @@ a {
   display: flex;
   flex-direction: row;
   margin: 0 auto;
-  width: 95%;
+  width: 100%;
   border-left: 0; }
   @media screen and (max-width: 767px) {
     #outerContainer {
@@ -14966,7 +14969,8 @@ button.disabled {
   background-color: #bdbdbd; }
 
 #tabs {
-  border: none !important; }
+  border: none !important;
+  padding: 0; }
 
 .ui-tabs .ui-tabs-nav {
   text-align: center;
@@ -15046,6 +15050,34 @@ button.disabled {
 p.footnoteHeader {
   margin-bottom: 4px; }
 
+#citation {
+  background: #f0f0f0;
+  padding: 15px 50px; }
+  #citation .header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: space-between; }
+    #citation .header .content {
+      font-size: 20px;
+      font-weight: bold !important;
+      color: #333; }
+    #citation .header .copy-btn {
+      border: 1px solid #333;
+      color: #333;
+      background: #fff;
+      cursor: pointer;
+      border-radius: 2px;
+      padding: 2px 8px; }
+      #citation .header .copy-btn i {
+        margin-right: 4px; }
+      #citation .header .copy-btn:hover {
+        background-color: #f5f5f5; }
+  #citation .text {
+    font-size: 16px;
+    color: #333;
+    display: inline; }
+
 body,
 html {
   margin: 0;
@@ -15122,7 +15154,7 @@ a {
     .site-title a,
     .site-title a:link,
     .site-title a:visited {
-      font-size: 28px; } }
+      font-size: 20px; } }
 
 .site-title a:hover * {
   text-decoration: underline; }
@@ -15137,6 +15169,29 @@ a {
     color: #555 !important;
     text-decoration: none;
     margin: 0 4px; }
+
+.site-banner {
+  padding: 0px 25px 0px 25px; }
+  @media (max-width: 1080px) {
+    .site-banner {
+      padding: 0; } }
+  .site-banner .banner-wrapper {
+    text-align: center;
+    background-image: url("../images/banner-bg.png");
+    background-size: 68px auto;
+    background-repeat: repeat-x;
+    background-position-x: top left; }
+    .site-banner .banner-wrapper img {
+      max-width: 1360px; }
+    @media screen and (max-width: 767px) {
+      .site-banner .banner-wrapper {
+        background-size: 46px auto; } }
+    @media (max-width: 1380px) {
+      .site-banner .banner-wrapper {
+        background-size: 54px auto; }
+        .site-banner .banner-wrapper img {
+          width: 100%;
+          max-width: 100%; } }
 
 .d-none {
   display: none; }
@@ -15409,6 +15464,10 @@ div.dataLoadError {
     display: grid;
     gap: 0rem;
     grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 768px) {
+    .modal-dialog .filter-buttons-wrap {
+      display: flex;
+      flex-direction: column; } }
   .modal-dialog .btn.selection-button {
     background-color: #fff !important;
     border: 1px solid #bdbdbd !important;
@@ -15440,7 +15499,7 @@ div.dataLoadError {
       color: #333;
       font-size: 18px;
       font-weight: normal;
-      margin: 0 6px 6px 0; }
+      margin: 0 16px 6px 0; }
     .modal-dialog #filter-summary-content .btn-close {
       box-sizing: content-box;
       width: 13px;
@@ -15453,7 +15512,6 @@ div.dataLoadError {
         color: #222;
         text-decoration: none; }
   .modal-dialog #filterModalFooter {
-    text-align: right;
     margin: 20px;
     display: flex;
     justify-content: space-between; }
@@ -15468,6 +15526,12 @@ div.dataLoadError {
       .modal-dialog #filterModalFooter button#submitFilters {
         color: white;
         background-color: #00695c; }
+  @media (max-width: 768px) {
+    .modal-dialog #filterModalFooter {
+      flex-direction: column; }
+    .modal-dialog input.selectableIcon {
+      height: 44px;
+      width: 44px; } }
 
 .modal-header {
   background-color: #ceece7;
@@ -15836,7 +15900,7 @@ path.sliderHandles:active {
 .banner-text {
   font-size: 16px;
   color: #333;
-  padding: 16px 0 32px 0;
+  padding: 8px 0 8px 0;
   margin-left: -20px; }
   .banner-text a:link,
   .banner-text a:visited {
@@ -16007,7 +16071,7 @@ div.genDropdownSelected {
       top: 64px; }
     div.genDropdownSelected div.genDropdownOptions div.genDropdownTopicGroup {
       cursor: default;
-      background: #eee;
+      background: #f5f5f5;
       font-weight: bold;
       padding: 3px 8px;
       margin: 2px -6px;
@@ -16175,7 +16239,7 @@ div.genDropdownSelected {
       padding-right: 0; } }
 
 .body1 {
-  font-size: 16px;
+  font-size: 18px;
   color: #333; }
 
 .body2 {
@@ -16183,7 +16247,8 @@ div.genDropdownSelected {
   color: #333; }
 
 .heading4 {
-  font-size: 28px;
+  font-size: 20px;
+  font-weight: bold;
   color: #333; }
 
 .heading5 {
@@ -16298,6 +16363,13 @@ a {
 
 button:focus, button:focus-visible {
   outline: 2px solid #fe7419 !important; }
+
+.note-508 {
+  font-family: Open Sans, sans-serif;
+  font-size: 16px;
+  font-style: italic;
+  color: #333;
+  padding: 8px 0 8px 25px; }
 
 
 /*# sourceMappingURL=index.css.map*/
