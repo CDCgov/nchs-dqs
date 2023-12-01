@@ -1103,7 +1103,7 @@ export class LandingPage {
 			if (this.config.hasMap && this.activeTabNumber === 0) {
 				this.currentTimePeriodIndex = this.allYearsOptions.length - 1;
 				this.startPeriod = this.allYearsOptions[this.allYearsOptions.length - 1].value;
-				[this.startYear] = this.startPeriod.split("-");
+				this.startYear = functions.getYear(this.startPeriod);
 			}
 		} catch (e) {
 			console.log("error defaulting last year for map", e);
