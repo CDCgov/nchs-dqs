@@ -325,7 +325,7 @@ const singleTopicDatasets = {
 		],
 	},
 	suicide: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-suicide-by-sex-race-Hispanic-o/e8w2-ekn5",
+		dataUrl: "https://data.cdc.gov/resource/e8w2-ekn5.json",
 		socrataId: "e8w2-ekn5",
 		private: "1",
 		chartTitle: "Death Rates for Suicide",
