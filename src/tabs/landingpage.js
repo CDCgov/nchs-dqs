@@ -1036,11 +1036,17 @@ export class LandingPage {
 			this.estimateTypeTableDropdown = new GenDropdown({
 				containerId: "estimateTypeDropdown",
 				options,
-				ariaLabel: "estimate type",
+				ariaLabel: "Select estimate type",
 				selectedValue: this.config.yAxisUnitId,
+				disabled: options.length === 1,
+				notEditable: true,
 			});
 			this.estimateTypeTableDropdown.render();
 
+			if (options.length === 1) {
+				this.estimateTypeTableDropdown.disabled = true;
+				$("#estimateTypeDropdown .genDropdownSelected").addClass("disabled");
+			}
 			if (!options.find((o) => o.value == this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
 		}
 	}
