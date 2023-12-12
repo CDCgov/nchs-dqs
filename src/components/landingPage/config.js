@@ -9,6 +9,11 @@ export const chartAndTableSelectors = `
 			<div>View Options</div>
 		</div>
 		<div class="hideShowViewSelectors">
+			<div id="estimateDropdownContainer">
+				<div id="estimateTypeDropdown" class="genDropdown">
+					<div id="estimateTypeDropdown-label" for="estimateTypeDropdown-select"class="select-label">Select Estimate Type</div>
+				</div>
+			</div>
 			<div id="viewSlidersContainer">
 				<div id="subGroupsSelectorsSection" class="viewSliders">
 					<label for="showAllSubgroupsSlider" class="tableSliderLabel">Show All Subgroups</label>
@@ -44,11 +49,6 @@ export const chartAndTableSelectors = `
 						<input id="mapBinningSlider" tabindex="0" name="mapBinningSlider" type="checkbox" aria-label="show quartiles base on the most recent available period">
 						<span class="slider round"></span>
 					</label>
-				</div>
-			</div>
-			<div id="estimateDropdownContainer">
-				<div id="estimateTypeDropdown" class="genDropdown">
-					<div id="estimateTypeDropdown-label" for="estimateTypeDropdown-select"class="select-label">Estimate Type</div>
 				</div>
 			</div>
 		</div>

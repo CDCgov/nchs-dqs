@@ -152,7 +152,7 @@ const populate = (props, mobile) => {
 		role="listbox"		
 		aria-labelledby="${props.containerId}-label"
 		aria-busy="true"
-		contenteditable=${mobile ? "false" : "true"}
+		contenteditable=${mobile || props.notEditable ? "false" : "true"}
 	>
 		<a>${selectedHtml}</a>
 		<div class="genDropdownOptions">${optionList.join("")}</div>

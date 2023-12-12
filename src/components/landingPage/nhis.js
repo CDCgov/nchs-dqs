@@ -83,7 +83,7 @@ const NHISAdult = [
 	{
 		id: "exchange-based-coverage-coverage-at-time-of-interview",
 		text: "Exchange-based coverage at time of interview among adults",
-		indicator: "Exchange-based coverage coverage at time of interview",
+		indicator: "Exchange-based health plan coverage at time of interview",
 		topicGroup: 14,
 	},
 	{

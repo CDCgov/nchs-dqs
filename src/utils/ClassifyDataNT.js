@@ -175,6 +175,11 @@ export const ClassifyData = function (sourceData, classifyField, ntile, method) 
 		for (let h in tempObj) {
 			tempArray.push(tempObj[h]);
 		}
+
+		if (tempArray[0] && tempArray[0].c === 1) {
+			tempArray.unshift({ c: 0, min: null, max: null });
+		}
+
 		return tempArray;
 	}
 
