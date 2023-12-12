@@ -132,7 +132,7 @@ const populate = (props) => {
 					aria-selected="${o[props.value] === selected[props.value] ? "true" : "false"}"
 					tabindex="0"
 				>
-					<a>${o[props.text].trim()}</a>
+					<a aria-label="${o[props.text].trim()}">${o[props.text].trim()}</a>
 				</div>
 			`);
 			}
