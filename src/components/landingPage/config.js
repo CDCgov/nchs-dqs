@@ -32,8 +32,8 @@ export const chartAndTableSelectors = `
 						</span>
 					</label>
 					<label class="switch">
-						<input id="confidenceIntervalSlider" name="ciToggle" tabindex="0"  type="checkbox">
-						<span id="ciTableHover" class="slider round" role="img" aria-labelledby="chart-table-selectors"></span>
+						<input id="confidenceIntervalSlider" name="ciToggle" tabindex="0"  type="checkbox" aria-label="show confidence interval">
+						<span id="ciTableHover" class="slider round"></span>
 					</label>
 				</div>			
 				<div id="mapBinningTypeSelector" class="viewSliders">
