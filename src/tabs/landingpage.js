@@ -240,8 +240,10 @@ export class LandingPage {
 			$("#mapBinningTypeSelector").show();
 		}
 
-		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+		if (config.topicLookup[this.topicDropdown.value() || this.dataTopic]?.dataSystem) {
+			const dataSourceNames = this.getDataSourceNames(
+				config.topicLookup[this.topicDropdown.value() || this.dataTopic].dataSystem
+			);
 
 			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
@@ -350,7 +352,7 @@ export class LandingPage {
 		this.genChart.render();
 
 		// set the title - easier to do it all here based on selectors
-		const topic = this.topicDropdown.text();
+		const topic = this.topicDropdown.text() || $("#topicDropdown-select a:first").text();
 		const group = this.groupDropdown.text();
 
 		if (this.showBarChart) {
@@ -361,8 +363,10 @@ export class LandingPage {
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
-		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+		if (config.topicLookup[this.topicDropdown.value() || this.dataTopic]?.dataSystem) {
+			const dataSourceNames = this.getDataSourceNames(
+				config.topicLookup[this.topicDropdown.value() || this.dataTopic].dataSystem
+			);
 
 			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
@@ -1280,7 +1284,7 @@ export class LandingPage {
 		const reliabilityNotesSymbol = this.updateFootnotes(tableData);
 		console.log(`renderTable --- reliabilityNotesSymbol ${reliabilityNotesSymbol}`);
 
-		const topicTitle = this.topicDropdown.text();
+		const topicTitle = this.topicDropdown.text() || $("#topicDropdown-select a:first").text();
 		const group = this.groupDropdown.text();
 		if (this.showBarChart) {
 			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}`;
@@ -1297,15 +1301,21 @@ export class LandingPage {
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
 
-		if (config.topicLookup[this.topicDropdown.value()]?.dataSystem) {
-			const dataSourceNames = this.getDataSourceNames(config.topicLookup[this.topicDropdown.value()].dataSystem);
+		if (config.topicLookup[this.topicDropdown.value() || this.dataTopic]?.dataSystem) {
+			const dataSourceNames = this.getDataSourceNames(
+				config.topicLookup[this.topicDropdown.value() || this.dataTopic].dataSystem
+			);
 
 			$("#chart-subtitle").html(`Data Source: ${dataSourceNames}`);
 		}
 
 		const showCI = document.getElementById("confidenceIntervalSlider").checked && this.config.hasCI;
+
 		const groupText = this.groupDropdown.text().toLowerCase();
-		const topic = this.topicDropdown.text().toLowerCase();
+		const topic = this.topicDropdown.text()
+			? this.topicDropdown.text().toLowerCase()
+			: $("#topicDropdown-select a:first").text().toLowerCase();
+
 		const groupNotAge = !groupText.includes("age") && !groupText.includes("years") && !topic.includes("age");
 
 		if (tableData.some((d) => d.flag)) {

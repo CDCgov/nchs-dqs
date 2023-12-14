@@ -132,7 +132,7 @@ const populate = (props) => {
 					aria-selected="${o[props.value] === selected[props.value] ? "true" : "false"}"
 					tabindex="0"
 				>
-					<a>${o[props.text].trim()}</a>
+					<a aria-label="${o[props.text].trim()}">${o[props.text].trim()}</a>
 				</div>
 			`);
 			}
@@ -538,6 +538,14 @@ export class TopicDropdown {
 						)
 						.attr("aria-label", "No matching results found");
 				}
+			}
+
+			// show topic headers for subtopics
+			if ($(".genDropdownSubtopicOption:visible").length > 0) {
+				$(".genDropdownSubtopicOption:visible").each((i, item) => {
+					const topicId = $(item).attr("data-val");
+					$(`.genDropdownTopicGroup[data-topic-id="${topicId}"]`).attr("hidden", false);
+				});
 			}
 
 			this.#scrollIntoView(); // scroll both the dropdown itself and the currently selected option into view
