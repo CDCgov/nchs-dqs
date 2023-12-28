@@ -374,6 +374,27 @@ export class LandingPage {
 		$("#chartLegendTitle").html(group);
 	}
 
+	renderReliabilityLegend = ({ mapView }) => {
+		if (mapView) {
+			$(".reliability-legend").show();
+		} else {
+			const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints:visible")).some(
+				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
+			);
+			const hasVisibleCrossHatchBars = $.makeArray($(".bar:visible")).some(
+				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
+			);
+			if (
+				this.genChart.props.usesReliabilityCallout &&
+				(hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)
+			) {
+				$(".reliability-legend").show();
+			} else {
+				$(".reliability-legend").hide();
+			}
+		}
+	};
+
 	renderDataVisualizations = () => {
 		$(".unreliableNote").hide();
 		$(".unreliableFootnote").hide();
@@ -387,6 +408,7 @@ export class LandingPage {
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
+			this.renderReliabilityLegend({ mapView: true });
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 			this.groupDropdown.disableDropdown();
@@ -396,6 +418,7 @@ export class LandingPage {
 			this.subgroupDropdown.disable(disabled);
 			this.subgroupDropdown.setMaxSelections(7);
 			this.renderChart(data);
+			this.renderReliabilityLegend({ mapView: false });
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 2) {
@@ -577,7 +600,7 @@ export class LandingPage {
 			SC: "Data Source",
 			FN: "Footnotes",
 			NT: "Methodology",
-			NA: "Reliability",
+			NA: "Data Issues",
 			NH: "Footnotes",
 			DH: "Footnotes",
 		};

@@ -151,17 +151,45 @@ export class GenTooltip {
 
 			const bodyData = [];
 			let prop;
-			this.bodyProps.forEach((bp) => {
-				if (Array.isArray(bp)) {
-					const values = bp.map((p) => genFormat(data[p], this.propertyLookup[p].datumType));
-					const { title } = this.propertyLookup[bp[0]];
-					bodyData.push([title, values.join(" ")]);
-				} else {
-					prop = this.propertyLookup[bp];
-					if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined) data[bp] = "N/A";
-					bodyData.push([prop.title, data[bp]]);
-				}
-			});
+			this.bodyProps
+				.filter((bp) => {
+					const excludedVals = ["*", "n/a", "---"];
+					// exclude if no value for flag prop
+					if (bp === "flag" && !data[bp]) {
+						return false;
+					}
+					// exclude if flag is missing or unavailable
+					if (bp === "flag" && excludedVals.includes(data[bp].toLowerCase())) {
+						return false;
+					}
+
+					return true;
+				})
+				.forEach((bp) => {
+					if (Array.isArray(bp)) {
+						const values = bp.map((p) => genFormat(data[p], this.propertyLookup[p].datumType));
+						const { title } = this.propertyLookup[bp[0]];
+						bodyData.push([title, values.join(" ")]);
+					} else {
+						prop = this.propertyLookup[bp];
+						if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined)
+							data[bp] = "-";
+
+						if (data[bp] && parseInt(data[bp], 10) === 0) {
+							data[bp] = "N/A";
+						}
+						if (bp === "estimate" && data.flag && data.flag === "*") {
+							// appends a * if there is a flag to the estimate
+							if (!data.estimate) {
+								data.estimate = "*";
+							} else if (data.estimate && !data.estimate.toString().includes("*")) {
+								data.estimate = `${data.estimate}*`;
+							}
+						}
+
+						bodyData.push([prop.title, data[bp]]);
+					}
+				});
 
 			const h3Prop = this.headerProps[0];
 			const h3Lookup = this.propertyLookup[h3Prop];

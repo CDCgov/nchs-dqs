@@ -227,7 +227,7 @@ a {
 	}
 
 	#chartLegendTitle {
-		font-size: 20px;
+		font-size: 18px;
 		font-weight: bold;
 		padding: 0 5px;
 	}
@@ -493,5 +493,32 @@ p.footnoteHeader {
 		font-size: 16px;
 		color: #333;
 		display: inline;
+	}
+}
+
+.reliability-legend {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 10px;
+
+	.reliability-box {
+		margin-right: 6px;
+		img {
+			width: 42px;
+			padding-bottom: 4px;
+		}
+	}
+
+	.reliability-label {
+		font-size: 16px;
+		color: #333;
+		font-weight: bold;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	#reliability-legend {
+		justify-content: center;
 	}
 }
