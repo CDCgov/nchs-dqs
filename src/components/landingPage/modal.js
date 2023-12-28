@@ -239,7 +239,7 @@ export const filterHtml = ({ topicCount = 0 }) => {
 			<div class="filter-text">There are <strong>
 				<span id="filter-summary-count">${topicCount}</span> topics available</strong> 
 			relating to <strong>any</strong> of these filters:</div>
-			<div id="filter-results" style="display: flex; justify-content: center;">${filterResults}</div>
+			<div id="filter-results" style="display: flex; justify-content: center; flex-wrap: wrap;">${filterResults}</div>
 		`;
 	}
 
