@@ -1011,10 +1011,16 @@ export class LandingPage {
 
 	initSubgroupDropdown() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
-		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
+		const subgroups = this.flattenedFilteredData.map((f) => f.stub_label);
+		const subgroupLabels = [...new Set(subgroups)];
+		console.log("subgroups: ", subgroupLabels);
+		// check how many subgroups exist for a given group selection
+		// if MORE than 7 subgroups then pre-select 5 otherwise select ALL
+		const initSubgroupsSelected = subgroupLabels?.length > 7 ? 5 : subgroupLabels?.length;
+		const options = subgroupLabels.map((d, i) => ({
 			text: d,
 			value: d,
-			selected: i < 7,
+			selected: i < initSubgroupsSelected,
 		}));
 		this.subgroupDropdown.setOptions(options);
 		this.subgroupDropdown.render();
