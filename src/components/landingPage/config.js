@@ -184,12 +184,18 @@ export const tabContent = `
 					<div id="us-map-time-slider" class="general-chart" data-html2canvas-ignore></div>
 					<div id="us-map" class="general-chart"></div>
 					<div class="usMapLegendContainer">
-						<div> <!-- styling found in main.scss #usMapLegendContainer > div -->
+						<div class="legend-items">
 							<div id="us-map-legend-title" class="general-chart" tabindex="0">Quartiles</div>
 							<div style="display: inline-block; text-align: left;" tabindex="0">
 								Data classified using quartiles based on <span style="text-align: left;" id="mapLegendPeriod">2013 - 2015</span>
 							</div>
 							<div style="text-align: left;" id="us-map-legend" class="general-chart"></div>
+						</div>
+						<div class="reliability-legend">
+							<span class="reliability-box">
+								<img src="./images/reliability-indicator.jpg" alt="Reliability Issues" />
+							</span>
+							<span class="reliability-label">= Reliability Issues</span>
 						</div>
 					</div>
 				</div>
@@ -208,6 +214,12 @@ export const tabContent = `
 							<div id="chartLegendTitle" tabindex="0"></div>
 							<hr style="margin: 0 10px" />
 							<div id="chartLegendContent"></div>
+						</div>
+						<div class="reliability-legend">
+							<span class="reliability-box">
+								<img src="./images/reliability-indicator.jpg" alt="Reliability Issues" />
+							</span>
+							<span class="reliability-label">= Reliability Issues</span>
 						</div>
 					</div>
 				</div>

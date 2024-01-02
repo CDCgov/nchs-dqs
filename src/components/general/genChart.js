@@ -952,32 +952,15 @@ export class GenChart {
 							.data(p.data)
 							.enter()
 							.append("text")
-							.text((d) => (!d[p.chartProperties.bars] ? "No data available" : ""))
+							.text((d) => (!d[p.chartProperties.bars] ? "See Notes" : ""))
 							.attr("fill", "#333")
-							.attr("font-size", axisLabelFontSize)
+							.attr("font-size", "16px")
 							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
 							.attr(
 								"y",
 								(d) =>
 									yScaleLeft(d[p.chartProperties.yLeft1]) +
 									p.barLayout.size / 2 -
-									axisLabelFontSize * 0.6
-							);
-
-						noDataTextGroup
-							.selectAll("noDataText2")
-							.data(p.data)
-							.enter()
-							.append("text")
-							.text((d) => (!d[p.chartProperties.bars] ? "for current selections" : ""))
-							.attr("fill", "#333")
-							.attr("font-size", axisLabelFontSize)
-							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
-							.attr(
-								"y",
-								(d) =>
-									yScaleLeft(d[p.chartProperties.yLeft1]) +
-									p.barLayout.size / 2 +
 									axisLabelFontSize * 0.6
 							);
 					}
@@ -1550,85 +1533,7 @@ export class GenChart {
 		}
 		let legendHeight = 0;
 
-		const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints")).some(
-			(d) => d.style.fill.includes("diagonalHatch") && d.style.display !== "none"
-		);
-		const hasVisibleCrossHatchBars = $.makeArray($(".bar")).some(
-			(d) => d.getAttribute("fill").includes("diagonalHatch") && d.style.display !== "none"
-		);
-
-		if (p.usesReliabilityCallout && (hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)) {
-			const windowWidth = $(window).width();
-			const chartContainerWidth = $("#chartContainer").width();
-			let callOutWidth = chartContainerWidth / 3;
-			if (windowWidth < 1500) callOutWidth = chartContainerWidth / 2;
-			if (windowWidth < 1200) callOutWidth = chartContainerWidth - 2;
-
-			const callOutHeight = 4 * axisTitleFontSize;
-			const labelSize = 0.89 * axisTitleFontSize;
-
-			const callOutGroup = svg
-				.append("g")
-				.attr("transform", `translate(${chartContainerWidth / 2}, ${svgHeight})`);
-
-			callOutGroup
-				.append("rect")
-				.attr("x", -callOutWidth / 2)
-				.attr("width", callOutWidth)
-				.attr("height", callOutHeight)
-				.attr("fill", "none")
-				.attr("stroke", "#e0e0e0")
-				.attr("stroke-width", 1)
-				.attr("rx", 5);
-
-			legendHeight += callOutHeight + 20;
-
-			callOutGroup
-				.append("text")
-				.attr("transform", `translate(0, ${1.5 * labelSize})`)
-				.attr("text-anchor", "middle")
-				.attr("font-size", axisTitleFontSize)
-				.attr("font-weight", "bold")
-				.text("Reliability");
-
-			const reliabilityInfo = callOutGroup
-				.append("g")
-				.attr("transform", `translate(0, ${2.5 * labelSize})`)
-				.attr("text-anchor", "middle");
-
-			const reliabilityInfoRectWidth = callOutWidth / 5;
-			reliabilityInfo
-				.append("rect")
-				.attr("transform", `translate(${-callOutWidth / 2 + 20}, 0)`)
-				.attr("width", reliabilityInfoRectWidth)
-				.attr("height", labelSize)
-				.attr("fill", "#333");
-
-			reliabilityInfo
-				.append("text")
-				.attr(
-					"transform",
-					`translate(${-callOutWidth / 2 + 25 + reliabilityInfoRectWidth}, ${0.8 * labelSize})`
-				)
-				.attr("text-anchor", "start")
-				.attr("font-size", labelSize)
-				.text("Reliable");
-
-			reliabilityInfo
-				.append("rect")
-				.attr("transform", `translate(20, 0)`)
-				.attr("width", reliabilityInfoRectWidth)
-				.attr("height", labelSize)
-				.attr("fill", "url(#diagonalHatch-7)");
-
-			reliabilityInfo
-				.append("text")
-				.attr("transform", `translate(${reliabilityInfoRectWidth + 25}, ${0.8 * labelSize})`)
-				.attr("text-anchor", "start")
-				.attr("font-size", labelSize)
-				.text("Not Reliable");
-		}
-
+		// if we want to increase the height of the chart...
 		svg.attr("viewBox", [0, 0, fullSvgWidth, svgHeight + legendHeight]);
 
 		// const matchedXItem = d3.selectAll(`#${svgId} .axis text`).filter(function () {

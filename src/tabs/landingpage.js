@@ -374,6 +374,27 @@ export class LandingPage {
 		$("#chartLegendTitle").html(group);
 	}
 
+	renderReliabilityLegend = ({ mapView }) => {
+		if (mapView) {
+			$(".reliability-legend").show();
+		} else {
+			const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints:visible")).some(
+				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
+			);
+			const hasVisibleCrossHatchBars = $.makeArray($(".bar:visible")).some(
+				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
+			);
+			if (
+				this.genChart.props.usesReliabilityCallout &&
+				(hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)
+			) {
+				$(".reliability-legend").show();
+			} else {
+				$(".reliability-legend").hide();
+			}
+		}
+	};
+
 	renderDataVisualizations = () => {
 		$(".unreliableNote").hide();
 		$(".unreliableFootnote").hide();
@@ -387,6 +408,7 @@ export class LandingPage {
 		const data = this.getFlattenedFilteredData();
 		if (this.config.hasMap && this.activeTabNumber === 0) {
 			this.renderMap(data);
+			this.renderReliabilityLegend({ mapView: true });
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 			this.groupDropdown.disableDropdown();
@@ -396,6 +418,7 @@ export class LandingPage {
 			this.subgroupDropdown.disable(disabled);
 			this.subgroupDropdown.setMaxSelections(7);
 			this.renderChart(data);
+			this.renderReliabilityLegend({ mapView: false });
 			$("#btnTableExport").hide();
 			$("#dwn-chart-img").show();
 		} else if (this.activeTabNumber === 2) {
@@ -577,7 +600,7 @@ export class LandingPage {
 			SC: "Data Source",
 			FN: "Footnotes",
 			NT: "Methodology",
-			NA: "Reliability",
+			NA: "Data Issues",
 			NH: "Footnotes",
 			DH: "Footnotes",
 		};
@@ -958,7 +981,6 @@ export class LandingPage {
 		// make total first item in list if it exists
 		if (options.findIndex((o) => o.text.toLowerCase() === "total") !== -1) {
 			const totalItem = options[options.findIndex((o) => o.text.toLowerCase() === "total")];
-			options.splice(totalItem, 1);
 			options.unshift(totalItem);
 		}
 
@@ -1012,10 +1034,16 @@ export class LandingPage {
 
 	initSubgroupDropdown() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
-		const options = [...new Set(this.flattenedFilteredData.map((f) => f.stub_label))].map((d, i) => ({
+		const subgroups = this.flattenedFilteredData.map((f) => f.stub_label);
+		const subgroupLabels = [...new Set(subgroups)];
+		console.log("subgroups: ", subgroupLabels);
+		// check how many subgroups exist for a given group selection
+		// if MORE than 7 subgroups then pre-select 5 otherwise select ALL
+		const initSubgroupsSelected = subgroupLabels?.length > 7 ? 5 : subgroupLabels?.length;
+		const options = subgroupLabels.map((d, i) => ({
 			text: d,
 			value: d,
-			selected: i < 7,
+			selected: i < initSubgroupsSelected,
 		}));
 		this.subgroupDropdown.setOptions(options);
 		this.subgroupDropdown.render();
