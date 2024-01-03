@@ -124,7 +124,7 @@ export const tabContent = `
 			<div class="row spacerContainer1">&nbsp;</div>
 			<div id="subgroupDropdown"></div>
 		</div>
-		<div class="col col-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
+		<div class="col col-md-6 col-sm-12 mainDropdown homeSelectorGroup leftBorderMediumView leftBorderSmallView">
 			<div class="row">
 				<div class="col-2 homeIcon">
 					<i class="bi-4-circle-fill"></i>
