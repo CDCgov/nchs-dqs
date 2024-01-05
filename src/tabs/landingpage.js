@@ -264,7 +264,7 @@ export class LandingPage {
 		} else {
 			const topicTitle = this.topicDropdown.text();
 			const group = this.groupDropdown.text();
-			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}}`;
+			this.config.chartTitle = `${topicTitle} | ${group} in ${this.startPeriod}}`;
 		}
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
@@ -356,9 +356,9 @@ export class LandingPage {
 		const group = this.groupDropdown.text();
 
 		if (this.showBarChart) {
-			this.config.chartTitle = `${topic} by ${group} in ${this.startPeriod}`;
+			this.config.chartTitle = `${topic} | ${group} in ${this.startPeriod}`;
 		} else {
-			this.config.chartTitle = `${topic} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+			this.config.chartTitle = `${topic} | ${group} | ${this.startPeriod} to ${this.endPeriod}`;
 		}
 
 		$("#chart-title").html(`${this.config.chartTitle}`);
@@ -1315,9 +1315,9 @@ export class LandingPage {
 		const topicTitle = this.topicDropdown.text() || $("#topicDropdown-select a:first").text();
 		const group = this.groupDropdown.text();
 		if (this.showBarChart) {
-			this.config.chartTitle = `${topicTitle} by ${group} in ${this.startPeriod}`;
+			this.config.chartTitle = `${topicTitle} | ${group} | ${this.startPeriod}`;
 		} else {
-			this.config.chartTitle = `${topicTitle} by ${group} from ${this.startPeriod} to ${this.endPeriod}`;
+			this.config.chartTitle = `${topicTitle} | ${group} | ${this.startPeriod} to ${this.endPeriod}`;
 		}
 
 		this.csv = {
