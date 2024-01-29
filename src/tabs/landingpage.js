@@ -1041,7 +1041,6 @@ export class LandingPage {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
 		const subgroups = this.flattenedFilteredData.map((f) => f.stub_label);
 		const subgroupLabels = [...new Set(subgroups)];
-		console.log("subgroups: ", subgroupLabels);
 		// check how many subgroups exist for a given group selection
 		// if MORE than 7 subgroups then pre-select 5 otherwise select ALL
 		const initSubgroupsSelected = subgroupLabels?.length > 7 ? 5 : subgroupLabels?.length;
