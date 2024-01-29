@@ -857,6 +857,11 @@ export class LandingPage {
 				if (this.activeTabNumber === 0 && topicChange) {
 					$("a[href='#chart-tab']").trigger("click");
 				}
+
+				// for when a topic is changed, make sure bar isn't selected/toggled
+				if (!this.showBarChart) {
+					this.updateShowBarChart(0);
+				}
 			})
 			.catch((err) => console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`));
 		return "";
