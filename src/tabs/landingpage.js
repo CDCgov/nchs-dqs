@@ -164,6 +164,8 @@ export class LandingPage {
 					case 0:
 						this.allMapData = null;
 						this.updateGroup(1);
+						// added to force map to latest time period (instead of first)
+						this.resetTimePeriods();
 						this.groupDropdown.value("1");
 						break;
 					case 1:
