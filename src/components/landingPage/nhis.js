@@ -433,13 +433,13 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-oral-health",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Oral-Health-Prevalence-Estimates/i3dq-buv5",
+		dataUrl: "https://data.cdc.gov/resource/59vz-u8kg.json",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-infectious-disease",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
+		dataUrl: "https://data.cdc.gov/resource/4u4n-e9gb.json",
 	})),
 	...WONDERHUSHeartDisease.map((d) => ({
 		...d,

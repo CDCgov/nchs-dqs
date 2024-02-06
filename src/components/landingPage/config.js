@@ -701,7 +701,7 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-oral-health": {
-		socrataId: "i3dq-buv5",
+		socrataId: "59vz-u8kg",
 		private: "1",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.measure === dataId);
@@ -732,7 +732,7 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-infectious-disease": {
-		socrataId: "fuy5-tcrb",
+		socrataId: "4u4n-e9gb",
 		private: "1",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.measure === dataId);
