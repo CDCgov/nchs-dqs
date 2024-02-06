@@ -241,7 +241,7 @@ export const tabContent = `
 				</table>
 				<div class="expanded-data-table"></div>
 				<br />
-				<div tabindex="0" class="source-text unreliableNote">Symbols (e.g. * and ---) are used as reliability indicators. <a class="viewFootnotes">See Notes</a> for more details.</div>
+				<div tabindex="0" class="source-text unreliableNote">Estimates with reliability or other data issues are shown with a symbol (such as *, ---, ...). See <a class="viewFootnotes">Notes</a> for more details.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
@@ -250,7 +250,7 @@ export const tabContent = `
 	<div class="dwnl-img-container margin-spacer" style="display: flex; justify-content: space-between; text-align: center">
 		<span>
 			<a id="cdcDataGovButton" class="theme-cyan btn" aria-label="Visit cdc.data.gov" target="_blank" rel="noopener noreferrer">
-				View Data on data.cdc.gov <i class="fas fa-download" aria-hidden="true"></i>
+				View Data on data.cdc.gov <i class="fas fa-external-link-alt" aria-hidden="true"></i>
 			</a>
 		</span>
 		<span>
@@ -258,7 +258,7 @@ export const tabContent = `
 				Download Image <i class="fas fa-image" aria-hidden="true"></i>
 			</button>
 			<button id="btnTableExport" class="theme-cyan btn" tabindex="0" aria-label="Download Data">				
-				Download Data <i class="fas fa-download" aria-hidden="true"></i>
+				Download Data <i class="fas fa-external-link-alt" aria-hidden="true"></i>
 			</button>
 		</span>
 	</div>

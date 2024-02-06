@@ -164,6 +164,8 @@ export class LandingPage {
 					case 0:
 						this.allMapData = null;
 						this.updateGroup(1);
+						// added to force map to latest time period (instead of first)
+						this.resetTimePeriods();
 						this.groupDropdown.value("1");
 						break;
 					case 1:
@@ -264,7 +266,7 @@ export class LandingPage {
 		} else {
 			const topicTitle = this.topicDropdown.text();
 			const group = this.groupDropdown.text();
-			this.config.chartTitle = `${topicTitle} | ${group} in ${this.startPeriod}}`;
+			this.config.chartTitle = `${topicTitle} | ${group} | ${this.startPeriod}}`;
 		}
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
@@ -356,7 +358,7 @@ export class LandingPage {
 		const group = this.groupDropdown.text();
 
 		if (this.showBarChart) {
-			this.config.chartTitle = `${topic} | ${group} in ${this.startPeriod}`;
+			this.config.chartTitle = `${topic} | ${group} | ${this.startPeriod}`;
 		} else {
 			this.config.chartTitle = `${topic} | ${group} | ${this.startPeriod} to ${this.endPeriod}`;
 		}
@@ -857,6 +859,11 @@ export class LandingPage {
 				if (this.activeTabNumber === 0 && topicChange) {
 					$("a[href='#chart-tab']").trigger("click");
 				}
+
+				// for when a topic is changed, make sure bar isn't selected/toggled
+				if (!this.showBarChart) {
+					this.updateShowBarChart(0);
+				}
 			})
 			.catch((err) => console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`));
 		return "";
@@ -1036,7 +1043,6 @@ export class LandingPage {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
 		const subgroups = this.flattenedFilteredData.map((f) => f.stub_label);
 		const subgroupLabels = [...new Set(subgroups)];
-		console.log("subgroups: ", subgroupLabels);
 		// check how many subgroups exist for a given group selection
 		// if MORE than 7 subgroups then pre-select 5 otherwise select ALL
 		const initSubgroupsSelected = subgroupLabels?.length > 7 ? 5 : subgroupLabels?.length;

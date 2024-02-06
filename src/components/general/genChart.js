@@ -544,6 +544,15 @@ export class GenChart {
 				}
 			}
 
+			let noDataTextGroup;
+			if (p.usesBars && p.barLayout.horizontal) {
+				noDataTextGroup = svg
+					.append("g")
+					.attr("transform", `translate(${margin.left}, ${margin.top})`)
+					.attr("pointer-events", "none")
+					.attr("text-anchor", "left");
+			}
+
 			// right yAxis
 			if (p.usesRightAxisTitle) {
 				svg.append("text")
@@ -584,15 +593,6 @@ export class GenChart {
 					.append("g")
 					.attr("class", "bars")
 					.attr("transform", `translate(${margin.left}, ${margin.top})`);
-			}
-
-			let noDataTextGroup;
-			if (p.usesBars && p.barLayout.horizontal) {
-				noDataTextGroup = svg
-					.append("g")
-					.attr("transform", `translate(${margin.left}, ${margin.top})`)
-					.attr("pointer-events", "none")
-					.attr("text-anchor", "left");
 			}
 
 			let stackedBars;
@@ -854,7 +854,7 @@ export class GenChart {
 								.attr("height", 10)
 								.attr("transform", "translate(0, -1)")
 								.style("fill", p.barColors[lineIndex])
-								.style("opacity", 0.85);
+								.style("opacity", 1);
 							lineIndex++;
 						}
 					});
@@ -893,7 +893,7 @@ export class GenChart {
 									)
 									.attr("x", hz ? 0 : (d) => xScale(d[p.chartProperties.xAxis]))
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-									.attr("opacity", 0.85);
+									.attr("opacity", 1);
 							},
 							(update) => {
 								const hz = p.barLayout.horizontal;
@@ -1047,7 +1047,7 @@ export class GenChart {
 								.attr("transform", `translate(12, 12)`)
 								.style("fill", multiLineColors(lineIndex))
 								.attr("d", symbols[lineIndex])
-								.style("opacity", 0.85);
+								.style("opacity", 1);
 							lineIndex++;
 						}
 					});
