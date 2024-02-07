@@ -290,7 +290,7 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHANESFootnotes: {
-		socrataId: "vv6f-2hmj",
+		socrataId: "iqm3-hbev",
 		private: "1",
 	},
 };
@@ -708,18 +708,18 @@ const multipleTopicDatasets = {
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
-					estimate: f.estimate,
+					estimate: f.percent,
 					estimate_lci: f.lower_95pct_ci,
 					estimate_uci: f.upper_95pct_ci,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
 					panel: f.subtopic,
-					panel_num: f.subtopicid,
+					panel_num: f.subtopic_id,
 					se: null,
 					stub_label: f.subgroup,
 					stub_name: f.group,
-					stub_name_num: f.group_by_id,
+					stub_name_num: f.group_id,
 					unit: f.estimate_type,
 					unit_num: f.estimate_type_id,
 					year: f.survey_years,
@@ -728,16 +728,14 @@ const multipleTopicDatasets = {
 				});
 			});
 
-			console.log("RETURN DATA", returnData);
-
 			return returnData;
 		},
 	},
 	"nhanes-infectious-disease": {
-		socrataId: "4u4n-e9gb",
+		socrataId: "be3w-4inw",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
@@ -745,7 +743,7 @@ const multipleTopicDatasets = {
 					estimate_lci: f.lower_95pct_ci_limit,
 					estimate_uci: f.upper_95pct_ci_limit,
 					flag: f.flag,
-					footnote_id_list: f.footnote_id,
+					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
 					panel: f.subtopic,
 					panel_num: f.subtopic_id,

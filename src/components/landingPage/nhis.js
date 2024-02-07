@@ -377,13 +377,13 @@ const NHANESOralHealth = [
 // NHANES Infectious disease
 const NHANESInfectious = [
 	{
-		id: "herpes-simplex-virus-type-1-hsv-1",
-		text: "Herpes Simplex Virus Type 1 (HSV-1)",
+		id: "herpes-simplex-virus-type-1",
+		text: "Herpes Simplex Virus Type 1",
 		topicGroup: 15,
 	},
 	{
-		id: "herpes-simplex-virus-type-2-hsv-2",
-		text: "Herpes Simplex Virus Type 2 (HSV-2)",
+		id: "herpes-simplex-virus-type-2",
+		text: "Herpes Simplex Virus Type 2",
 		topicGroup: 15,
 	},
 ];
@@ -439,7 +439,7 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-infectious-disease",
-		dataUrl: "https://data.cdc.gov/resource/4u4n-e9gb.json",
+		dataUrl: "https://data.cdc.gov/resource/be3w-4inw.json",
 	})),
 	...WONDERHUSHeartDisease.map((d) => ({
 		...d,

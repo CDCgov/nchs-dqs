@@ -787,84 +787,86 @@ export class LandingPage {
 			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHANESFootnotes),
 			this.getUSMapData(),
-		]).then((data) => {
-			let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
-				data;
+		])
+			.then((data) => {
+				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
+					data;
 
-			if (mapData) this.topoJson = JSON.parse(mapData);
+				if (mapData) this.topoJson = JSON.parse(mapData);
 
-			let allFootNotes = DataCache.Footnotes;
-			if (!allFootNotes) {
-				allFootNotes = [
-					...footNotes,
-					...NHISFootnotes,
-					...cshsFootnotes,
-					...NHAMCSFootnotes,
-					...NHANESFootnotes,
-				];
-				DataCache.Footnotes = allFootNotes;
-			}
-
-			if (!this.footnoteMap) {
-				this.footnoteMap = {};
-				let i = null;
-				for (i = 0; i < allFootNotes.length; i++) {
-					const text = allFootNotes[i]?.fn_text;
-					const id = allFootNotes[i].fn_id;
-					this.footnoteMap[id] = text;
+				let allFootNotes = DataCache.Footnotes;
+				if (!allFootNotes) {
+					allFootNotes = [
+						...footNotes,
+						...NHISFootnotes,
+						...cshsFootnotes,
+						...NHAMCSFootnotes,
+						...NHANESFootnotes,
+					];
+					DataCache.Footnotes = allFootNotes;
 				}
-			}
 
-			// create a year_pt col from time period
-			this.socrataData = socrataData.map((d) => ({
-				...d,
-				estimate: parseFloat(d.estimate),
-				year_pt: functions.getYear(d.year),
-				// assignedLegendColor: "#FFFFFF",
-			}));
-
-			// set the Adjust vertical axis via unit_num in data
-			this.setVerticalUnitAxisSelect();
-
-			if (!topicChange && this.showBarChart) {
-				// have to run the selects setup twice for a reload of barcharts
-				this.showBarChart = false;
-				this.setAllSelectDropdowns();
-				this.showBarChart = true;
-			}
-			this.setAllSelectDropdowns(); // includes time periods
-
-			// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
-			// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
-			if (this.flattenedFilteredData[0] !== undefined) {
-				if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
-					if (!$("ciTableSlider").is(":visible")) {
-						$("#ciTableSlider").show();
+				if (!this.footnoteMap) {
+					this.footnoteMap = {};
+					let i = null;
+					for (i = 0; i < allFootNotes.length; i++) {
+						const idProp = allFootNotes[i].fn_id ? "fn_id" : "footnote_id_list";
+						const text = allFootNotes[i]?.fn_text;
+						const id = allFootNotes[i][idProp];
+						this.footnoteMap[id] = text;
 					}
-					// enable the CI checkbox
-					$("#confidenceIntervalSlider").prop("disabled", false);
-					$("#chart-table-selectors-tooltip").show();
-				} else {
-					// hide confidence interval slider
-					$("#ciTableSlider").hide();
 				}
-			}
 
-			this.showBarChart = this.selections?.viewSinglePeriod;
-			this.renderDataVisualizations();
+				// create a year_pt col from time period
+				this.socrataData = socrataData.map((d) => ({
+					...d,
+					estimate: parseFloat(d.estimate),
+					year_pt: functions.getYear(d.year),
+					// assignedLegendColor: "#FFFFFF",
+				}));
 
-			// Not all Topics have a US Map. If on Map, switch to the Chart tab.
-			// Also, switching from a Topic with a Map to another, with a Map, fails to load the map correctly so just switch to Chart
-			if (this.activeTabNumber === 0 && topicChange) {
-				$("a[href='#chart-tab']").trigger("click");
-			}
+				// set the Adjust vertical axis via unit_num in data
+				this.setVerticalUnitAxisSelect();
 
-			// for when a topic is changed, make sure bar isn't selected/toggled
-			if (!this.showBarChart) {
-				this.updateShowBarChart(0);
-			}
-		});
-		.catch((err) => console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`));
+				if (!topicChange && this.showBarChart) {
+					// have to run the selects setup twice for a reload of barcharts
+					this.showBarChart = false;
+					this.setAllSelectDropdowns();
+					this.showBarChart = true;
+				}
+				this.setAllSelectDropdowns(); // includes time periods
+
+				// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
+				// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
+				if (this.flattenedFilteredData[0] !== undefined) {
+					if (this.flattenedFilteredData[0].hasOwnProperty("estimate_uci")) {
+						if (!$("ciTableSlider").is(":visible")) {
+							$("#ciTableSlider").show();
+						}
+						// enable the CI checkbox
+						$("#confidenceIntervalSlider").prop("disabled", false);
+						$("#chart-table-selectors-tooltip").show();
+					} else {
+						// hide confidence interval slider
+						$("#ciTableSlider").hide();
+					}
+				}
+
+				this.showBarChart = this.selections?.viewSinglePeriod;
+				this.renderDataVisualizations();
+
+				// Not all Topics have a US Map. If on Map, switch to the Chart tab.
+				// Also, switching from a Topic with a Map to another, with a Map, fails to load the map correctly so just switch to Chart
+				if (this.activeTabNumber === 0 && topicChange) {
+					$("a[href='#chart-tab']").trigger("click");
+				}
+
+				// for when a topic is changed, make sure bar isn't selected/toggled
+				if (!this.showBarChart) {
+					this.updateShowBarChart(0);
+				}
+			})
+			.catch((err) => console.error(`Runtime error loading data in tabs/landingpage.js: ${err}`));
 		return "";
 	};
 
