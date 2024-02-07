@@ -353,8 +353,13 @@ const NHANESOralHealth = [
 		topicGroup: 19,
 	},
 	{
-		id: "total-dental-caries-in-permanent-teeth",
-		text: "Total Dental Caries in Permanent Teeth",
+		id: "total-dental-caries-in-permanent-teeth-in-adults",
+		text: "Total Dental Caries in Permanent Teeth in Adults",
+		topicGroup: 19,
+	},
+	{
+		id: "total-dental-caries-in-permanent-teeth-in-children",
+		text: "Total Dental Caries in Permanent Teeth in Children",
 		topicGroup: 19,
 	},
 	{
@@ -368,8 +373,13 @@ const NHANESOralHealth = [
 		topicGroup: 19,
 	},
 	{
-		id: "untreated-dental-caries-in-permanent-teeth",
-		text: "Untreated Dental Caries in Permanent Teeth",
+		id: "untreated-dental-caries-in-permanent-teeth-in-adults",
+		text: "Untreated Dental Caries in Permanent Teeth in Adults",
+		topicGroup: 19,
+	},
+	{
+		id: "untreated-dental-caries-in-permanent-teeth-in-children",
+		text: "Untreated Dental Caries in Permanent Teeth in Children",
 		topicGroup: 19,
 	},
 ];
