@@ -961,7 +961,8 @@ export class LandingPage {
 			return prev;
 		}, {});
 
-		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict[c.panel]);
+		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict.hasOwnProperty(c.panel));
+
 		let dataToFilter = filteredTopics;
 		if (filteredTopics.length === 0) {
 			// this filters to exact classification so we only get options specific to it vs others
