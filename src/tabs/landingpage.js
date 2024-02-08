@@ -1142,8 +1142,14 @@ export class LandingPage {
 	}
 
 	initStartPeriodDropdown(options) {
-		this.startPeriod = options[0].value;
-		this.startYear = functions.getYear(this.startPeriod);
+		try {
+			this.startPeriod = options[0].value;
+			this.startYear = functions.getYear(this.startPeriod);
+		} catch (e) {
+			console.log("error with time period. resetting group dropdown", e);
+			$("#groupDropdown-select .genDropdownOption:first").trigger("click");
+			$("body").trigger("click");
+		}
 
 		try {
 			if (this.config.hasMap && this.activeTabNumber === 0) {
