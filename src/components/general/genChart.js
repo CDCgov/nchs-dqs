@@ -1584,6 +1584,9 @@ export class GenChart {
 		} else if (this.props.hasVerticalLine) {
 			console.log("has vertical line");
 			$(".unreliableNote").show();
+		} else if (hasLineChartReliability) {
+			console.log("ONLY has reliability issue");
+			$(".onlyUnreliableNote").show();
 		} else if (defaultNote) {
 			$(".defaultNote").show();
 		}

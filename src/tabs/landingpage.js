@@ -400,6 +400,7 @@ export class LandingPage {
 	renderDataVisualizations = () => {
 		$(".defaultNote").hide();
 		$(".unreliableNote").hide();
+		$(".onlyUnreliableNote").hide();
 		$(".unreliableNoteWithVerticalLine").hide();
 		$(".unreliableFootnote").hide();
 
