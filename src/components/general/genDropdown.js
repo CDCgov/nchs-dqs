@@ -65,7 +65,6 @@
  *************************************************************************************************************************************************************************** */
 import { getCurrentSliderDomain } from "./genTrendsSlider";
 import { Utils } from "../../utils/utils";
-import { classificationGroups } from "../landingPage/config";
 
 const populate = (props, mobile) => {
 	const optionList = [];
@@ -119,15 +118,18 @@ const populate = (props, mobile) => {
 		);
 	} else {
 		let totalItem = null;
-		classificationGroups.forEach((g, index) => {
+		props.classificationGroups.forEach((g, index) => {
 			const groupOptions = props.options
-				.filter((o) => parseInt(o.classificationGroup, 10) === parseInt(g.id, 10))
+				.filter((o) => parseInt(o.classificationGroup, 10) === parseInt(g.value, 10))
 				.sort((a, b) => a.text.localeCompare(b.text));
 
 			if (groupOptions.length > 0) {
-				optionList.push(
-					`<div id="topicGroup${g.id}-${index}" class="genDropdownTopicGroup asldfkj">${g.text}</div>`
-				);
+				// will hide total group since it only has 1 item and we move it to the top
+				const optClass =
+					groupOptions.length === 1 && groupOptions.find((o) => o[props.text].toLowerCase() === "total")
+						? "d-none genDropdownTopicGroup"
+						: "genDropdownTopicGroup";
+				optionList.push(`<div id="topicGroup${g.value}-${index}" class="${optClass}">${g.text}</div>`);
 				groupOptions.forEach((o) => {
 					if (o[props.text].toLowerCase() === "total") {
 						totalItem = o;

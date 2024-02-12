@@ -866,28 +866,5 @@ export const topicGroups = [
 // "Oral Health", // 5
 // "Prevention, control, and treatment", // 6
 
-export const classificationGroups = [
-	{
-		id: 0,
-		text: "Demographic Characteristic",
-	},
-	{
-		id: 1,
-		text: "Demographic Characteristics",
-	},
-	{
-		id: 2,
-		text: "Geographic Characteristics",
-	},
-	{
-		id: 3,
-		text: "Socioeconomic Status",
-	},
-	{
-		id: 4,
-		text: "Multiple Characteristics",
-	},
-];
-
 window.topicLookup = topicLookup;
 window.NHISTopics = NHISTopics;
