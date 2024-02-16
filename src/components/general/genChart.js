@@ -30,6 +30,8 @@ export class GenChart {
 	render() {
 		const p = this.props;
 
+		let defaultNote = true;
+		let hasLineChartReliability = false;
 		if (p.data && p.data[0]?.panel && p.data[0].panel.toLowerCase() === "community hospital beds") {
 			p.xAxisAllYears = true;
 		}
@@ -875,6 +877,7 @@ export class GenChart {
 											if (unreliable) {
 												$(".unreliableNote").show();
 												$(".unreliableFootnote").show();
+												defaultNote = false;
 											}
 											return unreliable ? `url(#diagonalHatch-${i})` : p.barColors[i];
 										}
@@ -1110,8 +1113,10 @@ export class GenChart {
 										.style("fill", (d) => {
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												$(".unreliableNote").show();
+												// $(".unreliableNote").show();
 												$(".unreliableFootnote").show();
+												hasLineChartReliability = true;
+												defaultNote = false;
 											}
 											return unreliable ? `url(#diagonalHatch-${i})` : multiLineColors(i);
 										})
@@ -1568,8 +1573,22 @@ export class GenChart {
 					.attr("x2", linex)
 					.attr("y2", liney);
 
-				$(".unreliableNote").show();
+				defaultNote = false;
 			}
+		}
+
+		if (this.props.hasVerticalLine && hasLineChartReliability) {
+			console.log("has reliability AND vertical line");
+			// $(".unreliableNote").hide();
+			$(".unreliableNoteWithVerticalLine").show();
+		} else if (this.props.hasVerticalLine) {
+			console.log("has vertical line");
+			$(".unreliableNote").show();
+		} else if (hasLineChartReliability) {
+			console.log("ONLY has reliability issue");
+			$(".onlyUnreliableNote").show();
+		} else if (defaultNote) {
+			$(".defaultNote").show();
 		}
 
 		return {

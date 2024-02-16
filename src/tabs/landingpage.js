@@ -261,13 +261,13 @@ export class LandingPage {
 		const allDates = this.allYearsOptions.map((d) => d.value);
 		stateData = stateData.filter((d) => d.year_pt === this.startYear);
 
-		const chartTitleStart = this.config.chartTitle.split(" in ");
+		const chartTitleStart = this.config.chartTitle.split(" | ");
 		if (chartTitleStart?.length > 1) {
-			this.config.chartTitle = chartTitleStart[0] + " in " + this.startPeriod;
+			this.config.chartTitle = chartTitleStart[0] + " | " + this.startPeriod;
 		} else {
 			const topicTitle = this.topicDropdown.text();
 			const group = this.groupDropdown.text();
-			this.config.chartTitle = `${topicTitle} | ${group} | ${this.startPeriod}}`;
+			this.config.chartTitle = `${topicTitle} | ${group} | ${this.startPeriod}`;
 		}
 		$("#chart-title").html(`${this.config.chartTitle}`);
 		$("#mapLegendPeriod").html(this.staticBinning ? allDates.slice(-1)[0] : this.startPeriod);
@@ -399,7 +399,10 @@ export class LandingPage {
 	};
 
 	renderDataVisualizations = () => {
+		$(".defaultNote").hide();
 		$(".unreliableNote").hide();
+		$(".onlyUnreliableNote").hide();
+		$(".unreliableNoteWithVerticalLine").hide();
 		$(".unreliableFootnote").hide();
 
 		// reset CI toggle if previously checked
@@ -1315,6 +1318,7 @@ export class LandingPage {
 	}
 
 	renderDataTable(data) {
+		let defaultNote = true;
 		if (!$("#tableSelectors #chart-table-selectors").length) {
 			$("#chart-table-selectors").detach().prependTo("#tableSelectors");
 			$("#mapBinningTypeSelector").hide();
@@ -1376,8 +1380,13 @@ export class LandingPage {
 		const groupNotAge = !groupText.includes("age") && !groupText.includes("years") && !topic.includes("age");
 
 		if (tableData.some((d) => d.flag)) {
+			defaultNote = false;
 			$(".unreliableNote").show();
 			$(".unreliableFootnote").show();
+		}
+
+		if (defaultNote) {
+			$(".defaultNote").show();
 		}
 
 		tableData = tableData.map((d) => {

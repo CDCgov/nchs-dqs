@@ -252,6 +252,7 @@ export class GenMap {
 	}
 
 	render() {
+		let defaultNote = true;
 		const topoJson = JSON.parse(JSON.stringify(this.topoJson)); // deep clone
 		const { geometries } = topoJson.objects.StatesAndTerritories;
 		let { mLegendData } = this;
@@ -377,6 +378,7 @@ export class GenMap {
 			}
 
 			if (theFlag === "*") {
+				defaultNote = false;
 				$(".unreliableNote").show();
 				$(".unreliableFootnote").show();
 				geometries.push({
@@ -387,6 +389,9 @@ export class GenMap {
 			}
 		});
 
+		if (defaultNote) {
+			$(".defaultNote").show();
+		}
 		// what territories are we hiding????  (TTTT)
 		const hiddenStates = [57, 66, 78];
 		const filteredStates = geometries.filter((d) => hiddenStates.indexOf(d.properties.STATE_FIPS) === -1);
