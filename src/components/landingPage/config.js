@@ -365,7 +365,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	"infant-mortality": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
@@ -443,7 +443,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasClassification: false,
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	"drug-overdose": {
 		dataUrl: "https://data.cdc.gov/NCHS/DQS-Drug-overdose-death-rates-by-drug-type-sex-age/gp4d-kizt",
@@ -477,7 +477,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
-		topicGroup: 13,
+		topicGroup: 12,
 		subtopics: [
 			{ id: "1", text: "Physician offices" },
 			{ id: "2", text: "Hospital emergency departments" },
@@ -495,7 +495,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 11,
+		topicGroup: 10,
 		subtopics: [
 			{ id: "1", text: "Delay or nonreceipt of needed medical care due to cost" },
 			{ id: "2", text: "Nonreceipt of needed prescription drugs due to cost" },
@@ -515,7 +515,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: true,
 		binGranularity: 0.1,
-		topicGroup: 12,
+		topicGroup: 11,
 	},
 	"active-dentists": {
 		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
@@ -530,7 +530,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: false,
 		binGranularity: 0.1,
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 };
 
@@ -845,11 +845,11 @@ export const topicGroups = [
 	"Diabetes", // 7
 	"Disabilities", // 8
 	"Employment status", // 9
-	"Healthy eating and nutrition", // 10
-	"Health care access and quality", // 11
-	"Health care capacity", // 12
-	"Health care system use", // 13
-	"Health insurance", // 14
+	"Healthcare access and quality", // 11 -> 10
+	"Healthcare capacity", // 12 -> 11
+	"Healthcare system use", // 13 -> 12
+	"Health insurance", // 14 -> 13
+	"Healthy eating and nutrition", // 10 -> temp -> 14
 	"Infectious diseases", // 15
 	"Mass screening", // 16
 	"Mental wellness", // 17

@@ -35,7 +35,7 @@ const NHISAdult = [
 		id: "delayed-getting-medical-care-due-to-cost",
 		text: "Delayed getting medical care due to cost among adults",
 		indicator: "Delayed getting medical care due to cost among adults",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{ id: "dental-exam-or-cleaning", text: "Dental exam or cleaning", topicGroup: 19 },
 	{
@@ -54,26 +54,26 @@ const NHISAdult = [
 		id: "did-not-get-needed-medical-care-due-to-cost",
 		text: "Did not get needed medical care due to cost",
 		indicator: "Did not get needed medical care due to cost",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{
 		id: "did-not-get-needed-mental-health-care-due-to-cost",
 		text: "Did not get needed mental health care due to cost",
 		indicator: "Did not get needed mental health care due to cost",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{
 		id: "did-not-take-medication-as-prescribed-to-save-money",
 		text: "Did not take medication as prescribed to save money",
 		indicator: "Did not take medication as prescribed to save money",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{ id: "disability-status-(composite)", text: "Disability status (composite)", topicGroup: 8 },
 	{
 		id: "doctor-visit",
 		text: "Doctor visit among adults",
 		indicator: "Doctor visit among adults",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	{
 		id: "ever-received-a-pneumococcal-vaccination",
@@ -84,7 +84,7 @@ const NHISAdult = [
 		id: "exchange-based-coverage-coverage-at-time-of-interview",
 		text: "Exchange-based coverage at time of interview among adults",
 		indicator: "Exchange-based health plan coverage at time of interview",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	{
 		id: "fair-or-poor-health-status",
@@ -96,12 +96,12 @@ const NHISAdult = [
 		id: "has-a-usual-place-of-care",
 		text: "Has a usual place of care among adults",
 		indicator: "Has a usual place of care among adults",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{ id: "heart-attack-myocardial-infarction", text: "Heart attack/myocardial infarction", topicGroup: 4 },
 	{
 		id: "high-cholesterol",
-		text: "High cholesterol diagnosis, self reported",
+		text: "High cholesterol diagnosis, self-reported",
 		indicator: "High cholesterol",
 		topicGroup: 4,
 	},
@@ -109,7 +109,7 @@ const NHISAdult = [
 		id: "hospital-emergency-department-visit",
 		text: "Hospital emergency department visit",
 		indicator: "Hospital emergency department visit",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	{ id: "obesity", text: "Obesity, self-reported", indicator: "Obesity (NHIS)", topicGroup: 18 },
 	{
@@ -122,14 +122,14 @@ const NHISAdult = [
 		id: "private-health-insurance-coverage-at-time-of-interview",
 		text: "Private health insurance coverage at time of interview among adults",
 		indicator: "Private health insurance coverage at time of interview",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	{ id: "prostate-cancer", text: "Prostate cancer", topicGroup: 3 },
 	{
 		id: "public-health-plan-coverage-at-time-of-interview",
 		text: "Public health insurance coverage at time of interview among adults",
 		indicator: "Public health plan coverage at time of interview",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	{
 		id: "receipt-of-influenza-vaccination",
@@ -163,21 +163,21 @@ const NHISAdult = [
 		id: "uninsured-at-time-of-interview",
 		text: "Uninsured at time of interview among adults",
 		indicator: "Uninsured at time of interview among adults",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	{
 		id: "uninsured-for-at-least-part-of-the-past-year",
 		text: "Uninsured for at least part of the past year",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
-	{ id: "uninsured-for-more-than-one-year", text: "Uninsured for more than one year", topicGroup: 14 },
+	{ id: "uninsured-for-more-than-one-year", text: "Uninsured for more than one year", topicGroup: 13 },
 	{
 		id: "urgent-care-center-or-retail-health-clinic-visit",
 		text: "Urgent care center or retail health clinic visit among adults",
 		indicator: "Urgent care center or retail health clinic visit",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
-	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 13 },
+	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 12 },
 ];
 
 const NHISChild = [
@@ -197,13 +197,13 @@ const NHISChild = [
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
 		text: "Delayed getting medical care due to cost among children",
 		indicator: "Delayed getting medical care due to cost among children",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{
 		id: "doctor-visit-among-children",
 		text: "Doctor visit among children",
 		indicator: "Doctor visit among children",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	{
 		id: "ever-having-a-learning-disability",
@@ -229,7 +229,7 @@ const NHISChild = [
 	{
 		id: "has-a-usual-place-of-care-among-children",
 		text: "Has a usual place of care among children",
-		topicGroup: 11,
+		topicGroup: 10,
 	},
 	{
 		id: "missing-11-or-more-school-days-due-to-illness-or-injury",
@@ -260,22 +260,22 @@ const NHISChild = [
 	{
 		id: "two-or-more-hospital-emergency-department-visits-among-children",
 		text: "Two or more hospital emergency department visits among children",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	{
 		id: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
 		text: "Two or more urgent care center or retail health clinic visits among children",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 	{
 		id: "uninsured-at-time-of-interview-among-children",
 		text: "Uninsured at time of interview among children",
-		topicGroup: 14,
+		topicGroup: 13,
 	},
 	{
 		id: "well-child-check-up",
 		text: "Well child check-up",
-		topicGroup: 13,
+		topicGroup: 12,
 	},
 ];
 
@@ -284,7 +284,7 @@ const NHAMCSChild = [
 		id: "by-reason-for-visit",
 		text: "Hospital emergency department visits by reason for visit",
 		indicator: "By reason for visit",
-		topicGroup: 13,
+		topicGroup: 12,
 		subtopics: [
 			{ id: "0", text: "All reasons (patient reported)" },
 			// removed as part of 22320
@@ -305,7 +305,7 @@ const NHAMCSChild = [
 		id: "by-primary-diagnosis",
 		text: "Hospital emergency department visits by primary diagnosis",
 		indicator: "By primary diagnosis",
-		topicGroup: 13,
+		topicGroup: 12,
 		subtopics: [
 			{ id: "0", text: "All diagnoses" },
 			{ id: "10", text: "Certain infectious and parasitic diseases" },
@@ -336,13 +336,13 @@ const NHANESChronic = [
 
 // start NHANES Dietary behaviors
 const NHANESDietary = [
-	{ id: "calcium-intake", text: "Calcium Intake", topicGroup: 10 },
-	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake", topicGroup: 10 },
-	{ id: "iron-intake", text: "Iron Intake", topicGroup: 10 },
-	{ id: "potassium-intake", text: "Potassium Intake", topicGroup: 10 },
-	{ id: "saturated-fat-intake", text: "Saturated Fat Intake", topicGroup: 10 },
-	{ id: "sodium-intake", text: "Sodium Intake", topicGroup: 10 },
-	{ id: "vitamin-d-intake", text: "Vitamin D Intake", topicGroup: 10 },
+	{ id: "calcium-intake", text: "Calcium Intake", topicGroup: 14 },
+	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake", topicGroup: 14 },
+	{ id: "iron-intake", text: "Iron Intake", topicGroup: 14 },
+	{ id: "potassium-intake", text: "Potassium Intake", topicGroup: 14 },
+	{ id: "saturated-fat-intake", text: "Saturated Fat Intake", topicGroup: 14 },
+	{ id: "sodium-intake", text: "Sodium Intake", topicGroup: 14 },
+	{ id: "vitamin-d-intake", text: "Vitamin D Intake", topicGroup: 14 },
 ];
 
 // NHANES oral health
