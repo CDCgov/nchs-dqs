@@ -1033,44 +1033,8 @@ export class LandingPage {
 			value: d.stub_name_num,
 		}));
 		*/
-		console.log("selected topic: ", this.topicDropdown?.value());
-		console.log("estimate type: ", this.estimateTypeTableDropdown);
-		console.log("selected estimate type:", this.estimateTypeTableDropdown?.value());
-
-		const uniqueOptions = [
-			...new Map(
-				options
-					.filter((item) => item)
-					.filter((item) => {
-						// const selectedTopic = this.topicDropdown?.value();
-						// const selectedEstimateType = this.estimateTypeTableDropdown?.value();
-						// if (
-						// 	selectedTopic &&
-						// 	["drug-overdose", "suicide"].includes(selectedTopic) &&
-						// 	selectedEstimateType === 1 &&
-						// 	item.text === "Age group"
-						// ) {
-						// 	console.log("item for suicide: ", item.text);
-						// 	return false;
-						// }
-						if (this.estimateTypeTableDropdown !== null && !this.estimateTypeTableDropdown?.disabled) {
-							console.log("estimate type is NOT disabled: ", this.estimateTypeTableDropdown?.text());
-							if (
-								["death-rates-for-diseases-of-heart", "drug-overdose", "suicide"].includes(
-									this.topicDropdown?.value()
-								) &&
-								this.estimateTypeTableDropdown?.text()?.includes("age-adjusted") &&
-								item.text === "Age group"
-							) {
-								return false;
-							}
-						}
-						return item;
-					})
-					.map((item) => [item.value, item])
-			).values(),
-		];
-		console.log("group options: ", uniqueOptions);
+		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
+		console.log("options", uniqueOptions);
 
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
@@ -1126,8 +1090,6 @@ export class LandingPage {
 		});
 
 		const options = allUnitsArray.map((d) => ({ text: d.unit, value: d.unit_num }));
-		console.log("estimate options: ", options);
-
 		if (options.length) {
 			this.estimateTypeTableDropdown = new GenDropdown({
 				containerId: "estimateTypeDropdown",
@@ -1142,11 +1104,8 @@ export class LandingPage {
 			if (options.length === 1) {
 				this.estimateTypeTableDropdown.disabled = true;
 				$("#estimateTypeDropdown .genDropdownSelected").addClass("disabled");
-			} else {
-				// have multiple estimate options so update group dropdown options
-				this.initGroupDropdown();
 			}
-			if (!options.find((o) => o.value === this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
+			if (!options.find((o) => o.value == this.config.yAxisUnitId)) this.config.yAxisUnitId = options[0].value;
 		}
 	}
 
@@ -1277,14 +1236,7 @@ export class LandingPage {
 	}
 
 	updateYAxisUnitId(yAxisUnitId) {
-		console.log("updateYAxisUnitId called with: ", yAxisUnitId);
 		this.config.yAxisUnitId = parseInt(yAxisUnitId, 10);
-
-		// update group drop options (for suicide, heart disease and overdose)
-		if (["death-rates-for-diseases-of-heart", "drug-overdose", "suicide"].includes(this.topicDropdown?.value())) {
-			console.log("YES: ", this.estimateTypeTableDropdown);
-			this.initGroupDropdown();
-		}
 
 		// DUE TO MIXED UCI DATA: One unit_num has NO UCI data, and the other one DOES (TT)
 		// IF UNIT NUM CHANGES, CHECK TO SEE IF ENABLE CI CHECKBOX SHOULD BE DISABLED
