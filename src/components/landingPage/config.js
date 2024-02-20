@@ -295,7 +295,7 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHANESFootnotes: {
-		socrataId: "vv6f-2hmj",
+		socrataId: "iqm3-hbev",
 		private: "1",
 	},
 };
@@ -706,47 +706,16 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-oral-health": {
-		socrataId: "i3dq-buv5",
+		socrataId: "59vz-u8kg",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
 					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
-				});
-			});
-
-			return returnData;
-		},
-	},
-	"nhanes-infectious-disease": {
-		socrataId: "fuy5-tcrb",
-		private: "1",
-		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
-			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
+					estimate_lci: f.lower_95pct_ci,
+					estimate_uci: f.upper_95pct_ci,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
 					indicator: f.measure,
@@ -754,13 +723,44 @@ const multipleTopicDatasets = {
 					panel_num: f.subtopic_id,
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
 					unit: f.estimate_type,
 					unit_num: f.estimate_type_id,
 					year: f.survey_years,
 					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+					age: f.group.includes("Age Group") ? f.group : "N/A",
+				});
+			});
+
+			return returnData;
+		},
+	},
+	"nhanes-infectious-disease": {
+		socrataId: "be3w-4inw",
+		private: "1",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
+			const returnData = [];
+			filteredToIndicator.forEach((f) => {
+				returnData.push({
+					estimate: f.estimate,
+					estimate_lci: f.lower_95pct_ci_limit,
+					estimate_uci: f.upper_95pct_ci_limit,
+					flag: f.flag,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.measure,
+					panel: f.subtopic,
+					panel_num: f.subtopic_id,
+					se: null,
+					stub_label: f.subgroup,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.survey_years,
+					year_num: "",
+					age: f.group.includes("Age Group") ? f.group : "N/A",
 				});
 			});
 
@@ -870,21 +870,6 @@ export const topicGroups = [
 // "Mental Health  ", // 4
 // "Oral Health", // 5
 // "Prevention, control, and treatment", // 6
-
-export const classificationGroups = [
-	{
-		id: 1,
-		text: "Demographic Characteristics",
-	},
-	{
-		id: 2,
-		text: "Geographic Characteristics",
-	},
-	{
-		id: 3,
-		text: "Socioeconomic Status",
-	},
-];
 
 window.topicLookup = topicLookup;
 window.NHISTopics = NHISTopics;

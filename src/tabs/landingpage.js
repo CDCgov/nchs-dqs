@@ -63,6 +63,7 @@ export class LandingPage {
 		this.staticBinning = false;
 		this.legend = null;
 		this.sigFigs = null;
+		this.classificationOptions = null;
 	}
 
 	getUSMapData = async () => (this.topoJson ? null : Utils.getJsonFile("content/json/StatesAndTerritories.json"));
@@ -696,6 +697,7 @@ export class LandingPage {
 		this.selections = null;
 		this.legend = null;
 		this.allMapData = null;
+		this.classificationOptions = null;
 		await this.updateTopic(value);
 		if (classification) {
 			this.updateClassification(classification);
@@ -813,8 +815,9 @@ export class LandingPage {
 					this.footnoteMap = {};
 					let i = null;
 					for (i = 0; i < allFootNotes.length; i++) {
+						const idProp = allFootNotes[i].fn_id ? "fn_id" : "footnote_id_list";
 						const text = allFootNotes[i]?.fn_text;
-						const id = allFootNotes[i].fn_id;
+						const id = allFootNotes[i][idProp];
 						this.footnoteMap[id] = text;
 					}
 				}
@@ -872,6 +875,28 @@ export class LandingPage {
 		return "";
 	};
 
+	buildClassificationOptions() {
+		if (!this.classificationOptions) {
+			// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
+			let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
+			// now sort them in id order
+			allTopics.sort((a, b) => {
+				return a.panel_num - b.panel_num;
+			});
+
+			const options = allTopics.map((d) => ({
+				text: d.panel,
+				value: d.panel_num,
+			}));
+
+			this.classificationDropdown = options;
+
+			return options;
+		}
+
+		return this.classificationOptions;
+	}
+
 	setAllSelectDropdowns() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
 		this.initClassificationDropdown();
@@ -925,17 +950,7 @@ export class LandingPage {
 
 	// Classification
 	initClassificationDropdown() {
-		// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
-		let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
-		// now sort them in id order
-		allTopics.sort((a, b) => {
-			return a.panel_num - b.panel_num;
-		});
-
-		const options = allTopics.map((d) => ({
-			text: d.panel,
-			value: d.panel_num,
-		}));
+		const options = this.buildClassificationOptions();
 
 		this.classificationDropdown = new GenDropdown({
 			containerId: "classificationDropdown",
@@ -956,14 +971,15 @@ export class LandingPage {
 	initGroupDropdown() {
 		// if (this.config.hasClassification || !this.flattenedFilteredData)
 		// 	this.flattenedFilteredData = this.getFlattenedFilteredData();
-
-		const classificationGroupDict = config.classificationGroups.reduce((prev, curr) => {
+		const classificationOptions = this.buildClassificationOptions();
+		const classificationGroupDict = classificationOptions.reduce((prev, curr) => {
 			// eslint-disable-next-line no-param-reassign
-			prev[curr.text] = curr.id;
+			prev[curr.text] = curr.value;
 			return prev;
 		}, {});
 
-		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict[c.panel]);
+		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict.hasOwnProperty(c.panel));
+
 		let dataToFilter = filteredTopics;
 		if (filteredTopics.length === 0) {
 			// this filters to exact classification so we only get options specific to it vs others
@@ -1062,6 +1078,7 @@ export class LandingPage {
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
 			isNestedGroup: filteredTopics.length > 0,
+			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();
 		this.groupId = this.groupDropdown.value();
@@ -1184,8 +1201,14 @@ export class LandingPage {
 	}
 
 	initStartPeriodDropdown(options) {
-		this.startPeriod = options[0].value;
-		this.startYear = functions.getYear(this.startPeriod);
+		try {
+			this.startPeriod = options[0].value;
+			this.startYear = functions.getYear(this.startPeriod);
+		} catch (e) {
+			console.log("error with time period. resetting group dropdown", e);
+			$("#groupDropdown-select .genDropdownOption:first").trigger("click");
+			$("body").trigger("click");
+		}
 
 		try {
 			if (this.config.hasMap && this.activeTabNumber === 0) {

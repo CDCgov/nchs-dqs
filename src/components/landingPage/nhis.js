@@ -353,8 +353,13 @@ const NHANESOralHealth = [
 		topicGroup: 19,
 	},
 	{
-		id: "total-dental-caries-in-permanent-teeth",
-		text: "Total Dental Caries in Permanent Teeth",
+		id: "total-dental-caries-in-permanent-teeth-in-adults",
+		text: "Total Dental Caries in Permanent Teeth in Adults",
+		topicGroup: 19,
+	},
+	{
+		id: "total-dental-caries-in-permanent-teeth-in-children",
+		text: "Total Dental Caries in Permanent Teeth in Children",
 		topicGroup: 19,
 	},
 	{
@@ -368,8 +373,13 @@ const NHANESOralHealth = [
 		topicGroup: 19,
 	},
 	{
-		id: "untreated-dental-caries-in-permanent-teeth",
-		text: "Untreated Dental Caries in Permanent Teeth",
+		id: "untreated-dental-caries-in-permanent-teeth-in-adults",
+		text: "Untreated Dental Caries in Permanent Teeth in Adults",
+		topicGroup: 19,
+	},
+	{
+		id: "untreated-dental-caries-in-permanent-teeth-in-children",
+		text: "Untreated Dental Caries in Permanent Teeth in Children",
 		topicGroup: 19,
 	},
 ];
@@ -377,13 +387,13 @@ const NHANESOralHealth = [
 // NHANES Infectious disease
 const NHANESInfectious = [
 	{
-		id: "herpes-simplex-virus-type-1-hsv-1",
-		text: "Herpes Simplex Virus Type 1 (HSV-1)",
+		id: "herpes-simplex-virus-type-1",
+		text: "Herpes Simplex Virus Type 1",
 		topicGroup: 15,
 	},
 	{
-		id: "herpes-simplex-virus-type-2-hsv-2",
-		text: "Herpes Simplex Virus Type 2 (HSV-2)",
+		id: "herpes-simplex-virus-type-2",
+		text: "Herpes Simplex Virus Type 2",
 		topicGroup: 15,
 	},
 ];
@@ -433,13 +443,13 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-oral-health",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Oral-Health-Prevalence-Estimates/i3dq-buv5",
+		dataUrl: "https://data.cdc.gov/resource/59vz-u8kg.json",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-infectious-disease",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Infectious-Diseases-Prevalence-E/fuy5-tcrb",
+		dataUrl: "https://data.cdc.gov/resource/be3w-4inw.json",
 	})),
 	...WONDERHUSHeartDisease.map((d) => ({
 		...d,
