@@ -79,7 +79,6 @@ export class LandingPage {
 		let nchsData = DataCache[`data-${localConfig.socrataId}`];
 		if (nchsData) return nchsData;
 
-		// if there's a specific lookup id with a mapper
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
 			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
@@ -106,6 +105,12 @@ export class LandingPage {
 
 			const columns = JSON.parse(metaData).columns.map((col) => col.fieldName);
 			nchsData = functions.addMissingProps(columns, JSON.parse(jsonData));
+
+			if (localConfig.hasCustomMapper) {
+				nchsData = localConfig.dataMapper(nchsData);
+				console.log("mapped data", nchsData);
+			}
+
 			DataCache[`data-${localConfig.socrataId}`] = nchsData;
 			return nchsData;
 		} catch (err) {
@@ -875,22 +880,27 @@ export class LandingPage {
 		return "";
 	};
 
+	getClassificationPropName() {
+		return this.socrataData[0] && this.socrataData[0].classification ? "classification" : "panel";
+	}
+
 	buildClassificationOptions() {
 		if (!this.classificationOptions) {
+			// for backwards compatibility, support both values for classification
+			const propName = this.getClassificationPropName();
 			// Creates an array of objects with unique "name" property values. Have to iterate over the unfiltered data
-			let allTopics = [...new Map(this.socrataData.map((item) => [item.panel, item])).values()];
+			let allTopics = [...new Map(this.socrataData.map((item) => [item[propName], item])).values()];
 			// now sort them in id order
 			allTopics.sort((a, b) => {
-				return a.panel_num - b.panel_num;
+				return a[`${[propName]}_num`] - b[`${[propName]}_num`];
 			});
 
 			const options = allTopics.map((d) => ({
-				text: d.panel,
-				value: d.panel_num,
+				text: d[propName],
+				value: d[`${[propName]}_num`],
 			}));
 
-			this.classificationDropdown = options;
-
+			this.classificationOptions = options;
 			return options;
 		}
 
@@ -978,7 +988,9 @@ export class LandingPage {
 			return prev;
 		}, {});
 
-		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict.hasOwnProperty(c.panel));
+		const propName = this.getClassificationPropName();
+
+		const filteredTopics = this.socrataData.filter((c) => classificationGroupDict.hasOwnProperty(c[propName]));
 
 		let dataToFilter = filteredTopics;
 		if (filteredTopics.length === 0) {
@@ -986,7 +998,7 @@ export class LandingPage {
 			// in the topic (ie 2-5 years vs 2-19 years, etc)
 			if (this.config.classificationId) {
 				dataToFilter = this.socrataData.filter(
-					(d) => parseInt(d.panel_num, 10) === parseInt(this.config.classificationId, 10)
+					(d) => parseInt(d[`${propName}_num`], 10) === parseInt(this.config.classificationId, 10)
 				);
 			} else {
 				dataToFilter = this.socrataData;
@@ -998,7 +1010,7 @@ export class LandingPage {
 				prev.push({
 					value: curr.stub_name_num,
 					text: curr.stub_name,
-					classificationGroup: filteredTopics.length > 0 ? classificationGroupDict[curr.panel] : 0,
+					classificationGroup: filteredTopics.length > 0 ? classificationGroupDict[curr[propName]] : 0,
 				});
 			}
 			return prev;
@@ -1010,29 +1022,6 @@ export class LandingPage {
 			options.unshift(totalItem);
 		}
 
-		// PREVIOUS LOGIC TO DETERMINE groups/classification
-		// kept in tact because of logic specific to topics below... do we need this?
-		/*
-		const topicsWhereGroupsVaryByClassification = ["obesity-child", "obesity-adult", "birthweight"].concat(
-			NHISTopics.map((t) => t.id)
-		);
-
-		let allGroupIds;
-		if (topicsWhereGroupsVaryByClassification.includes(this.dataTopic)) {
-			allGroupIds = this.socrataData.filter((d) => d.panel_num == this.config.classificationId);
-		} else {
-			allGroupIds = this.socrataData;
-		}
-
-		allGroupIds = [...new Map(allGroupIds.map((item) => [item.stub_name, item])).values()].sort(
-			(a, b) => a.stub_name_num - b.stub_name_num
-		);
-
-		options = allGroupIds.map((d) => ({
-			text: d.stub_name,
-			value: d.stub_name_num,
-		}));
-		*/
 		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
 		console.log("options", uniqueOptions);
 
@@ -1041,7 +1030,7 @@ export class LandingPage {
 			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
-			isNestedGroup: filteredTopics.length > 0,
+			isNestedGroup: filteredTopics.length > 0 && propName !== "classification",
 			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();

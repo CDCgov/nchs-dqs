@@ -211,7 +211,7 @@ export class TopicDropdown {
 		const text = $(`${this.selectedOption} > a`).html();
 		const classification = $(this.selectedOption).data("classification");
 		// if I have classification, that meants its a subtopic, so display topic name with it
-		if (classification) {
+		if (typeof classification !== "undefined") {
 			return `${$(this.selectedOptionEl).data("parent-topic")}${TOPIC_SEPARATOR}${text}`;
 		}
 
@@ -569,7 +569,7 @@ export class TopicDropdown {
 		const value = $(this.selectedOptionEl).data("val").toString();
 		const classification = $(this.selectedOption).data("classification");
 		// if I have classification, that meants its a subtopic, so display topic name with it
-		if (classification) {
+		if (typeof classification !== "undefined") {
 			text = `${$(this.selectedOptionEl).data("parent-topic")}${TOPIC_SEPARATOR}${text}`;
 		}
 		$(`#${this.props.containerId}-select > a`).html(text);
