@@ -368,13 +368,42 @@ const singleTopicDatasets = {
 		topicGroup: 12,
 	},
 	"infant-mortality": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Infant-mortality-rates-by-race-and-Hispanic-or/bzax-vvbx",
-		socrataId: "bzax-vvbx",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "data.cdc.gov/resource/pjb2-jvdr.json",
+		socrataId: "pjb2-jvdr",
 		private: "1",
 		chartTitle: "Infant Mortality by race",
 		filters: "HUS,NVSS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
-		classificationId: 1,
+		classificationId: 0,
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: true,
@@ -383,28 +412,28 @@ const singleTopicDatasets = {
 		topicGroup: 6,
 		subtopics: [
 			{
-				text: "All races",
+				text: "Total",
+				id: "0",
+			},
+			{
+				text: "All races, Hispanic origin",
 				id: "1",
 			},
 			{
-				text: "Not Hispanic or Latina: White",
+				text: "American Indian and Alaska Native",
 				id: "2",
 			},
 			{
-				text: "Not Hispanic or Latina: Black or African American",
+				text: "Asian or Pacific Islander",
 				id: "3",
 			},
 			{
-				text: "Hispanic or Latina: All races",
+				text: "Black, non-Hispanic",
 				id: "4",
 			},
 			{
-				text: "American Indian or Alaska Native",
+				text: "White, non-Hispanic",
 				id: "5",
-			},
-			{
-				text: "Asian or Pacific Islander",
-				id: "6",
 			},
 		],
 	},
