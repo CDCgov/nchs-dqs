@@ -511,7 +511,9 @@ export class LandingPage {
 				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
 
-		if (this.config.hasClassification) data = data.filter((d) => d.panel_num == this.config.classificationId);
+		if (this.config.hasClassification) {
+			data = data.filter((d) => d.panel_num == this.config.classificationId);
+		}
 
 		const estimateUci = data.filter((d) => d.estimate_uci).map((d) => d.estimate_uci);
 
@@ -1025,12 +1027,14 @@ export class LandingPage {
 		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
 		console.log("options", uniqueOptions);
 
+		// !this.config.disabledNestedGroup check was added to NOT display Group dropdown nested groups
 		this.groupDropdown = new GenDropdown({
 			containerId: "groupDropdown",
 			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
-			isNestedGroup: filteredTopics.length > 0 && propName !== "classification",
+			isNestedGroup:
+				filteredTopics.length > 0 && !this.config.disabledNestedGroup && propName !== "classification",
 			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();
@@ -1404,6 +1408,7 @@ export class LandingPage {
 			};
 		});
 
+		console.log("tableData: ", tableData);
 		// forces table to show if there is a flag attribute but no estimate
 		if (tableData.every((d) => (!d.estimate || d.estimate === "NaN") && !d.flag)) {
 			$("#tableResultsCount").hide();
