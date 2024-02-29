@@ -14594,7 +14594,7 @@ fieldset {
   margin-top: 25px;
   color: #333;
   text-align: center; }
-  .usMapLegendContainer > div {
+  .usMapLegendContainer .legend-items {
     width: 80%;
     margin: auto;
     border: 1px solid #e0e0e0;
@@ -14875,7 +14875,7 @@ a {
         width: 85%;
         text-align: left; }
   #chartContainer #chartLegendTitle {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     padding: 0 5px; }
   #chartContainer .legendItems > div {
@@ -15077,6 +15077,25 @@ p.footnoteHeader {
     font-size: 16px;
     color: #333;
     display: inline; }
+
+.reliability-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px; }
+  .reliability-legend .reliability-box {
+    margin-right: 6px; }
+    .reliability-legend .reliability-box img {
+      width: 42px;
+      padding-bottom: 4px; }
+  .reliability-legend .reliability-label {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold; }
+
+@media screen and (max-width: 1000px) {
+  #reliability-legend {
+    justify-content: center; } }
 
 body,
 html {
@@ -16133,7 +16152,10 @@ div.genDropdownSelected {
   .genMsdSelected:hover {
     border-color: #555; }
   .genMsdSelected.disabled {
-    color: #bdbdbd !important; }
+    color: #bdbdbd !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23bdbdbd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); }
+    .genMsdSelected.disabled:hover {
+      border: 1px solid #bdbdbd; }
   .genMsdSelected.genDropdownOpened {
     border-color: #555;
     border-bottom-left-radius: 0;

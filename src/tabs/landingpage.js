@@ -1054,7 +1054,8 @@ export class LandingPage {
 
 	initSubgroupDropdown() {
 		this.flattenedFilteredData = this.getFlattenedFilteredData();
-		const subgroups = this.flattenedFilteredData.map((f) => f.stub_label);
+		const ordered = this.flattenedFilteredData.sort((a, b) => a.stub_label_order - b.stub_label_order);
+		const subgroups = ordered.map((f) => f.stub_label);
 		const subgroupLabels = [...new Set(subgroups)];
 		// check how many subgroups exist for a given group selection
 		// if MORE than 7 subgroups then pre-select 5 otherwise select ALL
