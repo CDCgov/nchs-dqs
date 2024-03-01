@@ -598,8 +598,31 @@ const singleTopicDatasets = {
 		topicGroup: 11,
 	},
 	"active-dentists": {
-		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
-		socrataId: "83hb-kwqf",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					...d,
+					indicator: d.topic,
+					panel: "active-dentists",
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: " https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
+		socrataId: "9epi-jrff",
 		private: "1",
 		chartTitle: "Dentists",
 		filters: "HUS",
