@@ -283,7 +283,11 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHISFootnotes: {
-		socrataId: "pr96-nsm2",
+		socrataId: "gpsd-ru5i",
+		private: "1",
+	},
+	NHISChildFootnotes: {
+		socrataId: "48ev-2ygq",
 		private: "1",
 	},
 	cshsFootnotes: {
@@ -291,7 +295,7 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHAMCSFootnotes: {
-		socrataId: "42t3-uyny",
+		socrataId: "6vwk-ensg",
 		private: "1",
 	},
 	NHANESFootnotes: {
@@ -350,10 +354,40 @@ const singleTopicDatasets = {
 		],
 	},
 	"obesity-adult": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Normal-weight-overweight-and-obesity-among-adu/23va-ejrn",
-		socrataId: "23va-ejrn",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			console.log("obesity-adult: ", data);
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					// classification: d.classification,
+					// classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Normal_weight__overweight__and_obesity_amo/sqt4-6a3k",
+		socrataId: "sqt4-6a3k",
 		private: "1",
-		chartTitle: "Obesity among Adults, measured",
+		chartTitle: "BMI among adults, measured",
 		filters: "HUS,NHANES,Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
 		dataSystem: "HUS,NHANES",
 		classificationId: 1,
@@ -614,7 +648,7 @@ const singleTopicDatasets = {
 		dataUrl: "data.cdc.gov/dataset/DQS-Community-hospital-beds-by-state/tjtn-y8d3.json",
 		socrataId: "tjtn-y8d3",
 		private: "1",
-		chartTitle: "Community hospital bed",
+		chartTitle: "Community hospital beds",
 		filters: "HUS",
 		dataSystem: "HUS",
 		classificationId: 1,
@@ -627,8 +661,31 @@ const singleTopicDatasets = {
 		topicGroup: 11,
 	},
 	"active-dentists": {
-		dataUrl: "https://data.cdc.gov/dataset/DQS-Active-dentists-by-state/83hb-kwqf",
-		socrataId: "83hb-kwqf",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					...d,
+					indicator: d.topic,
+					panel: "active-dentists",
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: " https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
+		socrataId: "9epi-jrff",
 		private: "1",
 		chartTitle: "Dentists",
 		filters: "HUS",
@@ -645,37 +702,37 @@ const singleTopicDatasets = {
 
 const multipleTopicDatasets = {
 	NHIS: {
-		socrataId: "4u68-shzr",
+		socrataId: "pg2r-sfcx",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			let filteredToIndicator = data.filter((d) => d.topic === dataId);
 			if (filteredToIndicator.length === 0) {
 				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
+				filteredToIndicator = data.filter((d) => d.topic === dId);
 			}
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+			filteredToIndicator.forEach((f) =>
 				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
+					estimate: f.estimate,
+					estimate_lci: f.estimate_lci,
+					estimate_uci: f.estimate_uci,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopicid,
+					indicator: f.topic,
+					panel: f.topic,
+					panel_num: "0",
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_byid,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
+					stub_label_num: f.subgroup_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.time_period,
+					year_num: f.time_period_id,
+					age: f.group.includes("By age") ? f.group : "N/A",
+				})
+			);
 
 			return returnData;
 		},
@@ -683,69 +740,78 @@ const multipleTopicDatasets = {
 		hasGroupMapper: true,
 	},
 	"children-summary-statistics": {
-		socrataId: "rkv8-xf9z",
+		socrataId: "b5qi-b3hv",
 		private: "1",
 		filters: `Interview, ${allFilters
 			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			let filteredToIndicator = data.filter((d) => d.topic === dataId);
+			if (filteredToIndicator.length === 0) {
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.topic === dId);
+			}
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+			filteredToIndicator.forEach((f) =>
 				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
+					estimate: f.estimate,
+					estimate_lci: f.estimate_lci,
+					estimate_uci: f.estimate_uci,
 					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.topic,
+					panel: f.topic,
+					panel_num: "0",
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
+					stub_label_num: f.subgroup_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.time_period,
+					year_num: f.time_period_id,
+					age: f.group.includes("By age") ? f.group : "N/A",
+				})
+			);
 
 			return returnData;
 		},
 	},
 	NHAMCS: {
-		socrataId: "5mtc-x8vy",
+		socrataId: "k6sd-3kb8",
 		private: "1",
 		filters: `Interview, ${allFilters
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
-			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
+			const filteredToIndicator = data.filter((d) => d.topic === dataIndicator);
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
+			filteredToIndicator.forEach((d) => {
 				returnData.push({
-					estimate: f.estimate,
-					estimate_lci: f.lower_95_ci,
-					estimate_uci: f.upper_95_ci,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure_type,
-					panel: f.measure,
-					panel_num: f.measure_id,
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
 					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group,
-					stub_name_num: f.group_id,
-					unit: f.estimate_type,
-					unit_num: f.estimatetype_id,
-					year: f.year,
-					year_num: "",
-					age: f.group.includes("By age") ? f.group : "N/A",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
 				});
 			});
 

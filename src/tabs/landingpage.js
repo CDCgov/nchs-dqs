@@ -798,11 +798,20 @@ export class LandingPage {
 			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHANESFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHISChildFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
-					data;
+				let [
+					socrataData,
+					footNotes,
+					NHISFootnotes,
+					cshsFootnotes,
+					NHAMCSFootnotes,
+					NHANESFootnotes,
+					NHISChildFootnotes,
+					mapData,
+				] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
@@ -814,6 +823,7 @@ export class LandingPage {
 						...cshsFootnotes,
 						...NHAMCSFootnotes,
 						...NHANESFootnotes,
+						...NHISChildFootnotes,
 					];
 					DataCache.Footnotes = allFootNotes;
 				}
@@ -832,7 +842,7 @@ export class LandingPage {
 				// create a year_pt col from time period
 				this.socrataData = socrataData.map((d) => ({
 					...d,
-					estimate: parseFloat(d.estimate),
+					estimate: parseFloat(d.estimate.replace(",", "")),
 					year_pt: functions.getYear(d.year),
 					// assignedLegendColor: "#FFFFFF",
 				}));
@@ -1013,6 +1023,7 @@ export class LandingPage {
 					value: curr.stub_name_num,
 					text: curr.stub_name,
 					classificationGroup: filteredTopics.length > 0 ? classificationGroupDict[curr[propName]] : 0,
+					order: curr.stub_name_order ? parseInt(curr.stub_name_order, 10) : 0,
 				});
 			}
 			return prev;
@@ -1024,7 +1035,9 @@ export class LandingPage {
 			options.unshift(totalItem);
 		}
 
-		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
+		const uniqueOptions = [
+			...new Map(options.filter((item) => item).map((item) => [item.value, item])).values(),
+		].sort((a, b) => (a.order > b.order ? 1 : 0));
 		console.log("options", uniqueOptions);
 
 		// !this.config.disabledNestedGroup check was added to NOT display Group dropdown nested groups
@@ -1033,8 +1046,7 @@ export class LandingPage {
 			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
-			isNestedGroup:
-				filteredTopics.length > 0 && !this.config.disabledNestedGroup && propName !== "classification",
+			isNestedGroup: false,
 			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();
