@@ -295,7 +295,7 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHAMCSFootnotes: {
-		socrataId: "42t3-uyny",
+		socrataId: "6vwk-ensg",
 		private: "1",
 	},
 	NHANESFootnotes: {
@@ -306,8 +306,37 @@ const footnoteDatasets = {
 
 const singleTopicDatasets = {
 	"obesity-child": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
-		socrataId: "64sz-mcbq",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					// classification: d.classification,
+					// classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_obesity_among_children_and_adolescents_age/w9cp-q6sg",
+		socrataId: "w9cp-q6sg",
 		private: "1",
 		chartTitle: "Obesity among children, measured by age",
 		filters: "HUS,NHANES,AsianPacific,Black,Children,Hispanic,Poverty,White",
@@ -720,34 +749,39 @@ const multipleTopicDatasets = {
 		},
 	},
 	NHAMCS: {
-		socrataId: "5mtc-x8vy",
+		socrataId: "k6sd-3kb8",
 		private: "1",
 		filters: `Interview, ${allFilters
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
-			const filteredToIndicator = data.filter((d) => d.measure_type === dataIndicator);
+			const filteredToIndicator = data.filter((d) => d.topic === dataIndicator);
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
+			filteredToIndicator.forEach((d) => {
 				returnData.push({
-					estimate: f.estimate,
-					estimate_lci: f.lower_95_ci,
-					estimate_uci: f.upper_95_ci,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure_type,
-					panel: f.measure,
-					panel_num: f.measure_id,
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
 					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group,
-					stub_name_num: f.group_id,
-					unit: f.estimate_type,
-					unit_num: f.estimatetype_id,
-					year: f.year,
-					year_num: "",
-					age: f.group.includes("By age") ? f.group : "N/A",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
 				});
 			});
 

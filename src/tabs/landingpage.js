@@ -1023,6 +1023,7 @@ export class LandingPage {
 					value: curr.stub_name_num,
 					text: curr.stub_name,
 					classificationGroup: filteredTopics.length > 0 ? classificationGroupDict[curr[propName]] : 0,
+					order: curr.stub_name_order ? parseInt(curr.stub_name_order, 10) : 0,
 				});
 			}
 			return prev;
@@ -1034,7 +1035,9 @@ export class LandingPage {
 			options.unshift(totalItem);
 		}
 
-		const uniqueOptions = [...new Map(options.filter((item) => item).map((item) => [item.value, item])).values()];
+		const uniqueOptions = [
+			...new Map(options.filter((item) => item).map((item) => [item.value, item])).values(),
+		].sort((a, b) => (a.order > b.order ? 1 : 0));
 		console.log("options", uniqueOptions);
 
 		// !this.config.disabledNestedGroup check was added to NOT display Group dropdown nested groups
@@ -1043,8 +1046,7 @@ export class LandingPage {
 			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
-			isNestedGroup:
-				filteredTopics.length > 0 && !this.config.disabledNestedGroup && propName !== "classification",
+			isNestedGroup: false,
 			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();
