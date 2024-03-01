@@ -302,8 +302,37 @@ const footnoteDatasets = {
 
 const singleTopicDatasets = {
 	"obesity-child": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Obesity-among-children-and-adolescents-aged-2-/64sz-mcbq",
-		socrataId: "64sz-mcbq",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					// classification: d.classification,
+					// classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_obesity_among_children_and_adolescents_age/w9cp-q6sg",
+		socrataId: "w9cp-q6sg",
 		private: "1",
 		chartTitle: "Obesity among children, measured by age",
 		filters: "HUS,NHANES,AsianPacific,Black,Children,Hispanic,Poverty,White",
