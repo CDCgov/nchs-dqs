@@ -798,11 +798,20 @@ export class LandingPage {
 			this.getSelectedSocrataData(config.topicLookup.cshsFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHAMCSFootnotes),
 			this.getSelectedSocrataData(config.topicLookup.NHANESFootnotes),
+			this.getSelectedSocrataData(config.topicLookup.NHISChildFootnotes),
 			this.getUSMapData(),
 		])
 			.then((data) => {
-				let [socrataData, footNotes, NHISFootnotes, cshsFootnotes, NHAMCSFootnotes, NHANESFootnotes, mapData] =
-					data;
+				let [
+					socrataData,
+					footNotes,
+					NHISFootnotes,
+					cshsFootnotes,
+					NHAMCSFootnotes,
+					NHANESFootnotes,
+					NHISChildFootnotes,
+					mapData,
+				] = data;
 
 				if (mapData) this.topoJson = JSON.parse(mapData);
 
@@ -814,6 +823,7 @@ export class LandingPage {
 						...cshsFootnotes,
 						...NHAMCSFootnotes,
 						...NHANESFootnotes,
+						...NHISChildFootnotes,
 					];
 					DataCache.Footnotes = allFootNotes;
 				}

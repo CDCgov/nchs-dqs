@@ -286,6 +286,10 @@ const footnoteDatasets = {
 		socrataId: "pr96-nsm2",
 		private: "1",
 	},
+	NHISChildFootnotes: {
+		socrataId: "48ev-2ygq",
+		private: "1",
+	},
 	cshsFootnotes: {
 		socrataId: "7kgb-btmk",
 		private: "1",
@@ -677,36 +681,40 @@ const multipleTopicDatasets = {
 		hasGroupMapper: true,
 	},
 	"children-summary-statistics": {
-		socrataId: "rkv8-xf9z",
+		socrataId: "b5qi-b3hv",
 		private: "1",
 		filters: `Interview, ${allFilters
 			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			let filteredToIndicator = data.filter((d) => d.topic === dataId);
+			if (filteredToIndicator.length === 0) {
+				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
+				filteredToIndicator = data.filter((d) => d.topic === dId);
+			}
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+			filteredToIndicator.forEach((f) =>
 				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
+					estimate: f.estimate,
+					estimate_lci: f.estimate_lci,
+					estimate_uci: f.estimate_uci,
 					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.topic,
+					panel: f.topic,
+					panel_num: "0",
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
+					stub_label_num: f.subgroup_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.time_period,
+					year_num: f.time_period_id,
+					age: f.group.includes("By age") ? f.group : "N/A",
+				})
+			);
 
 			return returnData;
 		},

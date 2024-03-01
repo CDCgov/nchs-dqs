@@ -184,25 +184,21 @@ const NHISChild = [
 	{
 		id: "current-asthma-among-children",
 		text: "Current asthma in children",
-		indicator: "Current asthma among children",
 		topicGroup: 1,
 	},
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
 		text: "Daily feelings of worry, nervousness, or anxiety in children",
-		indicator: "Daily feelings of worry, nervousness, or anxiety among children",
 		topicGroup: 17,
 	},
 	{
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
 		text: "Delayed getting medical care due to cost among children",
-		indicator: "Delayed getting medical care due to cost among children",
 		topicGroup: 10,
 	},
 	{
 		id: "doctor-visit-among-children",
 		text: "Doctor visit among children",
-		indicator: "Doctor visit among children",
 		topicGroup: 12,
 	},
 	{
@@ -249,7 +245,6 @@ const NHISChild = [
 	{
 		id: "receive-services-for-mental-health-problems",
 		text: "Receive services for mental health problems among children",
-		indicator: "Receive services for mental health problems among children",
 		topicGroup: 17,
 	},
 	{
@@ -418,7 +413,7 @@ export const NHISTopics = [
 	...NHISChild.map((d) => ({
 		...d,
 		topicLookupKey: "children-summary-statistics",
-		dataUrl: "https://data.cdc.gov/dataset/DQS-NHIS-Child-Summary-Health-Statistics/rkv8-xf9z",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_nhis_children_summary_health_statistics_2-/b5qi-b3hv",
 		dataSystem: "NHIS",
 	})),
 	...NHAMCSChild.map((d) => ({
