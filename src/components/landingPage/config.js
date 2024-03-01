@@ -283,7 +283,7 @@ const footnoteDatasets = {
 		private: "1",
 	},
 	NHISFootnotes: {
-		socrataId: "pr96-nsm2",
+		socrataId: "gpsd-ru5i",
 		private: "1",
 	},
 	NHISChildFootnotes: {
@@ -702,37 +702,37 @@ const singleTopicDatasets = {
 
 const multipleTopicDatasets = {
 	NHIS: {
-		socrataId: "4u68-shzr",
+		socrataId: "pg2r-sfcx",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			let filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dataId);
+			let filteredToIndicator = data.filter((d) => d.topic === dataId);
 			if (filteredToIndicator.length === 0) {
 				const dId = NHISTopics.find((t) => t.text === dataId)?.indicator;
-				filteredToIndicator = data.filter((d) => d.outcome_or_indicator === dId);
+				filteredToIndicator = data.filter((d) => d.topic === dId);
 			}
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
-				const ci = f.confidence_interval?.split(",") ?? ["0", "0"];
+			filteredToIndicator.forEach((f) =>
 				returnData.push({
-					estimate: f.percentage,
-					estimate_lci: ci[0].trim(),
-					estimate_uci: ci[1].trim(),
+					estimate: f.estimate,
+					estimate_lci: f.estimate_lci,
+					estimate_uci: f.estimate_uci,
 					flag: f.flag,
 					footnote_id_list: f.footnote_id_list,
-					indicator: f.outcome_or_indicator,
-					panel: f.subtopic,
-					panel_num: f.subtopicid,
+					indicator: f.topic,
+					panel: f.topic,
+					panel_num: "0",
 					se: null,
 					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_byid,
-					unit: f.unit,
-					unit_num: f.unit_id,
-					year: f.year,
-					year_num: "",
-					age: f.group_by.includes("By age") ? f.group_by : "N/A",
-				});
-			});
+					stub_label_num: f.subgroup_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.time_period,
+					year_num: f.time_period_id,
+					age: f.group.includes("By age") ? f.group : "N/A",
+				})
+			);
 
 			return returnData;
 		},
