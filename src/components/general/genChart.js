@@ -29,6 +29,7 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
+		p.data = p.data.sort((a, b) => a.stub_label_order - b.stub_label_order);
 
 		let defaultNote = true;
 		let hasLineChartReliability = false;
@@ -97,6 +98,7 @@ export class GenChart {
 		let measured = false;
 		const maxLabelLength = 24;
 		const insertLineBreaks = function (d) {
+			if (!d) return;
 			const splitOnColon = d
 				.toString()
 				.split(":")
