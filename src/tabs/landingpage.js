@@ -842,7 +842,7 @@ export class LandingPage {
 				// create a year_pt col from time period
 				this.socrataData = socrataData.map((d) => ({
 					...d,
-					estimate: parseFloat(d.estimate.replace(",", "")),
+					estimate: d.estimate ? parseFloat(d.estimate.replace(",", "")) : d.estimate,
 					year_pt: functions.getYear(d.year),
 					// assignedLegendColor: "#FFFFFF",
 				}));
