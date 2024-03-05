@@ -893,7 +893,9 @@ export class LandingPage {
 	};
 
 	getClassificationPropName() {
-		return this.socrataData[0] && this.socrataData[0].classification ? "classification" : "panel";
+		return this.socrataData && this.socrataData[0] && this.socrataData[0].classification
+			? "classification"
+			: "panel";
 	}
 
 	buildClassificationOptions() {
