@@ -544,10 +544,37 @@ const singleTopicDatasets = {
 		],
 	},
 	medicaidU65: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Medicaid-coverage-among-persons-under-age-65-b/2g8y-scu5",
-		socrataId: "2g8y-scu5",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					se: d.standard_error,
+					estimate: d.estimate,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.topic,
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Medicaid_coverage_among_persons_under_age_/hdja-ybdg",
+		socrataId: "hdja-ybdg",
 		private: "1",
-		chartTitle: "Medicaid coverage among persons under age 65",
+		chartTitle: "Medicaid coverage among people younger than 65 years",
 		filters:
 			"HUS,NHIS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
 		dataSystem: "HUS,NHIS",
