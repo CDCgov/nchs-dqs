@@ -376,9 +376,9 @@ const NHANESInfectious = [
 // Wonder/HUS heart disease
 const WONDERHUSHeartDisease = [
 	{
-		id: "death-rates-for-diseases-of-heart",
-		indicator: "Death rates for diseases of heart",
-		text: "Deaths from Heart Disease",
+		id: "death-rates-from-heart-disease",
+		indicator: "Death rates from heart disease",
+		text: "Deaths rates from heart disease",
 		topicGroup: 6,
 	},
 ];
@@ -431,6 +431,6 @@ export const NHISTopics = [
 		dataSystem: "HUS,NVSS",
 		filters: ["HUS", "NVSS"],
 		topicLookupKey: "wonder-hus-heart-disease",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Death-rates-for-heart-disease-by-sex-race-Hisp/w86r-2336",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_death_rates_for_heart_disease_by_sex_race_/4892-xxjy",
 	})),
 ];

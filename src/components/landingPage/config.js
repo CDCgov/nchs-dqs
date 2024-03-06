@@ -1030,11 +1030,11 @@ const multipleTopicDatasets = {
 		},
 	},
 	"wonder-hus-heart-disease": {
-		socrataId: "w86r-2336",
+		socrataId: "4892-xxjy",
 		private: "1",
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
-			const filteredToIndicator = data.filter((d) => d.indicator === dataIndicator);
+			const filteredToIndicator = data.filter((d) => d.topic === dataIndicator);
 			const returnData = [];
 			filteredToIndicator.forEach((f) => {
 				returnData.push({
@@ -1042,19 +1042,21 @@ const multipleTopicDatasets = {
 					estimate_lci: f.estimate_lci,
 					estimate_uci: f.estimate_uci,
 					flag: f.flag,
-					footnote_id_list: f.footnote,
-					indicator: f.indicator,
-					panel: f.panel,
-					panel_num: f.panel_num,
+					footnote_id_list: f.footnote_id_list,
+					indicator: f.topic,
+					panel: f.topic,
+					panel_num: "0",
 					se: null,
-					stub_label: f.stub_label,
-					stub_name: f.stub_name,
-					stub_name_num: f.stub_name_num,
-					unit: f.unit,
-					unit_num: f.unit_num,
-					year: f.year,
-					year_num: f.year_num,
-					age: f.stub_name.includes("Age") ? f.stub_name : "N/A",
+					stub_label: f.subgroup,
+					stub_label_order: f.subgroup_order,
+					stub_label_num: f.subgroup_id,
+					stub_name: f.group,
+					stub_name_num: f.group_id,
+					unit: f.estimate_type,
+					unit_num: f.estimate_type_id,
+					year: f.time_period,
+					year_num: f.time_period_id,
+					age: f.group.includes("By age") ? f.group : "N/A",
 				});
 			});
 			return returnData;
