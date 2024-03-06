@@ -1403,6 +1403,8 @@ export class LandingPage {
 			if (!estimate && estimate !== 0 && !flag) {
 				flag = reliabilityNotesSymbol || "**";
 				estimate = "";
+			} else if (!estimate && flag) {
+				estimate = "";
 			} else {
 				estimate = functions.formatTableValues(Number(estimate), this.sigFigs);
 			}
