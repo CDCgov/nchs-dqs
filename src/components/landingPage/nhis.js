@@ -299,14 +299,19 @@ const NHAMCSChild = [
 
 // start NHANES chronic conditions
 const NHANESChronic = [
-	{ id: "obesity-nhanes", text: "Obesity, measured", indicator: "Obesity (NHANES)", topicGroup: 18 },
+	{
+		id: "obesity-nhanes",
+		text: "Obesity, measured among adults",
+		indicator: "Obesity, measured among adults",
+		topicGroup: 18,
+	},
 	{
 		id: "high-total-cholesterol",
-		indicator: "High Total Cholesterol",
+		indicator: "High cholesterol, total, measured",
 		text: "High cholesterol, total, measured",
 		topicGroup: 4,
 	},
-	{ id: "hypertension", indicator: "Hypertension", text: "Hypertension, measured", topicGroup: 4 },
+	{ id: "hypertension", indicator: "Hypertension, measured", text: "Hypertension, measured", topicGroup: 4 },
 ];
 
 // start NHANES Dietary behaviors
@@ -406,7 +411,7 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-chronic-conditions",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Chronic-Conditions-Prevalence-Es/i2dc-ja7d",
+		dataUrl: "https://data.cdc.gov/resource/mvup-dmxz.json",
 	})),
 	...NHANESDietary.map((d) => ({
 		...d,

@@ -784,8 +784,6 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -966,30 +964,32 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-chronic-conditions": {
-		socrataId: "i2dc-ja7d",
+		socrataId: "mvup-dmxz",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.topic === dataId);
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
+			filteredToIndicator.forEach((d) => {
 				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+					estimate: d.estimate,
+					estimate_lci: d.estimate_lci,
+					estimate_uci: d.estimate_uci,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.topic,
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					age: d.group.includes("By age") ? d.group : "N/A",
 				});
 			});
 
