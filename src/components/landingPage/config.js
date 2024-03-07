@@ -681,8 +681,38 @@ const singleTopicDatasets = {
 		],
 	},
 	"access-care": {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Delay-or-nonreceipt-of-needed-medical-care-pre/nt5r-ak33",
-		socrataId: "nt5r-ak33",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			console.log("community hospital beds data mapper: ", data);
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Delay_or_nonreceipt_of_needed_medical_care/p4r5-qsgs",
+		socrataId: "p4r5-qsgs",
 		private: "1",
 		chartTitle: "Unmet need for health care due to cost",
 		filters:
