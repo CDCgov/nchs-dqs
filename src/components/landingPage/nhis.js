@@ -311,13 +311,13 @@ const NHANESChronic = [
 
 // start NHANES Dietary behaviors
 const NHANESDietary = [
-	{ id: "calcium-intake", text: "Calcium Intake", topicGroup: 14 },
-	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake", topicGroup: 14 },
-	{ id: "iron-intake", text: "Iron Intake", topicGroup: 14 },
-	{ id: "potassium-intake", text: "Potassium Intake", topicGroup: 14 },
-	{ id: "saturated-fat-intake", text: "Saturated Fat Intake", topicGroup: 14 },
-	{ id: "sodium-intake", text: "Sodium Intake", topicGroup: 14 },
-	{ id: "vitamin-d-intake", text: "Vitamin D Intake", topicGroup: 14 },
+	{ id: "calcium-intake", text: "Calcium intake", topicGroup: 14 },
+	{ id: "dietary-fiber-intake", text: "Dietary fiber intake", topicGroup: 14 },
+	{ id: "iron-intake", text: "Iron intake", topicGroup: 14 },
+	{ id: "potassium-intake", text: "Potassium intake", topicGroup: 14 },
+	{ id: "saturated-fat-intake", text: "Saturated fat intake", topicGroup: 14 },
+	{ id: "sodium-intake", text: "Sodium intake", topicGroup: 14 },
+	{ id: "vitamin-d-intake", text: "Vitamin D intake", topicGroup: 14 },
 ];
 
 // NHANES oral health
@@ -412,7 +412,7 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-dietary-behaviors",
-		dataUrl: "https://data.cdc.gov/dataset/DQS-NHANES-Select-Mean-Dietary-Intake-Estimates/j4m9-2puq",
+		dataUrl: "https://data.cdc.gov/dataset/dqs_nhanes_dietary_behaviors_3-1-24/xcc8-2jrh",
 	})),
 	...NHANESOralHealth.map((d) => ({
 		...d,
