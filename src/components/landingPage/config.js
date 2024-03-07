@@ -279,7 +279,8 @@ export const tabContent = `
 
 const footnoteDatasets = {
 	footnotes: {
-		socrataId: "m6mz-p2ij",
+		// HUS
+		socrataId: "9xt5-u42s",
 		private: "1",
 	},
 	NHISFootnotes: {
