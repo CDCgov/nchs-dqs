@@ -406,10 +406,34 @@ const singleTopicDatasets = {
 		],
 	},
 	suicide: {
-		dataUrl: "https://data.cdc.gov/resource/e8w2-ekn5.json",
-		socrataId: "e8w2-ekn5",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			console.log("death rates by suicide: ", data);
+			return data.map((d) => {
+				return {
+					...d,
+					indicator: d.topic,
+					panel: "suicide",
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/resource/p7se-k3ix.json",
+		socrataId: "p7se-k3ix",
 		private: "1",
-		chartTitle: "Death Rates for Suicide",
+		chartTitle: "Death rates for suicide",
 		filters: "HUS,NVSS,Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
