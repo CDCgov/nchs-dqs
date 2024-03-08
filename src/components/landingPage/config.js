@@ -291,6 +291,10 @@ const footnoteDatasets = {
 		socrataId: "48ev-2ygq",
 		private: "1",
 	},
+	NHISChildFootnotes: {
+		socrataId: "48ev-2ygq",
+		private: "1",
+	},
 	cshsFootnotes: {
 		socrataId: "7kgb-btmk",
 		private: "1",
@@ -943,7 +947,6 @@ const multipleTopicDatasets = {
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
-
 			return returnData;
 		},
 	},

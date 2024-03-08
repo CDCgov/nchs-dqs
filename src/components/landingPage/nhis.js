@@ -170,7 +170,7 @@ const NHISChild = [
 	},
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
-		text: "Daily feelings of worry, nervousness, or anxiety in children",
+		text: "Daily feelings of worry, nervousness, or anxiety among children",
 		topicGroup: 17,
 	},
 	{
