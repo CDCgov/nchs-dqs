@@ -279,11 +279,16 @@ export const tabContent = `
 
 const footnoteDatasets = {
 	footnotes: {
-		socrataId: "m6mz-p2ij",
+		// HUS
+		socrataId: "9xt5-u42s",
 		private: "1",
 	},
 	NHISFootnotes: {
 		socrataId: "gpsd-ru5i",
+		private: "1",
+	},
+	NHISChildFootnotes: {
+		socrataId: "48ev-2ygq",
 		private: "1",
 	},
 	NHISChildFootnotes: {
@@ -405,10 +410,34 @@ const singleTopicDatasets = {
 		],
 	},
 	suicide: {
-		dataUrl: "https://data.cdc.gov/resource/e8w2-ekn5.json",
-		socrataId: "e8w2-ekn5",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			console.log("death rates by suicide: ", data);
+			return data.map((d) => {
+				return {
+					...d,
+					indicator: d.topic,
+					panel: "suicide",
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/resource/p7se-k3ix.json",
+		socrataId: "p7se-k3ix",
 		private: "1",
-		chartTitle: "Death Rates for Suicide",
+		chartTitle: "Death rates for suicide",
 		filters: "HUS,NVSS,Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
@@ -521,10 +550,39 @@ const singleTopicDatasets = {
 		],
 	},
 	birthweight: {
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-Low-birthweight-live-births-by-race-and-Hispan/3p8z-99bn",
-		socrataId: "3p8z-99bn",
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					estimate: d.estimate,
+					estimate_lci: null,
+					estimate_uci: null,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					se: null,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Low_birthweight_live_births__by_race_and_H/dj4t-wmry",
+		socrataId: "dj4t-wmry",
 		private: "1",
-		chartTitle: "Low birthweight live birth by race",
+		chartTitle: "Low birthweight live births by race and Hispanic origin",
 		filters: "HUS,NVSS,Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
@@ -535,12 +593,12 @@ const singleTopicDatasets = {
 		binGranularity: 0.01,
 		topicGroup: 21,
 		subtopics: [
-			{ id: "1", text: "All races" },
-			{ id: "2", text: "Not Hispanic or Latina: White" },
-			{ id: "3", text: "Not Hispanic or Latina: Black or African American" },
-			{ id: "4", text: "Hispanic or Latina: All races" },
-			{ id: "5", text: "American Indian or Alaska Native" },
-			{ id: "6", text: "Asian or Pacific Islander" },
+			{ id: "0", text: "Total" },
+			{ id: "1", text: "All races, Hispanic origin" },
+			{ id: "2", text: "American Indian and Alaska Native" },
+			{ id: "3", text: "Asian or Pacific Islander" },
+			{ id: "4", text: "Black, non-Hispanic" },
+			{ id: "5", text: "White, non-Hispanic" },
 		],
 	},
 	medicaidU65: {
@@ -754,8 +812,6 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -891,7 +947,6 @@ const multipleTopicDatasets = {
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
-
 			return returnData;
 		},
 	},
@@ -936,30 +991,32 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-chronic-conditions": {
-		socrataId: "i2dc-ja7d",
+		socrataId: "mvup-dmxz",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.topic === dataId);
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
+			filteredToIndicator.forEach((d) => {
 				returnData.push({
-					estimate: f.percent,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id_list,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+					estimate: d.estimate,
+					estimate_lci: d.estimate_lci,
+					estimate_uci: d.estimate_uci,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.topic,
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					age: d.group.includes("By age") ? d.group : "N/A",
 				});
 			});
 
@@ -967,30 +1024,34 @@ const multipleTopicDatasets = {
 		},
 	},
 	"nhanes-dietary-behaviors": {
-		socrataId: "j4m9-2puq",
+		socrataId: "xcc8-2jrh",
 		private: "1",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure === dataId);
+			const filteredToIndicator = data.filter((d) => d.topic === dataId);
 			const returnData = [];
-			filteredToIndicator.forEach((f) => {
+			filteredToIndicator.forEach((d) => {
 				returnData.push({
-					estimate: f.mean,
-					estimate_lci: f.lower_95_ci_limit,
-					estimate_uci: f.upper_95_ci_limit,
-					flag: f.flag,
-					footnote_id_list: f.footnote_id,
-					indicator: f.measure,
-					panel: f.subtopic,
-					panel_num: f.subtopic_id,
-					se: null,
-					stub_label: f.subgroup,
-					stub_name: f.group_by,
-					stub_name_num: f.group_by_id,
-					unit: f.estimate_type,
-					unit_num: f.estimate_type_id,
-					year: f.survey_years,
-					year_num: "",
-					age: f.group_by.includes("Age Group") ? f.group : "N/A",
+					estimate: d.estimate,
+					estimate_lci: d.estimate_lci,
+					estimate_uci: d.estimate_uci,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					indicator: d.topic,
+					panel: d.topic,
+					panel_num: "0",
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? d.group : "N/A",
 				});
 			});
 

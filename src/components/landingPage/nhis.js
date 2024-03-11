@@ -170,7 +170,7 @@ const NHISChild = [
 	},
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
-		text: "Daily feelings of worry, nervousness, or anxiety in children",
+		text: "Daily feelings of worry, nervousness, or anxiety among children",
 		topicGroup: 17,
 	},
 	{
@@ -299,25 +299,36 @@ const NHAMCSChild = [
 
 // start NHANES chronic conditions
 const NHANESChronic = [
-	{ id: "obesity-nhanes", text: "Obesity, measured", indicator: "Obesity (NHANES)", topicGroup: 18 },
+	{
+		id: "obesity-nhanes",
+		text: "Obesity, measured among adults",
+		indicator: "Obesity, measured among adults",
+		topicGroup: 18,
+	},
 	{
 		id: "high-total-cholesterol",
-		indicator: "High Total Cholesterol",
+		indicator: "High cholesterol, total, measured",
 		text: "High cholesterol, total, measured",
 		topicGroup: 4,
 	},
-	{ id: "hypertension", indicator: "Hypertension", text: "Hypertension, measured", topicGroup: 4 },
+	{ id: "hypertension", indicator: "Hypertension, measured", text: "Hypertension, measured", topicGroup: 4 },
+	{
+		id: "obesity-children",
+		text: "Obesity, measured among children",
+		indicator: "Obesity, measured among children",
+		topicGroup: 18,
+	},
 ];
 
 // start NHANES Dietary behaviors
 const NHANESDietary = [
-	{ id: "calcium-intake", text: "Calcium Intake", topicGroup: 14 },
-	{ id: "dietary-fiber-intake", text: "Dietary Fiber Intake", topicGroup: 14 },
-	{ id: "iron-intake", text: "Iron Intake", topicGroup: 14 },
-	{ id: "potassium-intake", text: "Potassium Intake", topicGroup: 14 },
-	{ id: "saturated-fat-intake", text: "Saturated Fat Intake", topicGroup: 14 },
-	{ id: "sodium-intake", text: "Sodium Intake", topicGroup: 14 },
-	{ id: "vitamin-d-intake", text: "Vitamin D Intake", topicGroup: 14 },
+	{ id: "calcium-intake", text: "Calcium intake", topicGroup: 14 },
+	{ id: "dietary-fiber-intake", text: "Dietary fiber intake", topicGroup: 14 },
+	{ id: "iron-intake", text: "Iron intake", topicGroup: 14 },
+	{ id: "potassium-intake", text: "Potassium intake", topicGroup: 14 },
+	{ id: "saturated-fat-intake", text: "Saturated fat intake", topicGroup: 14 },
+	{ id: "sodium-intake", text: "Sodium intake", topicGroup: 14 },
+	{ id: "vitamin-d-intake", text: "Vitamin D intake", topicGroup: 14 },
 ];
 
 // NHANES oral health
@@ -406,13 +417,13 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-chronic-conditions",
-		dataUrl: "https://data.cdc.gov/NCHS/DQS-NHANES-Select-Chronic-Conditions-Prevalence-Es/i2dc-ja7d",
+		dataUrl: "https://data.cdc.gov/resource/mvup-dmxz.json",
 	})),
 	...NHANESDietary.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-dietary-behaviors",
-		dataUrl: "https://data.cdc.gov/dataset/DQS-NHANES-Select-Mean-Dietary-Intake-Estimates/j4m9-2puq",
+		dataUrl: "https://data.cdc.gov/dataset/dqs_nhanes_dietary_behaviors_3-1-24/xcc8-2jrh",
 	})),
 	...NHANESOralHealth.map((d) => ({
 		...d,
