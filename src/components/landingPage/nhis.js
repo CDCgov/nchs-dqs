@@ -312,6 +312,12 @@ const NHANESChronic = [
 		topicGroup: 4,
 	},
 	{ id: "hypertension", indicator: "Hypertension, measured", text: "Hypertension, measured", topicGroup: 4 },
+	{
+		id: "obesity-children",
+		text: "Obesity, measured among children",
+		indicator: "Obesity, measured among children",
+		topicGroup: 18,
+	},
 ];
 
 // start NHANES Dietary behaviors
