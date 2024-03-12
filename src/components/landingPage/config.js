@@ -1181,7 +1181,7 @@ NHISTopics.forEach((t) => {
 		classificationId: 1,
 		yAxisUnitId: 1,
 		hasCI: true,
-		hasClassification: true,
+		hasClassification: !t.noClassification, // to fix datasets with no classification
 		topicGroup: t.topicGroup,
 		topicLookupId: t.topicLookupKey,
 		dataSystem: t.dataSystem,
