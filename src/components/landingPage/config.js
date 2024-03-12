@@ -867,7 +867,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: false,
 		binGranularity: 0.1,
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 };
 
