@@ -55,4 +55,20 @@ export const Analytics = {
 			console.info("Adobe Analytics library is not available on this page");
 		}
 	},
+
+	triggerInteraction(eventLabel = "", eventType, eventValue) {
+		if (window.hasOwnProperty("_satellite")) {
+			const dataObject = {};
+			const _satellite = window._satellite;
+			eventType = eventType || "o";
+			dataObject.ch = "NCHS";
+			dataObject.pageName = document.title;
+			dataObject.prop40 = eventValue;
+			dataObject.label = eventLabel;
+			dataObject.interactionType = eventType;
+			dataObject.interactionValue = "ci-" + eventLabel + ": " + eventValue;
+			console.log("DataObject: ", dataObject);
+			_satellite.track("interaction", dataObject);
+		}
+	},
 };

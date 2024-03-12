@@ -374,12 +374,12 @@ const NHANESOralHealth = [
 const NHANESInfectious = [
 	{
 		id: "herpes-simplex-virus-type-1",
-		text: "Herpes Simplex Virus Type 1",
+		text: "Herpes simplex virus type 1",
 		topicGroup: 15,
 	},
 	{
 		id: "herpes-simplex-virus-type-2",
-		text: "Herpes Simplex Virus Type 2",
+		text: "Herpes simplex virus type 2",
 		topicGroup: 15,
 	},
 ];
@@ -429,11 +429,13 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-oral-health",
+		noClassification: true,
 		dataUrl: "https://data.cdc.gov/resource/59vz-u8kg.json",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
+		noClassification: true,
 		topicLookupKey: "nhanes-infectious-disease",
 		dataUrl: "https://data.cdc.gov/resource/be3w-4inw.json",
 	})),

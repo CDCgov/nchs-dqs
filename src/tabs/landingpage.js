@@ -1,3 +1,4 @@
+import { Analytics } from "../eventhandlers/analytics";
 import { Utils } from "../utils/utils";
 import { DataCache } from "../utils/datacache";
 import { GenChart } from "../components/general/genChart";
@@ -749,6 +750,9 @@ export class LandingPage {
 
 		$("#cdcDataGovButton").attr("href", this.config.dataUrl);
 
+		$("#cdcDataGovButton").on("click", () => {
+			Analytics.triggerInteraction("NCHS_DQS", "o", "view-data-cdc-click");
+		});
 		if (this.selections?.viewSinglePeriod) {
 			$("#startYearContainer").addClass("offset-3");
 			$("#endYearContainer").hide();

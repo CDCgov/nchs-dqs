@@ -28,10 +28,24 @@ import { TabEvents } from "./eventhandlers/tabevents";
 	setFooterDate();
 
 	$(() => {
+		console.log("jquery init method?");
+
 		$(".cdc-logo > a").attr({
 			href: "https://www.cdc.gov",
 			target: "_blank",
 		});
+
+		//check for satellite object
+		console.log(window);
+		if (window.hasOwnProperty("_satellite")) {
+			console.log("check for satellite object successful");
+			var dataObject = {};
+			var _satellite = window._satellite;
+			dataObject.ch = "NCHS";
+			dataObject.pageName = document.title;
+			dataObject.prop8 = "Web Page";
+			_satellite.track("pageview", dataObject);
+		}
 	});
 
 	// turn off focus on mouseup, enterup or spaceup.
