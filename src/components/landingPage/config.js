@@ -477,7 +477,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: false,
 		hasClassification: false,
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	"infant-mortality": {
 		hasCustomMapper: true,
@@ -640,7 +640,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 2,
 		hasCI: true,
 		hasClassification: false,
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	"drug-overdose": {
 		hasCustomMapper: true,
@@ -732,7 +732,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasClassification: true,
-		topicGroup: 12,
+		topicGroup: 13,
 		subtopics: [
 			{ id: "1", text: "Physician offices" },
 			{ id: "2", text: "Hospital emergency departments" },
@@ -780,7 +780,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 10,
+		topicGroup: 11,
 		subtopics: [
 			{ id: "1", text: "Delay or nonreceipt of needed medical care due to cost" },
 			{ id: "2", text: "Nonreceipt of needed prescription drugs due to cost" },
@@ -829,7 +829,7 @@ const singleTopicDatasets = {
 		hasClassification: false,
 		disabledNestedGroup: true,
 		binGranularity: 0.1,
-		topicGroup: 11,
+		topicGroup: 12,
 	},
 	"active-dentists": {
 		hasCustomMapper: true,
@@ -867,7 +867,7 @@ const singleTopicDatasets = {
 		hasMap: true,
 		hasClassification: false,
 		binGranularity: 0.1,
-		topicGroup: 11,
+		topicGroup: 12,
 	},
 };
 
@@ -1200,11 +1200,11 @@ export const topicGroups = [
 	"Diabetes", // 7
 	"Disabilities", // 8
 	"Employment status", // 9
-	"Healthcare access and quality", // 11 -> 10
-	"Healthcare capacity", // 12 -> 11
-	"Healthcare system use", // 13 -> 12
-	"Health insurance", // 14 -> 13
-	"Healthy eating and nutrition", // 10 -> temp -> 14
+	"Health insurance", // 13 -> temp -> 10
+	"Healthcare access and quality", // 10 -> 11
+	"Healthcare capacity", // 11 -> 12
+	"Healthcare system use", // 12 -> 13
+	"Healthy eating and nutrition", // 14
 	"Infectious diseases", // 15
 	"Mass screening", // 16
 	"Mental wellness", // 17
