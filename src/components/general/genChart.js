@@ -29,8 +29,6 @@ export class GenChart {
 
 	render() {
 		const p = this.props;
-		p.data = p.data.sort((a, b) => a.stub_label_order - b.stub_label_order);
-
 		let defaultNote = true;
 		let hasLineChartReliability = false;
 		if (p.data && p.data[0]?.panel && p.data[0].panel.toLowerCase() === "community hospital beds") {

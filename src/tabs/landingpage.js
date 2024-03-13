@@ -574,7 +574,7 @@ export class LandingPage {
 				date: new Date(`${d.year}-01-01T00:00:00`),
 			}));
 
-		return [...data];
+		return [...data.sort((a, b) => a.stub_label_order - b.stub_label_order)];
 	}
 
 	// Pull all the available years, filtering by classification, unit, and group
