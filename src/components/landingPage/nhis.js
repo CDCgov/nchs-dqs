@@ -34,7 +34,7 @@ const NHISAdult = [
 	{
 		id: "delayed-getting-medical-care-due-to-cost",
 		text: "Delayed getting medical care due to cost among adults",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{ id: "dental-exam-or-cleaning", text: "Dental exam or cleaning", topicGroup: 19 },
 	{
@@ -50,23 +50,23 @@ const NHISAdult = [
 	{
 		id: "did-not-get-needed-medical-care-due-to-cost",
 		text: "Did not get needed medical care due to cost",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{
 		id: "did-not-get-needed-mental-health-care-due-to-cost",
 		text: "Did not get needed mental health care due to cost",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{
 		id: "did-not-take-medication-as-prescribed-to-save-money",
 		text: "Did not take medication as prescribed to save money",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{ id: "disability-status-(composite)", text: "Disability status (composite)", topicGroup: 8 },
 	{
 		id: "doctor-visit",
 		text: "Doctor visit among adults",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	{
 		id: "ever-received-a-pneumococcal-vaccination",
@@ -76,7 +76,7 @@ const NHISAdult = [
 	{
 		id: "exchange-based-coverage-coverage-at-time-of-interview",
 		text: "Exchange-based coverage at time of interview among adults",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	{
 		id: "fair-or-poor-health-status",
@@ -86,7 +86,7 @@ const NHISAdult = [
 	{
 		id: "has-a-usual-place-of-care",
 		text: "Has a usual place of care among adults",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{ id: "heart-attack-myocardial-infarction", text: "Heart attack/myocardial infarction", topicGroup: 4 },
 	{
@@ -97,7 +97,7 @@ const NHISAdult = [
 	{
 		id: "hospital-emergency-department-visit",
 		text: "Hospital emergency department visit",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	{ id: "obesity", text: "Obesity, self-reported", topicGroup: 18 },
 	{
@@ -108,13 +108,13 @@ const NHISAdult = [
 	{
 		id: "private-health-insurance-coverage-at-time-of-interview",
 		text: "Private health insurance coverage at time of interview among adults",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	{ id: "prostate-cancer", text: "Prostate cancer", topicGroup: 3 },
 	{
 		id: "public-health-plan-coverage-at-time-of-interview",
 		text: "Public health insurance coverage at time of interview among adults",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	{
 		id: "receipt-of-influenza-vaccination",
@@ -146,20 +146,20 @@ const NHISAdult = [
 	{
 		id: "uninsured-at-time-of-interview",
 		text: "Uninsured at time of interview among adults",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	{
 		id: "uninsured-for-at-least-part-of-the-past-year",
 		text: "Uninsured for at least part of the past year",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
-	{ id: "uninsured-for-more-than-one-year", text: "Uninsured for more than one year", topicGroup: 13 },
+	{ id: "uninsured-for-more-than-one-year", text: "Uninsured for more than one year", topicGroup: 10 },
 	{
 		id: "urgent-care-center-or-retail-health-clinic-visit",
 		text: "Urgent care center or retail health clinic visit among adults",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
-	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 12 },
+	{ id: "wellness-visit", text: "Wellness visit", topicGroup: 13 },
 ];
 
 const NHISChild = [
@@ -176,12 +176,12 @@ const NHISChild = [
 	{
 		id: "delayed-getting-medical-care-due-to-cost-among-children",
 		text: "Delayed getting medical care due to cost among children",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{
 		id: "doctor-visit-among-children",
 		text: "Doctor visit among children",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	{
 		id: "ever-having-a-learning-disability",
@@ -207,7 +207,7 @@ const NHISChild = [
 	{
 		id: "has-a-usual-place-of-care-among-children",
 		text: "Has a usual place of care among children",
-		topicGroup: 10,
+		topicGroup: 11,
 	},
 	{
 		id: "missing-11-or-more-school-days-due-to-illness-or-injury",
@@ -237,22 +237,22 @@ const NHISChild = [
 	{
 		id: "two-or-more-hospital-emergency-department-visits-among-children",
 		text: "Two or more hospital emergency department visits among children",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	{
 		id: "two-or-more-urgent-care-center-or-retail-health-clinic-visits-among-children",
 		text: "Two or more urgent care center or retail health clinic visits among children",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 	{
 		id: "uninsured-at-time-of-interview-among-children",
 		text: "Uninsured at time of interview among children",
-		topicGroup: 13,
+		topicGroup: 10,
 	},
 	{
 		id: "well-child-check-up",
 		text: "Well child check-up",
-		topicGroup: 12,
+		topicGroup: 13,
 	},
 ];
 
@@ -261,9 +261,9 @@ const NHAMCSChild = [
 		id: "by-reason-for-visit",
 		text: "Hospital emergency department visits by reason for visit",
 		indicator: "Hospital emergency department visits by reason for visit:",
-		topicGroup: 12,
+		topicGroup: 13,
 		subtopics: [
-			{ id: "12", text: "All Reasons (patient reported)" },
+			{ id: "12", text: "All reasons (patient reported)" },
 			{ id: "13", text: "Back symptoms" },
 			{ id: "14", text: "Chest pain and related symptoms (not referable to body systems)" },
 			{ id: "15", text: "Cough" },
@@ -280,7 +280,7 @@ const NHAMCSChild = [
 		id: "by-primary-diagnosis",
 		text: "Hospital emergency department visits by primary diagnosis",
 		indicator: "Hospital emergency department visits by primary diagnosis:",
-		topicGroup: 12,
+		topicGroup: 13,
 		subtopics: [
 			{ id: "1", text: "All diagnoses" },
 			{ id: "2", text: "Certain infectious and parasitic diseases" },
@@ -335,37 +335,37 @@ const NHANESDietary = [
 const NHANESOralHealth = [
 	{
 		id: "total-dental-caries-in-primary-teeth",
-		text: "Total Dental Caries in Primary Teeth",
+		text: "Total dental caries in primary teeth",
 		topicGroup: 19,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-adults",
-		text: "Total Dental Caries in Permanent Teeth in Adults",
+		text: "Total dental caries in permanent teeth in adults",
 		topicGroup: 19,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-children",
-		text: "Total Dental Caries in Permanent Teeth in Children",
+		text: "Total dental caries in permanent teeth in children",
 		topicGroup: 19,
 	},
 	{
 		id: "complete-tooth-loss",
-		text: "Complete Tooth Loss",
+		text: "Complete tooth loss",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-primary-teeth",
-		text: "Untreated Dental Caries in Primary Teeth",
+		text: "Untreated dental caries in primary teeth",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-adults",
-		text: "Untreated Dental Caries in Permanent Teeth in Adults",
+		text: "Untreated dental caries in permanent teeth in adults",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-children",
-		text: "Untreated Dental Caries in Permanent Teeth in Children",
+		text: "Untreated dental caries in permanent teeth in children",
 		topicGroup: 19,
 	},
 ];
@@ -374,12 +374,12 @@ const NHANESOralHealth = [
 const NHANESInfectious = [
 	{
 		id: "herpes-simplex-virus-type-1",
-		text: "Herpes simplex virus type 1",
+		text: "herpes simplex virus type 1",
 		topicGroup: 15,
 	},
 	{
 		id: "herpes-simplex-virus-type-2",
-		text: "Herpes simplex virus type 2",
+		text: "herpes simplex virus type 2",
 		topicGroup: 15,
 	},
 ];
