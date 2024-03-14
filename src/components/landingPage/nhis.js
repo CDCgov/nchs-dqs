@@ -36,7 +36,7 @@ const NHISAdult = [
 		text: "Delayed getting medical care due to cost among adults",
 		topicGroup: 11,
 	},
-	{ id: "dental-exam-or-cleaning", text: "Dental exam or cleaning", topicGroup: 19 },
+	{ id: "dental-exam-or-cleaning", text: "Dental exam or cleaning", topicGroup: 18 },
 	{
 		id: "diagnosed-diabetes",
 		text: "Diagnosed diabetes, self-reported",
@@ -99,7 +99,7 @@ const NHISAdult = [
 		text: "Hospital emergency department visit",
 		topicGroup: 13,
 	},
-	{ id: "obesity", text: "Obesity, self-reported", topicGroup: 18 },
+	{ id: "obesity", text: "Obesity, self-reported", topicGroup: 19 },
 	{
 		id: "prescription-medication-use",
 		text: "Prescription medication use among adults",
@@ -303,7 +303,7 @@ const NHANESChronic = [
 		id: "obesity-nhanes",
 		text: "Obesity, measured among adults",
 		indicator: "Obesity, measured among adults",
-		topicGroup: 18,
+		topicGroup: 19,
 	},
 	{
 		id: "high-total-cholesterol",
@@ -316,7 +316,7 @@ const NHANESChronic = [
 		id: "obesity-children",
 		text: "Obesity, measured among children",
 		indicator: "Obesity, measured among children",
-		topicGroup: 18,
+		topicGroup: 19,
 	},
 ];
 
@@ -336,37 +336,37 @@ const NHANESOralHealth = [
 	{
 		id: "total-dental-caries-in-primary-teeth",
 		text: "Total dental caries in primary teeth",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-adults",
 		text: "Total dental caries in permanent teeth in adults",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-children",
 		text: "Total dental caries in permanent teeth in children",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "complete-tooth-loss",
 		text: "Complete tooth loss",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "untreated-dental-caries-in-primary-teeth",
 		text: "Untreated dental caries in primary teeth",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-adults",
 		text: "Untreated dental caries in permanent teeth in adults",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-children",
 		text: "Untreated dental caries in permanent teeth in children",
-		topicGroup: 19,
+		topicGroup: 18,
 	},
 ];
 
@@ -374,12 +374,12 @@ const NHANESOralHealth = [
 const NHANESInfectious = [
 	{
 		id: "herpes-simplex-virus-type-1",
-		text: "herpes simplex virus type 1",
+		text: "Herpes simplex virus type 1",
 		topicGroup: 15,
 	},
 	{
 		id: "herpes-simplex-virus-type-2",
-		text: "herpes simplex virus type 2",
+		text: "Herpes simplex virus type 2",
 		topicGroup: 15,
 	},
 ];
