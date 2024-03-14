@@ -512,7 +512,7 @@ const singleTopicDatasets = {
 		dataUrl: "data.cdc.gov/resource/pjb2-jvdr.json",
 		socrataId: "pjb2-jvdr",
 		private: "1",
-		chartTitle: "Infant Mortality by race",
+		chartTitle: "Infant mortality by race",
 		filters: "HUS,NVSS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 0,

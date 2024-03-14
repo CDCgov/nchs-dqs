@@ -263,7 +263,7 @@ const NHAMCSChild = [
 		indicator: "Hospital emergency department visits by reason for visit:",
 		topicGroup: 13,
 		subtopics: [
-			{ id: "12", text: "All Reasons (patient reported)" },
+			{ id: "12", text: "All reasons (patient reported)" },
 			{ id: "13", text: "Back symptoms" },
 			{ id: "14", text: "Chest pain and related symptoms (not referable to body systems)" },
 			{ id: "15", text: "Cough" },
@@ -335,37 +335,37 @@ const NHANESDietary = [
 const NHANESOralHealth = [
 	{
 		id: "total-dental-caries-in-primary-teeth",
-		text: "Total Dental Caries in Primary Teeth",
+		text: "Total dental caries in primary teeth",
 		topicGroup: 19,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-adults",
-		text: "Total Dental Caries in Permanent Teeth in Adults",
+		text: "Total dental caries in permanent teeth in adults",
 		topicGroup: 19,
 	},
 	{
 		id: "total-dental-caries-in-permanent-teeth-in-children",
-		text: "Total Dental Caries in Permanent Teeth in Children",
+		text: "Total dental caries in permanent teeth in children",
 		topicGroup: 19,
 	},
 	{
 		id: "complete-tooth-loss",
-		text: "Complete Tooth Loss",
+		text: "Complete tooth loss",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-primary-teeth",
-		text: "Untreated Dental Caries in Primary Teeth",
+		text: "Untreated dental caries in primary teeth",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-adults",
-		text: "Untreated Dental Caries in Permanent Teeth in Adults",
+		text: "Untreated dental caries in permanent teeth in adults",
 		topicGroup: 19,
 	},
 	{
 		id: "untreated-dental-caries-in-permanent-teeth-in-children",
-		text: "Untreated Dental Caries in Permanent Teeth in Children",
+		text: "Untreated dental caries in permanent teeth in children",
 		topicGroup: 19,
 	},
 ];
@@ -374,12 +374,12 @@ const NHANESOralHealth = [
 const NHANESInfectious = [
 	{
 		id: "herpes-simplex-virus-type-1",
-		text: "Herpes simplex virus type 1",
+		text: "herpes simplex virus type 1",
 		topicGroup: 15,
 	},
 	{
 		id: "herpes-simplex-virus-type-2",
-		text: "Herpes simplex virus type 2",
+		text: "herpes simplex virus type 2",
 		topicGroup: 15,
 	},
 ];
