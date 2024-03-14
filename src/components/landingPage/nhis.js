@@ -374,12 +374,12 @@ const NHANESOralHealth = [
 const NHANESInfectious = [
 	{
 		id: "herpes-simplex-virus-type-1",
-		text: "Herpes simplex virus type 1 (HSV-1)",
+		text: "Herpes simplex virus type 1",
 		topicGroup: 15,
 	},
 	{
 		id: "herpes-simplex-virus-type-2",
-		text: "Herpes simplex virus type 2 (HSV-2)",
+		text: "Herpes simplex virus type 2",
 		topicGroup: 15,
 	},
 ];
