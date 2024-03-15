@@ -201,7 +201,7 @@ export const tabContent = `
 				</div>
 				<br />
 				<div tabindex="0" class="source-text defaultNote">For more detail on displayed data, see <a class="viewFootnotes">Notes</a>.</div>
-				<div tabindex="0" class="source-text unreliableNote">Symbols such as *, **, ---, or vertical lines are used to indicate differences in reliability, data availability, or survey design. Please see <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text unreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 		</div>
 		<!-- end map wrapper -->
@@ -226,9 +226,9 @@ export const tabContent = `
 				</div>
 				<br />
 				<div tabindex="0" class="source-text defaultNote">For more detail on displayed data, see <a class="viewFootnotes">Notes</a>.</div>
-				<div tabindex="0" class="source-text unreliableNote">A vertical line is used to indicate differences in survey design. See <a class="viewFootnotes">Notes</a> for more information.</div>
-				<div tabindex="0" class="source-text onlyUnreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped line pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
-				<div tabindex="0" class="source-text unreliableNoteWithVerticalLine">Estimates with reliability or other data issues are either not shown or are shown with a striped line pattern. A vertical line is used to indicate differences in survey design. See <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text unreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text onlyUnreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text unreliableNoteWithVerticalLine">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
