@@ -201,7 +201,7 @@ export const tabContent = `
 				</div>
 				<br />
 				<div tabindex="0" class="source-text defaultNote">For more detail on displayed data, see <a class="viewFootnotes">Notes</a>.</div>
-				<div tabindex="0" class="source-text unreliableNote">Symbols such as *, **, ---, or vertical lines are used to indicate differences in reliability, data availability, or survey design. Please see <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text unreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 		</div>
 		<!-- end map wrapper -->
@@ -227,8 +227,8 @@ export const tabContent = `
 				<br />
 				<div tabindex="0" class="source-text defaultNote">For more detail on displayed data, see <a class="viewFootnotes">Notes</a>.</div>
 				<div tabindex="0" class="source-text unreliableNote">A vertical line is used to indicate differences in survey design. See <a class="viewFootnotes">Notes</a> for more information.</div>
-				<div tabindex="0" class="source-text onlyUnreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped line pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
-				<div tabindex="0" class="source-text unreliableNoteWithVerticalLine">Estimates with reliability or other data issues are either not shown or are shown with a striped line pattern. A vertical line is used to indicate differences in survey design. See <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text onlyUnreliableNote">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. See <a class="viewFootnotes">Notes</a> for more information.</div>
+				<div tabindex="0" class="source-text unreliableNoteWithVerticalLine">Estimates with reliability or other data issues are either not shown or are shown with a striped pattern. A vertical line is used to indicate differences in survey design. See <a class="viewFootnotes">Notes</a> for more information.</div>
 			</div>
 			<!-- end chart wrapper -->
 		</div>
@@ -350,7 +350,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 18,
+		topicGroup: 19,
 		subtopics: [
 			{ id: "1", text: "2-19 years" },
 			{ id: "2", text: "2-5 years" },
@@ -399,7 +399,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: true,
 		hasClassification: true,
-		topicGroup: 18,
+		topicGroup: 19,
 		subtopics: [
 			{ id: "1", text: "Normal weight (BMI from 18.5 to 24.9)" },
 			{ id: "2", text: "Overweight or obese (BMI greater than or equal to 25.0)" },
@@ -512,7 +512,7 @@ const singleTopicDatasets = {
 		dataUrl: "data.cdc.gov/resource/pjb2-jvdr.json",
 		socrataId: "pjb2-jvdr",
 		private: "1",
-		chartTitle: "Infant mortality by race",
+		chartTitle: "Infant mortality by race and Hispanic origin",
 		filters: "HUS,NVSS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 0,
@@ -1208,8 +1208,8 @@ export const topicGroups = [
 	"Infectious diseases", // 15
 	"Mass screening", // 16
 	"Mental wellness", // 17
-	"Overweight and obesity", // 18
-	"Oral health", // 19
+	"Oral health", // 18
+	"Overweight and obesity", // 19
 	"Pain", // 20
 	"Pregnancy", // 21
 	"Public health indicators", // 22

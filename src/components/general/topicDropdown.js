@@ -92,6 +92,12 @@ const populate = (props) => {
 		const groupOptions = props.options
 			.filter((o) => o.topicGroup === i)
 			.sort((a, b) => a.text.localeCompare(b.text));
+
+		// prevents empty groups from showing
+		if (groupOptions.length === 0) {
+			return;
+		}
+
 		optionList.push(`<div id="topicGroup${i}" data-topic-id="${i}" class="genDropdownTopicGroup">${g}</div>`);
 
 		groupOptions.forEach((o, index) => {
