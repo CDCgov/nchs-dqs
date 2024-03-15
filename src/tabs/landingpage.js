@@ -387,12 +387,26 @@ export class LandingPage {
 		if (mapView) {
 			$(".reliability-legend").show();
 		} else {
-			const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints:visible")).some(
-				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
-			);
-			const hasVisibleCrossHatchBars = $.makeArray($(".bar:visible")).some(
-				(item) => $(item).attr("fill") && $(item).attr("fill").includes("diagonalHatch")
-			);
+			const hasVisibleCrossHatchSymbols = $.makeArray($(".symbolPoints:visible")).some((item) => {
+				// fill attribute is coming up 'undefined' for some symbolPoints,
+				// so checking 'style' as a backup
+				if ($(item).attr("fill")) {
+					return $(item).attr("fill").includes("diagonalHatch");
+				}
+				if ($(item).attr("style")) {
+					return $(item).attr("style").includes("diagonalHatch");
+				}
+				return false;
+			});
+			const hasVisibleCrossHatchBars = $.makeArray($(".bar:visible")).some((item) => {
+				if ($(item).attr("fill")) {
+					return $(item).attr("fill").includes("diagonalHatch");
+				}
+				if ($(item).attr("style")) {
+					return $(item).attr("style").includes("diagonalHatch");
+				}
+				return false;
+			});
 			if (
 				this.genChart.props.usesReliabilityCallout &&
 				(hasVisibleCrossHatchSymbols || hasVisibleCrossHatchBars)
