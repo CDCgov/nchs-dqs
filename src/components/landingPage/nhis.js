@@ -131,7 +131,7 @@ const NHISAdult = [
 	{
 		id: "six-or-more-workdays-missed-due-to-illness-injury-or-disability",
 		text: "Six or more workdays missed due to illness, injury, or disability",
-		topicGroup: 9,
+		topicGroup: 22,
 	},
 	{
 		id: "taking-prescription-medication-for-feelings-of-depression",
