@@ -201,7 +201,7 @@ const NHISChild = [
 	{
 		id: "fair-or-poor-health-status-among-children",
 		text: "Fair or poor health status in children",
-		indicator: "Fair or poor health status among children",
+		indicator: "Fair or poor health status in children",
 		topicGroup: 22,
 	},
 	{
