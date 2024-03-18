@@ -875,8 +875,7 @@ export class GenChart {
 											d.assignedLegendColor = p.barColors[i];
 											const unreliable = d.flag && d.flag !== "N/A";
 											if (unreliable) {
-												$(".unreliableNote").show();
-												$(".unreliableFootnote").show();
+												hasLineChartReliability = true; // same note for line chart as bar chart
 												defaultNote = false;
 											}
 											return unreliable ? `url(#diagonalHatch-${i})` : p.barColors[i];

@@ -373,7 +373,12 @@ export const getSelectedTopicCount = () => {
 };
 
 export const binData = (data) => {
-	return ClassifyData(data, "estimate", 4, 1);
+	return ClassifyData(
+		data.filter((d) => d.estimate !== "*"),
+		"estimate",
+		4,
+		1
+	);
 };
 
 export const adjustTableDimensions = () => {
