@@ -459,8 +459,9 @@ export class LandingPage {
 		}
 
 		// for reading in Map, Chart, or Table from hash url
-		if (this.selections?.tab && this.selections?.tab !== this.activeTabNumber) {
+		if (this.selections?.tab && parseInt(this.selections?.tab, 10) !== this.activeTabNumber) {
 			let { tab } = this.selections;
+			tab = parseInt(tab, 10);
 			let activeTab;
 			if (tab === 0) {
 				activeTab = "map-tab";
@@ -1228,13 +1229,13 @@ export class LandingPage {
 		);
 
 		this.allYearsOptions = allYearsArray.map((d) => ({ text: d, value: d }));
-		const onlyOneTimePeriod = this.allYearsOptions.length === 1;
+		const onlyOneTimePeriod = this.allYearsOptions.length === 1 || $("#show-one-period-checkbox").prop("checked");
 		const startPeriodOptions =
 			this.selections?.viewSinglePeriod || onlyOneTimePeriod
 				? this.allYearsOptions
-				: this.allYearsOptions.slice(0, -1);
+				: [...this.allYearsOptions].slice(0, -1);
 		this.initStartPeriodDropdown(startPeriodOptions);
-		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : this.allYearsOptions.slice(1));
+		this.initEndPeriodDropdown(onlyOneTimePeriod ? this.allYearsOptions : [...this.allYearsOptions].slice(1));
 		this.currentTimePeriodIndex = 0;
 	}
 
