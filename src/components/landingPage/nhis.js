@@ -194,7 +194,7 @@ const NHISChild = [
 		topicGroup: 1,
 	},
 	{
-		id: "ever-having-attention-deficit/hyperactivity-disorder",
+		id: "ever-having-attention-deficit-hyperactivity-disorder",
 		text: "Ever having attention-deficit/hyperactivity disorder",
 		topicGroup: 2,
 	},

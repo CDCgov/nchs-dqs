@@ -1192,7 +1192,7 @@ NHISTopics.forEach((t) => {
 export const topicGroups = [
 	"Arthritis", // 0
 	"Asthma", // 1
-	"Attention deficit/hyperactivity disorder", // 2
+	"Attention deficit or hyperactivity disorder", // 2
 	"Cancer", // 3
 	"Cardiovascular diseases", // 4
 	"Chronic obstructive pulmonary disease", // 5
