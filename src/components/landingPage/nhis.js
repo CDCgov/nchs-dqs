@@ -424,6 +424,7 @@ export const NHISTopics = [
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-dietary-behaviors",
+		noClassification: true,
 		dataUrl: "https://data.cdc.gov/dataset/dqs_nhanes_dietary_behaviors_3-1-24/xcc8-2jrh",
 	})),
 	...NHANESOralHealth.map((d) => ({
