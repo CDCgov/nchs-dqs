@@ -409,6 +409,7 @@ export const NHISTopics = [
 	})),
 	...NHAMCSChild.map((d) => ({
 		...d,
+		skipSubtopics: true,
 		topicLookupKey: "NHAMCS",
 		dataUrl: "https://data.cdc.gov/resource/k6sd-3kb8.json",
 		dataSystem: "NHAMCS",

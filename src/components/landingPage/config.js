@@ -1186,6 +1186,7 @@ NHISTopics.forEach((t) => {
 		topicLookupId: t.topicLookupKey,
 		dataSystem: t.dataSystem,
 		...(t.subtopics && { subtopics: t.subtopics }),
+		skipSubtopics: t.skipSubtopics,
 	};
 });
 
