@@ -16,7 +16,7 @@
 		</div>
 		NOTE: <label> can be placed outside of dropdown container as well. As long as it has the id="" and for="",
 		as described above, it will get the correct aria-label read back by screen-reader software.
-		
+
 
 	CREATING A NEW DROPDOWN INSTANCE:
 		this.myDropdown = new GenDropdown({
@@ -46,19 +46,19 @@
 
 	PUBLIC METHODS:
 		this.myDropdown.render(); wipes out any existing dropdown and creates a new one with provided props passed into the constructor
-		
+
 		this.myDropdown.value(); returns currently selected value
 		this.myDropdown.value([some-value]); dropdown is updated to [some-value] and triggers change event
 		this.myDropdown.value([some-value], false); dropdown is updated to [some-value] but does NOT trigger change event
 
 		this.myDropdown.text(); return text of currently selected value
-		
+
 		this.myDropdown.disableDropdown(); disables events from dropdown and shows currently selected value in lighter font
-		
+
 		this.myDropdown.enableDropdown(); enables events for dropdown and shows currently selected normal font
 
 		this.myDropdown.disableValues([array of values]); disables values; shows each value in the dropdown with lighter font, unselectable
-		
+
 		this.myDropdown.enableValues([array of values]); enables values; shows each value in the dropdown with normal font, selectable
 		this.myDropdown.enableValues("all"); enables all values
 
@@ -85,7 +85,7 @@ const populate = (props, mobile) => {
 		}"
 			data-val="${item[props.value]}"
 			data-classification="${item.classificationGroup}"
-			role="option"				
+			role="option"
 			aria-label="${item[props.text].trim()}"
 			aria-role="option"
 			aria-selected="${item[props.value] === selected[props.value] ? "true" : "false"}"
@@ -99,6 +99,7 @@ const populate = (props, mobile) => {
 	// remove this once we're done testing
 	if (props.options.length === 0) {
 		console.warn("NO OPTIONS! Possibly invalid name/indicator in config", props);
+		return;
 	}
 
 	const selectedHtml = selected[props.text];
@@ -151,7 +152,7 @@ const populate = (props, mobile) => {
 		id="${props.containerId}-select"
 		class="genDropdownSelected"
 		tabindex="0"
-		role="listbox"		
+		role="listbox"
 		aria-labelledby="${props.containerId}-label"
 		aria-busy="true"
 		contenteditable=${mobile || props.notEditable ? "false" : "true"}

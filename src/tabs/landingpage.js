@@ -528,7 +528,10 @@ export class LandingPage {
 		);
 
 		if (this.config.hasClassification) {
-			data = data.filter((d) => d.panel_num == this.config.classificationId);
+			const classificationId = data[0]?.classification_num
+				? $("#topicDropdown-select .genDropdownOption.genOptionSelected").attr("data-classification")
+				: this.config.classificationId;
+			data = data.filter((d) => d.panel_num == classificationId);
 		}
 
 		const estimateUci = data.filter((d) => d.estimate_uci).map((d) => d.estimate_uci);
@@ -999,8 +1002,9 @@ export class LandingPage {
 		});
 
 		this.classificationDropdown.render();
-		// commented out to prevent a rerender/reselect on topic change
-		this.config.classificationId = this.classificationDropdown.value();
+		if (!this.config.subtopics || this.config.skipSubtopics) {
+			this.config.classificationId = this.classificationDropdown.value();
+		}
 
 		if (options.length === 1) {
 			this.classificationDropdown.disableDropdown();

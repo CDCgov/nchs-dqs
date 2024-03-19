@@ -194,14 +194,14 @@ const NHISChild = [
 		topicGroup: 1,
 	},
 	{
-		id: "ever-having-attention-deficit/hyperactivity-disorder",
+		id: "ever-having-attention-deficit-hyperactivity-disorder",
 		text: "Ever having attention-deficit/hyperactivity disorder",
 		topicGroup: 2,
 	},
 	{
 		id: "fair-or-poor-health-status-among-children",
 		text: "Fair or poor health status in children",
-		indicator: "Fair or poor health status among children",
+		indicator: "Fair or poor health status in children",
 		topicGroup: 22,
 	},
 	{
@@ -409,6 +409,7 @@ export const NHISTopics = [
 	})),
 	...NHAMCSChild.map((d) => ({
 		...d,
+		skipSubtopics: true,
 		topicLookupKey: "NHAMCS",
 		dataUrl: "https://data.cdc.gov/resource/k6sd-3kb8.json",
 		dataSystem: "NHAMCS",

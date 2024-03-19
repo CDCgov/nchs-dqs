@@ -1186,13 +1186,14 @@ NHISTopics.forEach((t) => {
 		topicLookupId: t.topicLookupKey,
 		dataSystem: t.dataSystem,
 		...(t.subtopics && { subtopics: t.subtopics }),
+		skipSubtopics: t.skipSubtopics,
 	};
 });
 
 export const topicGroups = [
 	"Arthritis", // 0
 	"Asthma", // 1
-	"Attention deficit/hyperactivity disorder", // 2
+	"Attention deficit or hyperactivity disorder", // 2
 	"Cancer", // 3
 	"Cardiovascular diseases", // 4
 	"Chronic obstructive pulmonary disease", // 5

@@ -135,6 +135,7 @@ export class GenTooltip {
 		if (multiData) data = multiData;
 		else data = [data];
 
+		data = JSON.parse(JSON.stringify(data));
 		$(`#${this.vizId}-tooltip`).html("");
 		let tip;
 
