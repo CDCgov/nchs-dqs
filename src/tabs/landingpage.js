@@ -644,12 +644,13 @@ export class LandingPage {
 				.filter((f) => this.footnoteMap[f])
 				.map(
 					(f) =>
-						`<p class="${replaceLabel[f.substring(0, 2)].replace(
+						`<h3 class="heading3 ${replaceLabel[f.substring(0, 2)].replace(
 							" ",
 							""
-						)}Footnote footnoteHeader"><strong>${
-							replaceLabel[f.substring(0, 2)]
-						}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f], false)}</p>`
+						)}Footnote footnoteHeader">${replaceLabel[f.substring(0, 2)]}</h3><p>${functions.link_i_fy(
+							this.footnoteMap[f],
+							false
+						)}</p>`
 				)
 				.join("");
 
@@ -660,9 +661,9 @@ export class LandingPage {
 							.filter((f) => this.footnoteMap[f])
 							.map(
 								(f) =>
-									`<p class="unreliableFootnote footnoteHeader"><strong>${
+									`<h3 class="heading3 unreliableFootnote footnoteHeader">${
 										replaceLabel[f.substring(0, 2)]
-									}</strong></p><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
+									}</h3><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
 							)
 							.join("");
 

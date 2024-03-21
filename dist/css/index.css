@@ -14494,7 +14494,7 @@ button.close {
 .chart-title {
   margin-top: 70px;
   font-size: 20px;
-  font-weight: bold;
+  font-weight: bold !important;
   text-align: center; }
 
 #chart-subtitle {
@@ -14876,7 +14876,7 @@ a {
         text-align: left; }
   #chartContainer #chartLegendTitle {
     font-size: 18px;
-    font-weight: bold;
+    font-weight: bold !important;
     padding: 0 5px; }
   #chartContainer .legendItems > div {
     margin-right: 5px; }
@@ -15671,7 +15671,8 @@ div.copy-message-bkg {
 
 .table-title {
   margin: 0 0 0 5px !important;
-  font-size: 1rem;
+  font-size: 20px;
+  font-weight: bold !important;
   align-self: center; }
 
 .data-table {
@@ -16268,9 +16269,47 @@ div.genDropdownSelected {
   font-size: 16px;
   color: #333; }
 
+.banner-header {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.heading-image {
+  flex-basis: 10%; }
+
+.heading1 {
+  font-size: 70px;
+  font-weight: bold !important;
+  color: #ffffff; }
+
+.heading-image {
+  height: 75px;
+  width: 75px; }
+
+@media screen and (max-width: 1140px) {
+  .heading1 {
+    font-size: 60px; }
+  .heading-image {
+    height: 65px; } }
+
+@media screen and (max-width: 960px) {
+  .heading1 {
+    font-size: 40px; }
+  .heading-image {
+    height: 55px; } }
+
+@media screen and (max-width: 720px) {
+  .heading1 {
+    font-size: 20px; } }
+
+.heading3 {
+  font-size: 18px;
+  font-weight: bold !important;
+  color: #333; }
+
 .heading4 {
   font-size: 20px;
-  font-weight: bold;
+  font-weight: bold !important;
   color: #333; }
 
 .heading5 {
