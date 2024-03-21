@@ -527,7 +527,10 @@ export class LandingPage {
 				(!this.endYear || parseInt(d.year_pt, 10) <= parseInt(this.endYear, 10))
 		);
 
-		if (this.config.hasClassification) {
+		// no need to filter further by classification if I only have 1 classification
+		const panelLength = [...new Set(data.map((t) => t.panel_num))].length;
+
+		if (this.config.hasClassification && panelLength > 1) {
 			const classificationId = data[0]?.classification_num
 				? $("#topicDropdown-select .genDropdownOption.genOptionSelected").attr("data-classification")
 				: this.config.classificationId;
@@ -601,9 +604,17 @@ export class LandingPage {
 			(d) => d.unit_num == this.config.yAxisUnitId && d.stub_name_num == this.groupId
 		);
 
-		return this.config.hasClassification && this.config.classificationId
-			? filteredData.filter((d) => d.panel_num == this.config.classificationId)
-			: filteredData;
+		// no need to filter further by classification if I only have 1 classification
+		const panelLength = [...new Set(filteredData.map((t) => t.panel_num))].length;
+
+		if (this.config.hasClassification && panelLength > 1) {
+			const classificationId = filteredData[0]?.classification_num
+				? $("#topicDropdown-select .genDropdownOption.genOptionSelected").attr("data-classification")
+				: this.config.classificationId;
+			return filteredData.filter((d) => d.panel_num == classificationId);
+		}
+
+		return filteredData;
 	}
 
 	updateFootnotes(data) {
@@ -726,9 +737,9 @@ export class LandingPage {
 		this.allMapData = null;
 		this.classificationOptions = null;
 		await this.updateTopic(value);
-		if (classification) {
-			this.updateClassification(classification);
-		}
+		// if (classification) {
+		// 	this.updateClassification(classification);
+		// }
 	};
 
 	updateTopic = async (dataTopic, topicChange = true) => {
@@ -934,6 +945,7 @@ export class LandingPage {
 			}));
 
 			this.classificationOptions = options;
+			// console.log("classification options", options);
 			return options;
 		}
 
@@ -1068,7 +1080,7 @@ export class LandingPage {
 			ariaLabel: "select group",
 			options: uniqueOptions, // ensures unique values
 			selectedValue: this.selections?.group,
-			isNestedGroup: false,
+			isNestedGroup: classificationOptions.length > 0,
 			classificationGroups: classificationOptions,
 		});
 		this.groupDropdown.render();

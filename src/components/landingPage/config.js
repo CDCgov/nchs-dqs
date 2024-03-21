@@ -334,8 +334,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -383,8 +383,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -812,6 +812,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -902,6 +904,8 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
@@ -944,9 +948,12 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
+
 			return returnData;
 		},
 	},
@@ -1016,6 +1023,8 @@ const multipleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? d.group : "N/A",
 				});
 			});
@@ -1147,6 +1156,8 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				});
 			});
