@@ -67,9 +67,9 @@ export const tabContent = `
 				
 				<div class="col-10 homeSelectorText">
 					<label class="body1">Select a</label>
-					<div class="heading4">
+					<h2 class="heading4">
 						Topic
-					</div>
+					</h2>
 				</div>
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
@@ -101,7 +101,7 @@ export const tabContent = `
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label class="body1" for="groupDropdown-select">Select a</label>
-					<div class="heading4">Group</div>
+					<h2 class="heading4">Group</h2>
 				</div>
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
@@ -117,7 +117,7 @@ export const tabContent = `
 				</div>
 				<div class="col-10 homeSelectorText">
 					<label class="body1" for="groupDropdown-select">Select</label>
-					<div class="heading4">Subgroup</div>
+					<h2 class="heading4">Subgroup</h2>
 				</div>
 			</div>
 			<div class="row spacerContainer">&nbsp;</div>
@@ -131,7 +131,7 @@ export const tabContent = `
 				</div>
 				<div class="col-xl-10 col-md-4 col-sm-8 homeSelectorText">
 					<div class="body1" aria-label="Select time periods">Select</div>
-					<div class="heading4">Time Periods</div>
+					<h2 class="heading4">Time Periods</h2>
 				</div>
 				<div class="col-xl-12 col-md-6 col-sm-12">
 					<div class="flexRow singlePeriod">
@@ -160,7 +160,7 @@ export const tabContent = `
 	<br />
 
 	<div tabindex="0" class="chart-titles space-util" style="text-align: center">
-		<span id="chart-title" class="chart-title"></span><br style="display: block; content:''; margin-top: -4px" />
+		<h2 id="chart-title" class="chart-title"></h2><br style="display: block; content:''; margin-top: -4px" />
 		<span id="chart-subtitle"></span>
 	</div>
 
@@ -212,7 +212,7 @@ export const tabContent = `
 					<div id="chart-container" class="col-xxl-10 col-xl-9 col-lg-12"></div>
 					<div id="chartLegend" class="col-xxl-2 col-xl-3 col-lg-12">
 						<div style="margin: auto; border: 1px solid #e0e0e0; border-radius: 5px;">
-							<div id="chartLegendTitle" tabindex="0"></div>
+							<h3 id="chartLegendTitle" tabindex="0"></h3>
 							<hr style="margin: 0 10px" />
 							<div id="chartLegendContent"></div>
 						</div>
@@ -270,7 +270,7 @@ export const tabContent = `
 
 	<div class="data-table-container" id="pageFooterTable" style="margin-top: 10px; margin-bottom: 15px">
 		<div role="button" aria-controls="pageFooter" aria-expanded="true" aria-label="footnotes" class="table-toggle" id="footer-table-toggle" tabindex="0">
-			<h4 class="table-title">Notes</h4>
+			<h2 class="table-title">Notes</h2>
 			<div class="table-toggle-icon"><i id="footer-table-header-icon" class="fas fa-minus"></i></div>
 		</div>
 		<div id="pageFooter" class="data-table" aria-hidden="false" tabindex="0"></div>
@@ -334,8 +334,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -383,8 +383,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
-					// classification: d.classification,
-					// classification_num: d.classification_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -812,6 +812,8 @@ const singleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
@@ -902,6 +904,8 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
@@ -944,9 +948,12 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				})
 			);
+
 			return returnData;
 		},
 	},
@@ -1016,6 +1023,8 @@ const multipleTopicDatasets = {
 					unit_num: d.estimate_type_id,
 					year: d.time_period,
 					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
 					age: d.group.includes("By age") ? d.group : "N/A",
 				});
 			});
@@ -1147,6 +1156,8 @@ const multipleTopicDatasets = {
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
 					year_num: f.time_period_id,
+					classification: f.classification,
+					classification_num: f.classification_id,
 					age: f.group.includes("By age") ? f.group : "N/A",
 				});
 			});
