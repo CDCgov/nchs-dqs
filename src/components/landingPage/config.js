@@ -23,7 +23,7 @@ export const chartAndTableSelectors = `
 					</label>
 				</div>
 				<div id="ciTableSlider" class="viewSliders">
-					<label for="ciToggle" class="tableSliderLabel">Show 
+					<label for="confidenceIntervalSlider" class="tableSliderLabel">Show 
 						<span 
 							id="ciLabelTooltip"
 							tabindex="0" 
@@ -136,7 +136,7 @@ export const tabContent = `
 				<div class="col-xl-12 col-md-6 col-sm-12">
 					<div class="flexRow singlePeriod">
 						<input style="margin-right: 8px;" type="checkbox" id="show-one-period-checkbox" name="show-one-period-checkbox" />
-						<label class="label-style body2">View single period</label>
+						<label class="label-style body2" for="show-one-period-checkbox">View single period</label>
 					</div>
 				</div>
 			</div>
