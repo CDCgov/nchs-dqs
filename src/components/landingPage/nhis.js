@@ -389,7 +389,7 @@ const WONDERHUSHeartDisease = [
 	{
 		id: "death-rates-from-heart-disease",
 		indicator: "Death rates from heart disease",
-		text: "Deaths rates from heart disease",
+		text: "Death rates from heart disease",
 		topicGroup: 6,
 	},
 ];
