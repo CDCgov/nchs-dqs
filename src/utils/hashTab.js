@@ -5,15 +5,15 @@ export const writeHashToUrl = (topicId, classificationId, groupId, tab) => {
 
 	try {
 		const lookup = hashLookup[topicId];
-		const classificationHash = lookup.classificationOptions.find((s) => s.value == classificationId).hash;
+		const classificationHash = lookup.classificationOptions.find((s) => s.value == classificationId)?.hash;
 		const groupHash = lookup.groupOptions.find((c) => c.value == groupId).hash;
 
-		window.location.hash = `${hashPrefix.replace(
-			"#",
-			""
-		)}_${topicId}/${classificationHash}/${groupHash}/${singlePeriod}/${tab}`;
-	} catch {
+		window.location.hash = `${hashPrefix.replace("#", "")}_${topicId}/${
+			classificationHash || "-"
+		}/${groupHash}/${singlePeriod}/${tab}`;
+	} catch (e) {
 		/* do nothing */
+		console.log("got errror", e);
 	}
 };
 
