@@ -474,7 +474,11 @@ export class LandingPage {
 			return;
 		}
 
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
+		const classificationId =
+			$("#topicDropdown-select .genDropdownOption.genOptionSelected")?.attr("data-classification") ||
+			this.config.classificationId;
+
+		hashTab.writeHashToUrl(this.dataTopic, classificationId, this.groupId, this.activeTabNumber);
 		$(".genLoader").removeClass("active");
 	};
 
@@ -1304,7 +1308,12 @@ export class LandingPage {
 			$("#startYearContainer-label").html("");
 		}
 		this.renderDataVisualizations();
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
+
+		const classificationId =
+			$("#topicDropdown-select .genDropdownOption.genOptionSelected")?.attr("data-classification") ||
+			this.config.classificationId;
+
+		hashTab.writeHashToUrl(this.dataTopic, classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	updateEnableCI(value) {
@@ -1354,7 +1363,11 @@ export class LandingPage {
 		const firstValue = $("#topicDropdown-select .genDropdownOption:first").attr("data-val");
 		this.topicDropdown.value(firstValue, true);
 
-		hashTab.writeHashToUrl(this.dataTopic, this.config.classificationId, this.groupId, this.activeTabNumber);
+		const classificationId =
+			$("#topicDropdown-select .genDropdownOption.genOptionSelected")?.attr("data-classification") ||
+			this.config.classificationId;
+
+		hashTab.writeHashToUrl(this.dataTopic, classificationId, this.groupId, this.activeTabNumber);
 	}
 
 	renderDataTable(data) {
