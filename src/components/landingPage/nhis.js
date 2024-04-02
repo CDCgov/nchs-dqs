@@ -398,7 +398,7 @@ export const NHISTopics = [
 	...NHISAdult.map((d) => ({
 		...d,
 		topicLookupKey: "NHIS",
-		dataUrl: "https://data.cdc.gov/NCHS/DEV-DQS-NHIS-Adult-Summary-Statistics/4u68-shzr",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_nhis_adult_summary_health_statistics_2-27-/pg2r-sfcx",
 		dataSystem: "NHIS",
 	})),
 	...NHISChild.map((d) => ({
@@ -411,14 +411,14 @@ export const NHISTopics = [
 		...d,
 		skipSubtopics: true,
 		topicLookupKey: "NHAMCS",
-		dataUrl: "https://data.cdc.gov/resource/k6sd-3kb8.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_estimates_of_emergency_department_visits_i/k6sd-3kb8",
 		dataSystem: "NHAMCS",
 	})),
 	...NHANESChronic.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-chronic-conditions",
-		dataUrl: "https://data.cdc.gov/resource/mvup-dmxz.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_nhanes_chronic_conditions_3-1-24/mvup-dmxz",
 	})),
 	...NHANESDietary.map((d) => ({
 		...d,
@@ -432,14 +432,14 @@ export const NHISTopics = [
 		dataSystem: "NHANES",
 		topicLookupKey: "nhanes-oral-health",
 		noClassification: true,
-		dataUrl: "https://data.cdc.gov/resource/59vz-u8kg.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_nhanes_select_oral_health_prevalence_estim/59vz-u8kg",
 	})),
 	...NHANESInfectious.map((d) => ({
 		...d,
 		dataSystem: "NHANES",
 		noClassification: true,
 		topicLookupKey: "nhanes-infectious-disease",
-		dataUrl: "https://data.cdc.gov/resource/be3w-4inw.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_nhanes_select_infectious_diseases_prevalen/be3w-4inw",
 	})),
 	...WONDERHUSHeartDisease.map((d) => ({
 		...d,

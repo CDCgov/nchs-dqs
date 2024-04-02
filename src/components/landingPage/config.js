@@ -434,7 +434,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: "https://data.cdc.gov/resource/p7se-k3ix.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Death_rates_for_suicide__by_sex__race__His/p7se-k3ix",
 		socrataId: "p7se-k3ix",
 		private: "1",
 		chartTitle: "Death rates for suicide",
@@ -467,7 +467,7 @@ const singleTopicDatasets = {
 				classification_num: d.classification_id,
 				age: d.group.includes("By age") ? f.group : "N/A",
 			})),
-		dataUrl: "data.cdc.gov/resource/qdzf-zqgy.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Initial_injury-related_visits_to_hospital_/qdzf-zqgy",
 		socrataId: "qdzf-zqgy",
 		private: "1",
 		chartTitle: "Hospital emergency department visits related to injury",
@@ -509,7 +509,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: "data.cdc.gov/resource/pjb2-jvdr.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Infant_mortality_rates__by_race_and_Hispan/pjb2-jvdr",
 		socrataId: "pjb2-jvdr",
 		private: "1",
 		chartTitle: "Infant mortality by race and Hispanic origin",
@@ -722,7 +722,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: "data.cdc.gov/resource/xmjk-wh9b.json",
+		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Visits_to_physician_offices__hospital_outp/xmjk-wh9b",
 		socrataId: "xmjk-wh9b",
 		private: "1",
 		chartTitle: "Physician office and hospital emergency department visits",
@@ -818,7 +818,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: "data.cdc.gov/dataset/DQS-Community-hospital-beds-by-state/tjtn-y8d3.json",
+		dataUrl: " https://data.cdc.gov/dataset/dev_dqs_community_hospital_beds_by_state_3-6-24/tjtn-y8d3",
 		socrataId: "tjtn-y8d3",
 		private: "1",
 		chartTitle: "Community hospital beds",
