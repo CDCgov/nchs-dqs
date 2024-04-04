@@ -47,7 +47,7 @@ export const addHtmlTooltips = () => {
 	});
 
 	const ciTooltip = new HtmlTooltip({
-		body: "A confidence interval is a range of values that describes the uncertainty around an estimate.",
+		body: "A confidence interval is a range of values that describes the uncertainty around an estimate. Specific values can be seen in table view, or select the data point in chart view.",
 		containerId: "chart-table-selectors",
 	});
 

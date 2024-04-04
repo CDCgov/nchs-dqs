@@ -46,9 +46,13 @@ export const downLoadMap2 = () => {
 		html2canvas(mapImageContainer, {
 			onclone: (clone) => {
 				let titleChart = clone.getElementById("chart-title").textContent;
+				const chartSubtitle = document.getElementById("chart-subtitle").textContent;
+				console.log("chartSubtitle: ", chartSubtitle);
 				clone.getElementById(
 					"mapDownloadTitle"
-				).innerHTML = `<div style='white-space: wrap; line-height: 46.7057px; font-size: 42.4597px; text-align: center; padding: 10px 0;'>${titleChart}</div>`;
+				).innerHTML = `<div style='white-space: wrap; line-height: 46.7057px; font-size: 42.4597px; text-align: center; padding: 10px 0;'>
+				${titleChart}</div>
+				<div style='white-space: wrap; text-align: center; padding: 10px 0;'>${chartSubtitle}</div>`;
 			},
 		}).then((canvas) => {
 			let titleChart = document.getElementById("chart-title").textContent;

@@ -1525,7 +1525,7 @@ export class LandingPage {
 			return `${sources
 				.filter((s) => s !== "HUS")
 				.map((s) => DATA_SYSTEMS[s])
-				.join(" ")}<br/>Published by: ${DATA_SYSTEMS.HUS}`;
+				.join(" ")}<br/> Published by: ${DATA_SYSTEMS.HUS}`;
 		}
 
 		return sources.map((s) => DATA_SYSTEMS[s]).join(", ");
