@@ -1,7 +1,7 @@
 const modalTopics = [
 	{
 		id: "filterIndian",
-		text: "American Indian or Alaska Native",
+		text: "American Indian and Alaska Native",
 		group: "demographic1",
 	},
 	{
@@ -10,18 +10,18 @@ const modalTopics = [
 		group: "demographic1",
 	},
 	{
-		id: "filterAsianPacific",
+		id: "filterPacificIslander",
 		text: "Asian or Pacific Islander",
 		group: "demographic1",
 	},
 	{
 		id: "filterBlack",
-		text: "Black or African American",
+		text: "Black",
 		group: "demographic1",
 	},
 	{
 		id: "filterHispanic",
-		text: "Hispanic or Latino",
+		text: "Hispanic",
 		group: "demographic1",
 	},
 	{
@@ -60,18 +60,18 @@ const modalTopics = [
 		group: "demographic2",
 	},
 	{
-		id: "filterMale",
-		text: "Male",
-		group: "demographic2",
-	},
-	{
 		id: "filterFemale",
 		text: "Female",
 		group: "demographic2",
 	},
 	{
+		id: "filterMale",
+		text: "Male",
+		group: "demographic2",
+	},
+	{
 		id: "filterFuncLimitStatus",
-		text: "Disability (Functional limitation Status)",
+		text: "Disability (Functional Limitation Status)",
 		group: "demographic2",
 	},
 	{
@@ -96,7 +96,7 @@ const modalTopics = [
 	},
 	{
 		id: "filterMetropolitan",
-		text: "Metropolitan and nonmetropolitan",
+		text: "Metropolitan and Nonmetropolitan",
 		group: "geographic",
 	},
 	{
@@ -190,7 +190,7 @@ const topicsHtml = () => {
 		<div class="row">
 			<div class="col-xs-12 col-md-12 col-xl-12">
 				<div class="col-12 heading6">
-					<div>Socio-economic</div>
+					<div>Socioeconomic</div>
 				</div>
 				${buildSelections(modalTopics.filter((mt) => mt.group === "socioeconomic"))}
 			</div>
@@ -218,7 +218,7 @@ const dataSystemsHtml = () => {
 				<div class="col-12 heading6">
 					<div>Sources</div>
 				</div>
-				${buildSelections(modalTopics.filter((mt) => mt.group === "dataSystems"))}
+				${buildSelections(modalTopics.filter((mt) => mt.group === "dataSystems").sort((a, b) => (a.text > b.text ? 1 : -1)))}
 			</div>
 		</div>`;
 };
@@ -237,8 +237,8 @@ export const filterHtml = ({ topicCount = 0 }) => {
 
 		return `
 			<div class="filter-text">There are <strong>
-				<span id="filter-summary-count">${topicCount}</span> topics available</strong> 
-			relating to <strong>any</strong> of these filters:</div>
+				<span id="filter-summary-count">${topicCount}</span> selections available</strong> 
+			in the topic dropdown with <strong>any</strong> of these filters:</div>
 			<div id="filter-results" style="display: flex; justify-content: center; flex-wrap: wrap;">${filterResults}</div>
 		`;
 	}
@@ -246,7 +246,7 @@ export const filterHtml = ({ topicCount = 0 }) => {
 	return `
 		<div class="filter-text">There are <strong><span id="filter-summary-count">
 				${topicCount}
-		</span> topics available</strong> with <strong>0</strong> filters applied.</div>
+		</span> selections available</strong> in the topic dropdown with <strong>0</strong> filters applied.</div>
 		<div class="text-center" style="font-size: 14px">Please select filters to proceed with advanced topic selection.</div>
 	`;
 };

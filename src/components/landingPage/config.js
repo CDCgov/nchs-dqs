@@ -1,7 +1,9 @@
 import { modal, allFilters } from "./modal";
 import { NHISTopics } from "./nhis";
 
-const NHISFilters = `Interview, ${allFilters.filter((a) => a !== "Children" && a !== "Infants").join(",")}`;
+const NHISFilters = `Interview,${allFilters
+	.filter((a) => a !== "Children" && a !== "Infants" && a !== "PacificIslander")
+	.join(",")}`;
 
 export const chartAndTableSelectors = `
 	<div id="chart-table-selectors">
@@ -291,10 +293,6 @@ const footnoteDatasets = {
 		socrataId: "48ev-2ygq",
 		private: "1",
 	},
-	NHISChildFootnotes: {
-		socrataId: "48ev-2ygq",
-		private: "1",
-	},
 	cshsFootnotes: {
 		socrataId: "7kgb-btmk",
 		private: "1",
@@ -344,7 +342,7 @@ const singleTopicDatasets = {
 		socrataId: "w9cp-q6sg",
 		private: "1",
 		chartTitle: "Obesity among children, measured by age",
-		filters: "HUS,NHANES,AsianPacific,Black,Children,Hispanic,Poverty,White",
+		filters: "HUS,NHANES,Black,Children,Hispanic,White,Female,Male,Asian",
 		dataSystem: "HUS,NHANES",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -393,7 +391,7 @@ const singleTopicDatasets = {
 		socrataId: "sqt4-6a3k",
 		private: "1",
 		chartTitle: "BMI among adults, measured",
-		filters: "HUS,NHANES,Adults,Asian,Black,Hispanic,Poverty,White,Male,Female",
+		filters: "HUS,NHANES,Adults,Asian,Black,Hispanic,White,Male,Female,Older",
 		dataSystem: "HUS,NHANES",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -438,7 +436,8 @@ const singleTopicDatasets = {
 		socrataId: "p7se-k3ix",
 		private: "1",
 		chartTitle: "Death rates for suicide",
-		filters: "HUS,NVSS,Adults,Older,Asian,AsianPacific,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
+		filters:
+			"HUS,NVSS,Adults,Older,Asian,PacificIslander,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
 		yAxisUnitId: 2,
@@ -513,7 +512,7 @@ const singleTopicDatasets = {
 		socrataId: "pjb2-jvdr",
 		private: "1",
 		chartTitle: "Infant mortality by race and Hispanic origin",
-		filters: "HUS,NVSS,Infants,Indian,AsianPacific,Black,Children,Hispanic,White",
+		filters: "HUS,NVSS,Infants,Indian,PacificIslander,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 0,
 		yAxisUnitId: 1,
@@ -583,7 +582,7 @@ const singleTopicDatasets = {
 		socrataId: "dj4t-wmry",
 		private: "1",
 		chartTitle: "Low birthweight live births by race and Hispanic origin",
-		filters: "HUS,NVSS,Infants,AsianPacific,Indian,Black,Children,Hispanic,White",
+		filters: "HUS,NVSS,Infants,PacificIslander,Indian,Black,Children,Hispanic,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -634,7 +633,7 @@ const singleTopicDatasets = {
 		private: "1",
 		chartTitle: "Medicaid coverage among people younger than 65 years",
 		filters:
-			"HUS,NHIS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Marital,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
+			"HUS,NHIS,Adults,Indian,Asian,PacificIslander,Black,Children,Female,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
 		dataSystem: "HUS,NHIS",
 		classificationId: "NA",
 		yAxisUnitId: 2,
@@ -676,7 +675,8 @@ const singleTopicDatasets = {
 		socrataId: "dh32-cnpq",
 		private: "1",
 		chartTitle: "Death rates from drug overdose",
-		filters: "HUS,NVSS,Adults,Indian,Asian,AsianPacific,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
+		filters:
+			"HUS,NVSS,Adults,Indian,Asian,PacificIslander,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -726,7 +726,7 @@ const singleTopicDatasets = {
 		socrataId: "xmjk-wh9b",
 		private: "1",
 		chartTitle: "Physician office and hospital emergency department visits",
-		filters: "HUS,NHAMCS,NAMCS,Adults,Black,Children,Female,Male,Older,Region,White",
+		filters: "HUS,NHAMCS,NAMCS,Adults,Black,Children,Female,Male,Older,White",
 		dataSystem: "HUS,NHAMCS,NAMCS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -774,7 +774,7 @@ const singleTopicDatasets = {
 		private: "1",
 		chartTitle: "Unmet need for health care due to cost",
 		filters:
-			"HUS,NHIS,Adults,Indian,Asian,Black,Children,Education,Female,FuncLimitStatus,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
+			"HUS,NHIS,Adults,Indian,Asian,Black,Children,Education,Female,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
 		dataSystem: "HUS,NHIS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -960,7 +960,7 @@ const multipleTopicDatasets = {
 	NHAMCS: {
 		socrataId: "k6sd-3kb8",
 		private: "1",
-		filters: `Interview, ${allFilters
+		filters: `Interview,${allFilters
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
@@ -1179,8 +1179,16 @@ NHISTopics.forEach((t) => {
 	if (t.topicLookupKey && topicLookup[t.topicLookupKey]?.filters) {
 		filters = topicLookup[t.topicLookupKey].filters;
 	}
+
+	if (t.excludedFilters) {
+		filters = filters
+			.split(",")
+			.filter((f) => !t.excludedFilters.includes(f))
+			.join(",");
+	}
+
 	if (t.filters) {
-		filters = `${NHISFilters},${t.filters.join(",")}`;
+		filters = `${filters},${t.filters.join(",")}`;
 	}
 
 	topicLookup[t.id] = {

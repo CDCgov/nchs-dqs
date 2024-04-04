@@ -369,6 +369,8 @@ export const getSelectedTopicCount = () => {
 		});
 	}
 
+	console.log("Total matching topic count", selectedFilters, total);
+
 	return total;
 };
 

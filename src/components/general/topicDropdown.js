@@ -554,6 +554,17 @@ export class TopicDropdown {
 				});
 			}
 
+			// hides topic group labels if they have no children (for filters)
+			$(".genDropdownTopicGroup:not('.subTopicDowndropGroup')").each((i, item) => {
+				const topicId = $(item).attr("data-topic-id");
+				const children = $(
+					`.genDropdownOption[data-parent-topic-id="${topicId}"]:not('.genOptionFilteredOut'):not('.genDropdownSubtopicOption')`
+				);
+				if (children.length === 0) {
+					$(item).attr("hidden", true);
+				}
+			});
+
 			this.#scrollIntoView(); // scroll both the dropdown itself and the currently selected option into view
 		} else {
 			// this.#resetOptions();

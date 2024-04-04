@@ -1002,6 +1002,7 @@ export class LandingPage {
 		$("#topicDropdown-select .genDropdownOption").each((i, el) => {
 			const value = $(el).data("val");
 			$(el).data({ filter: config.topicLookup[value].filters, dataSystem: config.topicLookup[value].dataSystem });
+			// $(el).attr("data-filters", config.topicLookup[value].filters);
 		});
 
 		return filters.length > 0;
