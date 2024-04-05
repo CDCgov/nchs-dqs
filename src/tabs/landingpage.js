@@ -210,9 +210,9 @@ export class LandingPage {
 		const min = d3.min(this.allMapData, (d) => d.estimate);
 		const max = d3.max(this.allMapData, (d) => d.estimate);
 
-		const yearData = this.allMapData
-			.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.endYear, 10))
-			.filter((d) => parseInt(this.config.classificationId, 10) === parseInt(d.panel_num, 10));
+		// Commented out filter  .filter((d) => parseInt(this.config.classificationId, 10) === parseInt(d.panel_num, 10));
+		// to resolve ticket: 23954
+		const yearData = this.allMapData.filter((d) => parseInt(d.year_pt, 10) === parseInt(this.endYear, 10));
 
 		const endYearDataBinned = functions.binData(yearData);
 		const { legend } = endYearDataBinned;
