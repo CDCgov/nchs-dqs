@@ -80,7 +80,7 @@ const populate = (props, mobile) => {
 
 	const buildDropDownItem = (item, props, group) => {
 		return `
-		<div class="genDropdownOption topicGroup${group.id} ${
+		<div class="genDropdownOption topicGroup${group.id || group.value} ${
 			item[props.value] === selected[props.value] ? "genOptionSelected" : ""
 		}"
 			data-val="${item[props.value]}"

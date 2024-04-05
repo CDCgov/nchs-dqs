@@ -25,6 +25,30 @@ export const PageEvents = {
 		$(document).on("click", (e) => {
 			if ($(e.target).closest(".genDropdownOpened").length) return;
 			if (e.target.id === "genDropdownSearch" || e.target.id === "genDdSearchAnchor") return;
+			// removes hovered over state so it's not "selected" when you go back
+			$(".genDropdownOpened").find(".genDropdownOption.genOptionSelected").removeClass("genOptionSelected");
+
+			// checks what the previous state was in case you hovered over and didn't click
+			// restores value if found
+			const isTopicDropdown = $(".genDropdownOpened").attr("id") === "genDropdownSearch";
+			const targetElem = isTopicDropdown
+				? $(".genDropdownOpened.genDropdownSelected")
+				: $(".genDropdownOpened")?.parent();
+			const previouslySelectedText = targetElem?.find("a")?.html()?.trim();
+			if (previouslySelectedText) {
+				const children = $(".genDropdownOptions.genDropdownOpened").find("a");
+				children.each((i, el) => {
+					const searchText = $(el)?.parent().hasClass("genDropdownSubtopicOption")
+						? `${$(el).parent().attr("data-parent-topic")}: ${$(el)?.html()?.trim()}`
+						: $(el)?.html()?.trim();
+
+					if (searchText === previouslySelectedText) {
+						$(el).parent().addClass("genOptionSelected");
+						return false;
+					}
+				});
+			}
+
 			$(".genDropdownOpened").removeClass("genDropdownOpened");
 		});
 	},
