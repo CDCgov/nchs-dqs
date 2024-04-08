@@ -678,7 +678,7 @@ export class LandingPage {
 								(f) =>
 									`<h3 class="heading3 unreliableFootnote footnoteHeader">${
 										replaceLabel[f.substring(0, 2)]
-									}</h3><p>${functions.link_i_fy(this.footnoteMap[f])}</p>`
+									}</h3><p>asdfasdf ${functions.link_i_fy(this.footnoteMap[f], false)}</p>`
 							)
 							.join("");
 
