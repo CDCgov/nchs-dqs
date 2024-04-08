@@ -1365,7 +1365,7 @@ export class GenChart {
 								// Show all tick marks but labels every other tick
 								.tickFormat(function (d, i) {
 									this.setAttribute("data-value", yearDisplay(d));
-									return i % 5 !== 0 ? " " : yearDisplay(d);
+									return yearDisplay(d);
 								});
 						}
 					} else {
