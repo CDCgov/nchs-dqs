@@ -21,6 +21,8 @@ import { genFormat } from "../../utils/genFormat";
 import { Utils } from "../../utils/utils";
 import { getProps } from "./chart/props";
 
+// set x scale upper limit when there is no data with max
+const X_MAX_SCALE = 5;
 export class GenChart {
 	constructor(providedProps) {
 		this.props = getProps(providedProps);
@@ -314,12 +316,12 @@ export class GenChart {
 				.scaleLinear()
 				.domain([
 					0,
-					d3.max(p.data, (d) =>
-						d3.max([
+					d3.max(p.data, (d) => {
+						return d3.max([
 							d[p.chartProperties.bars],
-							p.enableCI ? parseFloat(d.estimate_uci) : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
-						])
-					) * p.leftDomainOverageScale,
+							p.enableCI ? parseFloat(d.estimate_uci) : !d[p.chartProperties.bars] ? X_MAX_SCALE : 0, // (TT) keeps CI whiskers inside chart by adding UCI to this max calc
+						]);
+					}) * p.leftDomainOverageScale,
 				])
 				.range([0, chartWidth]);
 		} else if (p.firefoxReversed === true) {
@@ -381,8 +383,11 @@ export class GenChart {
 		let xAxisType;
 
 		// if horizontal bar chart, move axis to top
-		if (p.barLayout?.horizontal) xAxisType = d3.axisTop(xScale);
-		else xAxisType = d3.axisBottom(xScale);
+		if (p.barLayout?.horizontal) {
+			xAxisType = d3.axisTop(xScale);
+		} else {
+			xAxisType = d3.axisBottom(xScale);
+		}
 
 		const xAxis = xAxisType
 			.tickSize(3)
@@ -396,7 +401,9 @@ export class GenChart {
 			});
 
 		let yAxisNumTicks = 10;
-		if (!p.usesBars) yAxisNumTicks = yScaleLeft.ticks().length;
+		if (!p.usesBars) {
+			yAxisNumTicks = yScaleLeft.ticks().length;
+		}
 		const yAxisLeft = d3
 			.axisLeft(yScaleLeft)
 			.tickSize(3)
@@ -869,7 +876,16 @@ export class GenChart {
 								enter
 									.append("rect")
 									.attr("class", "bar")
-									.attr("width", hz ? (d) => xScale(d[p.chartProperties.bars]) : xScale.bandwidth())
+									.attr(
+										"width",
+										hz
+											? (d) => {
+													return xScale(d[p.chartProperties.bars]);
+											  }
+											: (d) => {
+													return xScale.bandwidth();
+											  }
+									)
 									.attr("fill", (d, i) => {
 										if (p.barColors) {
 											d.assignedLegendColor = p.barColors[i];
@@ -893,9 +909,18 @@ export class GenChart {
 											? p.barLayout.size * 0.9
 											: (d) => chartHeight - yScaleLeft(d[p.chartProperties.yLeft1])
 									)
-									.attr("x", hz ? 0 : (d) => xScale(d[p.chartProperties.xAxis]))
+									.attr(
+										"x",
+										hz
+											? 0
+											: (d) => {
+													return xScale(d[p.chartProperties.xAxis]);
+											  }
+									)
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.yLeft1]))
-									.attr("opacity", 1);
+									.attr("opacity", (d) => {
+										return 1;
+									});
 							},
 							(update) => {
 								const hz = p.barLayout.horizontal;
@@ -922,7 +947,9 @@ export class GenChart {
 											? p.barLayout.size * 0.9
 											: (d) => chartHeight - yScaleLeft(d[p.chartProperties.yLeft1])
 									)
-									.attr("x", hz ? 0 : (d) => xScale(d[p.chartProperties.xAxis]))
+									.attr("x", (d) => {
+										return hz ? 0 : xScale(d[p.chartProperties.xAxis]);
+									})
 									.attr("y", (d) => yScaleLeft(d[p.chartProperties.yLeft1]));
 							},
 							(exit) => {
@@ -957,14 +984,16 @@ export class GenChart {
 							.text((d) => (!d[p.chartProperties.bars] ? "See Notes" : ""))
 							.attr("fill", "#333")
 							.attr("font-size", "16px")
-							.attr("x", xScale(xScale.domain().slice(-1) * 0.01))
-							.attr(
-								"y",
-								(d) =>
+							.attr("x", (d) => {
+								return xScale(xScale.domain().slice(-1) * 0.01);
+							})
+							.attr("y", (d) => {
+								return (
 									yScaleLeft(d[p.chartProperties.yLeft1]) +
 									p.barLayout.size / 2 -
 									axisLabelFontSize * 0.6
-							);
+								);
+							});
 					}
 				}
 
@@ -1554,7 +1583,6 @@ export class GenChart {
 				.shift();
 
 			if (matchedx) {
-				console.log("got x axis", matchedx);
 				const linex = parseFloat(matchedx, 10) + 60;
 				let liney = "calc(100% - 45px)";
 				if (document.querySelector(".y.axis.left")?.getBoundingClientRect()?.height) {
