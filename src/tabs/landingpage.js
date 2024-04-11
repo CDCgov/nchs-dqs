@@ -817,7 +817,7 @@ export class LandingPage {
 			const topic = this.topicDropdown.text();
 			$("#citation .text").html(
 				`NCHS Data Query System. ${topic}. National Center 
-				for Health Statistics. Available from <a href="https://nchsdata.cdc.gov">https://nchsdata.cdc.gov</a>. Accessed on ${new Date().toLocaleDateString()}`
+				for Health Statistics. Available from <a href="https://nchsdata.cdc.gov">https://nchsdata.cdc.gov</a>. Accessed on ${new Date().toLocaleDateString()}.`
 			);
 
 			$("#citation").attr("aria-hidden", false).show();
