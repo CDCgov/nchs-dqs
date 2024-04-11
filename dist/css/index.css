@@ -14641,8 +14641,7 @@ fieldset {
   #us-map {
     width: 65%; }
   .usMapLegendContainer {
-    width: 20%;
-    margin-right: 20px; } }
+    width: 20%; } }
 
 @media screen and (max-width: 1199px) {
   #us-map-container {
