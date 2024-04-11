@@ -110,6 +110,11 @@ const modalTopics = [
 		group: "geographic",
 	},
 	{
+		id: "filterGeoState",
+		text: "State",
+		group: "geographic",
+	},
+	{
 		id: "filterHUS",
 		text: "Health, United States (HUS)",
 		group: "dataSystems",

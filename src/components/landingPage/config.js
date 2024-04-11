@@ -2,7 +2,7 @@ import { modal, allFilters } from "./modal";
 import { NHISTopics } from "./nhis";
 
 const NHISFilters = `Interview,${allFilters
-	.filter((a) => a !== "Children" && a !== "Infants" && a !== "PacificIslander")
+	.filter((a) => a !== "Children" && a !== "Infants" && a !== "PacificIslander" && a !== "GeoState")
 	.join(",")}`;
 
 export const chartAndTableSelectors = `
@@ -512,7 +512,7 @@ const singleTopicDatasets = {
 		socrataId: "pjb2-jvdr",
 		private: "1",
 		chartTitle: "Infant mortality by race and Hispanic origin",
-		filters: "HUS,NVSS,Infants,Indian,PacificIslander,Black,Children,Hispanic,White",
+		filters: "HUS,NVSS,Infants,Indian,PacificIslander,Black,Children,Hispanic,White,GeoState",
 		dataSystem: "HUS,NVSS",
 		classificationId: 0,
 		yAxisUnitId: 1,
@@ -582,7 +582,7 @@ const singleTopicDatasets = {
 		socrataId: "dj4t-wmry",
 		private: "1",
 		chartTitle: "Low birthweight live births by race and Hispanic origin",
-		filters: "HUS,NVSS,Infants,PacificIslander,Indian,Black,Children,Hispanic,White",
+		filters: "HUS,NVSS,Infants,PacificIslander,Indian,Black,Children,Hispanic,White,GeoState",
 		dataSystem: "HUS,NVSS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -822,7 +822,7 @@ const singleTopicDatasets = {
 		socrataId: "tjtn-y8d3",
 		private: "1",
 		chartTitle: "Community hospital beds",
-		filters: "HUS",
+		filters: "HUS,GeoState",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -861,7 +861,7 @@ const singleTopicDatasets = {
 		socrataId: "9epi-jrff",
 		private: "1",
 		chartTitle: "Dentists",
-		filters: "HUS",
+		filters: "HUS,GeoState",
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 1,
@@ -919,7 +919,7 @@ const multipleTopicDatasets = {
 		socrataId: "b5qi-b3hv",
 		private: "1",
 		filters: `Interview, ${allFilters
-			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults")
+			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults" && a !== "GeoState")
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			let filteredToIndicator = data.filter((d) => d.topic === dataId);
@@ -961,7 +961,7 @@ const multipleTopicDatasets = {
 		socrataId: "k6sd-3kb8",
 		private: "1",
 		filters: `Interview,${allFilters
-			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI"].includes(t))
+			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI", "GeoState"].includes(t))
 			.join(",")}`,
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;

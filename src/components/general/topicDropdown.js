@@ -117,6 +117,7 @@ const populate = (props) => {
 							data-classification="${s.id}"
 							data-parent-topic="${parentTopic}"
 							data-parent-topic-id="${s.id}"
+							data-topicgroup-id="${i}"
 							role="option"				
 							aria-label="${s.text.trim()}"
 							aria-role="option"
@@ -560,7 +561,10 @@ export class TopicDropdown {
 				const children = $(
 					`.genDropdownOption[data-parent-topic-id="${topicId}"]:not('.genOptionFilteredOut'):not('.genDropdownSubtopicOption')`
 				);
-				if (children.length === 0) {
+				const subtopicChildren = $(
+					`.genDropdownOption[data-topicgroup-id=${topicId}]:not('.genOptionFilteredOut')`
+				);
+				if (children.length === 0 && subtopicChildren.length === 0) {
 					$(item).attr("hidden", true);
 				}
 			});
