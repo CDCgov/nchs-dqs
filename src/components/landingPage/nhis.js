@@ -18,7 +18,7 @@ const NHISAdult = [
 	{ id: "any-type-of-cancer", text: "Any type of cancer", topicGroup: 3 },
 	{ id: "arthritis-diagnosis", text: "Arthritis diagnosis", topicGroup: 0 },
 	{ id: "asthma-episode-attack", text: "Asthma episode/attack", topicGroup: 1 },
-	{ id: "blood-pressure-check", text: "Blood pressure check", topicGroup: 16 },
+	{ id: "blood-pressure-check", text: "Blood pressure check", topicGroup: 13 },
 	{ id: "breast-cancer", text: "Breast cancer", topicGroup: 3 },
 	{ id: "cervical-cancer", text: "Cervical cancer", topicGroup: 3, excludedFilters: ["Male"] },
 	{ id: "COPD-emphysema-chronic-bronchitis", text: "COPD, emphysema, chronic bronchitis", topicGroup: 5 },
@@ -131,7 +131,7 @@ const NHISAdult = [
 	{
 		id: "six-or-more-workdays-missed-due-to-illness-injury-or-disability",
 		text: "Six or more workdays missed due to illness, injury, or disability",
-		topicGroup: 22,
+		topicGroup: 27,
 	},
 	{
 		id: "taking-prescription-medication-for-feelings-of-depression",
@@ -170,7 +170,8 @@ const NHISChild = [
 	},
 	{
 		id: "daily-feelings-of-worry-nervousness-or-anxiety",
-		text: "Daily feelings of worry, nervousness, or anxiety among children",
+		indicator: "Daily feelings of worry, nervousness, or anxiety among children",
+		text: "Daily feelings of worry, nervousness, or anxiety in children",
 		topicGroup: 17,
 	},
 	{
@@ -226,12 +227,14 @@ const NHISChild = [
 	},
 	{
 		id: "receive-services-for-mental-health-problems",
-		text: "Receive services for mental health problems among children",
+		indicator: "Receive services for mental health problems among children",
+		text: "Receive special education services for mental health problems among children",
 		topicGroup: 17,
 	},
 	{
 		id: "receiving-special-education-or-early-intervention-services",
-		text: "Receiving special education or early intervention services",
+		text: "Receive special education or early intervention services",
+		indicator: "Receiving special education or early intervention services",
 		topicGroup: 17,
 	},
 	{

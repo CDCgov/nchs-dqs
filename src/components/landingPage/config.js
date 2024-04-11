@@ -686,10 +686,10 @@ const singleTopicDatasets = {
 		subtopics: [
 			{ id: "1", text: "All drug overdose deaths" },
 			{ id: "2", text: "Drug overdose deaths involving any opioid" },
-			{ id: "3", text: "Drug overdose deaths involving natural and semisynthetic opioids" },
-			{ id: "4", text: "Drug overdose deaths involving methadone" },
-			{ id: "5", text: "Drug overdose deaths involving other synthetic opioids (other than methadone)" },
 			{ id: "6", text: "Drug overdose deaths involving heroin" },
+			{ id: "4", text: "Drug overdose deaths involving methadone" },
+			{ id: "3", text: "Drug overdose deaths involving natural and semisynthetic opioids" },
+			{ id: "5", text: "Drug overdose deaths involving synthetic opioids other than methadone" },
 		],
 	},
 	"ambulatory-care": {
@@ -1212,11 +1212,11 @@ NHISTopics.forEach((t) => {
 export const topicGroups = [
 	"Arthritis", // 0
 	"Asthma", // 1
-	"Attention deficit or hyperactivity disorder", // 2
+	"Attention deficit hyperactivity disorder (ADHD)", // 2
 	"Cancer", // 3
 	"Cardiovascular diseases", // 4
 	"Chronic obstructive pulmonary disease", // 5
-	"Death and fatality rates", // 6
+	"Death and mortality rates", // 6
 	"Diabetes", // 7
 	"Disabilities", // 8
 	"Employment status", // 9
@@ -1232,11 +1232,12 @@ export const topicGroups = [
 	"Overweight and obesity", // 19
 	"Pain", // 20
 	"Pregnancy", // 21
-	"Public health indicators", // 22
+	"Health status", // 22
 	"School attendance", // 23
 	"Substance use and abuse", // 24
 	"Treatment", // 25
 	"Vaccines and vaccination", // 26
+	"Workplace attendance and absenteeism", // 27
 ];
 // "Diseases and conditions", // 0
 // "Epidemiology and health metrics", // 1
