@@ -302,6 +302,22 @@ export class GenDropdown {
 						this.searchText = "";
 						this.#resetOptions();
 					} else if (open) {
+						// re-selects previous value if you cancelled out
+						$(`#${this.props.containerId} .genDropdownOpened`)
+							.find(".genOptionSelected")
+							.removeClass("genOptionSelected");
+						const previouslySelectedText = $(`#${this.props.containerId} .genDropdownOpened`)
+							.find("a:first")
+							.html()
+							.trim();
+						const children = $(`#${this.props.containerId} .genDropdownOptions`).find("a");
+						children.each((i, el) => {
+							if ($(el).html().trim() === previouslySelectedText) {
+								$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
+								return false; // exit the loop
+							}
+						});
+
 						this.#toggleOpenClose();
 					}
 				} else if (key === "ArrowDown" || key === "ArrowUp") {

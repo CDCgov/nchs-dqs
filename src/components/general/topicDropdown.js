@@ -294,6 +294,19 @@ export class TopicDropdown {
 						this.searchText = "";
 						this.#resetOptions();
 					} else if (open) {
+						// re-selects previous value if you cancelled out
+						$(`#${this.props.containerId} .genDropdownOpened`)
+							.find(".genOptionSelected")
+							.removeClass("genOptionSelected");
+						const previouslySelectedText = $(`#topicDropdown-select`).find("a").html().trim();
+						const children = $(`#${this.props.containerId} .genDropdownOptions`).find("a");
+						children.each((i, el) => {
+							if ($(el).html().trim() === previouslySelectedText) {
+								$(el).parent().addClass("genOptionSelected"); // reassign the previously selected (before hover-over) option
+								return false; // exit the loop
+							}
+						});
+
 						this.#toggleOpenClose();
 					}
 				} else if (key === "ArrowDown" || key === "ArrowUp") {
@@ -304,11 +317,13 @@ export class TopicDropdown {
 						.prevAll(selector)
 						.not(".disabled")
 						.not(".genDropdownTopicGroup")
+						.not(".genOptionFilteredOut")
 						.first();
 					const next = $(currentSelected)
 						.nextAll(selector)
 						.not(".disabled")
 						.not(".genDropdownTopicGroup")
+						.not(".genOptionFilteredOut")
 						.first();
 					const dropdown = $(".genDropdownOptions");
 					const dropdownDims = $(dropdown)[0].getBoundingClientRect();
@@ -556,7 +571,7 @@ export class TopicDropdown {
 			}
 
 			// hides topic group labels if they have no children (for filters)
-			$(".genDropdownTopicGroup:not('.subTopicDowndropGroup')").each((i, item) => {
+			$(`#${this.props.containerId} .genDropdownTopicGroup:not('.subTopicDowndropGroup')`).each((i, item) => {
 				const topicId = $(item).attr("data-topic-id");
 				const children = $(
 					`.genDropdownOption[data-parent-topic-id="${topicId}"]:not('.genOptionFilteredOut'):not('.genDropdownSubtopicOption')`
@@ -722,7 +737,7 @@ export class TopicDropdown {
 		// if no matches, we hide the subtopic/topic
 		// eslint-disable-next-line array-callback-return
 		if (this.searchText.length) {
-			$(".genDropdownTopicGroup").map((i, group) => {
+			$(`#${this.props.containerId} .genDropdownTopicGroup`).map((i, group) => {
 				const topicId = $(group).data("topic-id");
 				if (topicId && $(`.genDropdownOption[data-val="${topicId}"]:visible`).length === 0) {
 					$(group).attr("hidden", true);

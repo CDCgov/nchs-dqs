@@ -142,6 +142,14 @@ export class LandingPage {
 		}
 		$("#tabs").tabs({
 			active: this.activeTabNumber,
+			beforeActivate: (e) => {
+				// will ignore tab change if a dropdown is open
+				if ($(".genDropdownOpened").length > 0) {
+					return false;
+				}
+
+				return true;
+			},
 			activate: (e) => {
 				let target = e.currentTarget;
 				let id;
