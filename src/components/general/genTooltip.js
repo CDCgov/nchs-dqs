@@ -154,7 +154,7 @@ export class GenTooltip {
 			let prop;
 			this.bodyProps
 				.filter((bp) => {
-					const excludedVals = ["*", "n/a", "---", "-"];
+					const excludedVals = ["*", "n/a", "---", "- - -", "-"];
 					const excludedProps = ["flag", "estimate_uci", "estimate_lci"];
 					// exclude if no value for flag prop
 					if (bp === "flag" && !data[bp]) {
@@ -181,13 +181,13 @@ export class GenTooltip {
 						if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined)
 							data[bp] = "-";
 
-						if (data[bp] && parseInt(data[bp], 10) === 0) {
+						if (data[bp] && parseInt(data[bp], 10) === 0 && !data.flag) {
 							data[bp] = "N/A";
 						}
-						if (bp === "estimate" && data.flag && data.flag === "*") {
+						if (bp === "estimate" && data.flag) {
 							// appends a * if there is a flag to the estimate
-							if (!data.estimate) {
-								data.estimate = "*";
+							if (!data.estimate || data.estimate === "N/A" || data.estimate === "N/A*") {
+								data.estimate = data.flag;
 							} else if (data.estimate && !data.estimate.toString().includes("*")) {
 								data.estimate = `${data.estimate}*`;
 							}

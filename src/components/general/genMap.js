@@ -308,7 +308,7 @@ export class GenMap {
 			if (flag === "*" && estimate && index > -1) return binColor;
 			if (flag === "N/A" && !estimate) return DataCache.noDataColorHexVal; // no data record found
 			if (index > -1) return binColor; // COLOR FOUND
-			return "#e0e0e0"; // COLOR NOT FOUND - so NOT ACTIVE
+			return "#fff"; // COLOR NOT FOUND - so NOT ACTIVE
 		}
 
 		// (TT) this let's you use white text on darker backgrounds - some left as black text
