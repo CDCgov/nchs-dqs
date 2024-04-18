@@ -156,8 +156,8 @@ export class GenTooltip {
 				.filter((bp) => {
 					const excludedVals = ["*", "n/a", "---", "- - -", "-"];
 					const excludedProps = ["flag", "estimate_uci", "estimate_lci"];
-					// exclude if no value for flag prop
-					if (bp === "flag" && !data[bp]) {
+					// exclude if no value for flag or estimate CIs
+					if (excludedProps.includes(bp) && !data[bp]) {
 						return false;
 					}
 					// exclude if flag/ci is missing or unavailable
