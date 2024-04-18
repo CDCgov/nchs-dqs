@@ -154,7 +154,7 @@ export class GenTooltip {
 			let prop;
 			this.bodyProps
 				.filter((bp) => {
-					const excludedVals = ["*", "n/a", "---", "- - -", "-"];
+					const excludedVals = ["*", "**", "***", "****", "n/a", "---", "- - -", "-", "..."];
 					const excludedProps = ["flag", "estimate_uci", "estimate_lci"];
 					// exclude if no value for flag or estimate CIs
 					if (excludedProps.includes(bp) && !data[bp]) {
@@ -189,7 +189,7 @@ export class GenTooltip {
 							if (!data.estimate || data.estimate === "N/A" || data.estimate === "N/A*") {
 								data.estimate = data.flag;
 							} else if (data.estimate && !data.estimate.toString().includes("*")) {
-								data.estimate = `${data.estimate}*`;
+								data.estimate = `${data.estimate} ${data.flag}`;
 							}
 						}
 
