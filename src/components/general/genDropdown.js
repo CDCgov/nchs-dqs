@@ -120,9 +120,9 @@ const populate = (props, mobile) => {
 	} else {
 		let totalItem = null;
 		props.classificationGroups.forEach((g, index) => {
-			const groupOptions = props.options
-				.filter((o) => parseInt(o.classificationGroup, 10) === parseInt(g.value, 10))
-				.sort((a, b) => a.text.localeCompare(b.text));
+			const groupOptions = props.options.filter(
+				(o) => parseInt(o.classificationGroup, 10) === parseInt(g.value, 10)
+			);
 
 			if (groupOptions.length > 0) {
 				// will hide total group since it only has 1 item and we move it to the top

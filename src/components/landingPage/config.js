@@ -1152,6 +1152,7 @@ const multipleTopicDatasets = {
 					stub_label_num: f.subgroup_id,
 					stub_name: f.group,
 					stub_name_num: f.group_id,
+					stub_name_order: f.group_order,
 					unit: f.estimate_type,
 					unit_num: f.estimate_type_id,
 					year: f.time_period,
