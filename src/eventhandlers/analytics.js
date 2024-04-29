@@ -49,7 +49,7 @@ export const Analytics = {
 			s.linkTrackVars = "prop40,prop49,prop46,prop2,prop31,channel";
 			s.pageName = null;
 			s.prop40 = interactionData;
-			s.tl(true, "o", "CDC COVID Data Tracker");
+			s.tl(true, "o", "NCHS: Data Query System Application");
 			console.info(s.prop40);
 		} else {
 			console.info("Adobe Analytics library is not available on this page");

@@ -283,27 +283,27 @@ const footnoteDatasets = {
 	footnotes: {
 		// HUS
 		socrataId: "9xt5-u42s",
-		private: "1",
+		private: "0",
 	},
 	NHISFootnotes: {
 		socrataId: "gpsd-ru5i",
-		private: "1",
+		private: "0",
 	},
 	NHISChildFootnotes: {
 		socrataId: "48ev-2ygq",
-		private: "1",
+		private: "0",
 	},
 	cshsFootnotes: {
-		socrataId: "7kgb-btmk",
-		private: "1",
+		socrataId: "b5qi-b3hv",
+		private: "0",
 	},
 	NHAMCSFootnotes: {
 		socrataId: "6vwk-ensg",
-		private: "1",
+		private: "0",
 	},
 	NHANESFootnotes: {
 		socrataId: "iqm3-hbev",
-		private: "1",
+		private: "0",
 	},
 };
 
@@ -580,7 +580,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Low_birthweight_live_births__by_race_and_H/dj4t-wmry",
 		socrataId: "dj4t-wmry",
-		private: "1",
+		private: "0",
 		chartTitle: "Low birthweight live births by race and Hispanic origin",
 		filters: "HUS,NVSS,Infants,PacificIslander,Indian,Black,Children,Hispanic,White,GeoState",
 		dataSystem: "HUS,NVSS",
@@ -876,7 +876,7 @@ const singleTopicDatasets = {
 const multipleTopicDatasets = {
 	NHIS: {
 		socrataId: "pg2r-sfcx",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			let filteredToIndicator = data.filter((d) => d.topic === dataId);
 			if (filteredToIndicator.length === 0) {
@@ -1069,7 +1069,7 @@ const multipleTopicDatasets = {
 	},
 	"nhanes-oral-health": {
 		socrataId: "59vz-u8kg",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
 			const returnData = [];

@@ -25,6 +25,6 @@ export const TabEvents = {
 				appState.NAV_ITEM = "nchs-home";
 		}
 
-		document.title = "NCHS: Data Query System";
+		document.title = "NCHS: Data Query System Application";
 	},
 };
