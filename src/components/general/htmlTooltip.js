@@ -73,7 +73,13 @@ export class HtmlTooltip {
 			tip.style("width", tipWidth + "px");
 		}
 
-		tip.style("left", sides.x === "left" ? `${clientX + 10}px` : `${clientX - tipWidth - 10}px`)
+		let tipLeft = sides.x === "left" ? `${clientX + 10}px` : `${clientX - tipWidth - 10}px`;
+
+		if (appState.currentDeviceType === "mobile") {
+			tipLeft = "20px";
+		}
+
+		tip.style("left", tipLeft)
 			.style("top", sides.y === "top" ? `${clientY + 10}px` : `${clientY - tipHeight - 10}px`)
 			.transition()
 			.duration(400)
@@ -95,8 +101,15 @@ export class HtmlTooltip {
 
 		const tipHeight = d3.select(`#${this.containerId} .generalTooltip.tooltip`)._groups[0][0].offsetHeight;
 		const tipWidth = d3.select(`#${this.containerId} .generalTooltip.tooltip`)._groups[0][0].offsetWidth;
+
+		let tipLeft = sides.x === "left" ? `${event.clientX + 10}px` : `${event.clientX - tipWidth - 10}px`;
+
+		if (appState.currentDeviceType === "mobile") {
+			tipLeft = "20px";
+		}
+
 		d3.select(`#${this.containerId} .tooltip`)
-			.style("left", sides.x === "left" ? `${event.clientX + 10}px` : `${event.clientX - tipWidth - 10}px`)
+			.style("left", tipLeft)
 			.style("top", sides.y === "top" ? `${event.clientY + 10}px` : `${event.clientY - tipHeight - 10}px`);
 	}
 

@@ -234,7 +234,7 @@ export const filterHtml = ({ topicCount = 0 }) => {
 	if (selected) {
 		let filterResults = "";
 		$(".filterCheckbox:checkbox:checked").each((i, el) => {
-			filterResults += `<span class="badge rounded-pill" style="display: flex; justify-content: center; align-items: center; height: 44px;">
+			filterResults += `<span class="badge rounded-pill" style="display: flex; justify-content: center; align-items: center; height: 44px; white-space: normal;">
 				${$(el).parent().siblings("label").text()}
 				<button type="button" class="btn-close remove-filter-pill" aria-label="Close" data-id="${$(el).attr("id")}"></button>
 			</span>`;
