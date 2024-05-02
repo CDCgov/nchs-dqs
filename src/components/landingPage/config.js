@@ -340,7 +340,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_obesity_among_children_and_adolescents_age/w9cp-q6sg",
 		socrataId: "w9cp-q6sg",
-		private: "1",
+		private: "0",
 		chartTitle: "Obesity among children, measured by age",
 		filters: "HUS,NHANES,Black,Children,Hispanic,White,Female,Male,Asian",
 		dataSystem: "HUS,NHANES",
@@ -389,7 +389,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Normal_weight__overweight__and_obesity_amo/sqt4-6a3k",
 		socrataId: "sqt4-6a3k",
-		private: "1",
+		private: "0",
 		chartTitle: "BMI among adults, measured",
 		filters: "HUS,NHANES,Adults,Asian,Black,Hispanic,White,Male,Female,Older",
 		dataSystem: "HUS,NHANES",
@@ -434,7 +434,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Death_rates_for_suicide__by_sex__race__His/p7se-k3ix",
 		socrataId: "p7se-k3ix",
-		private: "1",
+		private: "0",
 		chartTitle: "Death rates for suicide",
 		filters:
 			"HUS,NVSS,Adults,Older,Asian,PacificIslander,Indian,Black,Children,Hispanic,Hawaiian,White,Male,Female",
@@ -468,7 +468,7 @@ const singleTopicDatasets = {
 			})),
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Initial_injury-related_visits_to_hospital_/qdzf-zqgy",
 		socrataId: "qdzf-zqgy",
-		private: "1",
+		private: "0",
 		chartTitle: "Hospital emergency department visits related to injury",
 		filters: "HUS,NHAMCS,Adults,Older,Children,Male,Female",
 		dataSystem: "HUS,NHAMCS",
@@ -510,7 +510,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Infant_mortality_rates__by_race_and_Hispan/pjb2-jvdr",
 		socrataId: "pjb2-jvdr",
-		private: "1",
+		private: "0",
 		chartTitle: "Infant mortality by race and Hispanic origin",
 		filters: "HUS,NVSS,Infants,Indian,PacificIslander,Black,Children,Hispanic,White,GeoState",
 		dataSystem: "HUS,NVSS",
@@ -630,7 +630,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Medicaid_coverage_among_persons_under_age_/hdja-ybdg",
 		socrataId: "hdja-ybdg",
-		private: "1",
+		private: "0",
 		chartTitle: "Medicaid coverage among people younger than 65 years",
 		filters:
 			"HUS,NHIS,Adults,Indian,Asian,PacificIslander,Black,Children,Female,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Poverty,Region,White",
@@ -673,7 +673,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Drug_overdose_death_rates__by_drug_type__s/dh32-cnpq",
 		socrataId: "dh32-cnpq",
-		private: "1",
+		private: "0",
 		chartTitle: "Death rates from drug overdose",
 		filters:
 			"HUS,NVSS,Adults,Indian,Asian,PacificIslander,Black,Children,Female,Hispanic,Male,Hawaiian,Older,White",
@@ -724,7 +724,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Visits_to_physician_offices__hospital_outp/xmjk-wh9b",
 		socrataId: "xmjk-wh9b",
-		private: "1",
+		private: "0",
 		chartTitle: "Physician office and hospital emergency department visits",
 		filters: "HUS,NHAMCS,NAMCS,Adults,Black,Children,Female,Male,Older,White",
 		dataSystem: "HUS,NHAMCS,NAMCS",
@@ -771,7 +771,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: "https://data.cdc.gov/dataset/dev_dqs_Delay_or_nonreceipt_of_needed_medical_care/p4r5-qsgs",
 		socrataId: "p4r5-qsgs",
-		private: "1",
+		private: "0",
 		chartTitle: "Unmet need for health care due to cost",
 		filters:
 			"HUS,NHIS,Adults,Indian,Asian,Black,Children,Education,Female,InsuranceStatus,Hispanic,Male,Metropolitan,MultipleRace,Hawaiian,Older,Poverty,Region,White",
@@ -820,7 +820,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: " https://data.cdc.gov/dataset/dev_dqs_community_hospital_beds_by_state_3-6-24/tjtn-y8d3",
 		socrataId: "tjtn-y8d3",
-		private: "1",
+		private: "0",
 		chartTitle: "Community hospital beds",
 		filters: "HUS,GeoState",
 		dataSystem: "HUS",
@@ -859,7 +859,7 @@ const singleTopicDatasets = {
 		},
 		dataUrl: " https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
 		socrataId: "9epi-jrff",
-		private: "1",
+		private: "0",
 		chartTitle: "Dentists",
 		filters: "HUS,GeoState",
 		dataSystem: "HUS",
@@ -917,7 +917,7 @@ const multipleTopicDatasets = {
 	},
 	"children-summary-statistics": {
 		socrataId: "b5qi-b3hv",
-		private: "1",
+		private: "0",
 		filters: `Interview, ${allFilters
 			.filter((a) => a !== "Adults" && a !== "Infants" && a !== "Older Adults" && a !== "GeoState")
 			.join(",")}`,
@@ -959,7 +959,7 @@ const multipleTopicDatasets = {
 	},
 	NHAMCS: {
 		socrataId: "k6sd-3kb8",
-		private: "1",
+		private: "0",
 		filters: `Interview,${allFilters
 			.filter((t) => !["FuncLimitStatus", "Marital", "Education", "Poverty", "SVI", "GeoState"].includes(t))
 			.join(",")}`,
@@ -999,7 +999,7 @@ const multipleTopicDatasets = {
 	},
 	"nhanes-chronic-conditions": {
 		socrataId: "mvup-dmxz",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.topic === dataId);
 			const returnData = [];
@@ -1034,7 +1034,7 @@ const multipleTopicDatasets = {
 	},
 	"nhanes-dietary-behaviors": {
 		socrataId: "xcc8-2jrh",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.topic === dataId);
 			const returnData = [];
@@ -1100,7 +1100,7 @@ const multipleTopicDatasets = {
 	},
 	"nhanes-infectious-disease": {
 		socrataId: "be3w-4inw",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
 			const returnData = [];
@@ -1131,7 +1131,7 @@ const multipleTopicDatasets = {
 	},
 	"wonder-hus-heart-disease": {
 		socrataId: "4892-xxjy",
-		private: "1",
+		private: "0",
 		dataMapper: (data, dataId) => {
 			const dataIndicator = NHISTopics.find((t) => t.indicator === dataId)?.indicator;
 			const filteredToIndicator = data.filter((d) => d.topic === dataIndicator);
