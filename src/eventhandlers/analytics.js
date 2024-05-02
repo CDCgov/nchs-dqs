@@ -1,5 +1,3 @@
-//import { allowedURL } from "../utils/whitelist";
-
 export const Analytics = {
 	// from http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript#8809472
 	generateUUID() {
@@ -13,38 +11,34 @@ export const Analytics = {
 	},
 
 	triggerOmniturePageView(str) {
-		if (typeof s !== "undefined" && typeof s.t === "function") {
+		if (window.hasOwnProperty("_satellite")) {
 			// Get the name of the selected tab from the hash value of the current URL.
 			let currentUrl = str || window.location.href;
 			let tabName = "";
-			const skipLinks = ["titleSection", "pageFooter", "viewHistoricLink", "bottomOfTable"];
-			/* 			if (currentUrl.indexOf("#") > 0) {
-				let liveURL = currentUrl.split("#")[1];
-				let isAllowed = allowedURL.includes(liveURL);
+			const skipLinks = ["tpitleSection", "pageFooter", "viewHistoricLink", "topOfTable", "bottomOfTable"];
+			if (currentUrl.indexOf("#") > 0) {
+				// let splitURL = currentUrl.split("_", 2).join("_");
+				let route = currentUrl.split("#")[1];
+				let liveURL = route.split("_", 2).join("_");
+
 				let checkLinks = skipLinks.includes(liveURL);
-				if (isAllowed && !checkLinks) {
+				if (!checkLinks) {
 					tabName = liveURL.trim();
-					s.pageURL = currentUrl;
-					s.pageName = `${document.title} - ${tabName}`;
-					console.info(s.pageName);
-					s.channel = "Coronavirus";
-					siteCatalyst.setLevel1("ATSDR");
-					siteCatalyst.setLevel2("ATSDR_DTHHS");
-					siteCatalyst.setLevel3("OD");
-					siteCatalyst.setLevel4("GRASP");
-					siteCatalyst.setLevel5("CDC COVID Data Tracker");
-					siteCatalyst.setLevel6("CDC COVID Data Tracker v1.0");
-					updateVariables(s);
-					s.t();
+					let dataObject = {};
+					let { _satellite } = window;
+					dataObject.ch = "NCHS";
+					dataObject.pageName = "".concat(document.title, " - ").concat(tabName);
+					console.info(dataObject.pageName);
+					_satellite.track("pageview", dataObject);
 				}
-			} */
+			}
 		} else {
-			console.info("Adobe Analytics library is not available on this page");
+			console.info("Adobe Launch is not available on this page");
 		}
 	},
 
 	triggerOmnitureInteractions(interactionData) {
-		if (interactionData) interactionData = `cdt-interaction: ${interactionData}`;
+		if (interactionData) interactionData = `nchs-interaction: ${interactionData}`;
 		if (typeof s !== "undefined" && typeof s.tl === "function") {
 			s.linkTrackVars = "prop40,prop49,prop46,prop2,prop31,channel";
 			s.pageName = null;

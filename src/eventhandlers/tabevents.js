@@ -1,6 +1,6 @@
 ﻿import { LandingPage } from "../tabs/landingpage";
 import { PageEvents } from "./pageevents";
-
+import { Analytics } from "./analytics";
 export const TabEvents = {
 	registerEvents() {
 		PageEvents.tableToggle();
@@ -26,5 +26,6 @@ export const TabEvents = {
 		}
 
 		document.title = "NCHS: Data Query System Application";
+		Analytics.triggerOmniturePageView();
 	},
 };

@@ -1,7 +1,7 @@
 import "./sass/styles.scss";
 import { setupAppStateVars } from "./utils/appState";
 import { TabEvents } from "./eventhandlers/tabevents";
-// import { Analytics } from "./eventhandlers/analytics";
+import { Analytics } from "./eventhandlers/analytics";
 
 // self executing function
 (() => {
@@ -26,6 +26,11 @@ import { TabEvents } from "./eventhandlers/tabevents";
 		if (dateSpan) dateSpan.textContent = date;
 	}
 	setFooterDate();
+
+	window.addEventListener("hashchange", function (evt) {
+		console.log("hash changed: ", evt);
+		Analytics.triggerOmniturePageView();
+	});
 
 	$(() => {
 		console.log("jquery init method?");
