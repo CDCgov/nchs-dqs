@@ -269,6 +269,9 @@ export class GenChart {
 		const chartWidth = svgWidth - xMargin;
 		const isDateRange = p.data[0]?.year?.includes("-");
 		let svgHeight = svgWidth / 2;
+		if (appState.currentDeviceType === "mobile") {
+			svgHeight = (svgWidth * 16) / 9; // to obtain 16:9 ratio
+		}
 		let chartHeight = svgHeight - yMargin;
 
 		if (p.barLayout?.horizontal) {
@@ -1381,7 +1384,7 @@ export class GenChart {
 								});
 						} else if (appState.currentDeviceType === "tablet") {
 							xAxis
-								.ticks(d3.timeYear.every(2))
+								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
 								.tickFormat(function (d, i) {
 									this.setAttribute("data-value", yearDisplay(d));
@@ -1390,11 +1393,11 @@ export class GenChart {
 						} else {
 							// mobile
 							xAxis
-								.ticks(d3.timeYear.every(2))
+								.ticks(d3.timeYear.every(1))
 								// Show all tick marks but labels every other tick
 								.tickFormat(function (d, i) {
 									this.setAttribute("data-value", yearDisplay(d));
-									return yearDisplay(d);
+									return i % 2 !== 0 ? " " : yearDisplay(d);
 								});
 						}
 					} else {
