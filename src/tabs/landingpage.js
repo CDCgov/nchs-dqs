@@ -116,6 +116,7 @@ export class LandingPage {
 			return nchsData;
 		} catch (err) {
 			console.error("Error fetching data", err);
+			Utils.getErrorMessage();
 			return null;
 		}
 	};
