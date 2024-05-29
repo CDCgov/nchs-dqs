@@ -181,7 +181,7 @@ export class GenTooltip {
 						if ((prop.datumType === "string" && data[bp] === null) || data[bp] === undefined)
 							data[bp] = "-";
 
-						if (data[bp] && parseInt(data[bp], 10) === 0 && !data.flag) {
+						if (data[bp] && data[bp] != "0.0" && parseFloat(data[bp], 10) === 0 && !data.flag) {
 							data[bp] = "N/A";
 						}
 						if (bp === "estimate" && data.flag) {
