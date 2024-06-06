@@ -8,6 +8,8 @@ import {
 
 import { filterHtml } from "../components/landingPage/modal";
 
+const ANIMATION_INTERVAL = 5000;
+
 export class MainEvents {
 	constructor(animationInterval) {
 		this.animationInterval = animationInterval;
@@ -44,7 +46,7 @@ export class MainEvents {
 		};
 		appState.ACTIVE_TAB.animating = true;
 		moveNext(true);
-		this.animationInterval = setInterval(() => moveNext(), 1000);
+		this.animationInterval = setInterval(() => moveNext(), ANIMATION_INTERVAL);
 	};
 
 	registerEvents = () => {
