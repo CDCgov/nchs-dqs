@@ -351,7 +351,11 @@ export class GenMap {
 
 		// join the data of STATES with the incoming data topic data
 		geometries.forEach((g) => {
-			const match = this.data.find((d) => d.stub_label_num == g.properties.STATE_FIPS);
+			const match = this.data.find((d) => {
+				const searchVal = d.state_fips || d.stub_label_num;
+				return parseInt(searchVal) === parseInt(g.properties.STATE_FIPS);
+			});
+
 			let theFlag;
 			if (match) {
 				theFlag = match.flag;
