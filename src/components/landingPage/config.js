@@ -857,7 +857,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: " https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
+		dataUrl: "https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
 		socrataId: "9epi-jrff",
 		private: "0",
 		chartTitle: "Dentists",
@@ -905,16 +905,50 @@ const singleTopicDatasets = {
 		dataSystem: "HUS",
 		classificationId: 1,
 		yAxisUnitId: 3,
-		hasCI: false,
-		hasMap: false,
-		hasClassification: true,
-		binGranularity: 0.1,
 		topicGroup: 4,
 		subtopics: [
 			{ id: "1", text: "High cholesterol" },
 			{ id: "2", text: "Hypercholesterolemia" },
 			{ id: "3", text: "Mean serum total cholesterol level" },
 		],
+	},
+	"hospital-admissions": {
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				//console.log("hospital admissions mapper: ", d);
+				return {
+					...d,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					estimate: d.estimate,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					classification: d.classification,
+					classification_num: d.classification_id,
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
+		socrataId: "rear-2epk",
+		private: "0",
+		chartTitle: "Hospital Admissions",
+		filters: "HUS",
+		dataSystem: "HUS",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: false,
+		hasClassification: true,
+		binGranularity: 0.1,
 	},
 };
 
