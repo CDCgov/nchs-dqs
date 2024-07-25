@@ -741,7 +741,6 @@ const singleTopicDatasets = {
 	"access-care": {
 		hasCustomMapper: true,
 		dataMapper: (data) => {
-			console.log("community hospital beds data mapper: ", data);
 			return data.map((d) => {
 				return {
 					estimate: d.estimate,
@@ -799,8 +798,8 @@ const singleTopicDatasets = {
 					flag: d.flag,
 					footnote_id_list: d.footnote_id_list,
 					indicator: d.topic,
-					panel: d.subtopic,
-					panel_num: d.subtopic_id,
+					panel: "community-hospital-beds",
+					panel_num: "0",
 					se: null,
 					stub_label: d.subgroup,
 					stub_label_num: d.subgroup_id,
@@ -818,10 +817,11 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: " https://data.cdc.gov/dataset/dev_dqs_community_hospital_beds_by_state_3-6-24/tjtn-y8d3",
-		socrataId: "tjtn-y8d3",
+		dataUrl:
+			"https://data.cdc.gov/National-Center-for-Health-Statistics/DEV_DQS_Community_hospital_by_state_6-18-24/uiux-mrvg",
+		socrataId: "uiux-mrvg",
 		private: "0",
-		chartTitle: "Community hospital beds",
+		chartTitle: "Community Hospital Bed",
 		filters: "HUS,GeoState",
 		dataSystem: "HUS",
 		classificationId: 1,
