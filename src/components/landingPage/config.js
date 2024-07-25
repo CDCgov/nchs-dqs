@@ -919,8 +919,8 @@ const singleTopicDatasets = {
 				//console.log("hospital admissions mapper: ", d);
 				return {
 					...d,
-					panel: d.subtopic,
-					panel_num: d.subtopic_id,
+					panel: "hospital-admissions",
+					panel_num: "0",
 					unit: d.estimate_type,
 					unit_num: d.estimate_type_id,
 					stub_name: d.group,
@@ -930,7 +930,7 @@ const singleTopicDatasets = {
 					year: d.time_period,
 					year_num: d.time_period_id,
 					estimate: d.estimate,
-					flag: d.flag,
+					// flag: d.flag,
 					footnote_id_list: d.footnote_id_list,
 					classification: d.classification,
 					classification_num: d.classification_id,
