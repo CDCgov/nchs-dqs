@@ -1078,7 +1078,8 @@ export class LandingPage {
 		}, []);
 
 		// make total first item in list if it exists
-		if (options.findIndex((o) => o.text.toLowerCase() === "total") !== -1) {
+		const totalIndex = options.findIndex((o) => o.text.toLowerCase() === "total");
+		if (totalIndex !== -1 && totalIndex !== 0) {
 			const totalItem = options[options.findIndex((o) => o.text.toLowerCase() === "total")];
 			options.unshift(totalItem);
 		}

@@ -919,6 +919,7 @@ const singleTopicDatasets = {
 				//console.log("hospital admissions mapper: ", d);
 				return {
 					...d,
+					indicator: d.topic,
 					panel: "hospital-admissions",
 					panel_num: "0",
 					unit: d.estimate_type,
@@ -947,7 +948,7 @@ const singleTopicDatasets = {
 		yAxisUnitId: 1,
 		hasCI: false,
 		hasMap: false,
-		hasClassification: true,
+		hasClassification: false,
 		binGranularity: 0.1,
 	},
 };
