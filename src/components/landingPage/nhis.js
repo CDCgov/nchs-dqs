@@ -338,7 +338,16 @@ const NHANESDietary = [
 	{ id: "vitamin-d-intake", text: "Vitamin D intake", topicGroup: 14 },
 ];
 
-const HospitalAdmissions = [{ id: "hospital-admissions", text: "Hospital Admissions", topicGroup: 13 }];
+const HospitalAdmissions = [
+	{ id: "hospital-admissions", text: "Hospital Admissions", topicGroup: 13 },
+	{ id: "hospital-outpatient-visits", text: "Hospital outpatient visits", topicGroup: 13 },
+	{
+		id: "outpatient-surgery-for-community-hospitals",
+		text: "Outpatient surgery for community hospitals",
+		topicGroup: 13,
+	},
+	{ id: "average-length-of-hospital-stay", text: "Average length of hospital stay", topicGroup: 13 },
+];
 
 // NHANES oral health
 const NHANESOralHealth = [
@@ -413,7 +422,7 @@ const WONDERHUSHeartDisease = [
 export const NHISTopics = [
 	...HospitalAdmissions.map((d) => ({
 		...d,
-		topicLookupKey: "hospital-admissions",
+		topicLookupKey: "hospital",
 		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
 		dataSystem: "HUS",
 	})),

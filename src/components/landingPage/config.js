@@ -874,10 +874,12 @@ const singleTopicDatasets = {
 };
 
 const multipleTopicDatasets = {
-	"hospital-admissions": {
+	hospital: {
 		socrataId: "rear-2epk",
+		private: "0",
 		dataMapper: (data, dataId) => {
-			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
+			const filteredToIndicator = data.filter((d) => d.topic.toLowerCase() === dataId.toLowerCase());
+
 			const returnData = [];
 			filteredToIndicator.forEach((d) => {
 				//console.log("hospital admissions mapper: ", d);
@@ -902,18 +904,6 @@ const multipleTopicDatasets = {
 			});
 			return returnData;
 		},
-		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
-		private: "0",
-		chartTitle: "Hospital Admissions",
-		filters: "HUS",
-		dataSystem: "HUS",
-		classificationId: 1,
-		yAxisUnitId: 1,
-		hasCI: false,
-		hasMap: false,
-		hasClassification: false,
-		binGranularity: 0.1,
-		topicGroup: 13,
 	},
 	NHIS: {
 		socrataId: "pg2r-sfcx",
