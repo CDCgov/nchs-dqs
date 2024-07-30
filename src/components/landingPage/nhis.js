@@ -339,7 +339,7 @@ const NHANESDietary = [
 ];
 
 const HospitalAdmissions = [
-	{ id: "hospital-admissions", text: "Hospital Admissions", topicGroup: 13 },
+	{ id: "hospital-admissions", text: "Hospital admissions", topicGroup: 13 },
 	{ id: "hospital-outpatient-visits", text: "Hospital outpatient visits", topicGroup: 13 },
 	{
 		id: "outpatient-surgery-for-community-hospitals",
