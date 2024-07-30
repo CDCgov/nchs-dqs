@@ -251,7 +251,7 @@ export class GenChart {
 		const leftAxisSize = p.usesLeftAxis * axisSize * p.yLeftLabelScale;
 		const rightAxisSize = p.usesRightAxis * axisSize * p.yRightLabelScale;
 		const leftTitleSize = p.usesLeftAxisTitle * axisTitleSize * leftTitleScale;
-		const xAxisTitleSize = p.usesXAxisTitle * axisTitleSize;
+		const xAxisTitleSize = p.usesXAxisTitle * axisTitleSize + 7; // add 7 for long tick label to prevent wrapping
 
 		// setup margins, widths, and heights
 		let marginTB = 20;

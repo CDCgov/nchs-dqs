@@ -958,7 +958,7 @@ export class LandingPage {
 			}));
 
 			this.classificationOptions = options;
-			// console.log("classification options", options);
+			// console.log("classification options", propName, options);
 			return options;
 		}
 
@@ -1133,6 +1133,19 @@ export class LandingPage {
 		let allUnitsArray = this.socrataData.filter(
 			(item) => parseInt(item.stub_name_num, 10) === parseInt(this.groupId, 10)
 		);
+
+		// also filter by classification since different subtopics can have different estimate types
+		// no need to filter further by classification if I only have 1 classification
+		const panelLength = [...new Set(allUnitsArray.map((t) => t.panel_num))].length;
+
+		if (this.config.hasClassification && panelLength > 1) {
+			const classificationId = allUnitsArray[0]?.classification_num
+				? $("#topicDropdown-select .genDropdownOption.genOptionSelected").attr("data-classification")
+				: this.config.classificationId;
+			allUnitsArray = allUnitsArray.filter((d) => d.panel_num == classificationId);
+		}
+
+		console.log("units array after filter", allUnitsArray);
 
 		// Creates an array of objects with unique "name" property values.
 		// have to iterate over the unfiltered data
