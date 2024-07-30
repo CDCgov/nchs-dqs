@@ -81,6 +81,7 @@ export class LandingPage {
 		if (nchsData) return nchsData;
 
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
+			console.log("adfadf: ", config.topicLookup);
 			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
 

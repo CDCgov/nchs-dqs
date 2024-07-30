@@ -871,13 +871,17 @@ const singleTopicDatasets = {
 		binGranularity: 0.1,
 		topicGroup: 12,
 	},
+};
+
+const multipleTopicDatasets = {
 	"hospital-admissions": {
-		hasCustomMapper: true,
-		dataMapper: (data) => {
-			return data.map((d) => {
+		socrataId: "rear-2epk",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.measure.toLowerCase() === dataId.toLowerCase());
+			const returnData = [];
+			filteredToIndicator.forEach((d) => {
 				//console.log("hospital admissions mapper: ", d);
-				return {
-					...d,
+				returnData.push({
 					indicator: d.topic,
 					panel: "hospital-admissions",
 					panel_num: "0",
@@ -894,11 +898,11 @@ const singleTopicDatasets = {
 					footnote_id_list: d.footnote_id_list,
 					classification: d.classification,
 					classification_num: d.classification_id,
-				};
+				});
 			});
+			return returnData;
 		},
 		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
-		socrataId: "rear-2epk",
 		private: "0",
 		chartTitle: "Hospital Admissions",
 		filters: "HUS",
@@ -911,9 +915,6 @@ const singleTopicDatasets = {
 		binGranularity: 0.1,
 		topicGroup: 13,
 	},
-};
-
-const multipleTopicDatasets = {
 	NHIS: {
 		socrataId: "pg2r-sfcx",
 		private: "0",
