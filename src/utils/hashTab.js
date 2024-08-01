@@ -53,6 +53,7 @@ export const getSelections = () => {
 };
 
 export const slugify = (str) => {
+	console.log("slugify str: ", str);
 	return str
 		.toLowerCase()
 		.trim()
@@ -62,7 +63,7 @@ export const slugify = (str) => {
 };
 
 export const addToHashLookup = (data, topicId, initialPageLoad = false) => {
-	const classifications = [...new Set(data.map((d) => d.panel))];
+	const classifications = [...new Set(data.filter((i) => !!i.panel).map((d) => d.panel))];
 	const classificationsArray = [];
 
 	classifications.forEach((classification) => {

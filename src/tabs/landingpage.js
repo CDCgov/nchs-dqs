@@ -81,6 +81,7 @@ export class LandingPage {
 		if (nchsData) return nchsData;
 
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
+			console.log("adfadf: ", config.topicLookup);
 			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
 
@@ -1078,7 +1079,8 @@ export class LandingPage {
 		}, []);
 
 		// make total first item in list if it exists
-		if (options.findIndex((o) => o.text.toLowerCase() === "total") !== -1) {
+		const totalIndex = options.findIndex((o) => o.text.toLowerCase() === "total");
+		if (totalIndex !== -1 && totalIndex !== 0) {
 			const totalItem = options[options.findIndex((o) => o.text.toLowerCase() === "total")];
 			options.unshift(totalItem);
 		}

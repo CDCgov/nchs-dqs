@@ -857,7 +857,7 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: " https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
+		dataUrl: "https://data.cdc.gov/dataset/DQS_Active_dentists_by_state_2-23-24/9epi-jrff",
 		socrataId: "9epi-jrff",
 		private: "0",
 		chartTitle: "Dentists",
@@ -871,54 +871,41 @@ const singleTopicDatasets = {
 		binGranularity: 0.1,
 		topicGroup: 12,
 	},
-	"adult-cholesterol": {
-		hasCustomMapper: true,
-		dataMapper: (data) => {
-			return data.map((d) => {
-				return {
-					...d,
-					indicator: d.topic,
-					panel: d.subtopic,
-					panel_num: d.subtopic_id,
-					stub_label: d.subgroup,
-					stub_label_num: d.subgroup_id,
-					stub_label_order: d.subgroup_order,
-					stub_name: d.group,
-					stub_name_num: d.group_id,
-					stub_name_order: d.group_order,
-					unit: d.estimate_type,
-					unit_num: d.estimate_type_id,
-					year: d.time_period,
-					year_num: d.time_period_id,
-					classification_num: d.classification_id,
-					age: d.group.includes("By age") ? f.group : "N/A",
-				};
-			});
-		},
-		// dataUrl: "https://data.cdc.gov/dataset/DEV_DQS_Cholesterol_in_adults_age_20_and_older_by_/k2e8-8t3h",
-		// private: "0",
-		dataUrl: "https://data.cdc.gov/resource/k2e8-8t3h.json",
-		private: "1",
-		socrataId: "k2e8-8t3h",
-		chartTitle: "Cholesterol in adults, measured",
-		filters: "HUS,GeoState",
-		dataSystem: "HUS",
-		classificationId: 1,
-		yAxisUnitId: 3,
-		hasCI: false,
-		hasMap: false,
-		hasClassification: true,
-		binGranularity: 0.1,
-		topicGroup: 4,
-		subtopics: [
-			{ id: "1", text: "High cholesterol" },
-			{ id: "2", text: "Hypercholesterolemia" },
-			{ id: "3", text: "Mean serum total cholesterol level" },
-		],
-	},
 };
 
 const multipleTopicDatasets = {
+	hospital: {
+		socrataId: "rear-2epk",
+		private: "0",
+		dataMapper: (data, dataId) => {
+			const filteredToIndicator = data.filter((d) => d.topic.toLowerCase() === dataId.toLowerCase());
+
+			const returnData = [];
+			filteredToIndicator.forEach((d) => {
+				//console.log("hospital admissions mapper: ", d);
+				returnData.push({
+					indicator: d.topic,
+					panel: "hospital-admissions",
+					panel_num: "0",
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					estimate: d.estimate,
+					// flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					classification: d.classification,
+					classification_num: d.classification_id,
+				});
+			});
+			return returnData;
+		},
+	},
 	NHIS: {
 		socrataId: "pg2r-sfcx",
 		private: "0",

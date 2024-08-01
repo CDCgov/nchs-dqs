@@ -1,3 +1,5 @@
+import { topicLookup } from "./config";
+
 const NHISAdult = [
 	{ id: "angina-pectoris", text: "Angina/angina pectoris", topicGroup: 4 },
 	{ id: "any-difficulty-communicating", text: "Any difficulty communicating", topicGroup: 8 },
@@ -336,6 +338,17 @@ const NHANESDietary = [
 	{ id: "vitamin-d-intake", text: "Vitamin D intake", topicGroup: 14 },
 ];
 
+const HospitalAdmissions = [
+	{ id: "hospital-admissions", text: "Hospital admissions", topicGroup: 13 },
+	{ id: "hospital-outpatient-visits", text: "Hospital outpatient visits", topicGroup: 13 },
+	{
+		id: "outpatient-surgery-for-community-hospitals",
+		text: "Outpatient surgery for community hospitals",
+		topicGroup: 13,
+	},
+	{ id: "average-length-of-hospital-stay", text: "Average length of hospital stay", topicGroup: 13 },
+];
+
 // NHANES oral health
 const NHANESOralHealth = [
 	{
@@ -407,6 +420,12 @@ const WONDERHUSHeartDisease = [
 ];
 
 export const NHISTopics = [
+	...HospitalAdmissions.map((d) => ({
+		...d,
+		topicLookupKey: "hospital",
+		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
+		dataSystem: "HUS",
+	})),
 	...NHISAdult.map((d) => ({
 		...d,
 		topicLookupKey: "NHIS",
