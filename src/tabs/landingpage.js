@@ -81,7 +81,6 @@ export class LandingPage {
 		if (nchsData) return nchsData;
 
 		if (localConfig.topicLookupId && config.topicLookup[localConfig.topicLookupId]) {
-			console.log("adfadf: ", config.topicLookup);
 			return this.getNhisData(localConfig.socrataId, config.topicLookup[localConfig.topicLookupId].dataMapper);
 		}
 
@@ -96,6 +95,9 @@ export class LandingPage {
 				//t is Socrata ID, m is metadata and p is private
 				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
 				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
+				// back up if you break you IIS like Ali
+				// metaUrl = `https://grasp_internal_test.cdc.gov/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
+				// dataUrl = `https://grasp_internal_test.cdc.gov/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 			}
 
 			[metaData, jsonData] = await Promise.all([
@@ -1079,8 +1081,7 @@ export class LandingPage {
 		}, []);
 
 		// make total first item in list if it exists
-		const totalIndex = options.findIndex((o) => o.text.toLowerCase() === "total");
-		if (totalIndex !== -1 && totalIndex !== 0) {
+		if (options.findIndex((o) => o.text.toLowerCase() === "total") !== -1) {
 			const totalItem = options[options.findIndex((o) => o.text.toLowerCase() === "total")];
 			options.unshift(totalItem);
 		}

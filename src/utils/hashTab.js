@@ -53,7 +53,7 @@ export const getSelections = () => {
 };
 
 export const slugify = (str) => {
-	console.log("slugify str: ", str);
+	console.log("slugify: ", str);
 	return str
 		.toLowerCase()
 		.trim()

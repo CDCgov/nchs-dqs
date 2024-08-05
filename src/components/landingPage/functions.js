@@ -89,7 +89,10 @@ export const addHtmlTooltips = () => {
 	$("#qLabelTooltip").mouseleave((e) => quartTooltip.mouseout(e));
 };
 
-export const getYear = (period) => parseInt(period.split("-")[0], 10);
+export const getYear = (period) => {
+	// console.log("period: ", period);
+	return parseInt(period.split("-")[0], 10);
+};
 
 const getTooltipConstructor = (vizId, chartValueProperty, hasCI, sigFigs) => {
 	const propertyLookup = {

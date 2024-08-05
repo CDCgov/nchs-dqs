@@ -308,6 +308,37 @@ const footnoteDatasets = {
 };
 
 const singleTopicDatasets = {
+	"hypertension-adult": {
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					indicator: d.topic,
+					panel: "hypertension",
+					panel_num: "0",
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					estimate: d.estimate,
+					flag: d.flag,
+					footnote_id_list: d.footnote_id_list,
+					fips_state: d.state_fips,
+					classification: d.classification,
+					classification_num: d.classification_id,
+				};
+			});
+		},
+		dataUrl: "https://data.cdc.gov/resource/c49c-tp7w",
+		socrataId: "c49c-tp7w",
+		private: "1",
+		chartTitle: "Hypertension Adults, measured",
+	},
 	"obesity-child": {
 		hasCustomMapper: true,
 		dataMapper: (data) => {
