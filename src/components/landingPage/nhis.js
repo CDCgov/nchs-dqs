@@ -327,6 +327,14 @@ const NHANESChronic = [
 	},
 ];
 
+const NHANESAdult = [
+	{
+		id: "hypertension-in-adults",
+		indicator: "Hypertension in adults, measured",
+		text: "Hypertension in adults, measured",
+		topicGroup: 4,
+	},
+];
 // start NHANES Dietary behaviors
 const NHANESDietary = [
 	{ id: "calcium-intake", text: "Calcium intake", topicGroup: 14 },
@@ -425,6 +433,13 @@ export const NHISTopics = [
 		topicLookupKey: "hospital",
 		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
 		dataSystem: "HUS",
+	})),
+	...NHANESAdult.map((d) => ({
+		...d,
+		topicLookupKey: "hypertension-adult",
+		dataUrl: "https://data.cdc.gov/resource/c49c-tp7w",
+		dataSystem: "HUS,NHANES",
+		filters: ["HUS", "NHANES"],
 	})),
 	...NHISAdult.map((d) => ({
 		...d,
