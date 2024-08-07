@@ -945,6 +945,51 @@ const singleTopicDatasets = {
 			{ id: "3", text: "Mean serum total cholesterol level" },
 		],
 	},
+	"prescription-drug-use": {
+		hasCustomMapper: true,
+		dataMapper: (data) => {
+			return data.map((d) => {
+				return {
+					...d,
+					indicator: d.topic,
+					panel: d.subtopic,
+					panel_num: d.subtopic_id,
+					stub_label: d.subgroup,
+					stub_label_num: d.subgroup_id,
+					stub_label_order: d.subgroup_order,
+					stub_name: d.group,
+					stub_name_num: d.group_id,
+					stub_name_order: d.group_order,
+					unit: d.estimate_type,
+					unit_num: d.estimate_type_id,
+					year: d.time_period,
+					year_num: d.time_period_id,
+					classification: d.classification,
+					classification_num: d.classification_id,
+					age: d.group.includes("By age") ? f.group : "N/A",
+				};
+			});
+		},
+		dataUrl:
+			"https://data.cdc.gov/National-Center-for-Health-Statistics/DQS-Prescription-drug-use-in-the-past-30-days-by-s/b666-c5v5",
+		private: "0",
+		socrataId: "b666-c5v5",
+		chartTitle: "Number of prescription medication use",
+		filters: "HUS,NHANES",
+		dataSystem: "HUS,NHANES",
+		classificationId: 1,
+		yAxisUnitId: 1,
+		hasCI: false,
+		hasMap: false,
+		hasClassification: true,
+		binGranularity: 0.1,
+		topicGroup: 25,
+		subtopics: [
+			{ id: "1", text: "One or more prescription medications" },
+			{ id: "2", text: "Three or more prescription medications" },
+			{ id: "3", text: "Five or more prescription medications" },
+		],
+	},
 };
 
 const multipleTopicDatasets = {
