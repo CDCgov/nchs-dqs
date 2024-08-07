@@ -926,10 +926,8 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		// dataUrl: "https://data.cdc.gov/dataset/DEV_DQS_Cholesterol_in_adults_age_20_and_older_by_/k2e8-8t3h",
-		// private: "0",
-		dataUrl: "https://data.cdc.gov/resource/k2e8-8t3h.json",
-		private: "1",
+		dataUrl: "https://data.cdc.gov/dataset/DEV_DQS_Cholesterol_in_adults_age_20_and_older_by_/k2e8-8t3h",
+		private: "0",
 		socrataId: "k2e8-8t3h",
 		chartTitle: "Cholesterol in adults, measured",
 		filters: "HUS,GeoState",
