@@ -334,9 +334,10 @@ const singleTopicDatasets = {
 				};
 			});
 		},
-		dataUrl: "https://data.cdc.gov/resource/c49c-tp7w",
+		dataUrl:
+			"https://data.cdc.gov/National-Center-for-Health-Statistics/DQS-Hypertension-in-adults-age-20-and-older-by-sel/c49c-tp7w",
 		socrataId: "c49c-tp7w",
-		private: "1",
+		private: "0",
 		chartTitle: "Hypertension Adults, measured",
 	},
 	"obesity-child": {
