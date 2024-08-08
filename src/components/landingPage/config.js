@@ -862,7 +862,7 @@ const singleTopicDatasets = {
 		socrataId: "k2e8-8t3h",
 		chartTitle: "Cholesterol in adults, measured",
 		filters: "HUS,GeoState",
-		dataSystem: "HUS",
+		dataSystem: "HUS,NHANES",
 		classificationId: 1,
 		yAxisUnitId: 3,
 		hasCI: false,
