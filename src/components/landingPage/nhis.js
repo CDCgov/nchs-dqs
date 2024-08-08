@@ -432,7 +432,7 @@ export const NHISTopics = [
 		...d,
 		topicLookupKey: "hospital",
 		dataUrl: "https://data.cdc.gov/resource/rear-2epk",
-		dataSystem: "HUS",
+		dataSystem: "HUS,AHA",
 	})),
 	...NHANESAdult.map((d) => ({
 		...d,

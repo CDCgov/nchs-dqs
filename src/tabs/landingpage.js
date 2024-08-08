@@ -22,6 +22,7 @@ const DATA_SYSTEMS = {
 	NHIS: "National Health Interview Survey (NHIS)",
 	NHAMCS: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
 	NVSS: "National Vital Statistics System (NVSS)",
+	AHA: "American Hospital Association (AHA)",
 };
 
 export class LandingPage {
