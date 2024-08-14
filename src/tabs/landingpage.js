@@ -23,6 +23,7 @@ const DATA_SYSTEMS = {
 	NHAMCS: "National Hospital Ambulatory Medical Care Survey (NHAMCS)",
 	NVSS: "National Vital Statistics System (NVSS)",
 	AHA: "American Hospital Association (AHA)",
+	ADA: "American Dental Association (ADA)",
 };
 
 export class LandingPage {
@@ -93,7 +94,7 @@ export class LandingPage {
 				metaUrl = `https://data.cdc.gov/api/views/${localConfig.socrataId}`;
 				dataUrl = `https://data.cdc.gov/resource/${localConfig.socrataId}.json?$limit=50000`;
 			} else {
-				//t is Socrata ID, m is metadata and p is private
+				//It is Socrata ID, m is metadata and p is private
 				metaUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=1&p=${localConfig.private}`;
 				dataUrl = `https://${window.location.hostname}/NCHSWebAPI/api/SocrataData/JSONData?t=${localConfig.socrataId}&m=0&p=${localConfig.private}`;
 				// back up if you break you IIS like Ali
