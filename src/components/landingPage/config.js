@@ -775,6 +775,7 @@ const singleTopicDatasets = {
 					year_num: d.time_period_id,
 					classification: d.classification,
 					classification_num: d.classification_id,
+					state_fips: d.state_fips,
 					age: d.group.includes("By age") ? f.group : "N/A",
 				};
 			});
