@@ -50,7 +50,7 @@
 		"sass-resources-loader": "^2.0.1",
 		"ssi-webpack-plugin": "^1.0.8",
 		"url-loader": "^3.0.0",
-		"webpack": "^4.46.0",
+		"webpack": "^5.94.0",
 		"webpack-cli": "^4.9.2",
 		"webpack-dev-server": "^3.11.3",
 		"xmlbuilder2": "^3.0.2"
