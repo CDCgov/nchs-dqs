@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> This repository has been archived and is no longer maintained.
+> The code is provided for historical reference and may contain unpatched or unknown vulnerabilities.
+> It should not be used in production system
+
 # National Center for Health Statistics (NCHS) - CDC GRASP
 This is the code repository for the NCHS web application for visualizing, charting, and mapping data, created by the CDC's GRASP team.
 
